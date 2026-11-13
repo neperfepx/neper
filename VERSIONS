@@ -1,8 +1,408 @@
-New in 5.0.1-14 (10 Nov 2026):
-- module -T: fixed -stattesr vol.
-- module -V: made minor fix.
-- general: fixed macOS compatibility, fixed exponent notation in expressions,
-  minor fixes.
+New in 7.0.0 (2026-11-13):
+- module -T: made the cylinder and sphere domains exact (curved, also
+  for a cylinder periodic along z), added -domain hourglass, improved
+  cutting algorithm (now direct cutting), fixed -transform planecut and
+  other cut operations, added -morphooptilogdis curpdf0 and -transform
+  rmtess,
+  improved -morpho (void cells), fixed -ori, fixed -stattesr vol, added
+  periodic multiscale tessellations, improved regularization (3D),
+  removed [r]sel from -morpho, enabled expressions in all -stat options,
+  fixed build-dependent regularization results and a buffer overflow for
+  periodic tessellations, fixed face equations after regularization, set
+  face equations on curved domain faces to tangent planes, labeled the
+  curved domain face cyl or hourglass, added -transform renamedomface,
+  fixed non-deterministic -morpho optimization (thread race in the
+  evaluation of distributions), sped up the computation of the cells
+  (about 25% faster -morpho), sped up the neighbor search during -morpho
+  (rebuilt kd-tree), fixed memory leaks, a double free with -morpho
+  lamellar and buffer overflows with -domain stdtriangle and
+  -morphooptistop, fixed Ctrl+C after a -morpho optimization (it was
+  ignored, e.g. during regularization), added -regdelcell (deletion of
+  cells during regularization), renamed -regularization, -fmax, -[r]sel,
+  -mloop and -maxedgedelqty to -reg, -regfmax, -reg[r]sel, -regloop and
+  -regedgedelmax (the former names are deprecated), fixed 2D
+  regularization (crash), made minor fixes, named the input file of
+  -format sim after the output file (e.g. n5-id1.tess, instead of
+  simulation.tess), added -transform rmseed and the seed keys
+  cell_<key> (keys of the seed's cell), fixed partial periodicity
+  (e.g. -periodicity x) and face orientations (now all outwards) of
+  periodic single-cell and -morpho cube tessellations, fixed
+  regularization of curved domains (a domain face, e.g. the end of a
+  cylinder, could lose all its faces), fixed the orientation of the
+  faces on curved domain faces (now all outwards; they could point
+  inwards, e.g. with -transform cut), added val<1e-12 to the
+  -morphooptistop default value, kept the cylinder and sphere domains
+  exact when translated or rotated, removed the transformations of
+  -loadtesr (use -transform), fixed -transform translate and rotate on
+  curved domains (stale domain face parameters and face points),
+  enabled -transform rmseed and cut(...,algo=legacy) with -loadtess
+  (the domain is recovered from the tessellation), made them account
+  for previous transformations such as scale, fixed the geometric
+  anisotropy factor of 2D tessellation faces of arbitrary orientation
+  (including slices) and improved the handling of degenerate faces,
+  made seed weights actual Laguerre weights (instead of their square
+  roots) everywhere (see incompatible changes below), fixed the rw key
+  of -orioptilogvar (it logged the Laguerre weight), fixed -ori odf
+  with -orisampling uniform (crash), added a warning when -orisampling
+  uniform has no effect, fixed -orisampling uniform with orientations
+  loaded from a file (crash), made -orioptiini use the syntax of
+  -morphooptiini (see incompatible changes below), fixed the -morpho
+  distributions (CDF) with penalized cells, added an error for an
+  unknown -format (it was ignored, and nothing was written), fixed
+  -format svg(...) followed by other formats (error), sped up -morpho
+  when a seed has an outlier weight (e.g. a seed moved out of the
+  domain; the computation of all cells was slowed down, up to about
+  20x), sped up the periodic full computation of the -morpho
+  distributions (about 25x).
+- module -M: fixed $Fasets and 2D mesh for -elt hex, added a warning for
+  small elements due to a non-regularized tessellation, enabled
+  expressions in all -stat options, added custom node sets to -nset
+  (<label>:<expr>, min, max and closest), fixed -nset (non-default
+  values were ignored), enabled -interface discontinuous and cohesive
+  for periodic tessellations, fixed the labels of the cohesive element
+  sets (now the interface ids), fixed the interface scales of 2D and
+  periodic multiscale tessellations (-interface), fixed -interface for
+  multiscale tessellations with continuous scales (the mesh was torn
+  along continuous interfaces) and cohesive elements at the
+  discontinuous scales, made the Gmsh library mandatory (version 4.9 or
+  higher; the gmsh program is no longer used; -gmsh and -tmp are
+  obsolete), set the element sizes inside the faces and cells by a mesh
+  size map (increase from their boundaries at a rate set by -pl, up to
+  -[r]cl; 3D sizes calibrated to the map, within -mesh3dclreps; 3D
+  meshing algorithm netg no longer available), made the edge meshing
+  follow the same mesh size map (equidistribution, element number
+  rounded to the nearest; it was rounded up), changed the increase rate
+  of the mesh size map to ln (pl) (adjacent elements of length ratio
+  pl), calibrated the 2D sizes to the mesh size map too (added
+  -mesh2dclreps), made the 2D multimeshing size quality account for the
+  mesh size map, fixed the 3D element lengths (all edges; -statelt
+  length and lengths), fixed -statelt lengths in 2D, added -[r]clpoly and -pl{edge,face,poly},
+  fixed default in -[r]cl{poly,face,edge,ver} expressions (crash, and
+  wrong values with -rcl*), fixed -format inp for several mesh
+  dimensions (-dim): added the 0D elements, made the element numbering
+  contiguous (as in msh), fixed the surface element numbers, the node
+  order of 3-node line elements and the types of 1D and 2D elements of a
+  3D mesh, fixed memory leaks and a buffer overflow with -elt hex,
+  changed the node order of the $Fasets elements to the Gmsh order (it
+  was reversed; msh version bumped to 2.4, version 2.3 still read),
+  fixed the $Fasets elements of -elt hex -order 2 (they were of order
+  1), removed the renumbering of nodes and elements by partition after
+  partitioning (-part; left to FEPX), named the input files of -format
+  sim after the output file (e.g. n5-id1.msh, instead of
+  simulation.msh), fixed -loadmesh -part on a periodic mesh (crash),
+  kept the node sets of a mesh loaded without the tessellation
+  (-loadmesh; they were recreated from the mesh, with f* labels or, for
+  a periodic mesh, from the cell boundaries), with the missing edge and
+  vertex node sets obtained by intersection, and also updated with
+  -order and -sortnode, removed the node sets and fasets of the periodic
+  domain faces, edges and vertices (which were empty), fixed the node
+  set number of $NSets when a node set is not found, fixed -sortnode
+  for the fasets and cohesive elements (their nodes were not
+  renumbered), fixed the meshing of the faces of a curved cylinder
+  domain spanning more than 180 degrees (abort) and the back-projection
+  of the curved cylinder faces, added an error message for a face that
+  winds around the cylinder axis (too few cells), fixed a crash when the
+  meshing of a face failed, improved the meshing of the faces of a
+  curved sphere domain (conformal, stereographic projection, instead of
+  a gnomonic projection, which distorted large faces) and of the torus
+  faces (hourglass domain and torus cuts, conformal unrolling, instead of
+  a plane projection), fixed the Gmsh worker processes, which kept
+  running when neper ended during meshing (e.g. on an error), made the
+  element characteristic lengths of the faces increase from those of
+  their boundary nodes at the rate set by -pl (or -plface), up to the
+  face value, with the length scale factor of the curved face
+  projections taken into account (they were extended from the boundary
+  by Gmsh), which provides elements closer to the target size, fixed
+  the 1D meshing of the edges (position where the cl progressions from
+  the edge extremities meet, which could lead to a progression factor
+  lower than the requested one), projected the order-2 nodes of the
+  curved faces and edges onto the curved domain, removed the
+  transformations of the tesr input (use neper -T -transform), removed
+  partitioning based on a computer architecture (-part now takes only a
+  number of partitions, not necessarily a power of 2) and -partmethod
+  (libscotch is always used), fixed -elt hex on a regularized
+  tessellation in parallel (thread race: elements could be assigned to
+  the wrong cells and results were not reproducible), added $Topology
+  to the msh file of a discontinuous mesh (-interface), fixed -part with
+  a Scotch library built with 64-bit integers (compilation error and
+  buffer overflow), renamed -elttype hex, quad and quad9 (grid meshes)
+  to hexgrid, quadgrid and quad9grid (quad9 is deprecated), and made
+  -elttype hex and quad provide conformal meshes (by splitting the
+  tetrahedral and triangular elements, as Gmsh does, and, in 2D,
+  recombining them into quadrangular elements first), added the
+  hexahedral element facets to -format inp (surfaces), restricted
+  -elttype to its documented values, fixed -order 2 for 2D raster
+  tessellations (crash), removed -format msh4, made unknown -format
+  values fail (they were ignored, or crashed).
+- module -V: added highlighting colors hl1, hl2 and hl3, fixed the
+  *_shown variables of the -show* options (which depended on the option
+  order), fixed memory leaks and a double free with -showvox, fixed
+  -showmesh 1 also showing the tessellation, removed -colormode (dark
+  color mode), -povrayantialiasing (antialiasing is always used) and
+  -outdir (images are written relative to the current directory), fixed
+  the handling of POV-Ray and Asymptote (clear error if missing, error
+  if no file is generated, quoted paths in commands), fixed output file
+  names containing asy with -space pf and tree, documented ImageMagick,
+  fixed -space rodrigues for a triclinic input (abort; now handled as
+  -space pf) and an invalid free, enabled -crysym for -space rodrigues,
+  added nset==<nset_label> to the expressions of -shownode, added
+  -orisym (sample symmetry in orientation space), added the
+  visualization of cohesive elements (-show{eltco,elsetco},
+  -data{eltco,elsetco}{col,colscheme,trs,scale,scaletitle} and
+  -dataeltcoedge{col,rad}), made -space rodrigues use ImageMagick 7's
+  magick if it runs (convert, deprecated in ImageMagick 7, otherwise),
+  rendered the curved domain faces and edges curved (from a temporary
+  mesh, also for periodic tessellations), made the default scale of real
+  data 2%:98% (truncated distribution) and enabled percentiles (<p>%),
+  min and max in -data*scale, made the default radii of the 0D and 1D
+  elements equal to those of the vertices and edges (all mesh radii now
+  scale with the number of cells), added variable default to the radius
+  expressions (e.g. -dataedgerad "(domtype==1)?default*1.5:default"),
+  fixed data expressions containing ":" (e.g. ternary operators),
+  increased the default radius of the nodes (6 times), fixed -showelt1d
+  for hexahedral meshes (crash), fixed the generation of png files with
+  Asymptote 3.05 (named img.png.png), added -showdomain (domain
+  wireframe, default radius twice that of the edges) and
+  -datadomain{rad,col} (with radius variables default, edgerad,
+  elt1drad, elt2dedgerad and elt3dedgerad), made minor fixes.
+- module -S: removed reading of the old simulation directory format
+  (report file), made the writing of .sim atomic, added a check of .sim
+  against the directory content on loading (missing results removed,
+  unlisted complete results added), fixed the writing of the bcs, ori,
+  opt and phase inputs to .sim, removed the (non-functional) conversion
+  of FEPX raw result directories (post.report), fixed result removal
+  (auxiliary files and directory were left), fixed buffer overflows for
+  long paths, fixed merging of simulation directories (failed), fixed
+  the printed steps written to .sim, added error messages (with line
+  numbers) on reading an invalid .sim (instead of crashes), clarified
+  that -o only applies to merging, fixed memory leaks, fixed reading of
+  simulation.cfg (comments were not skipped, and the word phase in a
+  comment caused an abort), made the keywords and values of
+  simulation.cfg case-insensitive (e.g. crystal_type Fcc), fixed the
+  assignment of crystal_type to phases, added error messages for an
+  invalid simulation.cfg (instead of aborts, e.g. missing crystal_type),
+  added an error message for an unknown element result (blank result
+  files were written), added the <res>_eq element, elset and mesh
+  results (equivalent value of a symmetric tensor result, e.g.
+  stress_eq, as computed by FEPX), fixed the components of tensor
+  results not known by name (e.g. defrate11, abort), removed the .sim
+  file of simulation directories (the directory content is read
+  directly, and entity and result definitions are written to
+  results/<entity>/<entity>.def and results/*/<res>/<res>.expr;
+  definitions of a legacy .sim are migrated), identified the input files
+  by extension (they are not necessarily named simulation.*), added the
+  .sim extension to the output directory of merging (-o and default
+  name), fixed post-processing of steps without result files (e.g.
+  not printed by FEPX; abort or stale results, now skipped), set the
+  type of a result from its definition file or from a list of known
+  results (instead of its name and number of columns), replaced the
+  .expr file of a result by a .def file (*type and *expr sections),
+  added type= to file(), added errors on invalid result components (the
+  results were wrong) and on the operations that need the type of a
+  result (components, _eq, _prval, _prvect) when it is undefined,
+  removed -step (file() now sets the steps of a simulation directory
+  without results from the <basename>.step* files, only step 0 was
+  loaded), added errors on files of file() that are missing, have
+  steps different from those of the simulation directory or have a
+  number of lines different from the number of entity members, made
+  the orientation space be read only when an ODF is computed (-S aborted
+  on a triclinic simulation directory, for any result), made ODF-based
+  results unavailable for the triclinic crystal symmetry (error), made
+  a failure remove the directory of the unfinished result, made -orispace
+  only accept rodrigues(fr<N>) (error otherwise), read FEPX 3 simulation
+  directories (restart point restart/restart.rank<r>, kept on merging;
+  no warning on results/forces), added crystal_type bct (Laue group
+  4/mmm), applied the crystal type of simulation.cfg to a mesh of
+  default (triclinic) symmetry (odf and other results failed), added an
+  error message for an unavailable orientation space (only cubic and
+  hexagonal).
+- general: added developer tool neperfepx-asy (or nasy, or the asy
+  alias), removed the NLopt dependency (only the built-in subplex
+  algorithm is available, praxis, neldermead, cobyla, bobyqa and newuoa
+  are removed), removed undocumented -transform tesrtranslate, fixed
+  macOS compatibility, fixed exponent notation in expressions, added the
+  Orilib documentation to the developer documentation (doc-dev) and
+  revised it, added the orilib program (make orilib, written in the
+  build directory, which can run all the functions but those for memory
+  management and input / output and those that use structures),
+  described the use of Orilib in Neper, made the header of the orilib
+  program consistent with Neper's, fixed the orilib program (hang at the
+  end of the input, exit on invalid input data or unknown function),
+  removed OL_VERSION, removed the Orilib conversion routines between
+  Euler angles or Miller indices and the descriptors other than rotation
+  matrices and quaternions, removed the Orilib conversion routines
+  between rotation axis / angle pairs and homochoric vectors, removed
+  the Orilib conversion routines from Rodrigues vectors and homochoric
+  vectors into rotation axes or angles, added ol_q_homochoric and
+  ol_lng_g, removed the Orilib calculation routines on Rodrigues
+  vectors, Euler angles and Miller indices that only chained conversions
+  (combination, sample symmetry, misorientations and disorientations),
+  made ol_g_crysym, ol_q_crysym and ol_m_crysym report an unknown
+  crystal symmetry as an error (ol_g_crysym no longer returns a value),
+  made ol_m_mcrysym and ol_e_ecrysym return the rotation angle, merged
+  ol_g_m and ol_g_m_quality (and ol_q_m and ol_q_m_quality) into ol_g_m
+  (and ol_q_m), merged ol_set_mean and ol_set_mean_iter (and the _ref
+  versions) into ol_set_mean (and ol_set_mean_ref), with a maximum
+  number of iterations, fixed Orilib bugs (rotation matrix to homochoric
+  vector, orientation set filtering, rotation angles of quaternions of
+  negative first component, disorientations for all Laue groups,
+  preferred Miller indices and Euler angles, logarithmic GND densities,
+  energy minimization of GND densities (edge and screw weights), initial
+  spread of anisotropic filtering, spread of uniform orientations in
+  orientation set expansion, label 100_x3, symmetrization of orientation
+  sets, return values of the anisotropic filters, ids of disorientation
+  sets, orientation spreads (theta, theta3) in set operations (e.g.,
+  spreads assigned to wrong orientations in -T), and others), made
+  Orilib's conversions into Euler angles return angles in the standard
+  ranges (in particular, Euler angles written by Neper are no longer
+  negative), removed the duplicate functions ol_lauegroup_qty and
+  ol_set_sample (and renamed ol_set_sample_nb to ol_set_subset_qty),
+  removed the Orilib orientation set and map file functions
+  (ol_set_fscanf, ol_set_fprintf, ol_set_fscanf_sample*, ol_map_fscanf,
+  ol_map_fprintf and the HKL Channel 5 functions), removed the colors
+  (and PNG output, and the libpng dependency) and the geometrical
+  transformation of Orilib orientation maps, fixed a buffer overflow
+  with -statnode col_stdtriangle, merged the rotation axis and angle
+  into a single rtheta array in Orilib, made Orilib's free functions
+  take addresses and set them to NULL, updated Bash completion to all
+  options, fixed memory leaks (found with AddressSanitizer) and a thread
+  race in mesh expressions, fixed bugs in the ut library (expressions
+  with a function of a single variable, such as exp(x), which failed,
+  expressions which could hang, the reading of the current line of a
+  file, the plane of cylinderproj faces in -M, Ctrl+C handling, Linf
+  means, buffer overflows, memory leaks and others), made orilib.h (and
+  ut.h) usable without first including stdio.h, documented the orilib
+  program in the user documentation, fixed and cleaned up the user
+  documentation (introduction, modules -T, -M, -S and -V, file formats,
+  expressions and keys, tutorials (removed the Ubuntu installation
+  tutorial, flagged the ODF tutorial as out of date): removed options
+  and values, fixed defaults, examples and sample outputs; showed all
+  cross-references by their section titles; restored the 5.0.0 entry of
+  VERSIONS), moved the examples of the module documentation to the
+  tutorials (added tutorials on multiscale tessellations, cell groups,
+  mesh options, mesh visualization and simulation results, and sections
+  on cut domains, global morphological properties and uniform
+  orientation sampling), added examples of the website's Features pages
+  to the tutorials (added tutorials on periodic tessellations and
+  remeshing, and sections on spherical domains, drilled plates, raster
+  tessellations, regularization statistics, size-dependent numbers of
+  subcells, 3-scale tessellations and groups from multimodal size
+  distributions), simplified the sections of the module documentation
+  (removed Arguments and References) and moved the citations to the
+  introduction, moved the -domain and -transform cut examples to a new
+  tutorial (Defining the Domain and Cutting, with an hourglass example),
+  sorted the tutorials by module and added the modules to their titles,
+  merged the simple model and mesh options tutorials (now Meshing a
+  Tessellation), removed the remeshing tutorial and the meshing section
+  of the periodic tessellation tutorial, moved the meshing section of
+  the cell groups tutorial to its introduction, removed gg from the
+  columnar and bamboo examples of the statistical properties tutorial,
+  used 500 cells in the periodic tessellation tutorial, started all
+  tutorials with a note on the options they present, illustrated uniform
+  orientation sampling in orientation space with equal-volume cells,
+  fixed the orientation space kd-trees written at installation (the
+  crystal symmetry was ignored, which led to wrong ODFs), added an error
+  for a tree file that does not match its orientation space, merged the
+  first two sections of the meshing tutorial and added -order and -nset
+  to it, removed the orientation space tutorial, moved the orientation
+  color key tutorial before the orientation trajectories tutorial,
+  expanded the mesh visualization tutorial, added the orientation space
+  visualization tutorial, moved the polycrystal image meshing tutorial
+  after the pole figure tutorial, set the copyright of the documentation
+  to Romain Quey, CNRS, switched the developer documentation (doc-dev)
+  to the website's theme, took its version from doc/conf.py and built it
+  in CI, fixed the warnings of the documentation and developer
+  documentation builds (the archive of the orientation trajectories
+  tutorial is now written by the build), fixed the location of the
+  data files, now looked for in <prefix>/share/neper, where <prefix> is
+  the installation prefix (it was always /usr/local), added the use of
+  the system GSL if available (the built-in GSL is used otherwise, or
+  with FORCE_BUILTIN_GSL), made the orientation-space search trees
+  missing from the data files generated at their first use and saved
+  in $XDG_CACHE_HOME/neper (default ~/.cache/neper) for the next runs
+  (they were generated at every run), added a conda recipe
+  (conda/recipe) and the make conda target (build and test of the
+  conda package), documented the installation with conda (including
+  that of conda, with Miniforge), fixed the documentation build without
+  an installed sphinx_rtd_theme (e.g. with Sphinx 8), made the data files
+  looked for first next to the neper binary (../share/neper), so that an
+  installed binary uses its own data files, added an error message for
+  missing data files (neper --data printed (null)), fixed a crash with
+  HOME unset, removed the generation of the orientation-space trees at
+  installation (make install and make userinstall; they are generated
+  at their first use; CMAKE_INSTALL_TYPE removed), fixed make conda
+  without rattler-build (shell error), removed the direct link to a
+  CBLAS library with a shared system GSL (which is linked to its own),
+  pinned Gmsh to its minor version in the conda recipe, removed the
+  unused copy of muparser (version 2.2.5) of the ut library, made the
+  orientation-space trees read only from the cache directory (the trees
+  of a former installation, which were wrong up to 5.0.0, are ignored,
+  and removed by make install and make userinstall), documented the
+  installation of Neper and FEPX together, with conda, fixed the error
+  messages lost when the output is redirected (e.g., to a file; as for
+  an unknown option), added a Python interface (package neper, in
+  python/, whose functions T, M, S and V run the modules, and which
+  reads tess, tesr, msh, odf, simulation and statistics files into NumPy
+  arrays, writes simulation results, converts orientations, runs the
+  Orilib functions (neper.orilib) and passes arrays as data files, with
+  a tutorial), built and installed the orilib program with neper, added
+  ORILIB_FORMAT (format of the real values, e.g. full precision) and
+  ORILIB_ENDMARK (end of the outputs in loop mode) to the orilib
+  program, fixed the orilib program in loop mode (endless loop for the
+  commands reading integers or reals, e.g.
+  ol_srand_e) and ol_hpole_vect (input never read), fixed a crash of
+  ol_pole_polecrysym, added error messages for unknown crystal
+  symmetries in Orilib, made the Orilib misorientation functions that
+  returned 1 void, made ol_vect_crysym_all record the vectors from
+  index 0 (instead of 1), made ol_vect_fscanf and ol_p_fscanf return 0
+  on failure (instead of -1), rewrote the orilib program from a table
+  of the functions (a third of the code): unified the formats of the
+  outputs, no longer wrote the returned values (e.g. the index of
+  ol_q_q_disori_fr_rad), reported failures (unknown label, etc.) as
+  errors, added command signatures (inputs and outputs, used by
+  neper.orilib), fixed ol_g_g_gmisori_orthotropic (ran
+  ol_g_g_gdisori_orthotropic), the projection-to-vector commands (e.g.
+  ol_stproj_vect: wrong input and 2 output values instead of 3),
+  ol_set_filter and ol_set_filter_iter (wrote the input set), presented
+  the Python interface in the introduction of the documentation, made
+  minor fixes, used the default radii (variable default) in the
+  tutorials and updated their images, set the version only at a release
+  (5.0.1-dev between releases, as FEPX), with the git hash and the
+  commit date of the sources in neper --version and the header (e.g.
+  5.0.1-dev (git 364c76cb, 2026-11-13); a release shows its version
+  alone, e.g. 5.0.1, and main between releases the number of commits
+  since the release, e.g. 5.0.1+3 (git 9f8e7d6c, 2026-11-20)), moved
+  the developer documentation from doc-dev to dev (it is no longer
+  released), used -showdomain in the tutorials (and updated their
+  images), aligned the structure of the user documentation with FEPX's
+  (installation on its own page, heading levels, labels), added the
+  Neper/FEPX paper to the reference papers, updated the GitHub links to
+  neperfepx/neper, made the documentation builds fail on warnings,
+  switched the user documentation to the theme of the websites and of
+  FEPX's documentation (pydata-sphinx-theme, instead of a bundled
+  sphinx_rtd_theme), added an introduction to the tutorials, added a
+  quick start (doc/quickstart.rst), titled the documentation as the
+  website (Polycrystal Generation, Meshing and Post-Processing), used
+  the logo and favicon of the website (transparent background),
+  rewrote the README (as FEPX's).
+
+* Incompatible changes in -T:
+  - seed weights are now the actual Laguerre weights, w (power distance:
+    d^2 - w), instead of their square roots.  Tessellations are unchanged,
+    but the values are not.  Bumped version numbers to 3.6 for tess and
+    2.3 for tesr.  Older files can still be read, and their weights are
+    converted; new files cannot be read by former versions.
+  - -morphooptiini weight:radeq (or avradeq, etc.) must be replaced by
+    weight:radeq^2 (or avradeq^2, etc.).  THE FORMER SYNTAX STILL RUNS, WITH
+    NO WARNING, BUT NOW SETS w = radeq and so a different initial solution.
+    Custom weight values (real values, data files, multiscale cell files)
+    must be squared too.
+  - -morphooptiboundlower/upper w:, and the w keys of -morphooptilogvar and
+    -statcell/-statseed, now apply to w, while -morphooptideltamax applies
+    to sqrt(w), the optimization variable.
+  - -orioptiini now uses ":" instead of "=", as -morphooptiini (e.g.
+    weight:file(<file>) instead of weight=<file>).  The former syntax is
+    now an error.
 
 New in 5.0.0 (22 Jun 2026):
 - module -T: improved import and regularization of tessellations of non-cubical

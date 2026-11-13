@@ -15,6 +15,9 @@ extern void neut_mesh_slice (struct NODES Nodes, struct MESH Mesh, struct DATA
     **pN, struct MESH ***pM, struct DATA **pData, struct DATA ****pSMeshData, int
     ***pEltNewOld);
 
+extern void neut_mesh_slice_free (int SQty, struct NODES **pN, struct MESH ***pM,
+    struct DATA **pSNodeData, struct DATA ****pSMeshData, int ***pEltNewOld);
+
 #endif /* NEUT_MESH_SLICE_H */
 
 #ifdef __cplusplus

@@ -29,6 +29,7 @@ nem_order_dim_record (struct MESH *pMesh, int *nodes, int node_o2)
 
   ut_free_1d_int (&pos);
   ut_free_1d_int (&comelts);
+  ut_free_2d_int (&sec, nodeqty_o1);
 
   return;
 }
@@ -127,6 +128,94 @@ nem_order_periodic_faces (struct TESS Tess, struct NODES *pNodes,
   ut_free_2d_int (&fir, nodeqty_tot);
   ut_free_1d_int (&node_slave);
   ut_free_1d_int (&shift);
+
+  return;
+}
+
+// The order-2 nodes are tied by periodicity from the order-1 nodes.  The
+// periodic images of an order-2 node are the order-2 nodes of the edges
+// obtained by shifting the order-1 nodes of its edge within their
+// periodic groups.  An order-2 node is tied to the one of the edge whose
+// first node is a periodic master, or else to the one of lowest id.  The
+// first node of an edge is the one of lower periodic master, so that the
+// choice is the same for all periodic images.
+void
+nem_order_periodic_dup (struct NODES *pNodes, struct MESH *Mesh)
+{
+  int i, j, k, l, m, node, best, cand, nodeqty_tot, nodeqty_o1, s1, s2;
+  int nodes[2], masters[2], shift[3], bestshift[3];
+  int **fir = NULL;
+  int *done = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+
+  for (m = 1; m <= 4; m++)
+  {
+    if (Mesh[m].EltQty == 0 || Mesh[m].EltOrder != 2)
+      continue;
+
+    neut_elt_orderarrays (Mesh[m].EltType, Mesh[m].Dimension, &fir,
+                          &nodeqty_tot, NULL, &nodeqty_o1);
+
+    for (i = 1; i <= Mesh[m].EltQty; i++)
+      for (k = nodeqty_o1; k < nodeqty_tot; k++)
+      {
+        node = Mesh[m].EltNodes[i][k];
+        if (done[node])
+          continue;
+        done[node] = 1;
+
+        for (l = 0; l < 2; l++)
+        {
+          nodes[l] = Mesh[m].EltNodes[i][fir[k][l]];
+          masters[l] = (*pNodes).PerNodeMaster[nodes[l]] ? (*pNodes).PerNodeMaster[nodes[l]]
+                                                         : nodes[l];
+        }
+
+        if (masters[0] > masters[1])
+        {
+          ut_array_1d_int_reverseelts (nodes, 2);
+          ut_array_1d_int_reverseelts (masters, 2);
+        }
+
+        best = -1;
+        for (j = 0; j <= (*pNodes).PerNodeSlaveQty[masters[0]]; j++)
+        {
+          s1 = (j == 0) ? masters[0] : (*pNodes).PerNodeSlaveNb[masters[0]][j];
+
+          // shift from nodes[0] to s1
+          ut_array_1d_int_zero (shift, 3);
+          if (j > 0)
+            ut_array_1d_int_memcpy ((*pNodes).PerNodeShift[s1], 3, shift);
+          if ((*pNodes).PerNodeMaster[nodes[0]])
+            ut_array_1d_int_sub ((*pNodes).PerNodeShift[nodes[0]], shift, 3, shift);
+
+          if (neut_nodes_node_shift_pernode (*pNodes, nodes[1], shift, &s2) != 0)
+            continue;
+
+          nem_order_periodic_dup_order2node (Mesh, s1, s2, &cand);
+          if (cand == -1)
+            continue;
+
+          if (j == 0 || best == -1 || cand < best)
+          {
+            best = cand;
+            ut_array_1d_int_memcpy (shift, 3, bestshift);
+          }
+
+          if (j == 0)
+            break;
+        }
+
+        if (best != -1 && best != node)
+        {
+          ut_array_1d_int_scale (bestshift, 3, -1);
+          neut_nodes_markasslave (pNodes, node, best, bestshift);
+        }
+      }
+
+    ut_free_2d_int (&fir, nodeqty_tot);
+  }
+
+  ut_free_1d_int (&done);
 
   return;
 }

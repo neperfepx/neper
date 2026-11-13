@@ -1,15 +1,17 @@
 .. _orientation_trajectories:
 
-Plotting Orientation Trajectories
-=================================
+Plotting Orientation Trajectories (-S, -V)
+==========================================
 
-.. important:: Read first: :ref:`pole_figure`.
+.. note::
+
+  This tutorial presents the :option:`-step` and :option:`-space` options of the :ref:`neper_v`.  Read first: :ref:`pole_figure`.
 
 Orientation trajectories described in a :ref:`simulation_directory` (whether they apply to (raster) tessellation cells or mesh elsets) can be plotted on a pole figure or an inverse pole figure, using the :ref:`neper_v` and its :option:`-space` :data:`[i]pf` options.  This is done by plotting *several simulation steps* on the same figure, using :option:`-step`.
 
 .. note:: In principle, it is possible to plot orientation trajectories from a list of (unrelated) orientations loaded from a file; however, proper visualization generally requires the orientation *history* (through *steps*), hence the recommended use of a :ref:`simulation_directory`.
 
-In the following, the results of a small FEPX simulation is used (:download:`n20.sim.tgz <orientation_trajectories/n20.sim.tgz>`, derived from `this FEPX example <https://fepx.info/doc/examples.html#uniaxial-control-examples-1-uniaxial>`_), which corresponds to the deformation to 10% (engineering) tensile strain of a 20-grain polycrystal :
+In the following, the results of a small FEPX simulation are used (:download:`n20.sim.tgz <orientation_trajectories/n20.sim.tgz>`, derived from `this FEPX example <https://fepx.info/doc/examples.html#uniaxial-control-examples-1-uniaxial>`_), which corresponds to the deformation to 10% (engineering) tensile strain of a 20-grain polycrystal:
 
 .. code-block:: console
 
@@ -18,10 +20,10 @@ In the following, the results of a small FEPX simulation is used (:download:`n20
   ========================    N   e   p   e   r    =======================
   Info   : A software package for polycrystal generation and meshing.
   Info   : Version 4.5.1
-  Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
+  Info   : Built with: gsl|muparser|opengjk|openmp|libscotch (full)
   Info   : Running on 8 threads.
   Info   : <https://neper.info>
-  Info   : Copyright (C) 2003-2022, and GNU GPL'd, by Romain Quey.
+  Info   : Copyright (C) 2003-2022, and GNU GPL'd, by Romain Quey, CNRS.
   Info   : Loading initialization file `/home/rquey/.neperrc'...
   Info   : ---------------------------------------------------------------
   Info   : MODULE  -S loaded with arguments:
@@ -52,7 +54,7 @@ The polycrystal and its orientations on an IPF can be visualized as follows (the
 
 .. image:: orientation_trajectories/img3.png
 
-To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :option:`--rcfile`)::
+To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :data:`--rcfile`)::
 
   neper -V -imagesize 500:500
 
@@ -74,7 +76,7 @@ The orientations at successive steps are plotted *on top of each other*, using t
 Configuring the Symbol Plot
 ---------------------------
 
-The way data are represented can be modified at large, as described in :ref:`pole_figure` (using :data:`elset` instead of :data:`cell`, since the results apply to a mesh).  The :data:`step` variable can also be used to plot orientations differently for each step.  For example, to plot the last orientations using a larger symbol than the others (the "rotation path"):
+The way data are represented can be modified extensively, as described in :ref:`pole_figure` (using :data:`elset` instead of :data:`cell`, since the results apply to a mesh).  The :data:`step` variable can also be used to plot orientations differently for each step.  For example, to plot the last orientations using a larger symbol than the others (the "rotation path"):
 
 .. code-block:: console
 

@@ -156,7 +156,7 @@ extern "C"
 
   extern void neut_tesr_unindex (struct TESR *pTesr);
 
-  extern void neut_tesr_cell_orirotate (struct TESR *pTesr, int cell, double *r, double theta, char *csys);
+  extern void neut_tesr_cell_orirotate (struct TESR *pTesr, int cell, double *rtheta, char *csys);
 
   extern int neut_tesr_cellexpr_merge (struct TESR *pTesr, char *cellexpr);
 

@@ -16,12 +16,17 @@
 
 extern void nem_order_pre (struct IN_M In, struct MESH *Mesh, int *domesh);
 extern void nem_order_dim (struct IN_M In, struct NODES *pNodes, struct MESH *pMeshU, struct MESH *pMesh);
+extern void nem_order_curved (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh);
 extern void nem_order_periodic (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh);
 extern void nem_order_periodic_edges (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh);
 extern void nem_order_periodic_faces (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh);
-extern void nem_order_post (struct IN_M In, int NodeQty_before, struct NODES *pNodes);
+extern void nem_order_periodic_dup (struct NODES *pNodes, struct MESH *Mesh);
+extern void nem_order_periodic_dup_order2node (struct MESH *Mesh, int node1, int node2,
+                                               int *pnode);
 extern void nem_order_newnode (struct NODES *pNodes, struct MESH *pMesh, int *nodes);
 extern void nem_order_dim_record (struct MESH *pMesh, int *nodes, int node_o2);
+extern void nem_order_1_elts (struct MESH *pMesh);
+extern void nem_order_1_nodes (struct NODES *pNodes, struct MESH *Mesh, struct NSET *NSet);
 extern void nem_order_str_per_3d (int NodeQty_prev, struct MESHPARA MeshPara, struct NODES *pNodes,
                    struct MESH *Mesh);
 extern void nem_order_str_per_2d (int NodeQty_prev, struct MESHPARA MeshPara, struct NODES *pNodes,

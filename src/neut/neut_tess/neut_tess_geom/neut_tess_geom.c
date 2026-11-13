@@ -325,6 +325,10 @@ neut_tess_volume (struct TESS Tess, double *pvol)
   int i;
   double tmp;
 
+  // the domain is the faceted hull cut by the primitives
+  if (Tess.DomPrimQty > 0)
+    return neut_tess_domprim_volume (Tess, pvol);
+
   (*pvol) = 0;
   for (i = 1; i <= Tess.PolyQty; i++)
   {
@@ -333,6 +337,96 @@ neut_tess_volume (struct TESS Tess, double *pvol)
   }
 
   return 0;
+}
+
+// neut_tess_domprim_volume computes the volume of a domain defined as a
+// faceted hull cut by a primitive, which must be a sphere (spherei), a
+// cylinder (cylinderi) whose ends are hull faces or periodic, or a torus (torus) whose
+// inner part bounds the domain between two hull faces normal to its axis
+// (hourglass).
+int
+neut_tess_domprim_volume (struct TESS Tess, double *pvol)
+{
+  int i;
+  double val, min = DBL_MAX, max = -DBL_MAX, R, a, u, F[2];
+  struct PRIM Prim;
+
+  if (Tess.DomPrimQty != 1)
+    ut_print_neperbug ();
+
+  Prim = Tess.DomPrim[0];
+
+  if (!strcmp (Prim.Type, "spherei"))
+    (*pvol) = 4. / 3 * M_PI * pow (Prim.Rad[0], 3);
+
+  else if (!strcmp (Prim.Type, "cylinderi"))
+  {
+    // periodic along the axis: the cells extend beyond the ends
+    for (i = 0; i < 3; i++)
+      if (Tess.Type && !strcmp (Tess.Type, "periodic") && Tess.Periodic[i]
+          && fabs (fabs (Prim.Dir[i]) - 1) < 1e-6)
+      {
+        min = 0;
+        max = Tess.PeriodicDist[i];
+      }
+
+    if (max < min)
+      for (i = 1; i <= Tess.VerQty; i++)
+      {
+        val = ut_array_1d_scalprod (Tess.VerCoo[i], Prim.Dir, 3);
+        min = ut_num_min (min, val);
+        max = ut_num_max (max, val);
+      }
+
+    (*pvol) = M_PI * pow (Prim.Rad[0], 2) * (max - min);
+  }
+
+  // integral of pi r(u)^2, with r(u) = R - sqrt (a^2 - u^2) and u the
+  // position along the axis, relative to the centre
+  else if (!strcmp (Prim.Type, "torus"))
+  {
+    R = Prim.Rad[0];
+    a = Prim.Rad[1];
+
+    for (i = 1; i <= Tess.VerQty; i++)
+    {
+      val = ut_array_1d_scalprod (Tess.VerCoo[i], Prim.Dir, 3)
+          - ut_array_1d_scalprod (Prim.Base, Prim.Dir, 3);
+      min = ut_num_min (min, val);
+      max = ut_num_max (max, val);
+    }
+
+    for (i = 0; i < 2; i++)
+    {
+      u = (i == 0) ? min : max;
+      F[i] = (R * R + a * a) * u - pow (u, 3) / 3
+           - R * (u * sqrt (a * a - u * u) + a * a * asin (u / a));
+    }
+
+    (*pvol) = M_PI * (F[1] - F[0]);
+  }
+
+  else
+    ut_print_neperbug ();
+
+  return 0;
+}
+
+// neut_tess_point_indomprims returns 1 if a point is on the positive side
+// of all domain primitives (see neut_prim_point_side), and 0 otherwise.
+int
+neut_tess_point_indomprims (struct TESS Tess, double *coo)
+{
+  int i, side;
+
+  for (i = 0; i < Tess.DomPrimQty; i++)
+  {
+    neut_prim_point_side (Tess.DomPrim[i], coo, &side);
+    if (side == -1)
+      return 0;
+  }
+
+  return 1;
 }
 
 int
@@ -602,24 +696,53 @@ neut_tess_poly_anisofact (struct TESS Tess, int poly, double *pval)
   ut_free_1d (&eval);
 }
 
+// in-plane coordinates of point x in the frame (o; e1, e2)
+static void
+neut_tess_face_aniso_proj (double *x, double *o, double *e1, double *e2,
+                           double *q)
+{
+  int j;
+
+  q[0] = 0;
+  q[1] = 0;
+  for (j = 0; j < 3; j++)
+  {
+    q[0] += (x[j] - o[j]) * e1[j];
+    q[1] += (x[j] - o[j]) * e2[j];
+  }
+
+  return;
+}
+
 void
 neut_tess_face_aniso (struct TESS Tess, int face, double **evect, double *eval)
 {
-  int i, j, k, s, ver;
-  double coef, At, A;
+  int i, j, k, s, ver, status, legacy;
+  int verqty = Tess.FaceVerQty[face];
+  double coef, At, A, norm;
   double **p = NULL;
   double *p0 = NULL;
   double *p1 = NULL;
   double *p2 = NULL;
+  double *x0 = NULL, *x1 = NULL, *x2 = NULL;
+  double *q0 = NULL, *q1 = NULL, *q2 = NULL;
+  double *n = NULL, *e1 = NULL, *e2 = NULL;
+  double *ev = NULL, **evec = NULL;
   double *u = NULL, *v = NULL, *uxv = NULL;
   double *bary = NULL, *M1 = NULL, *mu = NULL;
   double **sum = NULL, **M2 = NULL;
   double **C = NULL;
 
   p = ut_alloc_2d (3, Tess.Dim);
-  p0 = ut_alloc_1d (Tess.Dim);
-  p1 = ut_alloc_1d (Tess.Dim);
-  p2 = ut_alloc_1d (Tess.Dim);
+  p0 = ut_alloc_1d (3);         // neut_tess_face_centre writes 3 coordinates
+  q0 = ut_alloc_1d (2);
+  q1 = ut_alloc_1d (2);
+  q2 = ut_alloc_1d (2);
+  n = ut_alloc_1d (3);
+  e1 = ut_alloc_1d (3);
+  e2 = ut_alloc_1d (3);
+  ev = ut_alloc_1d (Tess.Dim);  // local eigensystem (eval, evect may be NULL)
+  evec = ut_alloc_2d (Tess.Dim, Tess.Dim);
   u = ut_alloc_1d (3);
   v = ut_alloc_1d (3);
   uxv = ut_alloc_1d (3);
@@ -630,37 +753,120 @@ neut_tess_face_aniso (struct TESS Tess, int face, double **evect, double *eval)
   M2 = ut_alloc_2d (Tess.Dim, Tess.Dim);
   C = ut_alloc_2d (Tess.Dim, Tess.Dim);
 
+  status = (verqty >= 3) ? 0 : -1;
+
   if (Tess.FaceState[face] > 0)
   {
     if (Tess.FacePt[face] == 0)
-      ut_array_1d_memcpy (Tess.FacePtCoo[face], Tess.Dim, p0);
+      ut_array_1d_memcpy (Tess.FacePtCoo[face], 3, p0);
     else if (Tess.FacePt[face] > 0)
     {
       ver = Tess.FaceVerNb[face][Tess.FacePt[face]];
-      ut_array_1d_memcpy (Tess.VerCoo[ver], Tess.Dim, p0);
+      ut_array_1d_memcpy (Tess.VerCoo[ver], 3, p0);
     }
-    else
+    else if (!status)
       neut_tess_face_centre (Tess, face, p0);
   }
-  else if (Tess.FaceState[face] == 0)
+  else if (Tess.FaceState[face] == 0 && !status)
       neut_tess_face_centre (Tess, face, p0);
 
+  // 2D tessellation: the moments are computed in in-plane coordinates.
+  // If the vertex z coordinates are exactly constant, the in-plane
+  // coordinates are (x, y), as historically.  Otherwise (e.g., slice of
+  // a 3D tessellation), the vertices are projected into an orthonormal
+  // frame (p0; e1, e2) of the face plane, of normal given by the Newell
+  // vector of the ordered face vertices.
+  legacy = 1;
+  if (!status && Tess.Dim == 2)
+  {
+    x0 = Tess.VerCoo[Tess.FaceVerNb[face][1]];
+    for (i = 2; i <= verqty; i++)
+      if (Tess.VerCoo[Tess.FaceVerNb[face][i]][2] != x0[2])
+      {
+        legacy = 0;
+        break;
+      }
+
+    if (!legacy)
+    {
+      for (i = 2; i < verqty; i++)
+      {
+        ut_array_1d_sub (x0, Tess.VerCoo[Tess.FaceVerNb[face][i]], 3, u);
+        ut_array_1d_sub (x0, Tess.VerCoo[Tess.FaceVerNb[face][i + 1]], 3, v);
+        ut_vector_vectprod (u, v, uxv);
+        ut_array_1d_add (n, uxv, 3, n);
+      }
+
+      // u and v are reused below with Tess.Dim (2) components only: their
+      // third components must not keep the values set here
+      ut_array_1d_zero (u, 3);
+      ut_array_1d_zero (v, 3);
+
+      norm = ut_vector_norm (n);
+      if (!(norm > 0) || !isfinite (norm))
+        status = -1;
+      else
+      {
+        ut_array_1d_scale (n, 3, 1 / norm);
+
+        // e1 = normalized (a x n), a being the axis least aligned with n
+        k = 0;
+        for (j = 1; j < 3; j++)
+          if (fabs (n[j]) < fabs (n[k]))
+            k = j;
+        ut_array_1d_zero (e2, 3);
+        e2[k] = 1;
+        ut_vector_vectprod (e2, n, e1);
+        ut_array_1d_scale (e1, 3, 1 / ut_vector_norm (e1));
+        ut_vector_vectprod (n, e1, e2);
+      }
+    }
+
+    if (legacy)
+      ut_array_1d_memcpy (p0, 2, q0);
+    else
+      neut_tess_face_aniso_proj (p0, p0, e1, e2, q0);
+  }
+
   A = 0;
-  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
+  for (i = 1; !status && i <= verqty; i++)
   {
     p1 = Tess.VerCoo[Tess.FaceVerNb[face][i]];
-    p2 = Tess.VerCoo[Tess.FaceVerNb[face][ut_array_rotpos (1, Tess.FaceVerQty[face], i, 1)]];
+    p2 = Tess.VerCoo[Tess.FaceVerNb[face][ut_array_rotpos (1, verqty, i, 1)]];
 
-    ut_array_1d_sub (p0, p1, Tess.Dim, u);
-    ut_array_1d_sub (p0, p2, Tess.Dim, v);
+    if (Tess.Dim == 2)
+    {
+      if (legacy)
+      {
+        ut_array_1d_memcpy (p1, 2, q1);
+        ut_array_1d_memcpy (p2, 2, q2);
+      }
+      else
+      {
+        neut_tess_face_aniso_proj (p1, p0, e1, e2, q1);
+        neut_tess_face_aniso_proj (p2, p0, e1, e2, q2);
+      }
+      x0 = q0;
+      x1 = q1;
+      x2 = q2;
+    }
+    else
+    {
+      x0 = p0;
+      x1 = p1;
+      x2 = p2;
+    }
+
+    ut_array_1d_sub (x0, x1, Tess.Dim, u);
+    ut_array_1d_sub (x0, x2, Tess.Dim, v);
     ut_vector_vectprod (u, v, uxv);
     At = ut_vector_norm (uxv) * 0.5;
 
     for (j = 0; j < Tess.Dim; j++)
     {
-      p[0][j] = p0[j];
-      p[1][j] = p1[j];
-      p[2][j] = p2[j];
+      p[0][j] = x0[j];
+      p[1][j] = x1[j];
+      p[2][j] = x2[j];
     }
 
     ut_array_1d_zero (bary, Tess.Dim);
@@ -687,18 +893,51 @@ neut_tess_face_aniso (struct TESS Tess, int face, double **evect, double *eval)
     A += At;
   }
 
-  ut_array_1d_memcpy (M1, Tess.Dim, mu);
-  ut_array_1d_scale (mu, Tess.Dim, 1 / A);
+  if (!status && (!(A > 0) || !isfinite (A)))
+    status = -1;
 
-  for (j = 0; j < Tess.Dim; j++)
-    for (k = 0; k < Tess.Dim; k++)
-      C[j][k] = M2[j][k] / A - mu[j] * mu[k];
+  if (!status)
+  {
+    ut_array_1d_memcpy (M1, Tess.Dim, mu);
+    ut_array_1d_scale (mu, Tess.Dim, 1 / A);
 
-  ut_mat_eigen (C, Tess.Dim, eval, evect);
+    for (j = 0; j < Tess.Dim; j++)
+      for (k = 0; k < Tess.Dim; k++)
+        C[j][k] = M2[j][k] / A - mu[j] * mu[k];
 
-  ut_mat_sym (C, Tess.Dim, C);
+    ut_mat_eigen (C, Tess.Dim, ev, evec);
 
+    ut_mat_sym (C, Tess.Dim, C);
+
+    for (j = 0; j < Tess.Dim; j++)
+      if (!isfinite (ev[j]))
+        status = -1;
+  }
+
+  // invalid face: eigensystem of the zero tensor
+  if (status)
+  {
+    ut_array_1d_zero (ev, Tess.Dim);
+    ut_array_2d_zero (evec, Tess.Dim, Tess.Dim);
+    for (j = 0; j < Tess.Dim; j++)
+      evec[j][j] = 1;
+  }
+
+  if (eval)
+    ut_array_1d_memcpy (ev, Tess.Dim, eval);
+  if (evect)
+    ut_array_2d_memcpy (evec, Tess.Dim, Tess.Dim, evect);
+
+  ut_free_2d (&p, 3);
+  ut_free_1d (&ev);
+  ut_free_2d (&evec, Tess.Dim);
   ut_free_1d (&p0);
+  ut_free_1d (&q0);
+  ut_free_1d (&q1);
+  ut_free_1d (&q2);
+  ut_free_1d (&n);
+  ut_free_1d (&e1);
+  ut_free_1d (&e2);
   ut_free_1d (&u);
   ut_free_1d (&v);
   ut_free_1d (&uxv);
@@ -726,10 +965,16 @@ neut_tess_face_anisofact (struct TESS Tess, int face, double *pval)
   eval_min = ut_array_1d_min (eval, 2);
   //tmp = exp (sum_log / 2);
 
-  (*pval) = sqrt (eval_max / eval_min);
+  // invalid face (degenerate or non-finite eigenvalues): -1
+  if (!isfinite (eval[0]) || !isfinite (eval[1]) || !(eval_min > 0))
+    (*pval) = -1;
+  else
+  {
+    (*pval) = sqrt (eval_max / eval_min);
 
-  if (isinf (*pval))
-    *pval = -1;
+    if (!isfinite (*pval))
+      *pval = -1;
+  }
 
   ut_free_2d (&evect, Tess.Dim);
   ut_free_1d (&eval);
@@ -1250,9 +1495,9 @@ neut_tess_bboxcentre (struct TESS Tess, double *centre)
 }
 
 int
-neut_tess_point_inpoly_std (struct TESS Tess, double *coo, int nb)
+neut_tess_point_inpoly_std (struct TESS Tess, double *coo, int poly)
 {
-  int i, j, percooqty, status, status2;
+  int i, j, face, domface, percooqty, status, status2, intorus, side;
   double **percoos = NULL;
 
   neut_tess_coo_percoos (Tess, coo, &percoos, &percooqty);
@@ -1262,15 +1507,47 @@ neut_tess_point_inpoly_std (struct TESS Tess, double *coo, int nb)
   {
     status2 = 1;
 
-    for (j = 1; j <= Tess.PolyFaceQty[nb]; j++)
+    for (j = 1; j <= Tess.PolyFaceQty[poly]; j++)
     {
-      if (Tess.PolyFaceOri[nb][j] *
-          ut_space_point_plane_side_tol (percoos[i] - 1,
-                                         Tess.FaceEq[Tess.PolyFaceNb[nb][j]],
-                                         1e-12) > 0)
+      face = Tess.PolyFaceNb[poly][j];
+      domface = Tess.FaceDom[face][1];
+
+      if (Tess.FaceDom[face][0] != 2
+      || (Tess.FaceDom[face][0] == 2 && !strcmp (Tess.DomFaceType[domface], "plane")))
       {
-        status2 = 0;
-        break;
+        if (Tess.PolyFaceOri[poly][j] *
+            ut_space_point_plane_side_tol (percoos[i] - 1,
+                                           Tess.FaceEq[Tess.PolyFaceNb[poly][j]],
+                                           1e-12) > 0)
+        {
+          status2 = 0;
+          break;
+        }
+      }
+
+      else if (!strcmp (Tess.DomFaceType[domface], "torus"))
+      {
+        intorus = ut_space_point_intorus (percoos[i], Tess.DomFaceParms[domface],
+                                                      Tess.DomFaceParms[domface] + 3,
+                                                      Tess.DomFaceParms[domface][6],
+                                                      Tess.DomFaceParms[domface][7]);
+        if (intorus)
+        {
+          status2 = 0;
+          break;
+        }
+      }
+
+      else
+      {
+        neut_primparms_point_side (Tess.DomFaceType[domface],
+                                   Tess.DomFaceParms[domface], percoos[i],
+                                   &side);
+        if (side == -1)
+        {
+          status2 = 0;
+          break;
+        }
       }
     }
 
@@ -1287,7 +1564,7 @@ neut_tess_point_inpoly_std (struct TESS Tess, double *coo, int nb)
 }
 
 int
-neut_tess_point_inpoly_reg (struct TESS Tess, double *coo, int nb)
+neut_tess_point_inpoly_reg (struct TESS Tess, double *coo, int poly)
 {
   int i, elt, status, percooqty;
   double **percoos = NULL;
@@ -1297,7 +1574,7 @@ neut_tess_point_inpoly_reg (struct TESS Tess, double *coo, int nb)
   neut_mesh_set_zero (&Mesh);
   neut_nodes_set_zero (&Nodes);
 
-  neut_tess_poly_mesh (Tess, nb, &Nodes, &Mesh);
+  neut_tess_poly_mesh (Tess, poly, &Nodes, &Mesh);
 
   neut_tess_coo_percoos (Tess, coo, &percoos, &percooqty);
 
@@ -1655,10 +1932,11 @@ neut_tess_face_perimeter (struct TESS Tess, int face, double *pval)
   int i, edge;
 
   (*pval) = 0;
-  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
+  for (i = 1; i <= Tess.FaceEdgeQty[face]; i++)
   {
     edge = Tess.FaceEdgeNb[face][i];
     (*pval) += Tess.EdgeLength[edge];
+
   }
 
   return;
@@ -2206,6 +2484,35 @@ neut_tess_face_eq_fromvers (struct TESS Tess, int face, double *eq)
   return;
 }
 
+// Computing the equation of a face: the tangent plane at the projection
+// of its centroid for a face on a curved domain face, and the plane
+// fitted to its vertices otherwise, oriented from the vertex order
+void
+neut_tess_face_eq (struct TESS Tess, int face, double *eq)
+{
+  int domface = Tess.FaceDom[face][1];
+  double *coo = NULL;
+
+  if (Tess.FaceDom[face][0] == 2
+      && strncmp (Tess.DomFaceType[domface], "plane", 5))
+  {
+    coo = ut_alloc_1d (3);
+
+    neut_tess_face_centre (Tess, face, coo);
+    neut_primparms_point_proj (Tess.DomFaceType[domface],
+                               Tess.DomFaceParms[domface], coo, coo);
+    neut_primparms_point_tangentplane (Tess.DomFaceType[domface],
+                                       Tess.DomFaceParms[domface], coo, eq);
+    neut_tess_face_fixorifromedges (Tess, face, eq);
+
+    ut_free_1d (&coo);
+  }
+  else
+    neut_tess_face_eq_fromvers (Tess, face, eq);
+
+  return;
+}
+
 void
 neut_tess_faceinter_fromdomface (struct TESS *pTess, int face)
 {
@@ -2254,59 +2561,107 @@ neut_tess_faceinter_fromdomface (struct TESS *pTess, int face)
   return;
 }
 
+// neut_tess_domfaces_point_proj projects a point onto the intersection of
+// domain faces, by Newton iterations: at each iteration, the point is
+// projected onto each domain face and moved to the closest point of the
+// intersection of the tangent planes (at the projections).  Only the planes
+// whose normals are independent are considered (at most 3), taken by
+// decreasing distance, so that a face that is the same as another one is
+// skipped and that tangent faces are considered in turn (as with
+// alternating projections).  Returns 0 on success (distance to all faces
+// lower than 1e-6) and -1 otherwise.
 int
 neut_tess_domfaces_point_proj (struct TESS Tess, int *domfaces,
                                int domfaceqty, double *point, double *proj)
 {
-  int i, iter = 0, domface, itermax = 100;
-  double dist, totdist, eps;
-  double *point_cpy = ut_alloc_1d (3);
-
-  eps = 1e-6;
-
-  ut_array_1d_memcpy (point, 3, point_cpy);
+  int i, j, k, iter, domface, qty, *id = ut_alloc_1d_int (domfaceqty);
+  double maxdist = DBL_MAX, norm;
+  double *dist = ut_alloc_1d (domfaceqty), *tmp = ut_alloc_1d (3);
+  double **plane = ut_alloc_2d (domfaceqty, 4);
+  double **n = ut_alloc_2d (3, 3);       // orthonormalized kept normals
+  double **G = ut_alloc_2d (3, 3);
+  double *B = ut_alloc_1d (3), *lambda = ut_alloc_1d (3);
+  int *kept = ut_alloc_1d_int (3);
 
   ut_array_1d_memcpy (point, 3, proj);
 
-  do
+  for (iter = 0; iter < 1000; iter++)
   {
-    iter++;
-    totdist = 0;
-
+    maxdist = 0;
     for (i = 0; i < domfaceqty; i++)
     {
       domface = domfaces[i];
-      dist =
-        neut_primparms_point_proj (Tess.DomFaceType[domface],
-                                   Tess.DomFaceParms[domface], proj, proj);
-      totdist += dist;
+      dist[i] = neut_primparms_point_proj (Tess.DomFaceType[domface],
+                                           Tess.DomFaceParms[domface], proj,
+                                           tmp);
+      neut_primparms_point_tangentplane (Tess.DomFaceType[domface],
+                                         Tess.DomFaceParms[domface], tmp,
+                                         plane[i]);
+      ut_array_1d_normalize (plane[i] + 1, 3);
+      plane[i][0] = ut_array_1d_scalprod (plane[i] + 1, tmp, 3);
+      maxdist = ut_num_max (maxdist, dist[i]);
     }
-  }
-  while (iter <= itermax && totdist > eps);
 
-#ifdef DEVEL_DEBUGGING_TEST
-  if (iter > itermax)
-  {
-    neut_tess_name_fprintf_gmsh ("tmp.geo", Tess);
-    printf ("point = ");
-    ut_array_1d_fprintf (stdout, point_cpy, 3, "%f");
-    printf ("fails to project onto domfaces\n");
-    for (i = 0; i < domfaceqty; i++)
+    if (maxdist < 1e-14 * (1 + ut_array_1d_norm (proj, 3)))
+      break;
+
+    // keeping the planes of independent normals, by decreasing distance
+    ut_array_1d_sort_index (dist, domfaceqty, id);
+    ut_array_1d_int_reverseelts (id, domfaceqty);
+
+    qty = 0;
+    for (i = 0; i < domfaceqty && qty < 3; i++)
     {
-      domface = domfaces[i];
-      printf ("  %d: %s ", domface, Tess.DomFaceType[domface]);
-      ut_array_1d_fprintf (stdout, Tess.DomFaceParms[domface],
-                           Tess.DomFaceParmQty[domface], "%f");
+      ut_array_1d_memcpy (plane[id[i]] + 1, 3, n[qty]);
+      for (j = 0; j < qty; j++)
+        for (k = 0; k < 3; k++)
+          n[qty][k] -= ut_array_1d_scalprod (plane[id[i]] + 1, n[j], 3)
+                     * n[j][k];
+
+      norm = ut_array_1d_norm (n[qty], 3);
+      if (norm > 1e-3)
+      {
+        ut_array_1d_scale (n[qty], 3, 1. / norm);
+        kept[qty++] = id[i];
+      }
     }
-    printf ("totdist = %f eps = %f\n", totdist, eps);
 
-    abort ();
+    // proj + sum_j lambda_j n_j verifies n_i . x = d_i for the kept planes
+    for (i = 0; i < qty; i++)
+    {
+      for (j = 0; j < qty; j++)
+        G[i][j] = ut_array_1d_scalprod (plane[kept[i]] + 1,
+                                        plane[kept[j]] + 1, 3);
+      B[i] = plane[kept[i]][0]
+           - ut_array_1d_scalprod (plane[kept[i]] + 1, proj, 3);
+    }
+
+    if (ut_linalg_solve_LU (G, B, qty, lambda))
+      ut_print_neperbug ();
+
+    ut_array_1d_zero (tmp, 3);
+    for (j = 0; j < qty; j++)
+      for (k = 0; k < 3; k++)
+        tmp[k] += lambda[j] * plane[kept[j]][k + 1];
+    ut_array_1d_add (proj, tmp, 3, proj);
+
+    // the next projections would not change the point significantly
+    if (ut_array_1d_norm (tmp, 3) < 1e-14 * (1 + ut_array_1d_norm (proj, 3))
+        && qty == domfaceqty)
+      break;
   }
-#endif
 
-  ut_free_1d (&point_cpy);
+  ut_free_1d_int (&id);
+  ut_free_1d (&dist);
+  ut_free_1d (&tmp);
+  ut_free_2d (&plane, domfaceqty);
+  ut_free_2d (&n, 3);
+  ut_free_2d (&G, 3);
+  ut_free_1d (&B);
+  ut_free_1d (&lambda);
+  ut_free_1d_int (&kept);
 
-  return (iter <= itermax) ? 0 : -1;
+  return (maxdist < 1e-6) ? 0 : -1;
 }
 
 void

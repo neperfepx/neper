@@ -71,18 +71,18 @@ neut_tesr_expr_val (struct TESR Tesr, char *entity, int id, char *expr,
 
   vals = ut_alloc_1d (varqty);
 
-  if (varqty == 1 && !strcmp (expr, vars[0]))
-    status =
-      neut_tesr_var_val (Tesr, entity, id, expr, pvals, pvalqty, ptype);
+  status = neut_tesr_var_val (Tesr, entity, id, expr, pvals, pvalqty, ptype);
 
-  else
+  if (status)
   {
-    for (i = 0; i < varqty; i++)
-      neut_tesr_var_val_one (Tesr, entity, id, vars[i], vals + i, NULL);
+    status = 0;
+    for (i = 0; i < varqty && !status; i++)
+      status = neut_tesr_var_val_one (Tesr, entity, id, vars[i], vals + i, NULL);
 
     (*pvalqty) = 1;
     (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-    status = ut_math_eval (expr, varqty, vars, vals, *pvals);
+    if (!status)
+      status = ut_math_eval (expr, varqty, vars, vals, *pvals);
 
     if (ptype)
     {
@@ -155,7 +155,6 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
 
   c = ut_alloc_1d (3);
 
-  // b = (Tess.CellQty > 0) ? Tess.CellBody[id] : 0;
   b = 0;
 
   if (strcmp (entity, "vox")
@@ -218,6 +217,48 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       neut_tesr_centre_y (Tesr, *pvals);
     else if (!strcmp (var, "z"))
       neut_tesr_centre_z (Tesr, *pvals);
+    else if (!strcmp (var, "xmin"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tesr_bbox (Tesr, bbox);
+      (*pvals)[0] = bbox[0][0];
+      ut_free_2d (&bbox, 3);
+    }
+    else if (!strcmp (var, "xmax"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tesr_bbox (Tesr, bbox);
+      (*pvals)[0] = bbox[0][1];
+      ut_free_2d (&bbox, 3);
+    }
+    else if (!strcmp (var, "ymin"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tesr_bbox (Tesr, bbox);
+      (*pvals)[0] = bbox[1][0];
+      ut_free_2d (&bbox, 3);
+    }
+    else if (!strcmp (var, "ymax"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tesr_bbox (Tesr, bbox);
+      (*pvals)[0] = bbox[1][1];
+      ut_free_2d (&bbox, 3);
+    }
+    else if (!strcmp (var, "zmin"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tesr_bbox (Tesr, bbox);
+      (*pvals)[0] = bbox[2][0];
+      ut_free_2d (&bbox, 3);
+    }
+    else if (!strcmp (var, "zmax"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tesr_bbox (Tesr, bbox);
+      (*pvals)[0] = bbox[2][1];
+      ut_free_2d (&bbox, 3);
+    }
     else if (!strcmp (var, "coo"))
     {
       neut_tesr_centre (Tesr, *pvals);
@@ -402,7 +443,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       double *q = ol_q_alloc ();
       neut_tesr_cell_ori (Tesr, id, q);
       neut_ori_des_ori (q, var, *pvals);
-      ol_q_free (q);
+      ol_q_free (&q);
     }
     else
       status = -1;
@@ -506,7 +547,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       double *q = ol_q_alloc ();
       neut_tesr_vox_ori (Tesr, id, q);
       neut_ori_des_ori (q, var, *pvals);
-      ol_q_free (q);
+      ol_q_free (&q);
     }
     else
       status = -1;
@@ -913,7 +954,7 @@ neut_tesr_cell_gos (struct TESR Tesr, int cell, double *pgos)
 
   *pgos = (qty > 0) ? *pgos / qty : -1;
 
-  ol_q_free (q);
+  ol_q_free (&q);
 
   return status;
 }

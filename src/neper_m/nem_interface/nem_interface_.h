@@ -13,5 +13,7 @@
 #include"ut.h"
 
 #include"nem_interface.h"
+
+extern void nem_interface_intertypes (struct IN_M In, struct TESS Tess, int **pintertypes);
 #include"nem_interface_dup/nem_interface_dup.h"
 #include"nem_interface_cohesive/nem_interface_cohesive.h"

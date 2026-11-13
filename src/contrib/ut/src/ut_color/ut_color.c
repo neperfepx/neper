@@ -506,6 +506,13 @@ ut_color_name_rgb (char *name, int *c)
     ut_array_1d_int_set_3 (c, 244, 211, 69);
   else if (!strcmp (name, "manimyellow_e"))
     ut_array_1d_int_set_3 (c, 232, 193, 28);
+  // highlighting colors
+  else if (!strcmp (name, "hl1"))
+    ut_array_1d_int_set_3 (c, 38, 139, 172);
+  else if (!strcmp (name, "hl2"))
+    ut_array_1d_int_set_3 (c, 217, 93, 93);
+  else if (!strcmp (name, "hl3"))
+    ut_array_1d_int_set_3 (c, 93, 170, 104);
   else
     res = -1;
   return res;
@@ -563,7 +570,7 @@ ut_color_bar_val_color (char *scheme, double beg, double end, double val,
   int status = 0;
   char *fct = NULL;
 
-  if (ut_string_strcmp (scheme, "legacy"))
+  if (scheme && strcmp (scheme, "legacy"))
   {
     ut_string_function (scheme, &fct, NULL, &cols, &colqty);
     if (strcmp (fct, "custom"))
@@ -571,6 +578,9 @@ ut_color_bar_val_color (char *scheme, double beg, double end, double val,
   }
   else
     ut_string_function ("custom(blue,cyan,yellow,red)", &fct, NULL, &cols, &colqty);
+
+  if (colqty < 2)
+    ut_print_exprbug (scheme);
 
   vals = ut_alloc_1d (colqty);
   for (i = 0; i < colqty; i++)
@@ -1037,16 +1047,30 @@ ut_color_palette (int size, double min, double max, int **palette)
   p[136][0] = 95;
   p[136][1] = 158;
   p[136][2] = 160;
-  int id = 0;
+  int id = 0, found = 0;
   for (i = 0; i < size; i++)
   {
     if (ut_array_1d_int_mean (p[id], 3) / 255 >= min
         && ut_array_1d_int_mean (p[id], 3) / 255 <= max)
+    {
       ut_array_1d_int_memcpy (p[id], 3, palette[i]);
+      found = 1;
+    }
     else
       i--;
-    id = (id < pqty - 1) ? id + 1 : 0;
+
+    if (id < pqty - 1)
+      id++;
+    else
+    {
+      // no color in the intensity range
+      if (!found)
+        abort ();
+      id = 0;
+    }
   }
+
+  ut_free_2d_int (&p, pqty);
 
   return;
 }

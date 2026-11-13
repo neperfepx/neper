@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2020,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -48,6 +48,8 @@
 /**                                 to   : 24 mar 2008     **/
 /**                # Version 6.0  : from : 20 aug 2020     **/
 /**                                 to   : 26 aug 2020     **/
+/**                # Version 7.0  : from : 18 jan 2023     **/
+/**                                 to   : 18 jan 2023     **/
 /**                                                        **/
 /**   NOTES      : # Most of the contents of this module   **/
 /**                  comes from "map_b_fm" of the SCOTCH   **/
@@ -59,7 +61,7 @@
 **  The defines and includes.
 */
 
-#define GAIN
+#define SCOTCH_GAIN
 
 #include "module.h"
 #include "common.h"
@@ -124,7 +126,7 @@ GainEntr * const            entrptr)
   if ((entrptr->next == NULL) ||                  /* If problem with link */
       (gainTablCheck2 (entrptr, entrptr->next) != 0)) {
     errorPrint ("gainTablCheck: bad linked list");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -178,8 +180,7 @@ const INT                   subbits)
   tablptr->tmax    = tablptr->tabk;
 
   for (entrptr  = tablptr->tabk;                  /* Initialize gain table entries */
-       entrptr <= tablptr->tend;
-       entrptr ++)
+       entrptr <= tablptr->tend; entrptr ++)
     entrptr->next = &gainLinkDummy;               /* Point to dummy link area */
 
   return (tablptr);
@@ -187,7 +188,7 @@ const INT                   subbits)
 
 /* This routine deletes a gain list
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -200,7 +201,7 @@ GainTabl * const         tablptr)
 /* This routine flushes the contents of
 ** the given gain table.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -210,8 +211,7 @@ GainTabl * const            tablptr)
   GainEntr *          entrptr;
 
   for (entrptr  = tablptr->tmin;                  /* Flush only used area */
-       entrptr <= tablptr->tmax;
-       entrptr ++)
+       entrptr <= tablptr->tmax; entrptr ++)
     entrptr->next = &gainLinkDummy;               /* Point to dummy link area */
 
   tablptr->tmin = tablptr->tend;                  /* Entries of extremal gain */
@@ -222,7 +222,7 @@ GainTabl * const            tablptr)
 ** and table gain indicated in the vertex
 ** fields.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -264,7 +264,7 @@ const INT                   gain)                 /*+ Gain value              +*
 ** and table gain indicated in the vertex
 ** fields.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -273,7 +273,7 @@ GainTabl * const            tablptr,              /*+ Pointer to gain table   +*
 GainLink * const            linkptr,              /*+ Pointer to entry to add +*/
 const INT                   gain)                 /*+ Gain value              +*/
 {
-  GainEntr *          entrptr;                    /* Pointer to gain entry   */
+  GainEntr *          entrptr;                    /* Pointer to gain entry */
   INT                 i, j;
 
 #ifdef SCOTCH_DEBUG_GAIN2
@@ -318,7 +318,7 @@ const INT                   gain)                 /*+ Gain value              +*
 /* This routine removes a link
 ** from the table.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 #ifdef SCOTCH_DEBUG_GAIN1                         /* Compiled only in debug mode */
@@ -371,7 +371,7 @@ GainTabl * const            tablptr)
 
   for (entrptr ++; entrptr <= tablptr->tend; entrptr ++) {
     if (entrptr->next != &gainLinkDummy) {        /* If found non-empty slot */
-      tablptr->tmin = entrptr;                    /* record its position     */
+      tablptr->tmin = entrptr;                    /* Record its position     */
 #ifdef SCOTCH_DEBUG_GAIN3
       if (gainTablCheck (entrptr) != 0) {
         errorPrint ("gainTablFrst: bad chaining (2)");
@@ -412,8 +412,7 @@ const GainLink * const      linkptr)
   }
 
   for (entrptr = linkptr->tabl + 1;
-       entrptr < tablptr->tend;
-       entrptr ++) {
+       entrptr < tablptr->tend; entrptr ++) {
     if (entrptr->next != &gainLinkDummy) {
 #ifdef SCOTCH_DEBUG_GAIN3
       if (gainTablCheck (entrptr) != 0) {
@@ -443,7 +442,8 @@ const ptrdiff_t             addrdlt)
 {
   GainEntr *          entrptr;
 
-  for (entrptr = tablptr->tmin; entrptr <= tablptr->tmax; entrptr ++) { /* For all active gain table entries */
+  for (entrptr  = tablptr->tmin;                  /* For all active gain table entries */
+       entrptr <= tablptr->tmax; entrptr ++) {
     GainLink *          linkptr;
     GainLink *          prevptr;
 

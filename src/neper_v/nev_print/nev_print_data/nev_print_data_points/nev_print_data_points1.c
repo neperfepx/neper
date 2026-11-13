@@ -64,5 +64,7 @@ nev_print_data_points (struct SIM Sim, struct POINT *pPoint, struct TESS *pTess,
   ut_free_1d_char (&datatype);
   ut_free_1d_char (&datavalue);
 
+  neut_datainput_free (&DataInput);
+
   return;
 }

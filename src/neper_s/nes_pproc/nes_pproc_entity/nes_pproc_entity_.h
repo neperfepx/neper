@@ -20,9 +20,20 @@ extern void nes_pproc_entity_pre (struct SIM *pSim, char *entity,
                                   char *entityresexpr, int *pentityqty,
                                   char **pdir, char ***presults, int *presultqty);
 
+extern void nes_pproc_entity_failure_set (char *resdir, char *dir);
+
+extern void nes_pproc_entity_failure_unset (void);
+
+extern void nes_pproc_entity_odf_test (struct TESS Tess, struct TESR Tesr, struct MESH *Mesh,
+                                       char *entity, char *expr);
+
 extern void nes_pproc_entity_remove (struct SIM *pSim, char *entity, char *result);
 
 extern void nes_pproc_entity_file (struct SIM *pSim, char *entity, char *dir, char *res, char *expr);
+
+extern void nes_pproc_entity_file_steps (char *simfile, int **pprinted, int *pmaxstep);
+
+extern void nes_pproc_entity_file_setsteps (struct SIM *pSim, char *simfile, int *printed, int maxstep);
 
 extern void nes_pproc_entity_subres (struct SIM *pSim, char *entity, struct SIMRES *pSimRes);
 

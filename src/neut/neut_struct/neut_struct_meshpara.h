@@ -19,6 +19,7 @@ extern "C"
 
     char input;
     char *elttype;
+    int eltsplit;		// elts split (1) or not (0), see -elttype hex
     int dim;
     double cellsize;
 
@@ -32,13 +33,19 @@ extern "C"
 
     double clmin;		// minimim value of cl
     double pl;			// value of -pl,
+    double *poly_pl;		// progression factors of the polys
+    double *face_pl;		// progression factors of the faces
+    double *edge_pl;		// progression factors of the edges
 
     double *poly_cl;
     double *face_cl;
     double *edge_cl;
     double *ver_cl;
 
-    double *mesh3dclreps;
+    double *mesh2dclreps;	// tolerances on the mean ratio of the 2D elt
+				// lengths to the mesh size map, by face
+    double *mesh3dclreps;	// tolerances on the mean ratio of the 3D elt
+				// lengths to the mesh size map, by poly
 
     /// "copy" or NULL
     char **edge_op;

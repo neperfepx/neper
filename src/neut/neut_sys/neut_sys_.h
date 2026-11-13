@@ -4,5 +4,13 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
+#include<errno.h>
+#include<unistd.h>
+#include<sys/stat.h>
+#include<limits.h>
+#ifdef __APPLE__
+#include<mach-o/dyld.h>
+#endif
 #include"neut.h"
 #include"neut_sys.h"

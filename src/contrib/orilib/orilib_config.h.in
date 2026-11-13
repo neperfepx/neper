@@ -1,0 +1,10 @@
+#cmakedefine HAVE_GSL
+#cmakedefine HAVE_GLPK
+#cmakedefine HAVE_NLOPT
+#cmakedefine DEVEL_PROFILING
+#cmakedefine DEVEL_OPTIMIZATION
+#cmakedefine DEVEL_DEBUGGING_FLAG
+#cmakedefine DEVEL_DEBUGGING_TEST
+
+#define NEPER_VERSION @NEPER_VERSION@
+#define NEPER_EMAIL @NEPER_EMAIL@

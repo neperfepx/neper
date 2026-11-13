@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2012,2014,2016,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2012,2014,2016,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,14 +44,14 @@
 /**                                 to   : 30 may 2008     **/
 /**                # Version 6.0  : from : 17 oct 2012     **/
 /**                                 to   : 23 may 2018     **/
+/**                # Version 7.0  : from : 04 aug 2018     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HGRAPH
 
 #include "module.h"
 #include "common.h"
@@ -82,7 +82,7 @@ Hgraph * restrict const     grafptr)
 
 /* This routine frees a source graph structure.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -94,7 +94,7 @@ Hgraph * restrict const     grafptr)
 
 /* This routine frees a source graph structure.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -115,7 +115,7 @@ Hgraph * restrict const     grafptr)
 /* This routine creates a non-halo graph from a
 ** halo graph.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -138,5 +138,23 @@ Graph * restrict const        ugrfptr)
   ugrfptr->edlotax = grafptr->s.edlotax;
   ugrfptr->edlosum = grafptr->enlosum;
   ugrfptr->degrmax = grafptr->s.degrmax;          /* Upper bound */
-  ugrfptr->procptr = grafptr->s.procptr;
+}
+
+/* This routine fills-in the halo fields of a
+** halo graph from the fields of its non-halo,
+** underlying source graph.
+** It returns:
+** - void  : in all cases.
+*/
+
+void
+hgraphUnhalo2 (
+Hgraph * restrict const     grafptr)
+{
+  grafptr->vnohnbr = grafptr->s.vertnbr;
+  grafptr->vnohnnd = grafptr->s.vertnnd;
+  grafptr->vnhdtax = grafptr->s.vendtax;
+  grafptr->vnlosum = grafptr->s.velosum;
+  grafptr->enohnbr = grafptr->s.edgenbr;
+  grafptr->enlosum = grafptr->s.edlosum;
 }

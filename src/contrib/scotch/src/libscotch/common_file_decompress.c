@@ -1,4 +1,4 @@
-/* Copyright 2008,2010,2015,2018,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2008,2010,2015,2018,2020,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,6 +44,8 @@
 /**                                 to   : 27 jun 2010     **/
 /**                # Version 6.0  : from : 27 apr 2015     **/
 /**                                 to   : 30 aug 2020     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 09 aug 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -51,12 +53,9 @@
 **  The defines and includes.
 */
 
-#define COMMON_FILE
-#define COMMON_FILE_DECOMPRESS
+#define SCOTCH_COMMON_FILE_DECOMPRESS
 
-#ifndef COMMON_NOMODULE
 #include "module.h"
-#endif /* COMMON_NOMODULE */
 #include "common.h"
 #include "common_file.h"
 #include "common_file_compress.h"
@@ -113,12 +112,12 @@ int
 fileDecompressType (
 const char * const          nameptr)              /*+ Name string +*/
 {
-  int                 namelen;
+  size_t              namelen;
   int                 i;
 
   namelen = strlen (nameptr);
   for (i = 0; filetab[i].name != NULL; i ++) {
-    int                 extnlen;                  /* Name of extension string */
+    size_t              extnlen;                  /* Name of extension string */
 
     extnlen = strlen (filetab[i].name);
     if ((namelen >= extnlen) && (strncmp (filetab[i].name, nameptr + (namelen - extnlen), extnlen) == 0))
@@ -129,7 +128,7 @@ const char * const          nameptr)              /*+ Name string +*/
 }
 
 /* This routine creates a thread to decompress the
-** given stream according to the given (un)compression
+** given stream according to the given (de)compression
 ** algorithm.
 ** If threads are available, decompression will be
 ** performed by an auxiliary thread. Else, a child process
@@ -177,7 +176,7 @@ FileCompress * const        compptr)
 int
 fileDecompress (
 File * const                fileptr,              /*+ Compressed input stream   +*/
-const int                   typeval)              /*+ (Un)compression algorithm +*/
+const FileCompressType      typeval)              /*+ (De)compression algorithm +*/
 {
   int                 filetab[2];
   FILE *              readptr;
@@ -374,7 +373,7 @@ FileCompress * const        compptr)
   decodat.avail_out = FILECOMPRESSDATASIZE;
   do {
     if ((decodat.avail_in == 0) && (deacval == LZMA_RUN)) {
-      ssize_t             bytenbr;
+      size_t              bytenbr;
 
       bytenbr = fread (compptr->bufftab, 1, FILECOMPRESSDATASIZE, compptr->oustptr); /* Read from pipe */
       if (ferror (compptr->oustptr)) {

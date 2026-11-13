@@ -87,7 +87,7 @@ ut_png_name_fscanf (char *filename, png_structp * ppng_ptr,
     ut_print_message (2, 0, "init_io failed.\n");
 
   png_init_io ((*ppng_ptr), fp);
-  png_set_sig_bytes ((*ppng_ptr), 16);
+  png_set_sig_bytes ((*ppng_ptr), 8);
 
   png_read_info ((*ppng_ptr), (*pinfo_ptr));
 
@@ -108,7 +108,8 @@ ut_png_name_fscanf (char *filename, png_structp * ppng_ptr,
 
   (*prow_ptr) = (png_bytep *) malloc (sizeof (png_bytep) * height);
   for (i = 0; i < height; i++)
-    (*prow_ptr)[i] = (png_byte *) malloc (4 * width);
+    (*prow_ptr)[i] =
+      (png_byte *) malloc (png_get_rowbytes ((*ppng_ptr), (*pinfo_ptr)));
 
   png_read_image ((*ppng_ptr), (*prow_ptr));
 
@@ -121,6 +122,9 @@ ut_png_name_fprintf (char *filename, png_structp png_ptr, png_infop info_ptr,
 {
   /* create file */
   FILE *fp = fopen (filename, "wb");
+  if (!fp)
+    ut_print_message (2, 0, "Failed to open file `%s' for writing.\n",
+                      filename);
 
   png_init_io (png_ptr, fp);
 
@@ -156,6 +160,8 @@ ut_png_free (png_structp png_ptr, png_infop info_ptr, png_bytep * row_ptr)
   for (y = 0; y < height; y++)
     free (row_ptr[y]);
   free (row_ptr);
+
+  png_destroy_write_struct (&png_ptr, &info_ptr);
 
   return;
 }

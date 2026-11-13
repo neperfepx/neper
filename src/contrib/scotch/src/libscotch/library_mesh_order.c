@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2012,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2012,2018,2019,2023-2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -51,6 +51,8 @@
 /**                                 to   : 14 aug 2010     **/
 /**                # Version 6.0  : from : 14 nov 2012     **/
 /**                                 to   : 25 apr 2018     **/
+/**                # Version 7.0  : from : 12 sep 2019     **/
+/**                                 to   : 08 feb 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -58,10 +60,9 @@
 **  The defines and includes.
 */
 
-#define LIBRARY
-
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "parser.h"
 #include "graph.h"
 #include "mesh.h"
@@ -78,13 +79,13 @@
 /*                                  */
 /************************************/
 
-/*+ This routine initializes an API ordering
-*** with respect to the given source graph
-*** and the locations of output parameters.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine initializes an API ordering
+** with respect to the given source graph
+** and the locations of output parameters.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshOrderInit (
@@ -106,7 +107,7 @@ SCOTCH_Num * const          treetab)              /*+ Separator tree array      
   }
 #endif /* SCOTCH_DEBUG_LIBRARY1 */
 
-  srcmeshptr = (Mesh *) meshptr;                  /* Use structure as source mesh */
+  srcmeshptr = (Mesh *) CONTEXTOBJECT (meshptr);  /* Use structure as source mesh */
   libordeptr = (LibOrder *) ordeptr;
   libordeptr->permtab = ((permtab == NULL) || ((void *) permtab == (void *) meshptr)) ? NULL : (Gnum *) permtab;
   libordeptr->peritab = ((peritab == NULL) || ((void *) peritab == (void *) meshptr)) ? NULL : (Gnum *) peritab;
@@ -117,10 +118,10 @@ SCOTCH_Num * const          treetab)              /*+ Separator tree array      
   return (orderInit (&libordeptr->o, srcmeshptr->baseval, srcmeshptr->vnodnbr, libordeptr->peritab));
 }
 
-/*+ This routine frees an API ordering.
-*** It returns:
-*** - VOID  : in all cases.
-+*/
+/* This routine frees an API ordering.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_meshOrderExit (
@@ -130,12 +131,12 @@ SCOTCH_Ordering * const     ordeptr)
   orderExit (&((LibOrder *) ordeptr)->o);
 }
 
-/*+ This routine saves the contents of
-*** the given ordering to the given stream.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine saves the contents of
+** the given ordering to the given stream.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshOrderSave (
@@ -143,16 +144,16 @@ const SCOTCH_Mesh * const     meshptr,            /*+ Mesh to order    +*/
 const SCOTCH_Ordering * const ordeptr,            /*+ Ordering to save +*/
 FILE * const                  stream)             /*+ Output stream    +*/
 {
-  return (orderSave (&((LibOrder *) ordeptr)->o, ((Mesh *) meshptr)->vlbltax, stream));
+  return (orderSave (&((LibOrder *) ordeptr)->o, ((Mesh *) CONTEXTOBJECT (meshptr))->vlbltax, stream));
 }
 
-/*+ This routine saves the mapping data
-*** associated with the given ordering
-*** to the given stream.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine saves the mapping data
+** associated with the given ordering
+** to the given stream.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshOrderSaveMap (
@@ -160,16 +161,16 @@ const SCOTCH_Mesh * const     meshptr,            /*+ Mesh to order    +*/
 const SCOTCH_Ordering * const ordeptr,            /*+ Ordering to save +*/
 FILE * const                  stream)             /*+ Output stream    +*/
 {
-  return (orderSaveMap (&((LibOrder *) ordeptr)->o, ((Mesh *) meshptr)->vlbltax, stream));
+  return (orderSaveMap (&((LibOrder *) ordeptr)->o, ((Mesh *) CONTEXTOBJECT (meshptr))->vlbltax, stream));
 }
 
-/*+ This routine saves to the given stream
-*** the separator tree data associated with
-*** the given ordering.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine saves to the given stream
+** the separator tree data associated with
+** the given ordering.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshOrderSaveTree (
@@ -177,16 +178,16 @@ const SCOTCH_Mesh * const     meshptr,            /*+ Mesh to order    +*/
 const SCOTCH_Ordering * const ordeptr,            /*+ Ordering to save +*/
 FILE * const                  stream)             /*+ Output stream    +*/
 {
-  return (orderSaveTree (&((LibOrder *) ordeptr)->o, ((Mesh *) meshptr)->vlbltax, stream));
+  return (orderSaveTree (&((LibOrder *) ordeptr)->o, ((Mesh *) CONTEXTOBJECT (meshptr))->vlbltax, stream));
 }
 
-/*+ This routine computes an ordering
-*** of the API ordering structure with
-*** respect to the given strategy.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine computes an ordering
+** of the API ordering structure with
+** respect to the given strategy.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshOrderCompute (
@@ -197,47 +198,37 @@ SCOTCH_Strat * const        stratptr)             /*+ Ordering strategy   +*/
   return (SCOTCH_meshOrderComputeList (meshptr, ordeptr, 0, NULL, stratptr));
 }
 
-/*+ This routine computes a partial ordering
-*** of the listed nodes of the API ordering
-*** structure mesh with respect to the given
-*** strategy.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine computes a partial ordering
+** of the listed nodes of the API ordering
+** structure mesh with respect to the given
+** strategy.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshOrderComputeList (
-SCOTCH_Mesh * const         meshptr,              /*+ Mesh to order                   +*/
+SCOTCH_Mesh * const         libmeshptr,           /*+ Mesh to order                   +*/
 SCOTCH_Ordering * const     ordeptr,              /*+ Ordering to compute             +*/
 const SCOTCH_Num            listnbr,              /*+ Number of vertices in list      +*/
 const SCOTCH_Num * const    listtab,              /*+ List of vertex indices to order +*/
 SCOTCH_Strat * const        stratptr)             /*+ Ordering strategy               +*/
 {
-  LibOrder *          libordeptr;                 /* Pointer to ordering             */
-  Mesh *              srcmeshptr;                 /* Pointer to source mesh          */
+  CONTEXTDECL        (libmeshptr);
   Hmesh               srcmeshdat;                 /* Halo source mesh structure      */
   VertList            srclistdat;                 /* Subgraph vertex list            */
   VertList *          srclistptr;                 /* Pointer to subgraph vertex list */
   const Strat *       ordstratptr;                /* Pointer to ordering strategy    */
+  int                 o;
 
-  srcmeshptr = (Mesh *) meshptr;
-
-#ifdef SCOTCH_DEBUG_MESH2
-  if (meshCheck (srcmeshptr) != 0) {
-    errorPrint (STRINGIFY (SCOTCH_meshOrderComputeList) ": invalid input mesh");
+  if (CONTEXTINIT (libmeshptr)) {
+    errorPrint (STRINGIFY (SCOTCH_meshOrderComputeList) ": cannot initialize context");
     return     (1);
   }
-#endif /* SCOTCH_DEBUG_MESH2 */
 
-  if (*((Strat **) stratptr) == NULL)             /* Set default ordering strategy if necessary */
-    SCOTCH_stratMeshOrderBuild (stratptr, SCOTCH_STRATQUALITY, 0.1);
-
-  ordstratptr = *((Strat **) stratptr);
-  if (ordstratptr->tabl != &hmeshorderststratab) {
-    errorPrint (STRINGIFY (SCOTCH_meshOrderComputeList) ": not a mesh ordering strategy");
-    return     (1);
-  }
+  const Mesh * const  srcmeshptr = (Mesh *) CONTEXTGETOBJECT (libmeshptr);
+  LibOrder * const    libordeptr = (LibOrder *) ordeptr;
 
   memCpy (&srcmeshdat.m, srcmeshptr, sizeof (Mesh)); /* Copy non-halo mesh data  */
   srcmeshdat.m.flagval &= ~MESHFREETABS;          /* Do not allow to free arrays */
@@ -248,24 +239,44 @@ SCOTCH_Strat * const        stratptr)             /*+ Ordering strategy         
   srcmeshdat.vnhlsum    = srcmeshdat.m.vnlosum;   /* Sum of node vertex weights  */
   srcmeshdat.enohnbr    = srcmeshdat.m.edgenbr;   /* All edges are non-halo      */
   srcmeshdat.levlnum    = 0;                      /* Start from level zero       */
+  srcmeshdat.contptr    = CONTEXTGETDATA (libmeshptr);
 
-  libordeptr         = (LibOrder *) ordeptr;      /* Get ordering      */
+  o = 1;                                          /* Assume an error */
+
+#ifdef SCOTCH_DEBUG_MESH2
+  if (meshCheck (srcmeshptr) != 0) {
+    errorPrint (STRINGIFY (SCOTCH_meshOrderComputeList) ": invalid input mesh");
+    goto fail;
+  }
+#endif /* SCOTCH_DEBUG_MESH2 */
+
+  if (*((Strat **) stratptr) == NULL) {           /* Set default ordering strategy if necessary */
+    if (SCOTCH_stratMeshOrderBuild (stratptr, SCOTCH_STRATQUALITY, 0.1))
+      goto fail;
+  }
+
+  ordstratptr = *((Strat **) stratptr);
+  if (ordstratptr->tablptr != &hmeshorderststratab) {
+    errorPrint (STRINGIFY (SCOTCH_meshOrderComputeList) ": not a mesh ordering strategy");
+    goto fail;
+  }
+
   srclistdat.vnumnbr = (Gnum)   listnbr;          /* Build vertex list */
   srclistdat.vnumtab = (Gnum *) listtab;
   srclistptr = ((srclistdat.vnumnbr == 0) ||
                 (srclistdat.vnumnbr == srcmeshdat.m.vnodnbr))
-               ? NULL : &srclistdat;              /* Is the list really necessary */
+                ? NULL : &srclistdat;             /* Is the list really necessary */
   if (srclistptr != NULL) {
     errorPrint (STRINGIFY (SCOTCH_meshOrderComputeList) ": node lists not yet implemented");
-    return     (1);
+    goto fail;
   }
 
-  intRandInit ();                                 /* Check that random number generator is initialized */
-
-  hmeshOrderSt (&srcmeshdat, &libordeptr->o, 0, &libordeptr->o.cblktre, ordstratptr);
+  if ((o = hmeshOrderSt (&srcmeshdat, &libordeptr->o, 0, &libordeptr->o.rootdat, ordstratptr)) != 0)
+    goto fail;
 
 #ifdef SCOTCH_DEBUG_LIBRARY2
-  orderCheck (&libordeptr->o);
+  if (orderCheck (&libordeptr->o) != 0)
+    goto fail;
 #endif /* SCOTCH_DEBUG_LIBRARY2 */
 
   if (libordeptr->permtab != NULL)                 /* Build direct permutation if wanted */
@@ -277,18 +288,20 @@ SCOTCH_Strat * const        stratptr)             /*+ Ordering strategy         
   if (libordeptr->cblkptr != NULL)                /* Set number of column blocks if wanted */
     *(libordeptr->cblkptr) = libordeptr->o.cblknbr;
 
+fail:
   meshExit (&srcmeshdat.m);                       /* Free in case mesh had been reordered */
 
-  return (0);
+  CONTEXTEXIT (libmeshptr);
+  return (o);
 }
 
-/*+ This routine computes an ordering
-*** of the API ordering structure with
-*** respect to the given strategy.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine computes an ordering
+** of the API ordering structure with
+** respect to the given strategy.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshOrder (
@@ -310,15 +323,15 @@ SCOTCH_Num * const          treetab)              /*+ Separator tree array      
   return (o);
 }
 
-/*+ This routine computes an ordering
-*** of the submesh of the API ordering
-*** structure mesh induced by the given
-*** vertex list, with respect to the given
-*** strategy.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine computes an ordering
+** of the submesh of the API ordering
+** structure mesh induced by the given
+** vertex list, with respect to the given
+** strategy.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshOrderList (
@@ -342,12 +355,12 @@ SCOTCH_Num * const          treetab)              /*+ Column block range array  
   return (o);
 }
 
-/*+ This routine checks the consistency
-*** of the given mesh ordering.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine checks the consistency
+** of the given mesh ordering.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshOrderCheck (
@@ -357,12 +370,12 @@ const SCOTCH_Ordering * const ordeptr)            /*+ Ordering to check +*/
   return (orderCheck (&((LibOrder *) ordeptr)->o));
 }
 
-/*+ This routine parses the given
-*** mesh ordering strategy.
-*** It returns:
-*** - 0   : if string successfully scanned.
-*** - !0  : on error.
-+*/
+/* This routine parses the given
+** mesh ordering strategy.
+** It returns:
+** - 0   : if string successfully scanned.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_stratMeshOrder (
@@ -374,18 +387,18 @@ const char * const          string)
 
   if ((*((Strat **) stratptr) = stratInit (&hmeshorderststratab, string)) == NULL) {
     errorPrint (STRINGIFY (SCOTCH_stratMeshOrder) ": error in ordering strategy");
-    return     (1);
+    return (1);
   }
 
   return (0);
 }
 
-/*+ This routine provides predefined
-*** ordering strategies.
-*** It returns:
-*** - 0   : if string successfully initialized.
-*** - !0  : on error.
-+*/
+/* This routine provides predefined
+** ordering strategies.
+** It returns:
+** - 0   : if string successfully initialized.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_stratMeshOrderBuild (
@@ -401,10 +414,5 @@ const double                balrat)               /*+ Desired imbalance ratio +*
   sprintf (bbaltab, "%lf", balrat);
   stringSubst (bufftab, "<BBAL>", bbaltab);
 
-  if (SCOTCH_stratMeshOrder (stratptr, bufftab) != 0) {
-    errorPrint (STRINGIFY (SCOTCH_stratMeshOrderBuild) ": error in sequential ordering strategy");
-    return     (1);
-  }
-
-  return (0);
+  return (SCOTCH_stratMeshOrder (stratptr, bufftab));
 }

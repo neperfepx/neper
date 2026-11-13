@@ -6,6 +6,12 @@
 #include "neut/neut_oset/neut_oset.hpp"
 #include "neut_struct_qcloud.hpp"
 
+extern int neut_odf_comp_neigh_tree_load (char *filename, QCLOUD *pqcloud,
+                                          my_kd_tree_t **pqtree);
+extern int neut_odf_comp_neigh_tree_cachefile (struct ODF *pOdf, char *data, char *ext,
+                                               char **pcachefile);
+extern void neut_odf_comp_neigh_tree_save (char *filename, my_kd_tree_t *qtree);
+
 // input: q & id: orientation and id of the mesh elt
 void
 neut_odf_orifield_comp_exact (struct OL_SET *pOSet, char *entity, double *oridata, struct ODF *pOdf)
@@ -68,7 +74,7 @@ neut_odf_orifield_comp_exact (struct OL_SET *pOSet, char *entity, double *oridat
     (*podf)[i] /= ut_array_1d_sum (oridata_weight, (int) (*pOSet).size);
 
     ut_free_1d (&oridata_weight);
-    ol_q_free (qs);
+    ol_q_free (&qs);
   }
 
   return;
@@ -2814,4 +2820,29 @@ neut_odf_constant (double theta)
   ut_fct_init_interp (&Fct);
 
   return ut_fct_eval (Fct, theta);
+}
+
+// Sets the kd-tree of the orientation space cloud: loaded from the cache
+// directory (saved at a previous run), or else built (and saved to the cache).
+// A cached tree that does not match the cloud (which would silently miss
+// neighbors) is rebuilt.
+void
+neut_odf_comp_neigh_tree (struct ODF *pOdf, char *entity, char *data,
+                          QCLOUD *pqcloud, my_kd_tree_t **pqtree)
+{
+  char *ext = (char *) (!strncmp (entity, "elt", 3) ? "etree" : "ntree");
+  char *cachefile = NULL;
+
+  if (neut_odf_comp_neigh_tree_cachefile (pOdf, data, ext, &cachefile)
+      || !ut_file_exist (cachefile)
+      || neut_odf_comp_neigh_tree_load (cachefile, pqcloud, pqtree))
+  {
+    neut_oset_kdtree_build (pqcloud, pqtree);
+    if (cachefile)
+      neut_odf_comp_neigh_tree_save (cachefile, *pqtree);
+  }
+
+  ut_free_1d_char (&cachefile);
+
+  return;
 }

@@ -24,7 +24,7 @@ net_tess_lam_seed_set_w_pre (gsl_rng * r, struct TESS Dom, double *normal,
     (*pw)[0] = dirlength / n[0];
     wall = (*pw)[0];
     ut_string_string ("from_n", pwtype);
-    ut_string_string ("start", &pos);
+    pos = (char *) "start"; // pos is the caller's string, do not reallocate it
   }
   else
     abort ();

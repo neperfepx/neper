@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -40,14 +40,14 @@
 /**                                                        **/
 /**   DATES      : # Version 4.0  : from : 10 sep 2002     **/
 /**                                 to   : 29 may 2004     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define VMESH_SEPARATE_ZR
 
 #include "module.h"
 #include "common.h"

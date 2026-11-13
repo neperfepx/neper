@@ -5,15 +5,11 @@
 #include"nev_print_real_vtk_.h"
 
 void
-nev_print_real_vtk (struct IN_V In, char *basename,
-               struct SIM Sim, struct NODES Nodes, struct MESH *Mesh,
+nev_print_real_vtk (char *basename, struct NODES Nodes, struct MESH *Mesh,
                struct DATA *pNodeData, struct DATA **MeshData)
 {
   FILE *file = NULL;
   char *filename = NULL;
-  char *outdir = NULL;
-
-  neut_print_outdir (In.outdir, Sim, "vtk", &outdir);
 
   ut_print_message (0, 1, "Printing VTK file...\n");
 
@@ -23,10 +19,7 @@ nev_print_real_vtk (struct IN_V In, char *basename,
     return;
   }
 
-  if (!strcmp (outdir, "."))
-    filename = ut_string_addextension (basename, "vtk");
-  else
-    filename = ut_string_paste4 (outdir, "/", basename, ".vtk");
+  filename = ut_string_addextension (basename, "vtk");
 
   file = ut_file_open (filename, "w");
 
@@ -62,7 +55,6 @@ nev_print_real_vtk (struct IN_V In, char *basename,
   ut_file_close (file, filename, "w");
 
   ut_free_1d_char (&filename);
-  ut_free_1d_char (&outdir);
 
   return;
 }

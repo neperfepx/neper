@@ -4,18 +4,25 @@
 
 #include"neut_mesh_sim_.h"
 
+// setting the mesh data of a simulation (the mesh orientation descriptor
+// prevails over the tessellation one)
 void
-neut_mesh_sim (char *simdir, struct TESS Tess, struct NODES Nodes, struct MESH *Mesh, struct SIM *pSim)
+neut_mesh_sim (struct NODES Nodes, struct MESH *Mesh, struct SIM *pSim)
 {
-  neut_sim_set_zero (pSim);
-  ut_string_string (simdir, &((*pSim).simdir));
-  (*pSim).NodeQty = Nodes.NodeQty;
-  (*pSim).EltQty = Mesh[Tess.Dim].EltQty;
-  (*pSim).ElsetQty = Mesh[Tess.Dim].ElsetQty;
-  ut_string_string (Mesh[Tess.Dim].ElsetOriDes, &((*pSim).OriDes));
+  int dim = neut_mesh_array_dim (Mesh);
 
-  ut_string_string ("simulation.msh", &(*pSim).msh);
-  ut_string_string ("simulation.tess", &(*pSim).tess);
+  (*pSim).NodeQty = Nodes.NodeQty;
+
+  if (dim >= 0)
+  {
+    (*pSim).EltQty = Mesh[dim].EltQty;
+    (*pSim).ElsetQty = Mesh[dim].ElsetQty;
+
+    if (Mesh[dim].ElsetOriDes)
+      ut_string_string (Mesh[dim].ElsetOriDes, &((*pSim).OriDes));
+  }
+
+  neut_sim_init_memberqty (pSim);
 
   return;
 }

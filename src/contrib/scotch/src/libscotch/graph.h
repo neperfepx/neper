@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010-2012,2014-2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010-2012,2014-2019,2023,2025 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -63,10 +63,12 @@
 /**                                 to   : 04 nov 2010     **/
 /**                # Version 6.0  : from : 03 mar 2011     **/
 /**                                 to   : 10 may 2019     **/
+/**                # Version 7.0  : from : 08 jun 2018     **/
+/**                                 to   : 16 aug 2025     **/
 /**                                                        **/
 /************************************************************/
 
-#define GRAPH_H
+#define SCOTCH_GRAPH_H
 
 /*
 **  The defines.
@@ -86,6 +88,8 @@
 
 #define GRAPHBITSUSED               0x003F        /*+ Significant bits for plain graph routines               +*/
 #define GRAPHBITSNOTUSED            0x0040        /*+ Value above which bits not used by plain graph routines +*/
+
+/*+ Graph loading flags. +*/
 
 #define GRAPHIONOLOADVERT           1             /*+ Remove vertex loads on loading +*/
 #define GRAPHIONOLOADEDGE           2             /*+ Remove edge loads on loading   +*/
@@ -119,19 +123,11 @@ typedef struct VertList_ {
 
 /*+ The graph flag type. +*/
 
-typedef int GraphFlag;                            /*+ Graph property flags +*/
+typedef unsigned int GraphFlag;                   /*+ Graph property flags +*/
 
-/*+ The graph parallel context structure. +*/
+/*+ The graph load flag type. +*/
 
-#ifdef SCOTCH_PTSCOTCH
-
-typedef struct GraphProc_ {
-  MPI_Comm                  proccomm;             /*+ Communicator used for parallel algorithm +*/
-  int                       procglbnbr;           /*+ Number of processes in communicator      +*/
-  int                       proclocnum;           /*+ Rank of process in current communicator  +*/
-} GraphProc;
-
-#endif /* SCOTCH_PTSCOTCH */
+typedef unsigned int GraphLoadFlag;               /*+ Graph property flags +*/
 
 /*+ The graph structure. +*/
 
@@ -151,7 +147,6 @@ typedef struct Graph_ {
   Gnum *                    edlotax;              /*+ Edge load array (if present)              +*/
   Gnum                      edlosum;              /*+ Sum of edge (in fact arc) loads           +*/
   Gnum                      degrmax;              /*+ Maximum degree                            +*/
-  struct GraphProc_ *       procptr;              /*+ Pointer to parallel context (if any)      +*/
 } Graph;
 
 /*
@@ -174,15 +169,15 @@ Gnum                        graphBase           (Graph * const, const Gnum);
 int                         graphBand           (const Graph * restrict const, const Gnum, Gnum * restrict const, const Gnum, Gnum * restrict * restrict const, Gnum * restrict const, Gnum * restrict const, Gnum * restrict const, const Gnum * restrict const, Gnum * restrict const);
 int                         graphCheck          (const Graph *);
 int                         graphClone          (const Graph *, Graph *);
-Gnum                        graphDiamPV         (const Graph * const);
+Gnum                        graphDiamPV         (const Graph * restrict const, Context * restrict const);
 Gnum                        graphIelo           (const Graph * const, Gnum * const, Gnum * const);
 int                         graphInduceList     (const Graph * restrict const, const Gnum, const Gnum * restrict const, Graph * restrict const);
 int                         graphInducePart     (const Graph * restrict const, const GraphPart * restrict const, const Gnum, const GraphPart, Graph * restrict const);
-int                         graphLoad           (Graph * const, FILE * const, const Gnum, const GraphFlag);
+int                         graphLoad           (Graph * const, FILE * const, const Gnum, const GraphLoadFlag);
 int                         graphLoad2          (const Gnum, const Gnum, const Gnum * const, const Gnum * const, Gnum * restrict const, const Gnum, const Gnum * const);
 int                         graphSave           (const Graph * const, FILE * const);
 
-#ifdef GEOM_H
+#ifdef SCOTCH_GEOM_H
 int                         graphGeomLoadChac   (Graph * restrict const, Geom * restrict const, FILE * const, FILE * const, const char * const);
 int                         graphGeomSaveChac   (const Graph * restrict const, const Geom * restrict const, FILE * const, FILE * const, const char * const);
 int                         graphGeomLoadHabo   (Graph * restrict const, Geom * restrict const, FILE * const, FILE * const, const char * const);
@@ -190,4 +185,4 @@ int                         graphGeomLoadMmkt   (Graph * restrict const, Geom * 
 int                         graphGeomSaveMmkt   (const Graph * restrict const, const Geom * restrict const, FILE * const, FILE * const, const char * const);
 int                         graphGeomLoadScot   (Graph * restrict const, Geom * restrict const, FILE * const, FILE * const, const char * const);
 int                         graphGeomSaveScot   (const Graph * restrict const, const Geom * restrict const, FILE * const, FILE * const, const char * const);
-#endif /* GEOM_H */
+#endif /* SCOTCH_GEOM_H */

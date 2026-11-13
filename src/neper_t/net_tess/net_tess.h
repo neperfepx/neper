@@ -15,6 +15,8 @@ extern "C"
 
   extern int net_tess_3dto2d (struct TESS *pTess);
 
+  extern int net_tess_finalize (struct TESS PTess, struct SEEDSET SSet, struct TESS *pTess);
+
 #ifdef __cplusplus
 }
 #endif

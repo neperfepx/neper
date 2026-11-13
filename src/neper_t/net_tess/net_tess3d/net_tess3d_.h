@@ -10,8 +10,8 @@
 #include"ut.h"
 #include"neut_t.h"
 
-#include"net_polycomp/net_polycomp.h"
-#include"net_tesl/net_tesl.h"
+#include"net_tess3d_polycomp/net_tess3d_polycomp.h"
+#include"net_tess3d_tess/net_tess3d_tess.h"
 #include"../../net_utils/net_utils.h"
 #include"net_dim/net_dim.h"
 #include"net_tess3d_domain/net_tess3d_domain.h"

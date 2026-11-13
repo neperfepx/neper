@@ -16,7 +16,6 @@ UT is a collection of general-purpose C utilities.  It contains low-level functi
   * Geometry
   * Vectors, tensors, matrices and linear algebra
   * Mathematical expression evaluation
-  * Non-linear optimization with NLopt
   * PNG images
   * Terminal output
   * Time

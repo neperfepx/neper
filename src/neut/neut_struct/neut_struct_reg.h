@@ -14,6 +14,7 @@ extern "C"
   {
     int mloop;
     int maxedgedelqty;
+    int delcell;
     double fmax;
 
     char *seltype;

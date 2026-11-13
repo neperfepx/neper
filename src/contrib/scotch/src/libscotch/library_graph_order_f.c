@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2012,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2012,2018,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -49,14 +49,14 @@
 /**                                 to   : 25 jul 2010     **/
 /**                # Version 6.0  : from : 08 jan 2012     **/
 /**                                 to   : 25 apr 2018     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -337,5 +337,5 @@ const double * const        kbalval,          \
 int * const                 revaptr),         \
 (straptr, flagval, levlnbr, kbalval, revaptr))
 {
-  *revaptr = SCOTCH_stratGraphOrderBuild (straptr, *levlnbr, *flagval, *kbalval);
+  *revaptr = SCOTCH_stratGraphOrderBuild (straptr, *flagval, *levlnbr, *kbalval);
 }

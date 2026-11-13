@@ -12,4 +12,6 @@
 #include"neut_m.h"
 #include"ut.h"
 
+#include"../nem_interface.h"
+#include"../nem_interface_dup/nem_interface_dup.h"
 #include"nem_interface_cohesive.h"

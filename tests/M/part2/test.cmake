@@ -1,7 +1,0 @@
-# This file is part of the Neper software package.
-# Copyright (C) 2003-2026, Romain Quey, CNRS.
-# See the COPYING file in the top-level directory.
-
-set (test_mode_force_minimal 1)
-set (test_command -M -loadmesh n2-id1.msh -part 2:2 -order 1 -o test)
-include(../../test.cmake)

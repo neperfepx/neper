@@ -17,6 +17,9 @@ neut_ospace_fnscanf_tess (char *crysym, char *space, struct OSPACE *pOSp, char *
 
   sprintf (filename, "%s/orispace/%s/fr.tess", data, crysym);
 
+  if (!ut_file_exist ("%s", filename))
+    ut_print_message (2, 2, "The orientation space of crystal symmetry `%s' is not available (cubic and hexagonal only).\n", crysym);
+
   neut_tess_fnscanf (filename, &((*pOSp).Tess), mode);
 
   ut_free_1d_char (&filename);
@@ -44,7 +47,7 @@ neut_ospace_fnscanf_mesh (char *crysym, char *space, char *fr, struct OSPACE *pO
 
   neut_mesh_fnscanf_msh (filename, &((*pOSp).Nodes),
                          (*pOSp).Mesh, (*pOSp).Mesh + 1,
-                         (*pOSp).Mesh + 2, (*pOSp).Mesh + 3, NULL, NULL, mode);
+                         (*pOSp).Mesh + 2, (*pOSp).Mesh + 3, NULL, NULL, NULL, NULL, mode);
 
   dim = neut_mesh_array_dim ((*pOSp).Mesh);
 

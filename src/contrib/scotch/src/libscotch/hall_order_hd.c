@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2012,2018-2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2012,2018-2020,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -52,6 +52,8 @@
 /**                                 to   : 30 apr 2018     **/
 /**                # Version 6.1  : from : 01 nov 2019     **/
 /**                                 to   : 11 feb 2020     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 06 aug 2024     **/
 /**                                                        **/
 /**   NOTES      : # This module contains pieces of code   **/
 /**                  that belong to other people; see      **/
@@ -62,8 +64,6 @@
 /*
 **  The defines and includes.
 */
-
-#define HALL_ORDER_HD
 
 #include "module.h"
 #include "common.h"
@@ -133,7 +133,7 @@ Gnum * restrict     pe,                           /* Array of indexes in iw of s
 Gnum                pfree,                        /* Useful size in iw                        */
 Gnum * restrict     len,                          /* Array of lengths of adjacency lists      */
 Gnum * restrict     iw,                           /* Adjacency list array                     */
-Gnum * restrict     nv,                           /* Array of element degrees                 */
+Gnum *              nv,                           /* Array of element degrees [norestrict]    */
 Gnum * restrict     elen,                         /* Array that holds the inverse permutation */
 Gnum * restrict     last,                         /* Array that holds the permutation         */
 Gnum * restrict     ncmpaptr,                     /* Number of times array iw was compressed  */

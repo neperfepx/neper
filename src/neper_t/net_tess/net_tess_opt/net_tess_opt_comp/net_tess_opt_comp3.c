@@ -7,12 +7,6 @@
 void
 net_tess_opt_comp_rand_init (struct TOPT *pTOpt)
 {
-  (*pTOpt).loop = 1;
-  (*pTOpt).loop_start = ut_alloc_1d_int ((*pTOpt).loop);
-  (*pTOpt).loop_start[0] = 1;
-  (*pTOpt).loop_plateau_length = ut_alloc_1d_int ((*pTOpt).loop);
-  (*pTOpt).loop_status = ut_alloc_1d_int ((*pTOpt).loop);
-
   if ((*pTOpt).itermax <= 0)
   {
     (*pTOpt).itermax = INT_MAX;
@@ -39,7 +33,7 @@ net_tess_opt_comp_rand_read (struct TOPT TOpt, int *pseedqty, int *pdimqty,
   char **vars = NULL;
   double *vals = NULL;
 
-  ut_string_function (TOpt.algoname[0], &fct, &fct_vars, &fct_vals,
+  ut_string_function (TOpt.algoname, &fct, &fct_vars, &fct_vals,
                       &fct_varqty);
 
   varqty = 4;
@@ -58,7 +52,7 @@ net_tess_opt_comp_rand_read (struct TOPT TOpt, int *pseedqty, int *pdimqty,
   {
     printf ("\n");
     ut_print_message (2, 3, "Could not process expression `%s'.\n",
-                      TOpt.algoname[0]);
+                      TOpt.algoname);
   }
 
   if (!strcmp (TOpt.optitype, "morpho"))
@@ -104,26 +98,52 @@ net_tess_opt_comp_rand_read (struct TOPT TOpt, int *pseedqty, int *pdimqty,
 }
 
 void
-net_tess_opt_comp_rand_shift (double *x, struct TOPT *pTOpt, int seedqty,
+net_tess_opt_comp_rand_shift (struct TOPT *pTOpt, int seedqty,
                               int dimqty, double min, double max,
                               int *alldims, int alldimqty, gsl_rng * r)
 {
-  if (!strcmp ((*pTOpt).optitype, "morpho"))
-    net_tess_opt_comp_rand_shift_seeds (x, pTOpt, seedqty, dimqty, min, max,
-                                        alldims, alldimqty, r);
-  else if (!strcmp ((*pTOpt).optitype, "crystal"))
-    net_tess_opt_comp_rand_shift_crystal (x, pTOpt, dimqty, min, max, alldims,
-                                          alldimqty, r);
-  else
-    abort ();
+  int i, j, seed, dim, id;
+  int *seeds = ut_alloc_1d_int ((*pTOpt).SSet.N);
+  double *tmp = ut_alloc_1d (ut_num_max ((*pTOpt).SSet.N, 4));
+  double *v = ut_alloc_1d ((*pTOpt).Dim + 1);
+  int *dims = ut_alloc_1d_int (4);
+
+  // seeds
+  ut_array_1d_set_rand (tmp, (*pTOpt).SSet.N, 0, 1, r);
+  ut_array_1d_sort_index (tmp, (*pTOpt).SSet.N, seeds);
+  ut_array_1d_int_addval (seeds, seedqty, 1, seeds);
+
+  // change x
+  for (i = 0; i < seedqty; i++)
+  {
+    seed = seeds[i];
+
+    // dims
+    ut_array_1d_int_choose (alldims, alldimqty, dims, dimqty, r);
+    ut_space_random (r, dims, dimqty, min, max, v);
+
+    for (j = 0; j < dimqty; j++)
+    {
+      dim = dims[j];
+      id = (*pTOpt).seedvar_x[seed][dim];
+      (*pTOpt).x[id] += v[dim];
+      (*pTOpt).x[id] = ut_num_max ((*pTOpt).x[id], (*pTOpt).boundl[id]);
+      (*pTOpt).x[id] = ut_num_min ((*pTOpt).x[id], (*pTOpt).boundu[id]);
+    }
+  }
+
+  ut_free_1d_int (&seeds);
+  ut_free_1d (&tmp);
+  ut_free_1d (&v);
+  ut_free_1d_int (&dims);
 
   return;
 }
 
 void
-net_tess_opt_comp_rand_revert (double *x, struct TOPT TOpt, double *x_cpy)
+net_tess_opt_comp_rand_revert (struct TOPT TOpt, double *x_cpy)
 {
-  ut_array_1d_memcpy (x_cpy, TOpt.xqty, x);
+  ut_array_1d_memcpy (x_cpy, TOpt.xqty, TOpt.x);
 
   return;
 }

@@ -70,6 +70,7 @@ extern "C"
   extern int neut_tess_hascellorispread (struct TESS Tess);
 
   extern int neut_tess_isreg (struct TESS Tess);
+  extern int neut_tess_domface_isper (struct TESS Tess, int domface);
 
   extern int neut_tess_cell_id (struct TESS Tess, int cell);
 
@@ -86,6 +87,9 @@ extern "C"
 
   extern int neut_tess_expr_val_one (struct TESS *pTess, int *showedge, int *showface, int *showpoly,
                         char *entity, int id, char *expr, double *pval, char **ptype);
+
+  extern int neut_tess_expr_string (struct TESS *pTess, char *entity, int id,
+                                    char *expr, char **pstring);
 
 #endif				/* NEUT_TESS_GEN_H */
 

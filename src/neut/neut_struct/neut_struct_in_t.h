@@ -63,10 +63,6 @@ extern "C"
     char **optifixstring;
     char ***optifix;
 
-    // optimization / max number of iterations without decreasing the objective function (-*algomaxiter)
-    char *optialgomaxiterstring;
-    char **optialgomaxiter;
-
     // optimization / objective function (-*optiobj)
     char *optiobjectivestring;
     char **optiobjective;
@@ -143,6 +139,7 @@ extern "C"
     char *selstring;			// regularization sel
     int mloop;				// regularization loop
     int maxedgedelqty;			// regularization max del
+    int delcell;			// regularization cell deletion
     char *sortstring;			// cell sorting
     int checktess;			// checking tess?
 

@@ -4,7 +4,7 @@
 #include "ol_g.h"
 
 double **
-ol_g_alloc ()
+ol_g_alloc (void)
 {
   double **g = ut_alloc_2d (3, 3);
 
@@ -16,12 +16,9 @@ ol_g_alloc ()
 }
 
 void
-ol_g_free (double **g)
+ol_g_free (double ***pg)
 {
-  if (!g)
-    return;
-  else
-    ut_free_2d (&g, 3);
+  ut_free_2d (pg, 3);
 
   return;
 }

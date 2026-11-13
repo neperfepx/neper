@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2012,2014 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2012,2014,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -46,14 +46,14 @@
 /**                                 to   : 11 dec 2002     **/
 /**                # Version 6.0  : from : 17 oct 2012     **/
 /**                                 to   : 04 aug 2014     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HGRAPH_ORDER_SI
 
 #include "module.h"
 #include "common.h"
@@ -76,7 +76,7 @@
 
 int
 hgraphOrderSi (
-const Hgraph * restrict const grafptr,
+Hgraph * restrict const       grafptr,
 Order * restrict const        ordeptr,
 const Gnum                    ordenum,            /*+ Zero-based ordering number +*/
 OrderCblk * restrict const    cblkptr)            /*+ Single column-block        +*/

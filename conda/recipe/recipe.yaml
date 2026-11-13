@@ -1,0 +1,73 @@
+context:
+  version: "7.0.0"
+
+package:
+  name: neper
+  version: ${{ version }}
+
+source:
+  # local build from this repository (rattler-build build -r conda/recipe);
+  # for conda-forge, replace with the release tarball:
+  #   url: https://github.com/neperfepx/neper/archive/refs/tags/v${{ version }}.tar.gz
+  #   sha256: <sha256sum of the tarball>
+  path: ../..
+
+build:
+  number: 0
+  skip:
+    - win
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - ${{ stdlib('c') }}
+    - cmake
+    - make
+  host:
+    # Gmsh library (libgmsh and gmshc.h), version >= 4.9
+    - gmsh >=4.9
+    - gsl
+    - scotch
+    - if: linux
+      then: libgomp
+    - if: osx
+      then: llvm-openmp
+  run:
+    # the Gmsh library changes name (soname) at each minor version
+    - ${{ pin_compatible('gmsh', upper_bound='x.x') }}
+    # image generation (neper -V)
+    - povray
+
+tests:
+  - script:
+      - neper --version
+      - test "$(neper --data)" = "${PREFIX}/share/neper/"
+      - test -f "${PREFIX}/share/neper/orispace/cubic/fr.tess"
+      - neper -T -n 10 -o n10
+      - neper -M n10.tess
+      - test -f n10.msh
+      - neper -M n10.tess -part 2 -o n10p
+      - grep -q NodePart n10p.msh
+      - neper -V n10.tess,n10.msh -print img
+      - test -f img.png
+      - test "$(echo 0 30 0 | orilib ol_e_q | awk '{print $2}')" = 0.258819045
+
+about:
+  homepage: https://neper.info
+  repository: https://github.com/neperfepx/neper
+  documentation: https://neper.info/docs
+  license: GPL-3.0-only
+  license_file:
+    - COPYING
+    - src/contrib/muparser/LICENSE
+  summary: Polycrystal generation and meshing
+  description: |
+    Neper is a free / open source software package for polycrystal
+    generation and meshing.  It can generate polycrystals with a wide
+    variety of morphological properties, mesh them into high-quality
+    finite elements, and produce publication-quality images.
+
+extra:
+  recipe-maintainers:
+    - rquey

@@ -11,7 +11,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   // ### INITIALIZING ##################################################
 
   // Variable declaration ###
-  int i, status, dim;
+  int i, status, dim, nsetloaded = 0, nsetfaces = 0;
   struct IN_M In;
   struct TESS Tess;
   struct TESR Tesr;
@@ -26,7 +26,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   struct BOUNDARY Bound;
 
   RMesh = malloc (5 * sizeof (struct MESH));
-  Mesh = malloc (5 * sizeof (struct MESH));
+  Mesh = malloc (6 * sizeof (struct MESH));
   NSet = malloc (3 * sizeof (struct NSET));
 
   nem_in_set_zero (&In);
@@ -40,7 +40,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   for (i = 0; i < 5; i++)
     neut_mesh_set_zero (RMesh + i);
 
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < 6; i++)
     neut_mesh_set_zero (Mesh + i);
 
   for (i = 0; i < 3; i++)
@@ -67,6 +67,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 2, "Loading tessellation...\n");
     neut_tess_fnscanf (In.tess, &Tess, "r");
     nem_input_init_dim_tess (&In, Tess);
+
   }
 
   // Loading raster tessellation ###
@@ -75,7 +76,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 2, "Loading raster tessellation...\n");
     neut_tesr_fnscanf (In.tesr, &Tesr);
     if (Tesr.Dim == 3 && !strcmp (In.elttype, "tri"))
-      ut_print_message (2, 3, "Free meshing not available for 3D tesrs.\n");
+      ut_print_message (2, 3, "Free meshing not available for 3D tesrs (use `-elttype hexgrid').\n");
 
     nem_input_init_dim_tesr (&In, Tesr);
 
@@ -97,9 +98,9 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     int topology;
 
-    ut_print_message (0, 2, "Loading mesh...\n");
+    ut_print_message (0, 1, "Loading mesh...\n");
     neut_mesh_fnscanf_msh (In.mesh, &RNodes, RMesh, RMesh + 1, RMesh + 2,
-                           RMesh + 3, RMesh + 4, &topology, "r");
+                           RMesh + 3, RMesh + 4, NULL, NULL, &topology, "r");
     nem_input_init_dim_mesh (&In, RMesh);
 
     if (!strcmp (In.elttype, "tri") && topology)
@@ -112,7 +113,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   // Loading points ###
   if (In.loadpoint)
   {
-    ut_print_message (0, 2, "Loading points...\n");
+    ut_print_message (0, 1, "Loading points...\n");
     neut_point_fnscanf (In.loadpoint, &Point);
   }
 
@@ -121,12 +122,16 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     int topology;
     ut_print_message (0, 1, "Loading result mesh...\n");
-    nem_readmesh (In.loadmesh, &Nodes, Mesh, &topology);
+    // without the tessellation, the nsets of the mesh are kept
+    nsetloaded = nem_readmesh (In.loadmesh, &Nodes, Mesh, In.tess ? NULL : NSet, &topology);
     if (!In.tess)
       status = nem_input_init_dim_mesh (&In, Mesh);
 
+    if (nsetloaded && !strcmp (In.nset, "default"))
+      ut_string_string ("all", &In.nset);
+
     if (Nodes.NodeQty == 0)
-      ut_print_message (1, 3, "Mesh is void (%d node(s), 0 elt).\n",
+      ut_print_message (1, 2, "Mesh is void (%d node(s), 0 elt).\n",
                         Nodes.NodeQty);
 
     else
@@ -140,14 +145,24 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
           break;
         }
 
-      if (topology && (status || (Tess.PolyQty == 0 && strcmp (In.nset, "none") != 0)))
+      int nsetrecon = Tess.PolyQty == 0 && strcmp (In.nset, "none") != 0;
+
+      if (topology && (status || nsetrecon))
       {
         ut_print_message (0, 2, "Reconstructing mesh...\n");
-        nem_reconstruct_mesh ((Tess.PolyQty == 0
-                               && strcmp (In.nset,
-                                          "none") != 0) ? "all" : In.dimout,
-                              &Nodes, Mesh, &Tess);
+        nem_reconstruct_mesh (nsetrecon ? "all" : In.dimout, &Nodes, Mesh, &Tess);
+
+        // domain face labels from the fasets or else from the face nsets (if
+        // loaded with the mesh)
+        if (Mesh[5].ElsetQty > 0)
+          nem_reconstruct_mesh_fasets (Mesh[2], Mesh[5], &Tess);
+        else if (nsetloaded)
+          nsetfaces = !nem_reconstruct_mesh_nsets (Nodes, Mesh[2], NSet[2], &Tess);
       }
+
+      // no fasets can be written (e.g. periodic mesh)
+      if (nsetloaded && Mesh[5].ElsetQty == 0 && !nsetfaces && !strcmp (In.faset, "faces"))
+        ut_string_string ("none", &In.faset);
     }
   }
 
@@ -164,7 +179,15 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
       nem_meshing_para (In, &Tess, &Tesr, &RNodes, RMesh, &MeshPara);
 
       if (!strcmp (In.elttype, "tri"))
+      {
         nem_meshing (In, &MeshPara, &Tess, RNodes, RMesh, &Nodes, Mesh);
+
+        if (In.eltsplit)
+        {
+          ut_print_message (0, 2, "Splitting elements...\n");
+          nem_split (In, Tess, &Nodes, Mesh);
+        }
+      }
 
       else if (!strncmp (In.elttype, "quad", 4))
       {
@@ -188,7 +211,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (ut_list_testelt (In.interface, NEUT_SEP_DEP, "discontinuous")
       || ut_list_testelt (In.interface, NEUT_SEP_DEP, "cohesive"))
   {
-    ut_print_message (0, 2, "Processing mesh at interfaces...\n");
+    ut_print_message (0, 1, "Processing mesh at interfaces...\n");
     nem_interface (In, Tess, &Nodes, Mesh, &Bound);
   }
 
@@ -206,10 +229,20 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     neut_mesh_dupnodemerge (&Nodes, Mesh, NULL, In.dupnodemerge, 1, NULL);
   }
 
+  // (unless loaded with the mesh; with nsets loaded with the mesh, only if the
+  // domain faces correspond to face nsets)
+  if (Mesh[3].EltQty > 0 && strcmp (In.faset, "none")
+      && (!strcmp (Mesh[3].EltType, "tri") || In.eltsplit) && Mesh[5].EltQty == 0
+      && (!nsetloaded || nsetfaces))
+  {
+    ut_print_message (0, 1, "Creating fasets...\n");
+    neut_mesh_fasetmesh (Tess, Mesh[2], Mesh[3], Mesh + 5);
+  }
+
 // managing mesh order ###
   if (In.order == 2 && Mesh[dim].EltOrder == 1)
   {
-    ut_print_message (0, 2, "Switching mesh to order 2...\n");
+    ut_print_message (0, 1, "Switching mesh to order 2...\n");
 
     if (dim >= 0 && Mesh[dim].EltOrder == 1)
     {
@@ -218,6 +251,15 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
       else
         nem_order_str (In, MeshPara, &Nodes, Mesh);
     }
+
+    if (nsetloaded)
+      neut_nset_addeltnodes (NSet, Nodes, Mesh);
+  }
+
+  else if (In.order == 1 && dim >= 0 && Mesh[dim].EltOrder == 2)
+  {
+    ut_print_message (0, 1, "Switching mesh to order 1...\n");
+    nem_order_1 (&Nodes, Mesh, NSet);
   }
 
 // ###################################################################
@@ -225,14 +267,14 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 
   if (strcmp (In.transform, "none"))
   {
-    ut_print_message (0, 2, "Transforming mesh...\n");
+    ut_print_message (0, 1, "Transforming mesh...\n");
     nem_transform (In, Tess, &Nodes, Mesh);
   }
 
   if (In.sortnode || In.sortelt)
   {
-    ut_print_message (0, 2, "Sorting mesh...\n");
-    nem_sort (In, &Tess, &Nodes, Mesh);
+    ut_print_message (0, 1, "Sorting mesh...\n");
+    nem_sort (In, &Tess, &Nodes, Mesh, NSet);
   }
 
 // Partitioning mesh ###
@@ -242,15 +284,20 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 #ifdef HAVE_LIBSCOTCH
     nem_partition (In, &Nodes, Mesh, &Part);
 #else
-    ut_print_message (2, 0, "Compiled without libscotch.\n");
+    ut_print_message (2, 1, "Compiled without libscotch.\n");
 #endif /* HAVE_LIBSCOTCH */
   }
 
 // Searching node sets ###
-  if ((strcmp (In.nset, "none") || strcmp (In.faset, "none")) && dim >= 1)
+  if ((strcmp (In.nset, "none")))
   {
-    ut_print_message (0, 1, "Searching nsets and fasets...\n");
-    nem_nsets (In, Tess, Tesr, Mesh, NSet);
+    ut_print_message (0, 1, "Creating nsets...\n");
+
+    // loaded nsets: only the custom nsets are created
+    if (!nsetloaded)
+      nem_nsets (In, Tess, Tesr, Nodes, Mesh, NSet);
+    else if (strchr (In.nset, ':'))
+      nem_nsets_custom (In, Tess, Nodes, Mesh, NSet);
   }
 
 // Searching element sets ###
@@ -306,7 +353,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   neut_tess_free (&Tess);
   neut_tesr_free (&Tesr);
   neut_nodes_free (&Nodes);
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < 6; i++)
     neut_mesh_free (Mesh + i);
   free (Mesh);
   for (i = 0; i < 5; i++)

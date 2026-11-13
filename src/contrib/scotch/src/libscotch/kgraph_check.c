@@ -1,4 +1,4 @@
-/* Copyright 2010,2011,2013,2014 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2010,2011,2013,2014,2021,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,14 +43,14 @@
 /**                                 to   : 13 jul 2010     **/
 /**                # Version 6.0  : from : 03 mar 2011     **/
 /**                                 to   : 14 sep 2014     **/
+/**                # Version 7.0  : from : 11 jul 2021     **/
+/**                                 to   : 17 jul 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define KGRAPH
 
 #include "module.h"
 #include "common.h"
@@ -102,14 +102,18 @@ const Kgraph * restrict const grafptr)
 
   if (&grafptr->s != grafptr->m.grafptr) {
     errorPrint ("kgraphCheck: invalid mapping graph");
-    return     (1);
+    return (1);
   }
 
-  if ((grafptr->m.domnmax <= 0)                 ||
-      (grafptr->m.domnnbr > grafptr->m.domnmax) ||
-      (grafptr->m.domnnbr > grafptr->s.vertnbr)) {
-    errorPrint ("kgraphCheck: invalid number of domains");
-    return     (1);
+  if (mapCheck (&grafptr->m) != 0) {
+    errorPrint ("kgraphCheck: invalid mapping (1)");
+    return (1);
+  }
+  if (grafptr->r.m.parttax != NULL) {             /* If old mapping provided */
+    if (mapCheck (&grafptr->r.m) != 0) {
+      errorPrint ("kgraphCheck: invalid mapping (2)");
+      return (1);
+    }
   }
 
   if (memAllocGroup ((void **) (void *)
@@ -123,26 +127,21 @@ const Kgraph * restrict const grafptr)
   flagtax -= baseval;
 
   o = 1;                                          /* Assume failure when checking */
-  for (vertnum = baseval, vfixnbr = 0;
-       vertnum < vertnnd; vertnum ++) {
-    Anum                partval;
 
-    partval = parttax[vertnum];
-    if ((partval < 0) ||
-        (partval >= grafptr->m.domnnbr)) {
-      errorPrint ("kgraphCheck: invalid part array");
-      goto fail;
-    }
-    if (pfixtax != NULL) {
-      Anum                pfixval;
+  vfixnbr = 0;                                    /* Assume no fixed vertices */
+  if (pfixtax != NULL) {
+    for (vertnum = baseval; vertnum < vertnnd; vertnum ++) {
+      Anum                domnnum;
+      Anum                termnum;
 
-      pfixval = pfixtax[vertnum];
-      if (pfixval != ~0) {
-        if (pfixval < 0) {
+      domnnum = parttax[vertnum];
+      termnum = pfixtax[vertnum];
+      if (termnum != ~0) {                        /* If vertex is fixed         */
+        if (termnum < 0) {                        /* If invalid terminal number */
           errorPrint ("kgraphCheck: invalid fixed part value");
           goto fail;
         }
-        if (pfixval != archDomNum (archptr, &grafptr->m.domntab[partval])) {
+        if (termnum != archDomNum (archptr, &grafptr->m.domntab[domnnum])) {
           errorPrint ("kgraphCheck: part index does not match fixed array");
           goto fail;
         }
@@ -191,22 +190,11 @@ const Kgraph * restrict const grafptr)
   commload = 0;
   edloval  = 1;                                   /* Assume edges are not weighted */
   for (vertnum = baseval; vertnum < vertnnd; vertnum ++) {
-    Anum                partval;                  /* Part of current vertex                         */
-    Anum                tdomnum;                  /* Terminal domain number of current vertex       */
-    Anum                tdfinum;                  /* Terminal domain number of current fixed vertex */
-    Gnum                edgenum;                  /* Number of current edge                         */
+    Anum                partval;                  /* Part of current vertex */
+    Gnum                edgenum;                  /* Number of current edge */
     Gnum                commcut;
 
     partval = parttax[vertnum];
-    tdomnum = archDomNum (&grafptr->a, &grafptr->m.domntab[partval]);
-    tdfinum = (grafptr->pfixtax != NULL) ? grafptr->pfixtax[vertnum] : -1;
-
-    if ((tdfinum != -1) &&                        /* If it is a fixed vertex */
-        (tdfinum != tdomnum)) {
-      errorPrint ("kgraphCheck: invalid fixed vertex part");
-      goto fail;
-    }
-
     comploadtab[partval] += (velotax == NULL) ? 1 : velotax[vertnum];
 
     commcut = 0;
@@ -245,7 +233,7 @@ const Kgraph * restrict const grafptr)
 
   o = 0;                                          /* Everything turned well */
 
-fail :
+fail:
   memFree (comploadtab);                          /* Free group leader */
 
   return (o);

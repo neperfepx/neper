@@ -103,12 +103,15 @@ ut_print_wnc_int_header (FILE * file, int nb, int *pnbcol, int nbcolmax,
 void
 ut_print_wnc (FILE * file, int *pnbcol, int nbcolmax, const char *s, ...)
 {
-  va_list args;
-  char *string = ut_alloc_1d_char (1000);
+  va_list args, args2;
+  char *string = NULL;
 
   va_start (args, s);
-  vsprintf (string, s, args);
+  va_copy (args2, args);
+  string = ut_alloc_1d_char (vsnprintf (NULL, 0, s, args) + 1);
   va_end (args);
+  vsprintf (string, s, args2);
+  va_end (args2);
 
   ut_print_wnc_string (file, string, pnbcol, nbcolmax);
 
@@ -122,12 +125,15 @@ ut_print_wnc_wnelts (FILE * file, int *pnbcol, int nbcolmax, int *pnbelts,
                      int nbeltsmax, const char *s, ...)
 {
   int status;
-  va_list args;
-  char *string = ut_alloc_1d_char (1000);
+  va_list args, args2;
+  char *string = NULL;
 
   va_start (args, s);
-  vsprintf (string, s, args);
+  va_copy (args2, args);
+  string = ut_alloc_1d_char (vsnprintf (NULL, 0, s, args) + 1);
   va_end (args);
+  vsprintf (string, s, args2);
+  va_end (args2);
 
   if (++(*pnbelts) <= nbeltsmax)
   {
@@ -164,7 +170,7 @@ ut_print_1lwnc (FILE * file, const char *string, unsigned int *pnbcol,
   if (strlen (c) <= nbcolmax)
     print_qty = strlen (c);
   else
-    for (i = nbcolmax + 1; i >= 0; i--)
+    for (i = nbcolmax; i >= 0; i--)
       if (c[i] == ' ')
       {
         print_qty = i;
@@ -246,10 +252,15 @@ ut_print_increment (int incr, int incrf)
   return;
 }
 
+// ut_print_message prints a message, wrapped at 72 characters (including
+// the line header and level marker); continuation lines are aligned with
+// the start of the message.
 void
 ut_print_message (int head, int level, const char *message, ...)
 {
-  va_list args;
+  int i, indent, width, len, brk;
+  char *text = NULL, *line = NULL, *end = NULL;
+  va_list args, args2;
   const char *message2 = NULL;
 
   if (message[0] == '\n')
@@ -265,8 +276,56 @@ ut_print_message (int head, int level, const char *message, ...)
   ut_print_level (level);
 
   va_start (args, message);
-  vfprintf (stdout, message2, args);
+  va_copy (args2, args);
+  len = vsnprintf (NULL, 0, message2, args);
+  text = ut_alloc_1d_char (len + 1);
+  vsnprintf (text, len + 1, message2, args2);
+  va_end (args2);
   va_end (args);
+
+  // width of the line header and level marker
+  indent = 9 + (level >= 2 && level <= 6 ? 2 * level : 0);
+  width = ut_num_max (72 - indent, 20);
+
+  line = text;
+  while (*line)
+  {
+    end = strchr (line, '\n');
+    len = end ? end - line : (int) strlen (line);
+
+    // breaking the line at the last space before the width
+    while (len > width)
+    {
+      brk = -1;
+      for (i = width; i > 0; i--)
+        if (line[i] == ' ')
+        {
+          brk = i;
+          break;
+        }
+      if (brk == -1)
+        break;
+
+      // removing the spaces at the break
+      for (i = brk; i > 0 && line[i - 1] == ' '; i--);
+      printf ("%.*s\n%*s", i, line, indent, "");
+
+      for (i = brk; line[i] == ' '; i++);
+      len -= i;
+      line += i;
+    }
+
+    printf ("%.*s", len, line);
+    if (!end)
+      break;
+
+    printf ("\n");
+    line = end + 1;
+    if (*line)
+      printf ("%*s", indent, "");
+  }
+
+  ut_free_1d_char (&text);
 
   fflush (stdout);
 
@@ -306,9 +365,10 @@ void
 ut_print_messagewnc (int head, int nbcolmax, const char *message)
 {
   char *Header = ut_alloc_1d_char (10);
+  char *message2 = NULL;
 
   int first = 1;
-  int length;
+  int length = 9;               // length of the header
   int line;
   unsigned int m;
 
@@ -316,27 +376,28 @@ ut_print_messagewnc (int head, int nbcolmax, const char *message)
   {
   case 0:
     sprintf (Header, "Info   : ");
-    length = strlen ("Info   : ");
     break;
   case 1:
     sprintf (Header, "Warning: ");
-    length = strlen ("Warning: ");
     break;
   case 2:
     sprintf (Header, "Error  : ");
-    length = strlen ("Error  : ");
     break;
   case -1:
     sprintf (Header, "*DEBUG*: ");
-    length = strlen ("*DEBUG*: ");
     break;
   default:
     abort ();
   }
 
+  // the line breaks are printed below, so a trailing one is removed
+  ut_string_string (message, &message2);
+  if (strlen (message2) > 0 && message2[strlen (message2) - 1] == '\n')
+    message2[strlen (message2) - 1] = '\0';
+  message = message2;
+
   line = 0;
   m = 0;
-  length = 9;                   // 10 changed to 9
   while (m != strlen (message))
   {
     line++;
@@ -360,11 +421,12 @@ ut_print_messagewnc (int head, int nbcolmax, const char *message)
   }
 
   ut_free_1d_char (&Header);
+  ut_free_1d_char (&message2);
+
+  fflush (stdout);
 
   if (head == 2)
     abort ();
-
-  fflush (stdout);
 
   return;
 }
@@ -378,8 +440,8 @@ ut_print_missingfile (const char *filename)
 }
 
 void
-ut_print_moduleheader (const char *module, int fargv, char **fargc, int argv,
-                       char **argc)
+ut_print_moduleheader (const char *module, int fargc, char **fargv, int argc,
+                       char **argv)
 {
   int i, qty, fqty;
 
@@ -389,38 +451,38 @@ ut_print_moduleheader (const char *module, int fargv, char **fargc, int argv,
   char *command2 = NULL;
 
   qty = 0;
-  for (i = 1; i < argv; i++)
-    qty += strlen (argc[i]) + 1;
+  for (i = 1; i < argc; i++)
+    qty += strlen (argv[i]) + 1;
 
   fqty = 0;
-  for (i = 1; i < fargv; i++)
-    fqty += strlen (fargc[i]) + 1;
+  for (i = 1; i < fargc; i++)
+    fqty += strlen (fargv[i]) + 1;
 
   fcommand1 = ut_alloc_1d_char (fqty + 100);
   fcommand2 = ut_alloc_1d_char (fqty + 100);
   command1 = ut_alloc_1d_char (qty + 100);
   command2 = ut_alloc_1d_char (qty + 100);
 
-  if (argv == 1)
+  if (argc == 1)
     sprintf (command1, "[com line] (none)");
   else
     sprintf (command1, "[com line]");
   sprintf (command2, "%s", command1);
 
-  for (i = 1; i < argv; i++)
+  for (i = 1; i < argc; i++)
   {
-    sprintf (command2, "%s %s", command1, argc[i]);
+    sprintf (command2, "%s %s", command1, argv[i]);
     sprintf (command1, "%s", command2);
   }
 
-  if (fargv == 0 || fargv == 1)
+  if (fargc == 0 || fargc == 1)
     sprintf (fcommand1, "[ini file] (none)");
   else
     sprintf (fcommand1, "[ini file]");
   sprintf (fcommand2, "%s", fcommand1);
-  for (i = 1; i < fargv; i++)
+  for (i = 1; i < fargc; i++)
   {
-    sprintf (fcommand2, "%s %s", fcommand1, fargc[i]);
+    sprintf (fcommand2, "%s %s", fcommand1, fargv[i]);
     sprintf (fcommand1, "%s", fcommand2);
   }
 
@@ -462,7 +524,7 @@ ut_print_progress_nonl (FILE * file, long current, long total,
 
   if (strcmp (string, prevprogress))
   {
-    if (isatty (1))
+    if (isatty (fileno (file)))
     {
       for (i = strlen (string); i < strlen (prevprogress); i++)
         fprintf (file, "\b");
@@ -491,7 +553,7 @@ ut_print_progress (FILE * file, long nb, long tot, const char *format,
 {
   ut_print_progress_nonl (file, nb, tot, format, prev);
 
-  if (nb == tot && isatty (1))
+  if (nb == tot && isatty (fileno (file)))
     fprintf (file, "\n");
 
   return;

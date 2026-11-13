@@ -8,7 +8,7 @@ void
 net_transform_tesr (struct IN_T In, struct TESR *pTesr)
 {
   int i, PartQty, status;
-  double theta, *tmp = ol_r_alloc ();
+  double *tmp = ol_rtheta_alloc ();
   char **parts = NULL;
   double *val = ut_alloc_1d (3);
   double **g = ol_g_alloc ();
@@ -29,9 +29,9 @@ net_transform_tesr (struct IN_T In, struct TESR *pTesr)
     {
       ut_print_message (0, 2, "Rotating...\n");
       sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2,
-              &theta);
+              tmp + 3);
       ol_r_set_unit (tmp);
-      ol_rtheta_g (tmp, theta, g);
+      ol_rtheta_g (tmp, g);
       neut_tesr_rotate (pTesr, g);
     }
     else if (!strncmp (parts[i], "translate", 5))
@@ -88,11 +88,6 @@ net_transform_tesr (struct IN_T In, struct TESR *pTesr)
     {
       ut_print_message (0, 2, "Renumbering from tesr...\n");
       net_transform_tesr_tesrrenumber (In, parts[i], pTesr);
-    }
-    else if (!strncmp (parts[i], "tesrtranslate", 12))
-    {
-      ut_print_message (0, 2, "Translating from tesr...\n");
-      net_transform_tesr_tesrtranslate (parts[i], pTesr);
     }
     else if (!strncmp (parts[i], "tesrmerge", 9))
     {
@@ -176,8 +171,8 @@ net_transform_tesr (struct IN_T In, struct TESR *pTesr)
   }
 
   ut_free_2d_char (&parts, PartQty);
-  ol_r_free (tmp);
-  ol_g_free (g);
+  ol_rtheta_free (&tmp);
+  ol_g_free (&g);
 
   return;
 }

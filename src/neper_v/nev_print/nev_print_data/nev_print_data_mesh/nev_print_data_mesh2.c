@@ -15,12 +15,18 @@ nev_print_data_mesh_init (struct MESH *Mesh, struct DATA **MeshData,
   (*pdim) = ((*pentity)[strlen (*pentity) - 1] == 'd') ?
             (*pentity)[strlen (*pentity) - 2] - '0' : neut_mesh_array_dim (Mesh);
 
+  // cohesive elts (eltco, elsetco or eltcoedge): MeshData[4]
+  if (!strcmp (*pentity, "eltco") || !strcmp (*pentity, "elsetco")
+      || !strcmp (*pentity, "eltcoedge"))
+    (*pdim) = 4;
+
   if (*pdim > 5)
     abort ();
 
   if (strstr (*pentity, "edge"))
   {
-    (*pdim) = (*pentity)[strlen (*pentity) - 6] - '0'; // different here
+    if (*pdim != 4)
+      (*pdim) = (*pentity)[strlen (*pentity) - 6] - '0'; // different here
     *pentityqty = 1;
     (*ppData) = MeshData[*pdim];
   }
@@ -77,8 +83,11 @@ nev_print_data_mesh_elt (struct SIM Sim, struct TESS *pTess, struct NODES *pNode
     ut_string_string (datastring, &(*pData).ScaleTitle);
 
   else
-    neut_data_fscanf_general (DataInput, entity, dim, entityqty, attribute, type,
-        datavalue, pData);
+    // (dim = 4 is the index of the cohesive elts, not their dimension)
+    neut_data_fscanf_general (DataInput, entity, dim == 4 ? (*pMesh)[4].Dimension : dim,
+                              entityqty, attribute, type, datavalue, pData);
+
+  neut_datainput_free (&DataInput);
 
   return;
 }
@@ -92,7 +101,7 @@ nev_print_data_mesh_eltedge (char *attribute, char *value, struct DATA *pData)
     ut_array_1d_int_fnscanf_wcard (value, (*pData).BCol, 3, "color", "r");
   }
   else if (!strcmp (attribute, "rad"))
-    (*pData).BRad = atof (value);
+    ut_string_real (value, &(*pData).BRad);
   else
     ut_print_exprbug (attribute);
 

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2008,2021,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -46,6 +46,10 @@
 /**                                 to   : 22 may 2008     **/
 /**                # Version 5.1  : from : 12 nov 2008     **/
 /**                                 to   : 12 nov 2008     **/
+/**                # Version 6.1  : from : 05 dec 2021     **/
+/**                                 to   : 05 dec 2021     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -53,7 +57,7 @@
 **  The defines and includes.
 */
 
-#define VMESH_SEPARATE_FM
+#define SCOTCH_VMESH_SEPARATE_FM
 
 /* #define SCOTCH_DEBUG_VMESH3 */              /* For intensive debugging */
 
@@ -123,12 +127,12 @@ const Gnum                                hashold) /*+ Maximum number of vertice
         &hnodtab, (size_t) (hashsiz * sizeof (VmeshSeparateFmNode)),
         &movetab, (size_t) (hashmax * sizeof (VmeshSeparateFmSave)), NULL) == NULL) {
     errorPrint ("vmeshSeparateFmResize: cannot resize arrays");
-    return     (1);                               /* If cannot reallocate */
+    return (1);                                   /* If cannot reallocate */
   }
 #ifdef SCOTCH_DEBUG_VMESH2
   if (((byte *) hnodtab - (byte *) helmtab) < ((byte *) (*saveptr) - (byte *) (*helmptr))) { /* If cannot simply copy node hash array */
     errorPrint ("vmeshSeparateFmResize: internal error (1)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VMESH2 */
 
@@ -156,7 +160,7 @@ const Gnum                                hashold) /*+ Maximum number of vertice
   gainTablFree (tablptr);                         /* Reset gain table */
   memSet (helmtab + hashold, ~0, hashold * 2 * sizeof (VmeshSeparateFmElement));
   for (helmold = 0; helmold < (hashold * 4); helmold ++) { /* For all old allocated elements */
-    Gnum                              helmnew;
+    Gnum                helmnew;
 
     if (helmtab[helmold].velmnum == ~0)           /* If unallocated slot */
       continue;                                   /* Skip to next slot   */
@@ -202,7 +206,7 @@ const Gnum                                hashold) /*+ Maximum number of vertice
 #ifdef SCOTCH_DEBUG_VMESH2
         if (helmtab[helmnum].velmnum == ~0) {     /* We should always find the elements */
           errorPrint ("vmeshSeparateFmResize: internal error (2)");
-          return     (1);
+          return (1);
         }
 #endif /* SCOTCH_DEBUG_VMESH2 */
         if (helmtab[helmnum].velmnum == vertnum)  /* If element found */
@@ -218,17 +222,15 @@ const Gnum                                hashold) /*+ Maximum number of vertice
 #ifdef SCOTCH_DEBUG_VMESH2
         if (hnodtab[hnodnum].vnodnum == ~0) {     /* We should always find the nodes */
           errorPrint ("vmeshSeparateFmResize: internal error (3)");
-          return     (1);
+          return (1);
         }
+#endif /* SCOTCH_DEBUG_VMESH2 */
         if (hnodtab[hnodnum].vnodnum == vertnum)  /* If element found */
           break;
-#endif /* SCOTCH_DEBUG_VMESH2 */
       }
       movetab[savenum].hertnum = -1 - hnodnum;    /* Save node hash index */
     }
   }
-
-  fprintf (stderr, "########### vmeshSeparateFmResize (%ld) !!!\n", (long) hashold);
 
   return (0);
 }
@@ -262,7 +264,7 @@ const Gnum                  deltmax)              /*+ Maximum imbalance +*/
   for (velmptr = (VmeshSeparateFmElement *) gainTablFrst (tablptr); /* Select candidate vertices */
        (velmptr != NULL) && (velmptr->gainlink.tabl < tablbest);
        velmptr = (VmeshSeparateFmElement *) gainTablNext (tablptr, &velmptr->gainlink)) {
-    deltnew = abs (deltcur + velmptr->ncmpgaindlt);
+    deltnew = ABS (deltcur + velmptr->ncmpgaindlt);
     if (deltnew <= deltmax) {                     /* If vertex enforces balance  */
       if ((velmptr->ncmpgain2 < gainbest) ||      /* And if it gives better gain */
           ((velmptr->ncmpgain2 == gainbest) &&    /* Or if it gives better load  */
@@ -345,7 +347,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 /* printf ("FM Mbal=%ld\n", (long) ncmploaddltmat); */
 
   if ((meshptr->fronnbr == 0) &&                  /* If imbalance in graph with no frontier */
-      (abs (meshptr->ncmploaddlt) > ncmploaddltmat)) {
+      (ABS (meshptr->ncmploaddlt) > ncmploaddltmat)) {
     VmeshSeparateGgParam  paramdat;
 
     paramdat.passnbr = 3;
@@ -394,7 +396,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
     if (meshptr->parttax[vnodnum] != 2) {
       errorPrint ("vmeshSeparateFm: internal error (1)");
-      return     (1);
+      return (1);
     }
 #endif /* SCOTCH_DEBUG_VMESH2 */
     vnloval = (meshptr->m.vnlotax == NULL) ? 1 : meshptr->m.vnlotax[vnodnum];
@@ -405,7 +407,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
       if (hnodtab[hnodnum].vnodnum == vnodnum) {  /* If node already present in frontier array */
         errorPrint ("vmeshSeparateFm: internal error (2)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_VMESH2 */
     }
@@ -438,7 +440,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
               errorPrint   ("vmeshSeparateFm: cannot resize arrays (1)");
               memFree      (helmtab);             /* Free group leader */
               gainTablExit (tablptr);
-              return       (1);
+              return (1);
             }
             hashmax <<= 1;
             hashsiz <<= 1;
@@ -446,7 +448,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH3
             if (vmeshSeparateFmCheck (meshptr, helmtab, hnodtab, hashmsk, ncmpload2, ncmploaddlt) != 0) {
               errorPrint ("vmeshSeparateFm: internal error (3)");
-              return     (1);
+              return (1);
             }
 #endif /* SCOTCH_DEBUG_VMESH3 */
 
@@ -517,7 +519,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
             if (vnodpart != velmptr->vertpart) {  /* Node should be in same part as element */
               errorPrint ("vmeshSeparateFm: internal error (4)");
-              return     (1);
+              return (1);
             }
 #endif /* SCOTCH_DEBUG_VMESH2 */
             if (vnoddeg <= 1)                     /* If element is node's sole neighbor */
@@ -538,7 +540,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
           if (vnodpart != meshptr->parttax[vnodnum]) { /* Node should be in same part as element */
             errorPrint ("vmeshSeparateFm: internal error (5)");
-            return     (1);
+            return (1);
           }
 #endif /* SCOTCH_DEBUG_VMESH2 */
           if (vnoddeg > 1) {                      /* If node will move to separator */
@@ -555,12 +557,12 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
     velmptr->ncmpgain2   = ncmpgain2;
     velmptr->ncmpgaindlt = ncmpgaindlt;
   }
-  ncmploaddltmax = MAX (ncmploaddltmat, abs (ncmploaddlt)); /* Set current maximum imbalance after cleaning */
+  ncmploaddltmax = MAX (ncmploaddltmat, ABS (ncmploaddlt)); /* Set current maximum imbalance after cleaning */
 
 #ifdef SCOTCH_DEBUG_VMESH3
   if (vmeshSeparateFmCheck (meshptr, helmtab, hnodtab, hashmsk, ncmpload2, ncmploaddlt) != 0) {
     errorPrint ("vmeshSeparateFm: internal error (6)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VMESH3 */
 
@@ -599,8 +601,8 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
       velmptr->gainlink.prev = (GainLink *) lockptr; /* Lock it           */
       lockptr                = velmptr;
 
-      if (velmptr->mswpnum != mswpnum) {          /* If element data not yet recorded */
-        movetab[savenbr].hertnum               = velmptr - helmtab; /* Record them    */
+      if (velmptr->mswpnum != mswpnum) {          /* If element data not yet recorded       */
+        movetab[savenbr].hertnum               = (Gnum) (velmptr - helmtab); /* Record them */
         movetab[savenbr].data.elem.vertpart    = velmptr->vertpart;
         movetab[savenbr].data.elem.ncmpcut2    = velmptr->ncmpcut2;
         movetab[savenbr].data.elem.ncmpgain2   = velmptr->ncmpgain2;
@@ -641,7 +643,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
             if (meshptr->parttax[vnodnum] != velmpart) {
               errorPrint ("vmeshSeparateFm: internal error (7)");
-              return     (1);
+              return (1);
             }
 #endif /* SCOTCH_DEBUG_VMESH2 */
             if (hnodnbr >= hashmax) {             /* If node hash table is full */
@@ -649,7 +651,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
                 errorPrint   ("vmeshSeparateFm: cannot resize arrays (2)");
                 memFree      (helmtab);           /* Free group leader */
                 gainTablExit (tablptr);
-                return       (1);
+                return (1);
               }
               hashmax <<= 1;
               hashsiz <<= 1;
@@ -657,7 +659,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH3
               if (vmeshSeparateFmCheck (meshptr, helmtab, hnodtab, hashmsk, ncmpload2, ncmploaddlt) != 0) {
                 errorPrint ("vmeshSeparateFm: internal error (8)");
-                return     (1);
+                return (1);
               }
 #endif /* SCOTCH_DEBUG_VMESH3 */
               for (helmnum = (velmnum * VMESHSEPAFMHASHPRIME) & hashmsk; /* Re-compute positions in tables */
@@ -689,7 +691,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
           if (hnodtab[hnodnum].vertpart != velmpart) {
             errorPrint ("vmeshSeparateFm: internal error (9)");
-            return     (1);
+            return (1);
           }
 #endif /* SCOTCH_DEBUG_VMESH2 */
           hnodtab[hnodnum].vertpart  = 1 - velmpart; /* Directly move node to other part */
@@ -704,11 +706,11 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
         if ((hnodtab[hnodnum].ecmpsize0 < 0) ||
             (hnodtab[hnodnum].ecmpsize0 > vnoddeg)) {
           errorPrint ("vmeshSeparateFm: internal error (10)");
-          return     (1);
+          return (1);
         }
         if (hnodtab[hnodnum].vertpart == (1 - velmpart)) {
           errorPrint ("vmeshSeparateFm: internal error (11)");
-          return     (1);
+          return (1);
         }
 #endif /* SCOTCH_DEBUG_VMESH2 */
 
@@ -741,11 +743,11 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
               if (vnodpartold == 2) {             /* Elements neighboring the frontier should exist */
                 errorPrint ("vmeshSeparateFm: internal error (12)");
-                return     (1);
+                return (1);
               }
               if (vnodpartold != meshptr->parttax[velmend]) { /* Unexisting elements should be in same part as their neighboring nodes */
                 errorPrint ("vmeshSeparateFm: internal error (13)");
-                return     (1);
+                return (1);
               }
 #endif /* SCOTCH_DEBUG_VMESH2 */
               if (helmnbr >= hashmax) {           /* If element hash table is full */
@@ -753,7 +755,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
                   errorPrint   ("vmeshSeparateFm: cannot resize arrays (3)");
                   memFree      (helmtab);         /* Free group leader */
                   gainTablExit (tablptr);
-                  return       (1);
+                  return (1);
                 }
                 hashmax <<= 1;
                 hashsiz <<= 1;
@@ -761,7 +763,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH3
                 if (vmeshSeparateFmCheck (meshptr, helmtab, hnodtab, hashmsk, ncmpload2, ncmploaddlt) != 0) {
                   errorPrint ("vmeshSeparateFm: internal error (14)");
-                  return     (1);
+                  return (1);
                 }
 #endif /* SCOTCH_DEBUG_VMESH3 */
                 for (helmnum = (velmnum * VMESHSEPAFMHASHPRIME) & hashmsk; /* Re-compute positions in tables */
@@ -888,7 +890,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH3
       if (vmeshSeparateFmCheck (meshptr, helmtab, hnodtab, hashmsk, ncmpload2, ncmploaddlt) != 0) {
         errorPrint ("vmeshSeparateFm: internal error (15)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_VMESH3 */
 
@@ -899,15 +901,16 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
         savenbr  = 0;
         moveflag = 1;
         mswpnum ++;
-      } else if (ncmpload2 == ncmpload2bst) {
-        if (abs (ncmploaddlt) < abs (ncmploaddltbst)) {
+      }
+      else if (ncmpload2 == ncmpload2bst) {
+        if (ABS (ncmploaddlt) < ABS (ncmploaddltbst)) {
           ncmploaddltbst = ncmploaddlt;           /* This move was effective */
           movenbr  =
           savenbr  = 0;
           moveflag = 1;
           mswpnum ++;
         }
-        else if (abs (ncmploaddlt) == abs (ncmploaddltbst)) {
+        else if (ABS (ncmploaddlt) == ABS (ncmploaddltbst)) {
           ncmploaddltbst = ncmploaddlt;           /* Might be the opposite, so record */
           savenbr = 0;                            /* Forget backtracking              */
           mswpnum ++;
@@ -918,7 +921,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 
         ncmploaddlttmp = ncmploaddltmax;          /* Save old working ncmpdltmax value */
         ncmploaddltmax = MAX (ncmploaddltmat,     /* Restrict at most to maximum       */
-                              abs (ncmploaddlt));
+                              ABS (ncmploaddlt));
         if (ncmploaddltmax < ncmploaddlttmp) {    /* If we have done something useful */
           ncmpload2bst   = ncmpload2;             /* Then record best move done       */
           ncmploaddltbst = ncmploaddlt;
@@ -959,7 +962,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH3
     if (vmeshSeparateFmCheck (meshptr, helmtab, hnodtab, hashmsk, ncmpload2, ncmploaddlt) != 0) {
       errorPrint ("vmeshSeparateFm: internal error (16)");
-      return     (1);
+      return (1);
     }
 #endif /* SCOTCH_DEBUG_VMESH3 */
   } while ((moveflag != 0) &&                     /* As long as vertices are moved                          */
@@ -975,7 +978,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
       if ((helmtab[helmnum].vertpart < 0) ||      /* Separator elements should have been removed */
           (helmtab[helmnum].vertpart > 1)) {
         errorPrint ("vmeshSeparateFm: internal error (17)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_VMESH2 */
       ecmpload1 += helmtab[helmnum].vertpart - (meshptr->parttax[velmnum] & 1);
@@ -988,7 +991,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
   if ((meshptr->ecmpsize[0] + meshptr->ecmpsize[1]) != meshptr->m.velmnbr) { /* Separator elements should have been removed */
     errorPrint ("vmeshSeparateFm: internal error (18)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VMESH2 */
 
@@ -1005,7 +1008,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
       if ((hnodtab[hnodnum].vertpart < 0) ||
           (hnodtab[hnodnum].vertpart > 2)) {
         errorPrint ("vmeshSeparateFm: internal error (19)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_VMESH2 */
 
@@ -1028,7 +1031,7 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
   if ((meshptr->fronnbr + ncmpsize2) != fronnum) {
     errorPrint ("vmeshSeparateFm: internal error (20)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VMESH2 */
   meshptr->ncmpload[1] += ncmpload1;
@@ -1045,11 +1048,9 @@ const VmeshSeparateFmParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
   if (vmeshCheck (meshptr) != 0) {
     errorPrint ("vmeshSeparateFm: internal error (21)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VMESH2 */
-
-/* printf ("FM Sepa\tsize=%ld\tload=%ld\tbal=%ld\n", (long) meshptr->fronnbr, (long) meshptr->ncmpload[2], (long) meshptr->ncmploaddlt); */
 
   return (0);
 }
@@ -1081,7 +1082,7 @@ const Gnum                              ncmploaddlt)
   vertnbr = meshptr->m.velmnbr + meshptr->m.vnodnbr;
   if ((parttax = (GraphPart *) memAlloc (vertnbr * sizeof (GraphPart))) == NULL) {
     errorPrint ("vmeshSeparateFmCheck: out of memory");
-    return     (1);
+    return (1);
   }
   memCpy (parttax, meshptr->parttax + meshptr->m.baseval, vertnbr * sizeof (GraphPart));
   parttax -= meshptr->m.baseval;
@@ -1101,12 +1102,12 @@ const Gnum                              ncmploaddlt)
 
     if (hnodtab[hnodnum].vnloval != ((meshptr->m.vnlotax == NULL) ? 1 : meshptr->m.vnlotax[vnodnum])) {
       errorPrint ("vmeshSeparateFmCheck: invalid node load");
-      return     (1);
+      return (1);
     }
     if ((hnodtab[hnodnum].ecmpsize0 < 0) ||
         (hnodtab[hnodnum].ecmpsize0 > (meshptr->m.vendtax[vnodnum] - meshptr->m.verttax[vnodnum]))) {
       errorPrint ("vmeshSeparateFmCheck: invalid node neighbors in part 0");
-      return     (1);
+      return (1);
     }
     vnodpart = hnodtab[hnodnum].vertpart;
     if (vnodpart != meshptr->parttax[vnodnum]) {
@@ -1140,22 +1141,21 @@ const Gnum                              ncmploaddlt)
 
     if (ecmpsize0 != hnodtab[hnodnum].ecmpsize0) {
       errorPrint ("vmeshSeparateFmCheck: invalid node neighbor count");
-      return     (1);
+      return (1);
     }
   }
   if (ncmpload2 != ncmploadtmp[2]) {
     errorPrint ("vmeshSeparateFmCheck: invalid frontier load");
-    return     (1);
+    return (1);
   }
   if (ncmploaddlt != (ncmploadtmp[0] - ncmploadtmp[1])) {
     errorPrint ("vmeshSeparateFmCheck: invalid separator balance");
-    return     (1);
+    return (1);
   }
 
   for (helmnum = 0; helmnum <= hashmsk; helmnum ++) { /* For all element slots */
     Gnum                velmnum;
     Gnum                eelmnum;
-    Gnum                ncmpcut2;
     Gnum                ncmpgain2;
     Gnum                ncmpgaindlt;
     Gnum                ncmpsize[3];
@@ -1165,7 +1165,6 @@ const Gnum                              ncmploaddlt)
     if (velmnum == ~0)                            /* If unallocated slot */
       continue;                                   /* Skip to next slot   */
 
-    ncmpcut2    =
     ncmpgain2   =
     ncmpgaindlt = 0;
     ncmpsize[0] =
@@ -1187,7 +1186,7 @@ const Gnum                              ncmploaddlt)
           if (vnodpart != 2) {
             if (vnodpart != velmpart) {
               errorPrint ("vmeshSeparateFmCheck: invalid separator node (1)");
-              return     (1);
+              return (1);
             }
             if ((meshptr->m.vendtax[vnodnum] - meshptr->m.verttax[vnodnum] - 1) == 0)
               ncmpgaindlt += (2 * vnodpart - 1) * 2 * vnloval;
@@ -1207,12 +1206,12 @@ const Gnum                              ncmploaddlt)
           vnodpart = meshptr->parttax[vnodnum];
           if (vnodpart != velmpart) {
             errorPrint ("vmeshSeparateFmCheck: invalid separator node (2)");
-            return     (1);
+            return (1);
           }
           if ((meshptr->m.vendtax[vnodnum] - meshptr->m.verttax[vnodnum]) == 1) {
             if (vnodpart == 2) {
               errorPrint ("vmeshSeparateFmCheck: invalid separator node (3)");
-              return     (1);
+              return (1);
             }
             ncmpgaindlt += (2 * vnodpart - 1) * 2 * vnloval;
           }
@@ -1227,16 +1226,16 @@ const Gnum                              ncmploaddlt)
     }
     if ((ncmpsize[0] != 0) && (ncmpsize[1] != 0)) {
       errorPrint ("vmeshSeparateFmCheck: invalid element nodes");
-      return     (1);
+      return (1);
     }
     if (ncmpsize[2] != helmtab[helmnum].ncmpcut2) {
       errorPrint ("vmeshSeparateFmCheck: invalid element separator count");
-      return     (1);
+      return (1);
     }
     if ((ncmpgain2   != helmtab[helmnum].ncmpgain2) ||
         (ncmpgaindlt != helmtab[helmnum].ncmpgaindlt)) {
       errorPrint ("vmeshSeparateFmCheck: invalid element gains");
-      return     (1);
+      return (1);
     }
   }
 

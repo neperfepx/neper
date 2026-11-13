@@ -16,4 +16,12 @@
 #include"net_reg_merge.h"
 
 extern int net_reg_merge_nextedge (struct TESS, struct REG, double *);
+extern double net_reg_merge_search_vernbs (struct TESS *pTess, struct REG Reg,
+                                           int ver, double lratio,
+                                           int invalid, int depth,
+                                           int ***bufs,
+                                           struct TESS *TessBufs, int *seq,
+                                           int *pseqqty);
+extern int net_reg_merge_search_edgeok (struct TESS Tess, int edge);
 extern void net_reg_merge_print (int, double, int, int, int, double, double);
+extern void net_reg_merge_buffer_per (struct TESS Tess, struct TESS *pTessBuf);

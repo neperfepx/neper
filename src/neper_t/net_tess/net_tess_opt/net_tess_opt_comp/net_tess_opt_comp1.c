@@ -7,39 +7,22 @@
 void
 net_tess_opt_comp (struct TOPT *pTOpt)
 {
-  double *x = NULL;
-  int res = -1;
-
   neut_tdyn_fprintf_pre (&((*pTOpt).TDyn));
 
-  net_tess_opt_comp_x (pTOpt, &x);
-
-  if ((*pTOpt).tarqty > 0)
-    ut_print_message (0, 3, " ");
+  net_tess_opt_comp_pre (pTOpt);
 
   if ((*pTOpt).tarqty == 0)
-    res = net_tess_opt_comp_once (x, pTOpt);
-  else if (!strncmp ((*pTOpt).algoname[0], "random", 5))
-    res = net_tess_opt_comp_rand (x, pTOpt);
-  else if (!strncmp ((*pTOpt).algoname[0], "lloyd", 5))
-    res = net_tess_opt_comp_lloyd (x, pTOpt);
+    net_tess_opt_comp_once (pTOpt);
+  else if (!strncmp ((*pTOpt).algoname, "random", 5))
+    net_tess_opt_comp_rand (pTOpt);
+  else if (!strncmp ((*pTOpt).algoname, "lloyd", 5))
+    net_tess_opt_comp_lloyd (pTOpt);
   else
-#ifdef HAVE_NLOPT
-    res = net_tess_opt_comp_nlopt (x, pTOpt);
-#else
-    ut_print_message (2, 0,
-                      "net_tess_opt_comp_nlopt not available since Neper was compiled without NLopt.\n");
-#endif
+    net_tess_opt_comp_minimize (pTOpt);
 
-#ifdef HAVE_NLOPT
-  net_tess_opt_comp_post (*pTOpt, res);
-#else
-  (void) res;
-#endif
+  net_tess_opt_comp_post (*pTOpt);
 
   neut_tdyn_fprintf_post (&((*pTOpt).TDyn));
-
-  ut_free_1d (&x);
 
   return;
 }

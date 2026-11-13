@@ -1,4 +1,4 @@
-.. _file_and_directory_formats_link:
+.. _file_formats:
 
 File and Directory Formats
 ==========================
@@ -8,14 +8,9 @@ File and Directory Formats
 Tessellation File (:file:`.tess`)
 ---------------------------------
 
-Here are details on the :file:`.tess` file format version
-2.0.  Developers should note that read and write functions are
-available as :code:`neut_tess_fscanf` and :code:`neut_tess_fprintf`,
-defined in directories :file:`neut/neut_tess/neut_tess_fscanf`
-and
-:file:`neut/neut_tess/neut_tess_fprintf`.
+Here are details on the :file:`.tess` file format version :data:`3.6` (former formats can still be read; up to version :data:`3.5`, :data:`<seed_weight>` was :math:`\sqrt{w}`, and it is converted upon reading).  Developers should note that read and write functions are available as :code:`neut_tess_fscanf` and :code:`neut_tess_fprintf`, defined in directories :file:`neut/neut_tess/neut_tess_fscanf` and :file:`neut/neut_tess/neut_tess_fprintf`.
 
-.. code-block:: plain
+.. code-block:: text
 
   ***tess
    **format
@@ -92,7 +87,7 @@ and
                    <dom_face_label>
                    <number_of_dom_tess_faces> <dom_tess_face_1> <dom_tess_face_2> ...
      ...
-   **periodic
+   **periodicity
     *general
      <per_x> <per_y> <per_z>
      <per_dist_x> <per_dist_y> <per_dist_z>
@@ -120,27 +115,25 @@ and
     ...
   ***end
 
-
-
 where (with identifiers being integer numbers),
 
 - :data:`***tess` denotes the beginning of a tessellation file.
 
 - :data:`**format` denotes the beginning of the format field.
 
-- :data:`<format>` is the file format, currently :data:`3.5` (character string).
+- :data:`<format>` is the file format, currently :data:`3.6` (character string).
 
 - :data:`**general` denotes the beginning of the general information field.
 
 - :data:`<dim>` is the dimension of the tessellation (1, 2 or 3).
 
-- :data:`<type>` is the type of tessellation (always :data:`standard`).
+- :data:`<type>` is the type of tessellation (:data:`standard` or :data:`periodic`).
 
 - :data:`**cell` denotes the beginning of the cell field.
 
 - :data:`<number_of_cells>` is the number of cells.
 
-- :data:`*id` denotes the beginning of an optional identifier field.  It the field is not present, the cells are considered to be numbered contiguously from 1.
+- :data:`*id` denotes the beginning of an optional identifier field.  If the field is not present, the cells are considered to be numbered contiguously from 1.
 
 - :data:`<cell#_id>` are the actual identifiers of the cells.
 
@@ -160,25 +153,25 @@ where (with identifiers being integer numbers),
 
 - :data:`<seed_x>`, :data:`<seed_y>` and :data:`<seed_z>` are the three coordinates of a seed (real numbers).
 
-- :data:`<seed_weight>` is the weight of a seed (real number).
+- :data:`<seed_weight>` is the Laguerre weight of a seed, :math:`w` (real number), so that a point at a distance :math:`d` from the seed has a power distance of :math:`d^2-w` to the seed.
 
 - :data:`*ori` denotes the beginning of an optional crystal orientation field.
 
 - :data:`<orientation_descriptor>` is the descriptor used to parameterize the crystal orientations.  See :ref:`rotations_and_orientations` for the list of available descriptors.
 
-- :data:`<cellid_param#>` are the values of the orientation descriptor of cell `id`.
+- :data:`<cellid_param#>` are the values of the orientation descriptor of cell :data:`id`.
 
 - :data:`*orispread` denotes the beginning of an optional crystal orientation distribution field.
 
-- :data:`<cellid_spread>` is the value of the orientation distribution of cell `id`.
+- :data:`<cellid_spread>` is the value of the orientation distribution of cell :data:`id`.
 
 - :data:`*orispreadtheta` denotes the beginning of an optional crystal orientation distribution field (theta values).
 
-- :data:`<cellid_orispreadtheta>` is the theta value of the orientation distribution of cell `id` (in degrees).
+- :data:`<cellid_orispreadtheta>` is the theta value of the orientation distribution of cell :data:`id` (in degrees).
 
 - :data:`*weight` denotes the beginning of an optional weight field.
 
-- :data:`<cellid_weight>` is the weight of cell `id`.
+- :data:`<cellid_weight>` is the weight of cell :data:`id`.
 
 - :data:`**vertex` denotes the beginning of the vertex field.
 
@@ -216,7 +209,7 @@ where (with identifiers being integer numbers),
 
 - :data:`<face_state>` is an integer indicating the state of a face. For a standard tessellation (no regularization), it equals :data:`0`.  For a regularized tessellation, it equals :data:`0` if it has not been modified by regularization and :data:`1` otherwise.
 
-- :data:`<face_point>` is an integer indicating the point used for the interpolation of a face. For a standard tessellation (no regularization), it equals :data:`0`.  For a regularized tessellation: if the point is the face barycenter, it equals :data:`0`; if the point is one of the face vertices, it equals to the position of the vertex in the list of vertices of the face. It equals :data:`-1` if the point is undefined.
+- :data:`<face_point>` is an integer indicating the point used for the interpolation of a face. For a standard tessellation (no regularization), it equals :data:`0`.  For a regularized tessellation: if the point is the face barycenter, it equals :data:`0`; if the point is one of the face vertices, it equals the position of the vertex in the list of vertices of the face. It equals :data:`-1` if the point is undefined.
 
 - :data:`<face_point_x>`, :data:`<face_point_y>` and :data:`<face_point_z>` are the coordinates of the point used for the interpolation of a face (equal :data:`0` if undefined).
 
@@ -234,13 +227,13 @@ where (with identifiers being integer numbers),
 
 - :data:`*general` denotes the beginning of the domain general information field.
 
-- :data:`<dom_type>` is the type of the domain (one of :data:`cube`, :data:`cylinder`, :data:`square`, :data:`circle`, :data:`poly` and :data:`planes`).
+- :data:`<dom_type>` is the type of the domain (such as :data:`cube`, :data:`cylinder`, :data:`sphere`, :data:`hourglass`, :data:`square`, :data:`circle`, :data:`poly` or :data:`planes`).
 
 - :data:`*vertex` denotes the beginning of the domain vertex field.
 
 - :data:`<total_number_of_dom_vertices>` is the total number of domain vertices.
 
-- :data:`<dom_ver_id>` is the identifier of a domain vertex and ranges between :data:`1` to :data:`<total_number_of_dom_vertices>`.
+- :data:`<dom_ver_id>` is the identifier of a domain vertex and ranges from :data:`1` to :data:`<total_number_of_dom_vertices>`.
 
 - :data:`<dom_ver_x>`, :data:`<dom_ver_y>` and :data:`<dom_ver_z>` are the three coordinates of a domain vertex (real numbers).
 
@@ -252,7 +245,7 @@ where (with identifiers being integer numbers),
 
 - :data:`<total_number_of_dom_edges>` is the total number of domain edges.
 
-- :data:`<dom_edge_id>` is the identifier of a domain edge and ranges between :data:`1` to :data:`<total_number_of_dom_edges>`.
+- :data:`<dom_edge_id>` is the identifier of a domain edge and ranges from :data:`1` to :data:`<total_number_of_dom_edges>`.
 
 - :data:`<number_of_dom_vertices>` is the number of domain vertices of a domain edge or a domain face.
 
@@ -278,15 +271,15 @@ where (with identifiers being integer numbers),
 
 - :data:`<dom_edge_#>` are identifiers of the domain edges of a domain face.
 
-- :data:`<dom_face_type>` is the type of a face, among `plane`, `cylinder` or `sphere`.
+- :data:`<dom_face_type>` is the type of a face: :data:`plane` for a planar face, or the type of the primitive of a curved face, such as :data:`cylinderi`, :data:`spherei` or :data:`torus` (see :option:`-transform` :data:`cut`).
 
-- :data:`<dom_face_param#>` are the parameters of a domain face.  For a planar face, they are the parameters of the equation of the face, listed in the order :data:`<face_eq_d>`, :data:`<face_eq_a>`, :data:`<face_eq_b>` and :data:`<face_eq_c>`.  For a cylindrical face, they are the coordinates of the base point, the axis and the radius.  For a spherical face, they are the coordinates of the center and the radius.
+- :data:`<dom_face_param#>` are the parameters of a domain face.  For a planar face, they are the parameters of the equation of the face, listed in the order :data:`<face_eq_d>`, :data:`<face_eq_a>`, :data:`<face_eq_b>` and :data:`<face_eq_c>`.  For a cylindrical face, they are the coordinates of the base point, the axis and the radius.  For a spherical face, they are the coordinates of the center and the radius.  For a toroidal face, they are the coordinates of the base point, the axis, the radius and the section radius.
 
-- :data:`<dom_face_label>` is the label of a domain face, formatted as :data:`x0`, :data:`x1`, :data:`y0`, :data:`y1`, :data:`z0` or :data:`z1` (for a cubic domain).  For a cylindrical domain, it is formatted as :data:`z0`, :data:`z1`, :data:`f1`, :data:`f2`, ... Otherwise, it is one of :data:`f1`, :data:`f2`, ...  Edge and vertex labels are derived accordingly.
+- :data:`<dom_face_label>` is the label of a domain face, formatted as :data:`x0`, :data:`x1`, :data:`y0`, :data:`y1`, :data:`z0` or :data:`z1` (for a cubic domain).  For a cylindrical domain, it is formatted as :data:`z0`, :data:`z1` and :data:`cyl` (curved face) or :data:`f1`, :data:`f2`, ... (faceted domain), and for an hourglass domain, as :data:`z0`, :data:`z1` and :data:`hourglass`. Otherwise, it is one of :data:`f1`, :data:`f2`, ...  Edge and vertex labels are derived accordingly.
 
 - :data:`<number_of_dom_tess_faces>` is the number of tessellation faces of a domain face.
 
-- :data:`<dom_tess_face_#` are the identifiers of the tessellation faces of a domain face.
+- :data:`<dom_tess_face_#>` are the identifiers of the tessellation faces of a domain face.
 
 - :data:`***end` denotes the end of a tessellation file.
 
@@ -294,9 +287,9 @@ where (with identifiers being integer numbers),
 
 - :data:`*general` denotes the beginning of the periodicity general information field.
 
-- :data:`<per_x>`, :data:`<per_y>` and :data:`<per_z>` are booleans indicating x, y, and z periodicity.
+- :data:`<per_x>`, :data:`<per_y>` and :data:`<per_z>` are booleans indicating x, y and z periodicity.
 
-- :data:`<per_dist_x>`, :data:`<per_dist_y>` and :data:`<per_dist_z>` are the periodicity distances along x, y, and z.
+- :data:`<per_dist_x>`, :data:`<per_dist_y>` and :data:`<per_dist_z>` are the periodicity distances along x, y and z.
 
 - :data:`*seed` denotes the beginning of the periodicity seed field.
 
@@ -310,11 +303,11 @@ where (with identifiers being integer numbers),
 
 - :data:`*vertex` denotes the beginning of the periodicity vertex field.
 
-- :data:`<secondary_vertex_qty>` is the number of secondary vertices.
+- :data:`<secondary_ver_qty>` is the number of secondary vertices.
 
-- :data:`<secondary_vertex_id>` is the identifier of a secondary vertex.
+- :data:`<secondary_ver_id>` is the identifier of a secondary vertex.
 
-- :data:`<primary_vertex_id>` is the identifier of the primary of a secondary vertex.
+- :data:`<primary_ver_id>` is the identifier of the primary of a secondary vertex.
 
 - :data:`*edge` denotes the beginning of the periodicity edge field.
 
@@ -336,18 +329,20 @@ where (with identifiers being integer numbers),
 
 - :data:`<secondary_face_ori>` is the orientation of the secondary face with respect to the primary face: :data:`1` if identical, :data:`-1` if opposite.
 
+- :data:`**scale` denotes the beginning of the scale field (for a multiscale tessellation).
+
 - :data:`<number_of_scales>` is the number of scales.
 
-- :data:`<cell1_scale#>` are the identifiers of the cells of the scale-1, scale-2, ... tessellations which the cell belongs to.
+- :data:`<cell1_scale#>` are the identifiers of the cells of the scale-1, scale-2, ... tessellations that the cell belongs to.
 
 .. _tesr_file:
 
 Raster Tessellation File (:file:`.tesr`)
 ----------------------------------------
 
-Here are details on the :file:`.tesr` file format version :data:`2.1` (format :data:`2.0` was used up to version 4.1.2 and can still be read).  Developers should note that read and write functions are available as :code:`neut_tesr_fscanf` and :code:`neut_tesr_fprintf`, defined in directories :file:`neut/neut_tesr/neut_tesr_fscanf` and :file:`neut/neut_tesr/neut_tesr_fprintf`.  Compared to a tessellation file (:file:`.tess`), a raster tessellation file in enriched by cell morphological properties (centroids, etc.) as they are computed by option :option:`-statcell`, which makes it possible to later retrieve them rapidly.
+Here are details on the :file:`.tesr` file format version :data:`2.3` (former formats can still be read; up to version :data:`2.2`, :data:`<seed_weight>` was :math:`\sqrt{w}`, and it is converted upon reading).  Developers should note that read and write functions are available as :code:`neut_tesr_fscanf` and :code:`neut_tesr_fprintf`, defined in directories :file:`neut/neut_tesr/neut_tesr_fscanf` and :file:`neut/neut_tesr/neut_tesr_fprintf`.  Compared to a tessellation file (:file:`.tess`), a raster tessellation file is enriched by cell morphological properties (centroids, etc.) as they are computed by option :option:`-statcell`, which makes it possible to later retrieve them rapidly.
 
-.. code-block:: plain
+.. code-block:: text
 
   ***tesr
    **format
@@ -406,19 +401,19 @@ where
 
 - :data:`**format` denotes the beginning of the format field.
 
-- :data:`<format>` is the file format, currently :data:`2.2` (character string).
+- :data:`<format>` is the file format, currently :data:`2.3` (character string).
 
 - :data:`**general` denotes the beginning of the general information field.
 
 - :data:`<dimension>` is the dimension of the raster tessellation.
 
-- :data:`<size_x>`, :data:`<size_y>` and :data:`<size_z>` are the raster sizes along the coordinate axes. The number of sizes must match `<dimension>`.
+- :data:`<size_x>`, :data:`<size_y>` and :data:`<size_z>` are the raster sizes along the coordinate axes. The number of sizes must match :data:`<dimension>`.
 
-- :data:`<voxsize_x>`, :data:`<voxsize_y>` and :data:`<voxsize_z>` are the voxel (pixel, in 2D) sizes along the coordinate axes.  The number of sizes must match `<dimension>`.
+- :data:`<voxsize_x>`, :data:`<voxsize_y>` and :data:`<voxsize_z>` are the voxel (pixel, in 2D) sizes along the coordinate axes.  The number of sizes must match :data:`<dimension>`.
 
 - :data:`*origin` denotes the beginning of an optional origin field.
 
-- :data:`<origin_x>`, :data:`<origin_y>` and :data:`<origin_z>` are the (absolute) coordinates of the origin of the raster tessellation along the coordinate axes.  The number of coordinates must match `dimension`.
+- :data:`<origin_x>`, :data:`<origin_y>` and :data:`<origin_z>` are the (absolute) coordinates of the origin of the raster tessellation along the coordinate axes.  The number of coordinates must match :data:`<dimension>`.
 
 - :data:`**cell` denotes the beginning of an optional cell field.
 
@@ -434,17 +429,17 @@ where
 
 - :data:`<seed_x>`, :data:`<seed_y>` and :data:`<seed_z>` are the three coordinates of a seed (real numbers).
 
-- :data:`<seed_weight>` is the weight of a seed (real number).
+- :data:`<seed_weight>` is the Laguerre weight of a seed, :math:`w` (real number), so that a point at a distance :math:`d` from the seed has a power distance of :math:`d^2-w` to the seed.
 
 - :data:`*ori` denotes the beginning of an optional crystal orientation field.
 
-- :data:`<orientation_descriptor>` is the descriptor used to parametrize the crystal orientations.  See :ref:`rotations_and_orientations` for the list of available descriptors.
+- :data:`<orientation_descriptor>` is the descriptor used to parameterize the crystal orientations.  See :ref:`rotations_and_orientations` for the list of available descriptors.
 
-- :data:`<cellid_param#>` are the values of the orientation descriptor of cell `id`.
+- :data:`<cellid_param#>` are the values of the orientation descriptor of cell :data:`id`.
 
 - :data:`*orispread` denotes the beginning of an optional crystal orientation distribution field.
 
-- :data:`<cellid_spread>` is the value of the orientation distribution of cell `id`.
+- :data:`<cellid_spread>` is the value of the orientation distribution of cell :data:`id`.
 
 - :data:`*crysym` denotes the beginning of an optional crystal symmetry field.
 
@@ -464,17 +459,17 @@ where
 
 - :data:`<oridata_format>` is the format of the data. It can be either :data:`ascii` or :data:`binary` (double-precision number).
 
-- :data:`<voxid_param#>` are the values of the orientation descriptor of voxel :data:`<id>`. Orientations must be listed in column-major order (x varying first, y varying second and z varying last). Arbitrary orientations can be used for void voxels (:data:`<voxid_cell>` = 0`). These data must be written under format :data:`<data_format>`, in terms of ASCII or binary. In the case of binary format, double-precision numbers are considered.
+- :data:`<voxid_param#>` are the values of the orientation descriptor of voxel :data:`<id>`. Orientations must be listed in column-major order (x varying first, y varying second and z varying last). Arbitrary orientations can be used for void voxels (:data:`<voxid_cell> = 0`). These data must be written in format :data:`<oridata_format>`, in terms of ASCII or binary. In the case of binary format, double-precision numbers are considered.
 
-- :data:`<oridata_file_name>` is the name of a file that contains the orientation data.   It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided.  Typically, it is a :file:`.raw` file.
+- :data:`<oridata_file_name>` is the name of a file that contains the orientation data.  It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided.  Typically, it is a :file:`.raw` file.
 
 - :data:`**oridef` denotes the beginning of the orientation definition field.  Data can be provided in-file or in a separate file, using :data:`*file`, see below.
 
 - :data:`<oridef_format>` is the format of the orientation definition. It can be either :data:`ascii` or :data:`binary` (8-bit).
 
-- :data:`<voxid_oridef>` indicates whether the orientation of voxel :data:`<id>` is defined or not (:data:`1` or :data:`0`, respectively). Data must be listed in column-major order (x varying first, y varying second and z varying last). The data must be written under format :data:`<oridef_format>`, in terms of ASCII or binary. In the case of binary format, 8-bit binary is considered.
+- :data:`<voxid_oridef>` indicates whether the orientation of voxel :data:`<id>` is defined or not (:data:`1` or :data:`0`, respectively). Data must be listed in column-major order (x varying first, y varying second and z varying last). The data must be written in format :data:`<oridef_format>`, in terms of ASCII or binary. In the case of binary format, 8-bit binary is considered.
 
-- :data:`<oridef_file_name>` is the name of a file that contains the orientation definitions.   It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided.
+- :data:`<oridef_file_name>` is the name of a file that contains the orientation definitions.  It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided.
 
 .. _tesr_data_oridata_oridef:
 
@@ -485,9 +480,9 @@ where
 Orientation Distribution Function File (:file:`.odf`)
 -----------------------------------------------------
 
-Here are details on the :file:`.odf` file format version :data:`1.0`.  Developers should note that read and write functions are available as :code:`neut_odf_fscanf` and :code:`neut_odf_fprintf`, defined in directories :file:`neut/neut_odf/neut_odf_fscanf` and :file:`neut/neut_odf/neut_odf_fprintf`.
+Here are details on the :file:`.odf` file format version :data:`1.0`.  Developers should note that a read function is available as :code:`neut_odf_fscanf`, defined in directory :file:`neut/neut_odf/neut_odf_fscanf`.
 
-.. code-block:: plain
+.. code-block:: text
 
   ***odf
    **format
@@ -542,7 +537,7 @@ where
 
 - :data:`<eltdata_file_name>` is the name of the elemental data file.
 
-- :data:`**nodedata` denotes the beginning of an nodal data field. Data can be provided in-file or in a separate file, using :data:`*file`, see below.
+- :data:`**nodedata` denotes the beginning of a nodal data field. Data can be provided in-file or in a separate file, using :data:`*file`, see below.
 
 - :data:`<nodedata_format>` is the format of the nodal data. It must be :data:`ascii`.
 
@@ -553,9 +548,9 @@ where
 Mesh File (:file:`.msh`)
 ------------------------
 
-Here are details on the native :file:`.msh` (adapted from Gmsh's msh format version :data:`2.2`).  Developers should note that read and write functions are available as `neut_msh_fscanf` and `neut_msh_fprintf`, defined in directories :file:`neut/neut_msh/neut_msh_fscanf` and :file:`neut/neut_msh/neut_msh_fprintf`.
+Here are details on the native :file:`.msh` file format (adapted from Gmsh's msh format version :data:`2.2`).  Developers should note that read and write functions are available as :code:`neut_mesh_fscanf_msh` and :code:`neut_mesh_fprintf_msh`, defined in directories :file:`neut/neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_msh` and :file:`neut/neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_msh`.
 
-.. code-block:: plain
+.. code-block:: text
 
   $MeshFormat
   2.2 <file_type> <data_size>
@@ -588,8 +583,8 @@ Here are details on the native :file:`.msh` (adapted from Gmsh's msh format vers
   <number_of_nsets>
   <nset1_label>
   <nset_node_nb>
-  <nset_node1>
-  <nset_node2>
+  <nset_node_id1>
+  <nset_node_id2>
   ...
   <nset2_label>
   ...
@@ -617,13 +612,13 @@ Here are details on the native :file:`.msh` (adapted from Gmsh's msh format vers
   <number_of_elsets> <orientation_descriptor>
   <elset_id> <ori_des1> ...
   ...
-  $EndOrientations
+  $EndElsetOrientations
   $ElsetCrySym
   <crysym>
   $EndElsetCrySym
   $ElementOrientations
   <number_of_elements> <orientation_descriptor>
-  <element_id> ori_des1> ...
+  <element_id> <ori_des1> ...
   ...
   $EndElementOrientations
   $Groups
@@ -645,7 +640,7 @@ where
 
 - :data:`$MeshVersion` denotes the beginning of a mesh version field.
 
-- :data:`<mesh_version>` is the mesh file version (currently :data:`2.3`).
+- :data:`<mesh_version>` is the mesh file version (currently :data:`2.4`).
 
 - :data:`$EndMeshVersion` denotes the end of a mesh version field.
 
@@ -677,9 +672,9 @@ where
 
 - :data:`<elt_type>` is an integer specifying the type of elements: :data:`15` for a 0D element, :data:`1` for a 1st-order 1D element (2 nodes), :data:`8` for a 2nd-order 1D element (3 nodes), :data:`2` for a 1st-order triangular element (3 nodes), :data:`3` for a 1st-order quadrangular element (4 nodes), :data:`9` for a 2nd-order triangular element (6 nodes), :data:`16` for a 2nd-order quadrangular element (8 nodes), :data:`10` for a 2nd-order quadrangular element (9 nodes), :data:`4` for a 1st-order tetrahedral element (4 nodes), :data:`5` for a 1st-order hexahedral element (8 nodes), :data:`11` for a 2nd-order tetrahedral element (10 nodes), :data:`17` for a 2nd-order hexahedral element (20 nodes), :data:`6` for a 1st-order prismatic element (6 nodes), :data:`18` for a 2nd-order prismatic element (15 nodes).
 
-- :data:`<number_of_tags>` is the number of tags, and :data:`<tag#>` are the tags.  In the general case, the number of tags is equal to 3, the first and second tags are the elset and the third tag is the element partition.  The mesh partition is non-zero only for the higher-dimension elements of a mesh which was previously partitioned.
+- :data:`<number_of_tags>` is the number of tags, and :data:`<tag#>` are the tags.  In the general case, the number of tags is equal to 3, the first and second tags are the elset and the third tag is the element partition.  The mesh partition is non-zero only for the highest-dimension elements of a mesh that was previously partitioned.
 
-- :data:`<elt_id_node#>` are the nodes associated to an element.  The number of nodes depends on the element type (`<elt_type>`).
+- :data:`<elt_id_node#>` are the nodes associated with an element.  The number of nodes depends on the element type (:data:`<elt_type>`).
 
 - :data:`$EndElements` denotes the end of an element field.
 
@@ -691,7 +686,7 @@ where
 
 - :data:`<secondary_node_id>` is the identifier of the secondary node.
 
-- :data:`<per_vect_x>` :data:`<per_vect_y>` :data:`<per_vect_z>` are the scaled components of the vector going from the primary node to the secondary node (-1, 0 or 1).
+- :data:`<per_vect_x>`, :data:`<per_vect_y>` and :data:`<per_vect_z>` are the scaled components of the vector going from the primary node to the secondary node (-1, 0 or 1).
 
 - :data:`$EndPeriodicity` denotes the end of a periodicity field.
 
@@ -723,7 +718,7 @@ where
 
 - :data:`$NodePartitions` denotes the beginning of a node partition field.
 
-- :data:`<nodeid_partition>` is the partition of node :data:`<id>` (ranging from 1 to the total number of partitions).
+- :data:`<node_partition>` is the partition of node :data:`<node_id>` (ranging from 1 to the total number of partitions).
 
 - :data:`$EndNodePartitions` denotes the end of a node partition field.
 
@@ -735,13 +730,11 @@ where
 
 - :data:`<physical_id>` is the id of a physical entity.  It ranges from 1 to the number of 0D elsets (tessellation vertices) for the 0D entities, 1 to the number of 1D elsets (tessellation edges) for the 1D entities, 1 to the number of 2D elsets (tessellation faces) for the 2D entities and 1 to the number of 3D elsets (tessellation polyhedra) for the 3D entities.
 
-- :data:`<physical_name>` is the name of a physical entity, under the form :data:`<verid>` for 0D elsets (tessellation vertices), :data:`<edgeid>` for 1D elsets (tessellation edges), :data:`<faceid>` for 2D elsets (tessellation faces) and :data:`<polyid>` for 3D elsets (tessellation polyhedra), where :data:`<id>` ranges from 1 to the number of elsets.
+- :data:`<physical_name>` is the name of a physical entity, in the form :data:`<verid>` for 0D elsets (tessellation vertices), :data:`<edgeid>` for 1D elsets (tessellation edges), :data:`<faceid>` for 2D elsets (tessellation faces) and :data:`<polyid>` for 3D elsets (tessellation polyhedra), where :data:`<id>` ranges from 1 to the number of elsets.
 
 - :data:`$EndPhysicalNames` denotes the end of a physical name field.
 
 - :data:`$ElsetOrientations` denotes the beginning of an elset orientation field.
-
-- :data:`$EndElsetOrientations` denotes the end of an elset orientation field.
 
 - :data:`<number_of_elsets>` is the number of elsets.
 
@@ -755,7 +748,7 @@ where
 
 - :data:`$ElsetCrySym` denotes the beginning of an elset crystal symmetry field.
 
-- :data:`<crysym>` is the crystal symmetry (:data:`triclinic`, :data:`cubic` or :data:`hexagonal`).
+- :data:`<crysym>` is the crystal symmetry (see :ref:`crystal_symmetries`).
 
 - :data:`$EndElsetCrySym` denotes the end of an elset crystal symmetry field.
 
@@ -779,6 +772,8 @@ where
 
 - :data:`$EndGroups` denotes the end of a group field.
 
+FEPX reads the mesh file and can also read additional sections, such as values of material parameters per elset or element (e.g. :data:`$ElsetCrss`), which are described in FEPX's documentation.
+
 .. _simulation_directory:
 
 Simulation Directory (:file:`.sim`)
@@ -790,41 +785,49 @@ Here are details on the :file:`.sim` simulation directory (the :file:`.sim` exte
 
   simulation.sim
   |-- inputs
-  |   |-- job.sh
-  |   |-- simulation.cfg
-  |   |-- simulation.msh
-  |   `-- simulation.tess
+  |   |-- simulation.cfg
+  |   |-- simulation.msh
+  |   |-- simulation.tess
+  |   `-- ...
+  |-- [restart]
+  |   |-- restart.rank0
+  |   `-- ...
   `-- results
-      |-- elts
-      |   |-- ori
-      |   |   |-- ori.step0
-      |   |   |-- ori.step1
-      |   |   `-- ...
-      |   `-- ...
       |-- nodes
       |   |-- coo
-      |   |   |-- coo.step0
-      |   |   |-- coo.step1
+      |   |   |-- coo.step0
+      |   |   |-- coo.step1
+      |   |   `-- ...
+      |   `-- ...
+      |-- elts
+      |   |-- ori
+      |   |   |-- ori.step0
+      |   |   |-- ori.step1
       |   |   `-- ...
       |   `-- ...
       |-- mesh
       |   |-- coo
-      |   |   |-- coo.step0
-      |   |   |-- coo.step1
+      |   |   |-- coo.step0
+      |   |   |-- coo.step1
       |   |   `-- ...
       |   `-- ...
       |-- <entity>
       |   |-- ori
-  .   |   |   |-- ori.step0
-  .   |   |   |-- ori.step1
-  .   |   |   `-- ...
-  |   |   `-- ...
-  |   `-- ...
-  `-- [restart]
+      |   |   |-- ori.step0
+      |   |   |-- ori.step1
+      |   |   `-- ...
+      |   `-- ...
+      |-- [forces]
+      |   |-- <faset>
+      |   `-- ...
+      |-- [convergence]
+      `-- [macro]
 
 where
 
-- :file:`inputs` is an input file directory containing the tessellation file (:file:`.tess`, if found in the input directory), the mesh file (:file:`.msh`), the FEPX configuration file (:file:`.config`), and all script files (:file:`*.sh`, likely including a job submission file).
+- :file:`inputs` is an input file directory containing the tessellation file (:file:`.tess` or :file:`.tesr`, if found in the input directory), the mesh file (:file:`.msh`), the FEPX configuration file (:file:`.cfg`), the other FEPX input files (:file:`.ori`, :file:`.phase` and :file:`.opt`), and all script files (:file:`*.sh`, likely including a job submission file).
+
+- :file:`restart` is the restart directory.  It is present only if FEPX wrote restart files: one file per process, :file:`restart.rank<r>` (FEPX 3), or :file:`rst<id>.control` and :file:`rst<id>.*` (earlier versions).
 
 - :file:`results` is the result directory.
 
@@ -838,60 +841,42 @@ where
 
 - :file:`results/*/<res>` is a directory for result :data:`<res>` of an entity. The directory contains one file per simulation step, named :file:`<res>.step<nb>`, where :data:`nb` is the step number, ranging from 0 (for the initial state) to the total number of steps.
 
-- :file:`restart` is the restart directory.  It is present only if :data:`restart` was switched on in FEPX and contains raw FEPX restart files (requires FEPX version 1.2 or higher).
+- :file:`results/forces`, :file:`results/convergence` and :file:`results/macro` are the force tables (one file per face set), the convergence table and the macroscopic table written by FEPX (see FEPX's documentation).  Neper does not read them, and does not merge them (option :option:`-o`).
 
-Results can have integer values, real values, vectorial values or tensorial values. In the result files, values for the different entities (nodes, elements, etc.) are written on successive lines, with components written on successive columns (space delimited). The components of a vector, :data:`v`, are written as :data:`v1` :data:`v2` :data:`v3`. The components of a symmetrical tensor, :data:`t`, are written using Voigt notation, as :data:`t11` :data:`t22` :data:`t33` :data:`t23` :data:`t31` :data:`t12`. The components of a skwe-symmetrical tensor, :data:`t`, are written using :data:`t12` :data:`t13` :data:`t23`. The components of a non-symmetrical tensor, :data:`t`, are written as :data:`t11` :data:`t12` :data:`t13` :data:`t21` :data:`t22` :data:`t23` :data:`t31` :data:`t32` :data:`t33`.
+Results can have integer values, real values, vector values or tensor values. In the result files, values for the different entities (nodes, elements, etc.) are written on successive lines, with components written on successive columns (space delimited). The components of a vector, :data:`v`, are written as :data:`v1` :data:`v2` :data:`v3`. The components of a symmetric tensor, :data:`t`, are written using Voigt notation, as :data:`t11` :data:`t22` :data:`t33` :data:`t23` :data:`t13` :data:`t12`. The components of a skew-symmetric tensor, :data:`t`, are written as :data:`t12` :data:`t13` :data:`t23`. The components of a non-symmetric tensor, :data:`t`, are written as :data:`t11` :data:`t12` :data:`t13` :data:`t21` :data:`t22` :data:`t23` :data:`t31` :data:`t32` :data:`t33`.
 
-The directory also contains a hidden file, :file:`.sim`, containing information on the simulation and the content of the simulation directory.  This file is only for internal use and is formatted as follows (the sections depend on the actual content of the simulation directory and most of them are optional):
+The content of the simulation directory is entirely determined from the directory itself: the input files are the files of :file:`inputs`, identified by their extensions (:file:`.tess`, :file:`.tesr`, :file:`.msh`, :file:`.cfg`, etc.; if several files have the same extension, :file:`simulation.<ext>` is used if present, and the first file in alphabetical order otherwise), the entities and results are the subdirectories of :file:`results`, the steps are those of the result files, and the restart is that of the restart files, :file:`restart/restart.rank<r>` or :file:`restart/rst<id>.control`.  The data that cannot be determined from the directory content are written alongside the results:
 
-.. code-block:: plain
+- A user-defined entity (see :ref:`neper_s`, option :data:`-entity`) has a definition file, :file:`results/<entity>/<entity>.def`, formatted as follows:
 
-  ***sim
-   **format
-     <format>
-   **input
-    *tess
-     <tess_file>
-    *tesr
-     <tesr_file>
-    *msh
-     <msh_file>
-    *ori
-     <ori_file>
-    *opt
-     <opt_file>
-    *bcs
-     <bcs_file>
-    *phase
-     <phase_file>
-    *config
-     <config_file>
-   **general
-     <cell_nb> <node_nb> <elt_nb> <elset_nb> <part_nb>
-    *orides
-     <orientation_descriptor>
-   **entity <entity>                                     \
-    *member                                              |
-     <member_nb>                                         |
-     <member1> <member2> ...                             | section repeated for each entity
-    *result                                              |
-     <result_nb>                                         |
-     <result1> <result2> ...                             /
-   **orispace
-    *tess
-     <tess_file>
-    *mesh
-     <mesh_file>
-   **step
-     <step_nb>
-  ***end
+  .. code-block:: text
+
+    *type
+     <member_type>
+    *member
+     <member_expression1>
+     <member_expression2>
+     ...
+
+- A result can have a definition file, :file:`results/*/<res>/<res>.def`, formatted as follows (each section is optional):
+
+  .. code-block:: text
+
+    *type
+     <type>
+    *expr
+     <expression>
+
+  :data:`<type>` is the type of the result, which can be :data:`int`, :data:`real`, :data:`vector`, :data:`skewtensor`, :data:`symtensor`, :data:`tensor` or :data:`ori`, and :data:`<expression>` is the expression it was computed from (see :ref:`neper_s`, options :data:`-res*`).  A value can also be written on the same line as its section, as in :data:`*type vector`.  The file is written by Neper, for the results it computes and for those loaded with a type, and can be written by hand for other results.  A result of unknown name (see :ref:`simulation_results`) without a type in its definition file is of undefined type.
+
+A simulation directory written by an earlier version of Neper (or by FEPX) can contain a hidden file, :file:`.sim`.  The entity and result definitions of this file are written as described above (if they are missing), and the file is then ignored.
 
 .. _multiscale_cell_file:
 
 Multiscale Cell File
 --------------------
 
-A multiscale cell file provides cell-by-cell values for a multiscale tessellation and can be loaded using :data:`msfile(<file_name>)` [#msfile]_. The file contains, for each cell, its *multiscale identifier*, :data:`mid`, and the value(s).  A *cell multiscale identifier* (`mid`) is a character string identifying a cell at a specific scale.  For a given cell, C, :data:`mid` combines the identifiers of the cells that C belongs to, at successive scales, to its own :data:`id`, separated by :data:`::`.  For a 1-scale tessellation, :data:`mid` equals :data:`id`.  For a 2-scale tessellation composed of :math:`2 \times 3` cells, the :data:`mid` values are equal to :data:`1::1`, :data:`1::2`, :data:`1::3`, :data:`2::1`, :data:`2::2` and :data:`2::3`.  The domain (which can be considered as a cell at scale 0), :data:`mid` is nil.  An example of a multiscale cell file that could be used to define the numbers of cells of a 3-scale tessellation is::
+A multiscale cell file provides cell-by-cell values for a multiscale tessellation and can be loaded using :data:`msfile(<file_name>)`. The file contains, for each cell, its *multiscale identifier*, :data:`mid`, and the value(s).  A *cell multiscale identifier* (:data:`mid`) is a character string identifying a cell at a specific scale.  For a given cell, C, :data:`mid` combines the identifiers of the cells that C belongs to, at successive scales, to its own :data:`id`, separated by :data:`::`.  For a 1-scale tessellation, :data:`mid` equals :data:`id`.  For a 2-scale tessellation composed of :math:`2 \times 3` cells, the :data:`mid` values are equal to :data:`1::1`, :data:`1::2`, :data:`1::3`, :data:`2::1`, :data:`2::2` and :data:`2::3`.  For the domain (which can be considered as a cell at scale 0), :data:`mid` is nil.  An example of a multiscale cell file that could be used to define the numbers of cells of a 3-scale tessellation is::
 
   2
   1 2
@@ -903,14 +888,14 @@ A multiscale cell file provides cell-by-cell values for a multiscale tessellatio
   2::3 7
   2::4 8
 
-The file could be used in :data:`-T` as :data:`-n msfile(<file_name>)::msfile(<file_name>)::msfile(<file_name>)`.  The first instance of :data:`msfile(<file_name>)` reads the number of scale-1 cells in line 1, the second instance of :data:`msfile(<file_name>)` reads the number of scale-2 cells in lines 2--3, and the third  instance of :data:`msfile(<file_name>)` reads the number of scale-3 cells in lines 4--7.
+The file could be used in :data:`-T` as :data:`-n msfile(<file_name>)::msfile(<file_name>)::msfile(<file_name>)`.  The first instance of :data:`msfile(<file_name>)` reads the number of scale-1 cells in line 1, the second instance of :data:`msfile(<file_name>)` reads the number of scale-2 cells in lines 2--3, and the third instance of :data:`msfile(<file_name>)` reads the number of scale-3 cells in lines 4--9.
 
 .. _data_file:
 
 Data File
 ---------
 
-A data file contains a number of data to be assigned to entities (seeds, cells, points, etc.).  It must contain the expected number of data.  It is a general, simply-formatted ASCII file that contains a fixed number of data per entity, and the data can be integers, real numbers or character strings.  A real number can have an arbitrary number of digits, but the decimal mark must be :option:`.`.  The data can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with the data of one entity per line.  An example of a data file containing 5 values is::
+A data file contains a number of data to be assigned to entities (seeds, cells, points, etc.).  It must contain the expected number of data.  It is a general, simply-formatted ASCII file that contains a fixed number of data per entity, and the data can be integers, real numbers or character strings.  A real number can have an arbitrary number of digits, but the decimal mark must be :data:`.`.  The data can be separated from each other by spaces, tabs or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with the data of one entity per line.  An example of a data file containing 5 values is::
 
   2.1235
   5.9564
@@ -939,7 +924,7 @@ An example of a data file containing 5 colors is::
 Position File
 -------------
 
-A position file contains the coordinates of a number of points.  The file must contain 1 coordinate per point in 1D, 2 coordinates per point in 2D and 3 coordinates per point in 3D.  While the dimension can be known from the context in which the file is read, it can also be specified by appending :data:`:dim` to the name of the position file, where :data:`dim` is the dimension.  A coordinate can be an integer or real number. A real number can have an arbitrary number of digits, but the decimal mark must be :option:`.`.  The coordinates can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one point per line.  An example of a position file containing 5 points in 3D is::
+A position file contains the coordinates of a number of points.  The file must contain 1 coordinate per point in 1D, 2 coordinates per point in 2D and 3 coordinates per point in 3D.  While the dimension can be known from the context in which the file is read, it can also be specified by appending :data:`:dim` to the name of the position file, where :data:`dim` is the dimension.  A coordinate can be an integer or real number. A real number can have an arbitrary number of digits, but the decimal mark must be :data:`.`.  The coordinates can be separated from each other by spaces, tabs or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one point per line.  An example of a position file containing 5 points in 3D is::
 
   2.1235 9.4544 5.2145
   5.9564 3.6884 9.2145
@@ -948,5 +933,3 @@ A position file contains the coordinates of a number of points.  The file must c
   0.5874 4.2848 2.4874
 
 .. note:: A :ref:`position_file` is a :ref:`data_file` with as many data per entity as dimensions.
-
-.. [#msfile] As of version 3.5.0, :data:`msfile(<file_name>)` should be preferred over :data:`file(<file_name>)`.

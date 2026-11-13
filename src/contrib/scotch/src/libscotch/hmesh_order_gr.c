@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,14 +41,14 @@
 /**                                                        **/
 /**   DATES      : # Version 4.0  : from : 30 nov 2003     **/
 /**                                 to   : 27 jan 2004     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HMESH_ORDER_GR
 
 #include "module.h"
 #include "common.h"
@@ -75,7 +75,7 @@
 
 int
 hmeshOrderGr (
-const Hmesh * restrict const    meshptr,
+Hmesh * restrict const          meshptr,
 Order * restrict const          ordeptr,
 const Gnum                      ordenum,
 OrderCblk * restrict const      cblkptr,
@@ -87,7 +87,7 @@ const HmeshOrderGrParam * const paraptr)
   hgraphInit (&grafdat);
   if (hmeshHgraph (meshptr, &grafdat) != 0) {     /* Build halo graph with improper vnumtab */
     errorPrint ("hmeshOrderGr: cannot build halo graph");
-    return     (1);
+    return (1);
   }
 
   if ((o = hgraphOrderSt (&grafdat, ordeptr, ordenum, cblkptr, paraptr->stratptr)) != 0)

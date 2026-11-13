@@ -123,6 +123,18 @@ extern "C"
   extern int neut_nodes_point_closestnode (struct NODES Nodes, double *coo,
 					   int *pnode);
 
+/// \brief Get the characteristic length at a point, from the
+/// characteristic lengths of nodes, increasing linearly with the distance
+/// to the nodes
+/// \param Nodes: nodes (of characteristic lengths NodeCl)
+/// \param coo: point coordinates
+/// \param cl: maximum characteristic length
+/// \param clgrad: rate of increase of the characteristic length with the
+/// distance to a node
+/// \return min (cl, min_i (NodeCl[i] + clgrad * dist (coo, NodeCoo[i])))
+  extern double neut_nodes_point_clgrad (struct NODES Nodes, double *coo,
+                                         double cl, double clgrad);
+
 /// \brief Get the distance between two nodes.
 ///
 ///

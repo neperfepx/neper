@@ -303,7 +303,7 @@ nev_print_real_png_tor (FILE * file, double *coo, double *rad, char *texture)
 
   ut_free_1d (&v1);
   ut_free_1d (&v2);
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -332,7 +332,7 @@ nev_print_real_png_disc (FILE * file, double *coo, double *rad, char *texture)
 
   ut_free_1d (&v1);
   ut_free_1d (&v2);
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }

@@ -1,7 +1,6 @@
-.. _fdl_link:
+.. _fdl:
 
-******************************
 GNU Free Documentation License
-******************************
+==============================
 
 .. literalinclude:: _static/fdl.txt

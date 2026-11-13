@@ -34,9 +34,11 @@ nes_pproc/nes_pproc2.c
 nes_pproc/nes_pproc3.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity1.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity2.c
+nes_pproc/nes_pproc_entity/nes_pproc_entity3.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin1.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin2.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin3.cpp
+nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin4.cpp
 nes_pproc/nes_pproc_orispace/nes_pproc_orispace1.c
 )
 

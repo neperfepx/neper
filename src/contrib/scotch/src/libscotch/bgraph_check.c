@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2009,2013,2014 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2009,2013,2014,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,14 +44,14 @@
 /**                                 to   : 04 oct 2009     **/
 /**                # Version 6.0  : from : 06 oct 2013     **/
 /**                                 to   : 25 aug 2014     **/
+/**                # Version 7.0  : from : 22 feb 2023     **/
+/**                                 to   : 28 mar 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define BGRAPH
 
 #include "module.h"
 #include "common.h"
@@ -77,55 +77,54 @@ int
 bgraphCheck (
 const Bgraph * restrict const grafptr)
 {
-  int * restrict      flagtax;                    /* Frontier flag array       */
-  Gnum                vertnum;                    /* Number of current vertex  */
-  Gnum                fronnum;                    /* Number of frontier vertex */
-  Gnum                compload[2];
-  Gnum                compsize[2];
+  int * restrict      flagtax;                    /* Frontier flag array           */
+  Gnum                cpl1sum;                    /* Sum of vertex loads in part 1 */
+  Gnum                ver1nbr;                    /* Number of vertices in part 1  */
   Gnum                commloadintn;
   Gnum                commloadextn;
   Gnum                commgainextn;
-  Gnum                edloval;
+  Gnum                fronnum;                    /* Number of frontier vertex     */
+  Gnum                vertnum;                    /* Number of current vertex      */
   int                 o;
 
+  const Gnum                        baseval = grafptr->s.baseval;
+  const Gnum                        vertnnd = grafptr->s.vertnnd;
   const Gnum * restrict const       verttax = grafptr->s.verttax;
   const Gnum * restrict const       vendtax = grafptr->s.vendtax;
-  const Gnum * restrict const       velotax = grafptr->s.velotax;
   const Gnum * restrict const       edgetax = grafptr->s.edgetax;
-  const Gnum * restrict const       edlotax = grafptr->s.edlotax;
   const GraphPart * restrict const  parttax = grafptr->parttax;
   const Gnum * restrict const       frontab = grafptr->frontab;
 
   if (grafptr->compload0avg != (Gnum) (((double) (grafptr->s.velosum + grafptr->vfixload[0] + grafptr->vfixload[1]) * (double) grafptr->domnwght[0]) /
                                        (double) (grafptr->domnwght[0] + grafptr->domnwght[1])) - grafptr->vfixload[0]) {
     errorPrint ("bgraphCheck: invalid average load");
-    return     (1);
+    return (1);
   }
 
   if (grafptr->compload0 != (grafptr->compload0avg + grafptr->compload0dlt)) {
     errorPrint ("bgraphCheck: invalid load balance");
-    return     (1);
+    return (1);
   }
 
-  for (vertnum = grafptr->s.baseval; vertnum < grafptr->s.vertnnd; vertnum ++) {
+  for (vertnum = baseval; vertnum < vertnnd; vertnum ++) {
     if ((parttax[vertnum] | 1) != 1) {            /* If part is neither 0 nor 1 */
       errorPrint ("bgraphCheck: invalid part array");
-      return     (1);
+      return (1);
     }
   }
 
   if ((grafptr->fronnbr < 0) ||
       (grafptr->fronnbr > grafptr->s.vertnbr)) {
     errorPrint ("bgraphCheck: invalid number of frontier vertices");
-    return     (1);
+    return (1);
   }
 
   if ((flagtax = memAlloc (grafptr->s.vertnbr * sizeof (int))) == NULL) {
     errorPrint ("bgraphCheck: out of memory");
-    return     (1);
+    return (1);
   }
   memSet (flagtax, ~0, grafptr->s.vertnbr * sizeof (int));
-  flagtax -= grafptr->s.baseval;
+  flagtax -= baseval;
 
   o = 1;                                          /* Assume failure when checking */
   for (fronnum = 0; fronnum < grafptr->fronnbr; fronnum ++) {
@@ -135,7 +134,7 @@ const Bgraph * restrict const grafptr)
     GraphPart           flagval;
 
     vertnum = frontab[fronnum];
-    if ((vertnum < grafptr->s.baseval) || (vertnum >= grafptr->s.vertnnd)) {
+    if ((vertnum < baseval) || (vertnum >= vertnnd)) {
       errorPrint ("bgraphCheck: invalid vertex index in frontier array");
       goto fail;
     }
@@ -156,56 +155,31 @@ const Bgraph * restrict const grafptr)
     }
   }
 
-  compload[0]  =
-  compload[1]  = 0;
-  compsize[0]  =
-  compsize[1]  = 0;
-  commloadintn = 0;
-  commloadextn = grafptr->commloadextn0;
-  commgainextn = 0;
-  edloval      = 1;                               /* Assume edges are not weighted */
-  for (vertnum = grafptr->s.baseval; vertnum < grafptr->s.vertnnd; vertnum ++) {
-    Gnum                partval;                  /* Part of current vertex */
-    Gnum                edgenum;                  /* Number of current edge */
-    Gnum                commcut[2];
+  for (vertnum = baseval; vertnum < vertnnd; vertnum ++) {
+    GraphPart           partval;                  /* Part of current vertex    */
+    GraphPart           flagval;                  /* Difference in part values */
+    Gnum                edgenum;                  /* Number of current edge    */
 
-    partval = (Gnum) parttax[vertnum];
-    if (grafptr->veextax != NULL) {
-      Gnum                veexval;
+    partval = parttax[vertnum];
 
-      veexval = grafptr->veextax[vertnum];
-      commloadextn += veexval * partval;
-      commgainextn += veexval * (1 - 2 * partval);
-    }
+    for (edgenum = verttax[vertnum], flagval = 0;
+         edgenum < vendtax[vertnum]; edgenum ++)
+      flagval |= parttax[edgetax[edgenum]] ^ partval; /* Flag set if neighbor part differs from vertex part */
 
-    compload[partval] += (velotax == NULL) ? 1 : velotax[vertnum];
-    compsize[partval] ++;
-
-    commcut[partval]     = 1;                     /* Create loop to account for own vertex part */
-    commcut[1 - partval] = 0;
-    for (edgenum = verttax[vertnum]; edgenum < vendtax[vertnum]; edgenum ++) {
-      int                 partend;
-      int                 partdlt;
-
-      if (edlotax != NULL)
-        edloval = edlotax[edgenum];
-      partend = parttax[edgetax[edgenum]];
-      partdlt = partval ^ partend;
-      commcut[partend] ++;
-      commloadintn += partdlt * edloval * partend; /* Only count loads once, when (partend == 1) */
-    }
-
-    if ((commcut[0] != 0) && (commcut[1] != 0) && /* If vertex should be in frontier array */
-        (flagtax[vertnum] != 0)) {
+    if ((flagval != 0) && (flagtax[vertnum] != 0)) { /* If vertex should be in frontier array */
       errorPrint ("bgraphCheck: vertex should be in frontier array");
       goto fail;
     }
   }
-  if (compsize[0] != grafptr->compsize0) {
+
+  bgraphCost2 (grafptr, parttax, NULL, NULL,      /* Compute values for part array */
+               &cpl1sum, &ver1nbr, &commloadintn, &commloadextn, &commgainextn);
+
+  if ((grafptr->s.vertnbr - ver1nbr) != grafptr->compsize0) {
     errorPrint ("bgraphCheck: invalid part size");
     goto fail;
   }
-  if (compload[0] != grafptr->compload0) {
+  if ((grafptr->s.velosum - cpl1sum) != grafptr->compload0) {
     errorPrint ("bgraphCheck: invalid part load");
     goto fail;
   }
@@ -220,8 +194,8 @@ const Bgraph * restrict const grafptr)
 
   o = 0;                                          /* Everything turned well */
 
-fail :
-  memFree (flagtax + grafptr->s.baseval);
+fail:
+  memFree (flagtax + baseval);
 
   return (o);
 }

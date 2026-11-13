@@ -12,7 +12,7 @@ nem_tess_face_1delts (struct TESS Tess, struct MESH *Mesh, int face,
 
   (*peltqty) = 0;
 
-  EdgeQty = Tess.FaceVerQty[face];
+  EdgeQty = Tess.FaceEdgeQty[face];
   for (i = 1; i <= EdgeQty; i++)
   {
     edge = Tess.FaceEdgeNb[face][i];
@@ -105,7 +105,7 @@ nem_tess_facebodies_nodes (struct TESS Tess, struct MESH *Mesh, int **pnodes,
   {
     neut_mesh_elset_nodes (Mesh[2], i, &tmp, &qty);
 
-    for (j = 1; j <= Tess.FaceVerQty[i]; j++)
+    for (j = 1; j <= Tess.FaceEdgeQty[i]; j++)
     {
       neut_mesh_elset_nodes (Mesh[1], Tess.FaceEdgeNb[i][j], &edgenodes,
                              &edgenodeqty);

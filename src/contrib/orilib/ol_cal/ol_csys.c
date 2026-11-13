@@ -11,7 +11,7 @@ ol_g_refcsys (double **g, double **gs, double **gnew)
   ol_g_inverse (gs, gsinv);
   ol_g_g_g (gsinv, g, gnew);
 
-  ol_g_free (gsinv);
+  ol_g_free (&gsinv);
 
   return;
 }
@@ -25,7 +25,7 @@ ol_q_refcsys (double *q, double *qs, double *qnew)
   ol_q_inverse (qs, qsinv);
   ol_q_q_q (qsinv, q, qnew);
 
-  ol_q_free (qsinv);
+  ol_q_free (&qsinv);
 
   return;
 }
@@ -39,7 +39,7 @@ ol_g_csys (double **g, double **gs, double **gnew)
   ol_g_g_g (gsinv, g, gnew);
   ol_g_g_g (gnew, gs, gnew);
 
-  ol_g_free (gsinv);
+  ol_g_free (&gsinv);
 
   return;
 }
@@ -54,7 +54,7 @@ ol_q_csys (double *q, double *qs, double *qnew)
   ol_q_q_q (qsinv, q, qnew);
   ol_q_q_q (qnew, qs, qnew);
 
-  ol_q_free (qsinv);
+  ol_q_free (&qsinv);
 
   return;
 }

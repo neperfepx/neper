@@ -209,11 +209,18 @@ net_mtess_flatten_edge_domedge_edges (struct MTESS MTess, struct TESS *Tess,
                                       int *pTessQty, int ***pEdgeNb,
                                       int ***pEdgeOri, int **pEdgeQty)
 {
-  int t, id, pos;
+  int t, id, pos, i;
   int *polys = NULL;
   int polyqty;
 
-  neut_tess_edge_polys (Tess[tessid], edge, &polys, &polyqty);
+  // polys, and slave seeds that have a (virtual) tessellation
+  neut_tess_edge_seeds (Tess[tessid], edge, &polys, &polyqty);
+  for (i = 0; i < polyqty; i++)
+    if (polys[i] < 0 || (polys[i] > Tess[tessid].PolyQty
+                         && (!Tess[tessid].PerSeedMaster
+                             || MTess.DomTess[tessid][polys[i]] == 0)))
+      polys[i] = 0;
+  polyqty -= ut_array_1d_int_rmelt (polys, polyqty, 0, polyqty);
 
   (*pTessQty) = polyqty;
   (*pTessNb) = ut_alloc_1d_int (*pTessQty);
@@ -236,6 +243,16 @@ net_mtess_flatten_edge_domedge_edges (struct MTESS MTess, struct TESS *Tess,
 
     neut_tess_domedge_edges_sorted (Tess[id], pos, &((*pEdgeNb)[t]),
                                     &((*pEdgeOri)[t]), &((*pEdgeQty)[t]));
+
+    // the domain edge can be reversed wrt the edge (virtual tessellation
+    // of a periodic tessellation)
+    if (MTess.TessDomVerNb[id][Tess[id].DomEdgeVerNb[pos][0]]
+        == Tess[tessid].EdgeVerNb[edge][1])
+    {
+      ut_array_1d_int_reverseelts ((*pEdgeNb)[t], (*pEdgeQty)[t]);
+      ut_array_1d_int_reverseelts ((*pEdgeOri)[t], (*pEdgeQty)[t]);
+      ut_array_1d_int_scale ((*pEdgeOri)[t], (*pEdgeQty)[t], -1);
+    }
   }
 
   ut_free_1d_int (&polys);
@@ -386,6 +403,9 @@ net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess,
     }
   }
 
+  ut_free_1d_int (&EdgePos);
+  ut_free_1d_int (&ver);
+  ut_free_1d (&dist);
   ut_free_1d_int (&dom);
 
   return;

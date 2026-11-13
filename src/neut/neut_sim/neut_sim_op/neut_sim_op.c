@@ -22,14 +22,12 @@ neut_sim_set_zero (struct SIM *pSim)
   (*pSim).EntityResQty = NULL;
   (*pSim).EntityRes = NULL;
   (*pSim).EntityResExpr = NULL;
+  (*pSim).EntityResType = NULL;
 
   (*pSim).OriDes = NULL;
   (*pSim).StepState = NULL;
   (*pSim).RestartFiles = 0;
   (*pSim).RestartId = 0;
-
-  (*pSim).OriSpaceTess = NULL;
-  (*pSim).OriSpaceMesh = NULL;
 
   (*pSim).tess = NULL;
   (*pSim).tesr = NULL;
@@ -45,7 +43,6 @@ neut_sim_set_zero (struct SIM *pSim)
   (*pSim).EltQty = 0;
   (*pSim).NodeQty = 0;
   (*pSim).ElsetQty = 0;
-  (*pSim).PartQty = 0;
 
   (*pSim).step = 0;
 
@@ -63,6 +60,7 @@ neut_sim_free (struct SIM *pSim)
   {
     ut_free_2d_char ((*pSim).EntityRes + i, (*pSim).EntityResQty[i]);
     ut_free_2d_char ((*pSim).EntityResExpr + i, (*pSim).EntityResQty[i]);
+    ut_free_2d_char ((*pSim).EntityResType + i, (*pSim).EntityResQty[i]);
   }
 
   ut_free_2d_char (&(*pSim).EntityType, (*pSim).EntityQty);
@@ -84,14 +82,12 @@ neut_sim_free (struct SIM *pSim)
 
   ut_free_1d_ppchar (&(*pSim).EntityRes);
   ut_free_1d_ppchar (&(*pSim).EntityResExpr);
+  ut_free_1d_ppchar (&(*pSim).EntityResType);
   ut_free_1d_int (&(*pSim).EntityResQty);
 
   ut_free_1d_char (&(*pSim).simdir);
 
   ut_free_1d_char (&(*pSim).OriDes);
-
-  ut_free_1d_char (&(*pSim).OriSpaceTess);
-  ut_free_1d_char (&(*pSim).OriSpaceMesh);
 
   ut_free_1d_char (&(*pSim).tess);
   ut_free_1d_char (&(*pSim).tesr);
@@ -102,7 +98,7 @@ neut_sim_free (struct SIM *pSim)
   ut_free_1d_char (&(*pSim).phase);
   ut_free_1d_char (&(*pSim).cfg);
 
-  // neut_ospace_free (&(*pSim).Sp);
+  neut_orispace_free (&(*pSim).Sp);
 
   return;
 }
@@ -219,6 +215,7 @@ neut_sim_addentity (struct SIM *pSim, char *entity_in)
   (*pSim).EntityResQty = ut_realloc_1d_int_zero ((*pSim).EntityResQty, (*pSim).EntityQty, 1);
   (*pSim).EntityRes = ut_realloc_1d_ppchar_null ((*pSim).EntityRes, (*pSim).EntityQty, 1);
   (*pSim).EntityResExpr = ut_realloc_1d_ppchar_null ((*pSim).EntityResExpr, (*pSim).EntityQty, 1);
+  (*pSim).EntityResType = ut_realloc_1d_ppchar_null ((*pSim).EntityResType, (*pSim).EntityQty, 1);
 
   if (expr)
     neut_sim_entity_addexpr (pSim, entity, expr);
@@ -270,7 +267,7 @@ neut_sim_entity_addexpr (struct SIM *pSim, char *entity_in, char *expr)
 }
 
 void
-neut_sim_addres (struct SIM *pSim, char *entity, char *res_in, char *expr_in)
+neut_sim_addres (struct SIM *pSim, char *entity, char *res_in, char *expr_in, char *type)
 {
   int pos;
   char *res = NULL, *expr = NULL;
@@ -298,6 +295,12 @@ neut_sim_addres (struct SIM *pSim, char *entity, char *res_in, char *expr_in)
   if (expr)
     ut_string_string (expr, (*pSim).EntityResExpr[pos] + (*pSim).EntityResQty[pos] - 1);
 
+  (*pSim).EntityResType[pos]
+    = ut_realloc_1d_pchar_null ((*pSim).EntityResType[pos], (*pSim).EntityResQty[pos], 1);
+
+  if (type && strlen (type))
+    ut_string_string (type, (*pSim).EntityResType[pos] + (*pSim).EntityResQty[pos] - 1);
+
   ut_free_1d_char (&res);
   ut_free_1d_char (&expr);
 
@@ -323,6 +326,7 @@ neut_sim_rmres (struct SIM *pSim, char *entity, char *res)
       {
         ut_string_string ((*pSim).EntityRes[pos][j], (*pSim).EntityRes[pos] + j - 1);
         ut_string_string ((*pSim).EntityResExpr[pos][j], (*pSim).EntityResExpr[pos] + j - 1);
+        ut_string_string ((*pSim).EntityResType[pos][j], (*pSim).EntityResType[pos] + j - 1);
       }
       (*pSim).EntityResQty[pos]--;
       i--;
@@ -338,9 +342,9 @@ neut_sim_updatenodes (struct SIM Sim, int step, struct NODES *pNodes)
 {
   int status;
   FILE *file = NULL;
-  char *filename = ut_alloc_1d_char (1000);
+  char *filename = NULL;
 
-  sprintf (filename, "%s/results/nodes/coo/coo.step%d", Sim.simdir, step);
+  ut_string_sprintf (&filename, "%s/results/nodes/coo/coo.step%d", Sim.simdir, step);
 
   if (!ut_file_exist (filename))
     status = -1;
@@ -385,7 +389,7 @@ neut_sim_init_elsetqty (struct SIM *pSim)
   for (i = 0; i < 5; i++)
     neut_mesh_set_zero (Mesh + i);
 
-  neut_mesh_fnscanf_msh (filename, &Nodes, Mesh, Mesh + 1, Mesh + 2, Mesh + 3, Mesh + 4, NULL, "r");
+  neut_mesh_fnscanf_msh (filename, &Nodes, Mesh, Mesh + 1, Mesh + 2, Mesh + 3, Mesh + 4, NULL, NULL, NULL, "r");
   (*pSim).ElsetQty = Mesh[3].ElsetQty;
 
   neut_nodes_free (&Nodes);
@@ -404,19 +408,19 @@ neut_simres_setstep (struct SIMRES *pSimRes, int step)
 
   if (strcmp ((*pSimRes).status, "subresult"))
   {
-    sprintf ((*pSimRes).file, "%s/%s.step%d", (*pSimRes).dir,
+    ut_string_sprintf (&(*pSimRes).file, "%s/%s.step%d", (*pSimRes).dir,
              (*pSimRes).res, (*pSimRes).step);
   }
 
   else
   {
-    sprintf ((*pSimRes).parentfile, "%s/%s.step%d", (*pSimRes).parentdir,
+    ut_string_sprintf (&(*pSimRes).parentfile, "%s/%s.step%d", (*pSimRes).parentdir,
              (*pSimRes).parentres, (*pSimRes).step);
 
-    sprintf ((*pSimRes).file, "%s/%s.step%d,col=%d", (*pSimRes).parentdir,
+    ut_string_sprintf (&(*pSimRes).file, "%s/%s.step%d,col=%d", (*pSimRes).parentdir,
              (*pSimRes).parentres, (*pSimRes).step, (*pSimRes).parentcol);
 
-    sprintf ((*pSimRes).newfile, "%s/%s.step%d", (*pSimRes).dir,
+    ut_string_sprintf (&(*pSimRes).newfile, "%s/%s.step%d", (*pSimRes).dir,
              (*pSimRes).res, (*pSimRes).step);
   }
 
@@ -512,6 +516,17 @@ neut_sim_entity_init_memberqty (struct SIM *pSim, char *entity)
     (*pSim).EntityMemberQty[pos] = (*pSim).ElsetQty;
   else if (!strcmp (entity, "mesh"))
     (*pSim).EntityMemberQty[pos] = 1;
+
+  return;
+}
+
+void
+neut_sim_init_memberqty (struct SIM *pSim)
+{
+  int i;
+
+  for (i = 0; i < (*pSim).EntityQty; i++)
+    neut_sim_entity_init_memberqty (pSim, (*pSim).Entities[i]);
 
   return;
 }

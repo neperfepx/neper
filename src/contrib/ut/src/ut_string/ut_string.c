@@ -8,6 +8,7 @@
 #include<ctype.h>
 #include<stdarg.h>
 #include<limits.h>
+#include<errno.h>
 #include"ut.h"
 
 int
@@ -31,80 +32,63 @@ int
 ut_string_fnrs (char *string, const char *find, const char *replace,
                 int repeat)
 {
-  int i, j, p, equal, test = 0;
-  int *pos = ut_alloc_1d_int (strlen (string) + 1);
-  int length = strlen (string);
+  int i, j, p, qty, test = 0;
+  int length;
   int lengthf = strlen (find);
-  int lengthr;
-  char *replace2 = NULL;
+  int lengthr = replace ? strlen (replace) : 0;
+  int *pos = NULL;
+  char *string2 = NULL;
 
-  if (replace)
-  {
-    replace2 = ut_alloc_1d_char (strlen (replace) + 1);
-    lengthr = strlen (replace);
-    strcpy (replace2, replace);
-  }
-  else
-  {
-    lengthr = 1;
-    replace2 = ut_alloc_1d_char (2);
-    replace2[0] = '\0';
-  }
-
-  char *string2 = ut_alloc_1d_char (ceil (length * lengthr / lengthf) + 1000);
+  if (lengthf == 0)
+    return 0;
 
   while (repeat-- > 0)
   {
     length = strlen (string);
 
-    pos[0] = 0;
-
-    /* looking for the pos of 'find' in 'string' */
+    /* looking for the positions of 'find' in 'string' */
+    pos = ut_realloc_1d_int (pos, length + 1);
+    qty = 0;
     for (i = 0; i < length - lengthf + 1; i++)
-    {
-      equal = 1;
-      for (j = 0; j < lengthf; j++)
+      if (!strncmp (string + i, find, lengthf))
       {
-        if (string[i + j] != find[j])
-        {
-          equal = 0;
-          break;
-        }
-      }
-
-      if (equal == 1)
-      {
-        test = 1;
-        pos[++pos[0]] = i;
+        pos[qty++] = i;
         i += lengthf - 1;
       }
-    }
 
-    if (pos[0] == 0)
+    if (qty == 0)
       break;
-    else
-    {
-      p = 0;
-      for (i = 0; i < length; i++)
-      {
-        if (ut_array_1d_int_find (pos + 1, pos[0], i) == -1)
-          string2[p++] = string[i];
-        else
-        {
-          for (j = 0; j < lengthr; j++)
-            string2[p++] = replace2[j];
 
-          i += lengthf - 1;
-        }
-      }
-      string2[p] = '\0';
+    test = 1;
+
+    // with a NULL replace, the string is ended at the first occurrence
+    if (!replace)
+    {
+      string[pos[0]] = '\0';
+      break;
     }
-    sprintf (string, "%s", string2);
+
+    string2 = ut_realloc_1d_char (string2, length + qty * (lengthr - lengthf) + 1);
+
+    p = 0;
+    j = 0;
+    for (i = 0; i < length; i++)
+      if (j < qty && i == pos[j])
+      {
+        memcpy (string2 + p, replace, lengthr);
+        p += lengthr;
+        i += lengthf - 1;
+        j++;
+      }
+      else
+        string2[p++] = string[i];
+    string2[p] = '\0';
+
+    strcpy (string, string2);
   }
 
   ut_free_1d_int (&pos);
   ut_free_1d_char (&string2);
-  ut_free_1d_char (&replace2);
 
   return test;
 }
@@ -176,12 +160,15 @@ ut_string_addextension (const char *in, const char *ext, ...)
   unsigned int NoCext;          /* nb of characters of extin */
   int skip = 0;
 
-  va_list args;
-  char *fullext = ut_alloc_1d_char (1000);
+  va_list args, args2;
+  char *fullext = NULL;
 
   va_start (args, ext);
-  vsprintf (fullext, ext, args);
+  va_copy (args2, args);
+  fullext = ut_alloc_1d_char (vsnprintf (NULL, 0, ext, args) + 1);
   va_end (args);
+  vsprintf (fullext, ext, args2);
+  va_end (args2);
 
   NoCin = strlen (in);
   NoCext = strlen (fullext);
@@ -210,12 +197,16 @@ ut_string_body (char *in, char *stops, char **pbody)
   ut_string_string (in, &in2);
 
   pos = strlen (in2);
-  for (i = strlen (in2) - strlen (stops); i >= 0; i--)
-    if (!strncmp (in2 + i, stops, strlen (stops)))
+  for (i = (int) strlen (in2) - (int) strlen (stops); i >= 0; i--)
+  {
+    if (in2[i] == '/')
+      break;
+    else if (!strncmp (in2 + i, stops, strlen (stops)))
     {
       pos = i;
       break;
     }
+  }
 
   (*pbody) = ut_realloc_1d_char (*pbody, pos + 1);
   strncpy (*pbody, in2, pos);
@@ -371,7 +362,8 @@ ut_string_function (char *string, char **pfct, char ***pvars, char ***pvals,
     ut_string_string (tmp, pfct);
 
   ut_string_string (string + pos + 1, &string2);
-  string2[strlen (string2) - 1] = '\0';
+  if (strlen (string2) > 0 && string2[strlen (string2) - 1] == ')')
+    string2[strlen (string2) - 1] = '\0';
 
   ut_list_break2 (string2, ",", "=", &parts, &qty1, &qty);
 
@@ -462,7 +454,8 @@ ut_string_function_expr (char *string, char **pfct, char ***pexprs,
     ut_string_string (tmp, pfct);
 
   ut_string_string (string + pos + 1, &string2);
-  string2[strlen (string2) - 1] = '\0';
+  if (strlen (string2) > 0 && string2[strlen (string2) - 1] == ')')
+    string2[strlen (string2) - 1] = '\0';
 
   ut_list_break (string2, ",", pexprs, pexprqty);
 
@@ -675,7 +668,6 @@ ut_string_removetrailingdigits (char *string, char **pstring2)
 {
   int i, qty = 0, length;
 
-  ut_string_string (string, pstring2);
   for (i = strlen (string) - 1; i >= 0; i--)
   {
     if (isdigit (string[i]))
@@ -685,8 +677,9 @@ ut_string_removetrailingdigits (char *string, char **pstring2)
   }
 
   length = strlen (string) - qty;
-  *pstring2 = ut_alloc_1d_char (strlen (string) - qty + 1);
-  *pstring2 = strncpy (*pstring2, string, length);
+  (*pstring2) = ut_realloc_1d_char (*pstring2, length + 1);
+  strncpy (*pstring2, string, length);
+  (*pstring2)[length] = '\0';
 
   return;
 }
@@ -696,7 +689,6 @@ ut_string_trailingdigits (char *string, char **pstring2)
 {
   int i, qty = 0;
 
-  ut_string_string (string, pstring2);
   for (i = strlen (string) - 1; i >= 0; i--)
   {
     if (isdigit (string[i]))
@@ -705,8 +697,7 @@ ut_string_trailingdigits (char *string, char **pstring2)
       break;
   }
 
-  *pstring2 = ut_alloc_1d_char (qty + 1);
-  *pstring2 = strcpy (*pstring2, string + strlen (string) - qty);
+  ut_string_string (string + strlen (string) - qty, pstring2);
 
   return;
 }
@@ -741,6 +732,28 @@ ut_string_int (char *string, int *pres)
   (*pres) = ut_num_d2ri (val);
 
   return;
+}
+
+int
+ut_string_sprintf (char **pstring, const char *format, ...)
+{
+  int length;
+  char *string = NULL;
+  va_list args, args2;
+
+  va_start (args, format);
+  va_copy (args2, args);
+  length = vsnprintf (NULL, 0, format, args);
+  va_end (args);
+
+  string = ut_alloc_1d_char (length + 1);
+  vsnprintf (string, length + 1, format, args2);
+  va_end (args2);
+
+  ut_free_1d_char (pstring);
+  (*pstring) = string;
+
+  return length;
 }
 
 void
@@ -792,6 +805,111 @@ ut_string_isfilename (char *string)
               || string[0] == '@'));
 }
 
+// copies string[beg..end], without the leading and trailing whitespaces and
+// the parentheses that enclose the whole string
+void
+ut_string_ternary_part (char *string, int beg, int end, char **ppart)
+{
+  int i, depth, quote;
+
+  while (1)
+  {
+    while (beg <= end && isspace (string[beg]))
+      beg++;
+    while (end >= beg && isspace (string[end]))
+      end--;
+
+    if (end <= beg || string[beg] != '(' || string[end] != ')')
+      break;
+
+    depth = 0;
+    quote = 0;
+    for (i = beg; i <= end; i++)
+      if (string[i] == '"')
+        quote = !quote;
+      else if (!quote && string[i] == '(')
+        depth++;
+      else if (!quote && string[i] == ')' && --depth == 0)
+        break;
+
+    if (i != end)
+      break;
+
+    beg++;
+    end--;
+  }
+
+  (*ppart) = ut_alloc_1d_char (end - beg + 2);
+  strncpy (*ppart, string + beg, end - beg + 1);
+
+  return;
+}
+
+int
+ut_string_ternary (char *string, char **pcond, char **ptrue, char **pfalse)
+{
+  int i, length, depth, quote, nest, qmark, colon;
+  char *tmp = NULL;
+
+  // a string ternary has (at least) a quoted string as branch
+  if (!string || !strchr (string, '"'))
+    return -1;
+
+  ut_string_ternary_part (string, 0, strlen (string) - 1, &tmp);
+  length = strlen (tmp);
+
+  // looking for the first `?' and its matching `:', outside of parentheses
+  // and quotes (a `?' of a nested ternary in the true branch delays the `:')
+  depth = 0;
+  quote = 0;
+  nest = 0;
+  qmark = -1;
+  colon = -1;
+  for (i = 0; i < length && colon == -1; i++)
+    if (tmp[i] == '"')
+      quote = !quote;
+    else if (quote)
+      continue;
+    else if (tmp[i] == '(')
+      depth++;
+    else if (tmp[i] == ')')
+      depth--;
+    else if (depth == 0 && tmp[i] == '?')
+    {
+      if (qmark == -1)
+        qmark = i;
+      else
+        nest++;
+    }
+    else if (depth == 0 && tmp[i] == ':' && qmark != -1)
+    {
+      if (nest == 0)
+        colon = i;
+      else
+        nest--;
+    }
+
+  if (qmark != -1 && colon != -1)
+  {
+    ut_string_ternary_part (tmp, 0, qmark - 1, pcond);
+    ut_string_ternary_part (tmp, qmark + 1, colon - 1, ptrue);
+    ut_string_ternary_part (tmp, colon + 1, length - 1, pfalse);
+  }
+
+  ut_free_1d_char (&tmp);
+
+  return (qmark != -1 && colon != -1) ? 0 : -1;
+}
+
+int
+ut_string_isquoted (char *string)
+{
+  int length = string ? strlen (string) : 0;
+
+  return length >= 2 && string[0] == '"'
+         && strchr (string + 1, '"') == string + length - 1;
+}
+
 int
 ut_string_section_level (char *string, int *plevel)
 {
@@ -826,20 +944,16 @@ ut_string_random (int length, int rand, char **pstring)
 {
   int i, key;
   const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-  srand48 (rand);
+  // own random state, so that the global drand48 state is not reset
+  unsigned short xsubi[3] = { 0x330E, (unsigned short) rand,
+                              (unsigned short) (rand >> 16) };
 
   (*pstring) = ut_alloc_1d_char (length + 1);
 
-  if (length)
+  for (i = 0; i < length; i++)
   {
-    --length;
-    for (i = 0; i < length; i++)
-    {
-      key = (int) (drand48 () * (sizeof charset - 1));
-      (*pstring)[i] = charset[key];
-    }
-    (*pstring)[length] = '\0';
+    key = (int) (erand48 (xsubi) * (sizeof charset - 1));
+    (*pstring)[i] = charset[key];
   }
 
   return;
@@ -875,24 +989,24 @@ ut_string_version (char *string, int *pmajor, int *pminor, int *ppatch)
 int
 ut_string_isint (char *string)
 {
-	char *endptr;
+  char *endptr;
 
-	errno = 0;  // reset before call
-	strtol(string, &endptr, 10);
+  errno = 0;
+  strtol (string, &endptr, 10);
 
-	// No digits were found
-	if (endptr == string)
-		return 0;
+  // No digits were found
+  if (endptr == string)
+    return 0;
 
-	// Extra characters after number (e.g. "123abc")
-	if (*endptr != '\0')
-		return 0;
+  // Extra characters after number (e.g. "123abc")
+  if (*endptr != '\0')
+    return 0;
 
-	// Overflow/underflow check
-	if (errno == ERANGE)
-		return 0;
+  // Overflow/underflow check
+  if (errno == ERANGE)
+    return 0;
 
-	return 1;
+  return 1;
 }
 
 int

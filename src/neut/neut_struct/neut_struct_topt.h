@@ -25,7 +25,6 @@ struct TOPT
 
   // specified inputs
   int tarqty;			// number of target variables
-  int *taractive;   // 1 if active (default), 0 otherwise
   char **tarvar;		// variable
   char **tartype;		// type of specification: stat or cell
   char **tarexpr;		// variable expressions (normal, ..., file)
@@ -34,6 +33,7 @@ struct TOPT
   // can point to: distribution, cell-by-cell or
   // raster information (see below)
   double *tarrefval;		// variable reference value (average cell size, ...)
+  double *tarmean;		  // input mean reference value
 
   // distribution information
   struct FCT *tarpdf0;		// target PDF, not smoothed
@@ -81,13 +81,28 @@ struct TOPT
   struct FCT *curpdf;		// current PDF, smoothed
   struct FCT *curcdf0;		// current CDF, not smoothed
   struct FCT *curcdf;		// current CDF, smoothed
-  double *curpenalty;        	// current penalty
+  double curpenalty;        	// current total penalty (quadratic norm
+				// of the cell penalties)
 
   // cell-by-cell information
-  double *curcellpenalty;       // current cell penalty (if void)
+  double *curcellpenalty;       // current cell penalty (0 if valid,
+				// 1 + distance to being valid otherwise)
+  double **curcellweight;		// current cell weight
   double ***curcellval;		// current cell values
+  double **curcellerror;	// current cell errors, per target: difference
+				// to the target cell value for the
+				// cell-data targets (0 for invalid cells),
+				// target value for the other targets
+  double *curcelltotalerror;	// current total cell errors (combining the
+				// cell errors of the targets and the cell
+				// penalty)
+  struct FCT **curcellpdf;		// current cell CDF (if applicable)
+  struct FCT **curcellcdf;		// current cell PDF (if applicable)
+  double **oldcellweight;		// old cell weight
   double *oldcellpenalty;       // old (previous) cell penalty (if void)
   double ***oldcellval;		// old (previous) cell values
+  struct FCT **oldcellpdf;		// old (previous) cell CDF (if applicable)
+  struct FCT **oldcellcdf;		// old (previous) cell PDF (if applicable)
   int curcellpenaltyqty;        // current number of penalized cells
   int mincellpenaltyqty;        // minimum number of penalized cells
   // (number given by varcellvalqty)
@@ -114,6 +129,7 @@ struct TOPT
                                 // 0: x, 1: y, 2: z, 3: w
   int **seedvar_x;     		// x to which the variable is related
   				// [1...CellQty][0..dim]
+  double *x;			// current solution (values of the variables)
   double **x_pvar; 		// pointer to associated variables in
 				// SSet (SeedCoo0 or SeedWeight)
 
@@ -128,14 +144,11 @@ struct TOPT
   double *boundu;		// resulting upper bounds
 
   // resolution
-  int algoqty;			// number of algorithms
-  char **algoname;		// names of the NLopt algorithms
-  int algoid;			// id of the active algo: 0...algoqty-1
-#ifdef HAVE_NLOPT
-  nlopt_algorithm *algo;	// NLopt algorithms [0,...]
-#endif
-  int *algomaxiter;		// maximum allowed number of iterations without
-  				// decreasing the objective function
+  char *algoname;		// name of the algorithm
+  char *subplexsubspaces;	// subspaces of the subplex algorithm:
+				// "rowan" (Rowan's method), "perseed"
+				// (one per seed) or "percellerror" (one
+				// per seed, by decreasing cell error)
   double inistep;		// typical delta used for gradient computation
 
   // distribution-specific parameters
@@ -154,7 +167,14 @@ struct TOPT
   double xeps;			// delta on the solution vector
   double xreps;			// relative delta on the solution vector
   double time;			// CPU time
-  double loopmax;		// maximum number of optimization loop
+  char *result;			// result of the optimization (why it stopped):
+				// "stopval", "maxeval", "maxtime", "ftol" or
+				// "xtol" (stopping criteria of the algorithm),
+				// "ctrlc", "eps" or "reps"
+				// (see net_tess_opt_comp_minimize_objective_stop),
+				// "success", or "failure", "invalid_args",
+				// "out_of_memory", "roundoff_limited" or
+				// "forced_stop"; NULL if none
 
   // OPTIMIZATION INFORMATION ------------------------------------------
   char **tarobjective;		// target objective functions
@@ -174,11 +194,6 @@ struct TOPT
   double objval0;		// value of the objective function, no smoothing
   double* objvalmin0;		// minimum value of the objective function, no smoothing
   int iter;			// number of iterations
-  int loop;			// number of loops
-  int* loop_start;		// iterations at the start of the loops [loop - 1]
-  int* loop_plateau_length;	// lengths of the loop plateaus [loop - 1]
-  int* loop_status;		// status of the loop [loop - 1] (0: ok, -1: ended by a
-  				// plateau, -2: is a plateau)
 
   // PROGRESS INFORMATION ----------------------------------------------
 
@@ -186,9 +201,6 @@ struct TOPT
   struct timeval end_time;	// needed for tracking time taken
 
   struct TDYN TDyn;		// tessellation dynamics
-#ifdef HAVE_NLOPT
-  nlopt_opt opt;		// NLopt object
-#endif
 
   void *pnf_cloud;              // pointer to the nanoflann cloud
   void *pnf_tree;               // pointer to the nanoflann tree

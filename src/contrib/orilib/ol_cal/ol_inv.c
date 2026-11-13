@@ -16,7 +16,7 @@ ol_g_inverse (double **g, double **ginv)
     for (j = 0; j <= 2; j++)
       ginv[i][j] = gcpy[j][i];
 
-  ol_g_free (gcpy);
+  ol_g_free (&gcpy);
 
   return;
 }
@@ -28,16 +28,6 @@ ol_q_inverse (double *q, double *qinv)
   qinv[1] = -q[1];
   qinv[2] = -q[2];
   qinv[3] = -q[3];
-
-  return;
-}
-
-void
-ol_R_inverse (double *R, double *Rinv)
-{
-  Rinv[0] = -R[0];
-  Rinv[1] = -R[1];
-  Rinv[2] = -R[2];
 
   return;
 }

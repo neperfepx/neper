@@ -16,4 +16,9 @@
 #include"nev_print_data_points/nev_print_data_points.h"
 #include"nev_print_data_csys/nev_print_data_csys.h"
 
+#include"../nev_print_utils/nev_print_utils.h"
 #include "nev_print_data.h"
+
+extern void nev_print_data_domain (struct TESS Tess, struct NODES Nodes, struct MESH *Mesh,
+                                   char *space, char *attribute, char *value,
+                                   struct PRINT *pPrint);

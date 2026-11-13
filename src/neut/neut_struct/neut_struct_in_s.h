@@ -7,7 +7,6 @@
 
 struct IN_S
 {
-  char *fepxdir;                // FEPX result directory
   char *simdir;                 // simulation directory
   char *mergedir;               // simulation directories to merge
 
@@ -19,7 +18,6 @@ struct IN_S
   char **entities;              // -res* entities
   char **entityresexpr;         // -res* results
 
-  int stepqty;                  // number of steps
 };
 typedef struct IN_S IN_S;
 

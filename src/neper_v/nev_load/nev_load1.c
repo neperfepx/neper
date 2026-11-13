@@ -6,7 +6,7 @@
 
 void
 nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr,
-          struct NODES *pNodes, struct MESH *Mesh, struct POINT **pPoints,
+          struct NODES *pNodes, struct MESH *Mesh, struct NSET *pNSet, struct POINT **pPoints,
           int *pPointQty, struct DATA *TessData, struct DATA *TesrData,
           struct DATA *pNodeData, struct DATA **MeshData,
           struct DATA **pPointData)
@@ -20,9 +20,9 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
                       string);
 
   // simulation directory
-  if (ut_sys_isdir (string))
+  if (ut_sys_isdir ("%s", string))
   {
-    neut_sim_fscanf (string, pSim, "R");
+    neut_sim_fscanf (string, pSim);
 
     qty = 0;
     list = ut_alloc_1d_pchar (3);
@@ -68,6 +68,8 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
       ut_print_message (0, 1, "Loading tessellation...\n");
       neut_tess_fnscanf (file, pTess, "r");
       (*pTess).pSim = pSim;
+      if (!neut_sim_isvoid (*pSim))
+        neut_tess_sim (*pTess, pSim);
     }
 
     else if (!strcmp (input, "tesr"))
@@ -75,16 +77,20 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
       ut_print_message (0, 1, "Loading raster tessellation...\n");
       neut_tesr_fnscanf (file, pTesr);
       (*pTesr).pSim = pSim;
+      if (!neut_sim_isvoid (*pSim))
+        neut_tesr_sim (*pTesr, pSim);
     }
 
     else if (!strcmp (input, "gmsh:msh"))
     {
       ut_print_message (0, 1, "Loading mesh...\n");
       neut_mesh_fnscanf_msh (file, pNodes, Mesh, Mesh + 1, Mesh + 2,
-                             Mesh + 3, Mesh + 4, &topology, "r");
+                             Mesh + 3, Mesh + 4, NULL, pNSet, &topology, "r");
       (*pNodes).pSim = pSim;
-      for (i = 0; i <= 4; i++)
-        Mesh[i].pSim = pSim;
+      for (j = 0; j <= 4; j++)
+        Mesh[j].pSim = pSim;
+      if (!neut_sim_isvoid (*pSim))
+        neut_mesh_sim (*pNodes, Mesh, pSim);
 
       if (topology && Mesh[3].EltQty > 0)
       {
@@ -174,7 +180,8 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
   if (!neut_nodes_isvoid (*pNodes))
   {
     neut_data_init_node (*pNodes, pNodeData);
-    for (dim = 0; dim <= 3; dim++)
+    // (dim = 4: cohesive elts)
+    for (dim = 0; dim <= 4; dim++)
     {
       neut_data_init_mesh (Mesh[dim], "elt", MeshData[dim]);
       neut_data_init_mesh (Mesh[dim], "elset", MeshData[dim] + 1);

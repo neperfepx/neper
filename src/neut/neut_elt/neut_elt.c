@@ -41,60 +41,17 @@ int
 neut_elt_nodeqty (char *type, int dim, int order)
 {
   int res;
-  int **TriNodesPerElt = ut_alloc_2d_int (4, 3);
-
-  TriNodesPerElt[0][1] = 1;
-  TriNodesPerElt[0][2] = 1;
-  TriNodesPerElt[1][1] = 2;
-  TriNodesPerElt[1][2] = 3;
-  TriNodesPerElt[2][1] = 3;
-  TriNodesPerElt[2][2] = 6;
-  TriNodesPerElt[3][1] = 4;
-  TriNodesPerElt[3][2] = 10;
-
-  int **QuadNodesPerElt = ut_alloc_2d_int (4, 3);
-
-  QuadNodesPerElt[0][1] = 1;
-  QuadNodesPerElt[0][2] = 1;
-  QuadNodesPerElt[1][1] = 2;
-  QuadNodesPerElt[1][2] = 3;
-  QuadNodesPerElt[2][1] = 4;
-  QuadNodesPerElt[2][2] = 8;
-  QuadNodesPerElt[3][1] = 8;
-  QuadNodesPerElt[3][2] = 20;
-
-  int **Quad9NodesPerElt = ut_alloc_2d_int (4, 3);
-
-  Quad9NodesPerElt[0][1] = 1;
-  Quad9NodesPerElt[0][2] = 1;
-  Quad9NodesPerElt[1][1] = 2;
-  Quad9NodesPerElt[1][2] = 3;
-  Quad9NodesPerElt[2][1] = 4;
-  Quad9NodesPerElt[2][2] = 9;
-  Quad9NodesPerElt[3][1] = 8;
-  Quad9NodesPerElt[3][2] = 21;
-
-  int **Quad6NodesPerElt = ut_alloc_2d_int (4, 3);
-
-  Quad6NodesPerElt[0][1] = 1;
-  Quad6NodesPerElt[0][2] = 1;
-  Quad6NodesPerElt[1][1] = 2;
-  Quad6NodesPerElt[1][2] = 3;
-  Quad6NodesPerElt[2][1] = 4;
-  Quad6NodesPerElt[2][2] = 6;
-  Quad6NodesPerElt[3][1] = 0;
-  Quad6NodesPerElt[3][2] = 0;
-
-  int **TriPrismNodesPerElt = ut_alloc_2d_int (4, 3);
-
-  TriPrismNodesPerElt[0][1] = 0;
-  TriPrismNodesPerElt[0][2] = 0;
-  TriPrismNodesPerElt[1][1] = 0;
-  TriPrismNodesPerElt[1][2] = 0;
-  TriPrismNodesPerElt[2][1] = 4;
-  TriPrismNodesPerElt[2][2] = 8;
-  TriPrismNodesPerElt[3][1] = 6;
-  TriPrismNodesPerElt[3][2] = 15;
+  // numbers of nodes, for each dimension and order [dim][order]
+  static const int TriNodesPerElt[4][3] =
+    { {0, 1, 1}, {0, 2, 3}, {0, 3, 6}, {0, 4, 10} };
+  static const int QuadNodesPerElt[4][3] =
+    { {0, 1, 1}, {0, 2, 3}, {0, 4, 8}, {0, 8, 20} };
+  static const int Quad9NodesPerElt[4][3] =
+    { {0, 1, 1}, {0, 2, 3}, {0, 4, 9}, {0, 8, 21} };
+  static const int Quad6NodesPerElt[4][3] =
+    { {0, 1, 1}, {0, 2, 3}, {0, 4, 6}, {0, 0, 0} };
+  static const int TriPrismNodesPerElt[4][3] =
+    { {0, 0, 0}, {0, 0, 0}, {0, 4, 8}, {0, 6, 15} };
 
   if (dim > 3 || order > 2)
   {
@@ -117,12 +74,6 @@ neut_elt_nodeqty (char *type, int dim, int order)
   else
     ut_print_message (2, 0, "neut_elt_nodeqty: unknown elt type `%s'.\n",
                       type);
-
-  ut_free_2d_int (&TriNodesPerElt, 4);
-  ut_free_2d_int (&QuadNodesPerElt, 4);
-  ut_free_2d_int (&Quad6NodesPerElt, 4);
-  ut_free_2d_int (&Quad9NodesPerElt, 4);
-  ut_free_2d_int (&TriPrismNodesPerElt, 4);
 
   return res;
 }
@@ -374,6 +325,18 @@ neut_elt_gtype_prop (int gtype, char *type, int *pdim, int *porder)
     (*pdim) = 3;
     (*porder) = 2;
   }
+  else if (gtype == 18)         // 15-node 2nd order prism
+  {
+    sprintf (type, "triprism");
+    (*pdim) = 3;
+    (*porder) = 2;
+  }
+  else if (gtype == 100)        // 6-node 2nd order quadrangle (2D cohesive elt, Neper-specific)
+  {
+    sprintf (type, "quad6");
+    (*pdim) = 2;
+    (*porder) = 2;
+  }
   else
     status = -1;
 
@@ -526,6 +489,38 @@ neut_elt_rr_2d (double *p1, double *p2, double *p3)
   return 16 * area * area / (l1 * l2 * l3 * (l1 + l2 + l3));
 }
 
+// scaled Jacobian of a quadrangle (minimum sine of the corner angles, signed
+// with respect to the normal of the quadrangle, given by its diagonals)
+double
+neut_elt_sj_quad (double *p1, double *p2, double *p3, double *p4)
+{
+  int i, j, k;
+  double *p[4] = { p1, p2, p3, p4 }, d1[3], d2[3], n[3], u[3], v[3], w[3], nu, nv, sj = 1;
+
+  ut_array_1d_sub (p1, p3, 3, d1);
+  ut_array_1d_sub (p2, p4, 3, d2);
+  ut_vector_vectprod (d1, d2, n);
+  if (ut_vector_norm (n) == 0)
+    return 0;
+  ut_vector_uvect (n, n);
+
+  for (i = 0; i < 4; i++)
+  {
+    j = (i + 1) % 4;
+    k = (i + 3) % 4;
+    ut_array_1d_sub (p[i], p[j], 3, u);
+    ut_array_1d_sub (p[i], p[k], 3, v);
+    nu = ut_vector_norm (u);
+    nv = ut_vector_norm (v);
+    if (nu == 0 || nv == 0)
+      return 0;
+    ut_vector_vectprod (u, v, w);
+    sj = ut_num_min (sj, ut_vector_scalprod (w, n) / (nu * nv));
+  }
+
+  return sj;
+}
+
 // rho factor as defined in Gmsh
 double
 neut_elt_3d_rho (double *p1, double *p2, double *p3, double *p4)
@@ -548,11 +543,19 @@ neut_elt_3d_rho (double *p1, double *p2, double *p3, double *p4)
 }
 
 void
-neut_elt_nodes_facet (int dim, int *nodes, int *facetnodes, int *pfacet,
+neut_elt_nodes_facet (char *type, int dim, int *nodes, int *facetnodes, int *pfacet,
                       int *pfacetori)
 {
   int i;
-  int *pos = ut_alloc_1d_int (dim);
+  int *pos = NULL;
+
+  if (type && !strcmp (type, "quad"))
+  {
+    neut_elt_nodes_facet_quad (dim, nodes, facetnodes, pfacet, pfacetori);
+    return;
+  }
+
+  pos = ut_alloc_1d_int (dim);
 
   for (i = 0; i < dim; i++)
     pos[i] = ut_array_1d_int_eltpos (nodes, dim + 1, facetnodes[i]);
@@ -674,6 +677,57 @@ neut_elt_nodes_facet (int dim, int *nodes, int *facetnodes, int *pfacet,
     abort ();
 
   ut_free_1d_int (&pos);
+
+  return;
+}
+
+// facets of quad (2D) and hex (3D) elts, as defined in Abaqus (facet i is
+// Abaqus' Si); as for tri and tet elts, the facet orientation is 1 if the
+// facet nodes are in the reverse order of the Abaqus definition, and -1
+// otherwise
+void
+neut_elt_nodes_facet_quad (int dim, int *nodes, int *facetnodes, int *pfacet,
+                           int *pfacetori)
+{
+  int i, j, k, n, facetqty, pos[4], start;
+  int quadfacets[4][2] = { {0, 1}, {1, 2}, {2, 3}, {3, 0} };
+  int hexfacets[6][4] = { {0, 1, 2, 3}, {4, 7, 6, 5}, {0, 4, 5, 1},
+                          {1, 5, 6, 2}, {2, 6, 7, 3}, {3, 7, 4, 0} };
+  int *facet = NULL;
+
+  if (dim != 2 && dim != 3)
+    abort ();
+
+  n = (dim == 2) ? 2 : 4;
+  facetqty = (dim == 2) ? 4 : 6;
+
+  for (i = 0; i < n; i++)
+    pos[i] = ut_array_1d_int_eltpos (nodes, (dim == 2) ? 4 : 8, facetnodes[i]);
+
+  for (k = 0; k < facetqty; k++)
+  {
+    facet = (dim == 2) ? quadfacets[k] : hexfacets[k];
+
+    for (i = 0; i < n; i++)
+    {
+      for (j = 0; j < n; j++)
+        if (facet[j] == pos[i])
+          break;
+      if (j == n)
+        break;
+    }
+
+    if (i == n)
+      break;
+  }
+
+  if (k == facetqty)
+    abort ();
+
+  (*pfacet) = k + 1;
+
+  start = ut_array_1d_int_eltpos (facet, n, pos[0]);
+  (*pfacetori) = (pos[1] == facet[(start + 1) % n]) ? -1 : 1;
 
   return;
 }

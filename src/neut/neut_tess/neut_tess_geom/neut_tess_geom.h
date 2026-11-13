@@ -128,6 +128,8 @@ extern "C"
 ///
 ///
   extern int neut_tess_volume (struct TESS Tess, double *);
+  extern int neut_tess_domprim_volume (struct TESS Tess, double *);
+  extern int neut_tess_point_indomprims (struct TESS Tess, double *coo);
 
 /// \brief Get the area of a TESS
 ///
@@ -234,6 +236,8 @@ extern "C"
 
   extern void neut_tess_face_eq_fromvers (struct TESS Tess, int face,
 					     double *eq);
+
+  extern void neut_tess_face_eq (struct TESS Tess, int face, double *eq);
 
   extern void neut_tess_faceinter_fromdomface (struct TESS *pTess, int face);
 

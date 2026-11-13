@@ -7,11 +7,6 @@
 
 struct IN_M
 {
-  // prerequisites
-
-  char *gmsh;			// absolute path of Gmsh
-  char *tmp;			// absolute path of temporary directory
-
   // input data
 
   char *tess;			// input tess file
@@ -23,6 +18,7 @@ struct IN_M
 
   // meshing options
   char *elttype;		// type of elements (tri or quad)
+  int eltsplit;			// split the tri elts into quad elts (1) or not (0)
   int order;			// order of the mesh (1 or 2)
   char *dimstring;		// meshing dimension string
   int dim;			// dimension of the mesh (0, 1, 2 or 3)
@@ -33,6 +29,7 @@ struct IN_M
   char *clstring;		// value of -cl or -rcl
   char *clratiostring;		// ratio between the x, y and z direction
 
+  char *clpolystring;		// value of -cl or -rcl, poly
   char *clfacetype;		// abs or rel, face
   char *clfacestring;		// value of -cl or -rcl, face
   char *cledgetype;		// abs or rel, edge
@@ -42,10 +39,17 @@ struct IN_M
 
   double clmin;
   double pl;
+  char *plpolystring;		// value of -plpoly
+  char *plfacestring;		// value of -plface
+  char *pledgestring;		// value of -pledge
 
   char *meshpoly;		// polys to mesh (expression)
   char *meshface;		// faces to mesh (expression)
   char *meshedge;		// edges to mesh (expression)
+  int *meshfacelist;		// if not NULL, faces to mesh (overrides meshface)
+                                // [0]: qty, [1...[0]]: ids (used by -V)
+  int *meshedgelist;		// if not NULL, edges to mesh (overrides meshedge)
+                                // [0]: qty, [1...[0]]: ids (used by -V)
   char* interface;		// type of interface meshing
                                 // (continuous or discontinuous)
 
@@ -66,6 +70,7 @@ struct IN_M
   double mesh3dmaxtime;		// 3D mesher max run time
   double mesh3drmaxtime;	// 3D mesher max relative run time
   int mesh3diter;		// 3D mesher max number of iterations
+  char* mesh2dclrepsstring;     // 2D mesh cl convergence criterion
   char* mesh3dclrepsstring;     // 3D mesh cl convergence criterion
   int mesh3dreport;		// report statistics on the 3D mesh (logical)
 
@@ -80,7 +85,6 @@ struct IN_M
   char *faset;			// list of fasets
 
   char *partstring;		// partitioning string
-  char *partmethod;		// partitioning method (in Scotch jargon)
 
   // transformation
   char *transform;              // transform the mesh once generated (or loaded)
@@ -94,7 +98,6 @@ struct IN_M
 
   char *body;			// output file name, without extension
   char *msh;			// mesh file at the msh format
-  char *msh4;			// mesh file at the msh4 format
   char *ori;			// mesh file at the ori format
   char *phase;			// mesh file at the phase format
   char *bcs;			// mesh file at the bcs format

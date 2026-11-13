@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2021,2023,2025,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -34,12 +34,17 @@
 /**   NAME       : library_mesh_graph.c                    **/
 /**                                                        **/
 /**   AUTHOR     : Francois PELLEGRINI                     **/
+/**                Marc FUENTES (v6.1)                     **/
 /**                                                        **/
 /**   FUNCTION   : This module is the API for the Scotch   **/
 /**                mesh-to-graph converter.                **/
 /**                                                        **/
 /**   DATES      : # Version 4.0  : from : 21 jan 2004     **/
 /**                                 to   : 21 jan 2004     **/
+/**                # Version 6.1  : from : 28 feb 2021     **/
+/**                                 to   : 28 feb 2021     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -47,10 +52,9 @@
 **  The defines and includes.
 */
 
-#define LIBRARY
-
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "graph.h"
 #include "mesh.h"
 #include "scotch.h"
@@ -58,21 +62,40 @@
 /*************************************/
 /*                                   */
 /* These routines are the C API for  */
-/* the Scotch graph and geometry     */
+/* the Scotch mesh and graph         */
 /* handling routines.                */
 /*                                   */
 /*************************************/
 
-/*+ This routine loads the given opaque graph
-*** structure with the data of the given stream.
-*** - 0   : if loading succeeded.
-*** - !0  : on error.
-+*/
+/* This routine builds an opaque nodal graph structure
+** from an opaque mesh structure. The nodal graph
+** adjacency is defined such that two nodes are adjacent
+** if both share at least one element.
+** - 0   : if building has succeeded.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshGraph (
 const SCOTCH_Mesh * restrict const  meshptr,
 SCOTCH_Graph * restrict const       grafptr)
 {
-  return (meshGraph ((Mesh *) meshptr, (Graph *) grafptr));
+  return (meshGraphNodal ((Mesh *) CONTEXTOBJECT (meshptr), (Graph *) grafptr));
+}
+
+/* This routine builds an opaque dual graph structure
+** from an opaque mesh structure. The dual graph adjacency
+** is defined such that two elements are adjacent, if
+** both shared at least noconbr points.
+** - 0   : if building has succeeded.
+** - !0  : on error.
+*/
+
+int
+SCOTCH_meshGraphDual (
+const SCOTCH_Mesh * restrict const  meshptr,
+SCOTCH_Graph * restrict const       grafptr,
+const SCOTCH_Num                    noconbr)
+{
+  return (meshGraphDual ((Mesh *) CONTEXTOBJECT (meshptr), (Graph *) grafptr, noconbr));
 }

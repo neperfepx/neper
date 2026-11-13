@@ -22,13 +22,26 @@ nev_print_real_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
   int poly, allneigh, face, edge, ver, seed, crystal;
   char *texture = ut_alloc_1d_char (100);
   double Trs;
+  struct NODES CNodes;
+  struct MESH *CMesh = (struct MESH *) calloc (6, sizeof (struct MESH));
+
+  // curved faces and edges are printed from a temporary mesh
+  neut_nodes_set_zero (&CNodes);
+  for (i = 0; i < 6; i++)
+    neut_mesh_set_zero (CMesh + i);
+
+  if (!nev_print_real_png_tess_curvedmesh (Tess, &CNodes, CMesh))
+  {
+    free (CMesh);
+    CMesh = NULL;
+  }
 
   // Writing pov file --------------------------------------------------
   // nev_print_real_png_tess_header (file, TessData);
 
   seedlist = ut_alloc_1d_int (Tess.CellQty + 1);
 
-  for (i = 1; i <= Tess.SeedQty; i++)
+  for (i = 1; i <= Tess.CellQty; i++)
     if (Print.showseed[i] == 1)
       seedlist[++seedlist[0]] = i;
 
@@ -144,9 +157,12 @@ nev_print_real_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
 
       fprintf (file, "// poly face %d\n", face);
 
-      nev_print_real_png_polygon (file, Tess.FaceEq[face], Tess.FaceVerQty[face], coo,
-                         texture, 0, NULL, Tess.FacePt[face] - 1, p2, 0,
-                         NULL);
+      if (nev_print_real_png_tess_face_iscurved (Tess, CMesh, face))
+        nev_print_real_png_tess_face_mesh (file, CNodes, CMesh[2], face, texture);
+      else
+        nev_print_real_png_polygon (file, Tess.FaceEq[face], Tess.FaceVerQty[face], coo,
+                                    texture, 0, NULL, Tess.FacePt[face] - 1, p2, 0,
+                                    NULL);
 
       ut_free_2d (&coo, Tess.FaceVerQty[face]);
     }
@@ -187,9 +203,12 @@ nev_print_real_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
 
     fprintf (file, "// face %d\n", face);
 
-    nev_print_real_png_polygon (file, Tess.FaceEq[face], Tess.FaceVerQty[face], coo,
-                       texture, 0, NULL, Tess.FacePt[face] - 1, p2, 0,
-                       NULL);
+    if (nev_print_real_png_tess_face_iscurved (Tess, CMesh, face))
+      nev_print_real_png_tess_face_mesh (file, CNodes, CMesh[2], face, texture);
+    else
+      nev_print_real_png_polygon (file, Tess.FaceEq[face], Tess.FaceVerQty[face], coo,
+                                  texture, 0, NULL, Tess.FacePt[face] - 1, p2, 0,
+                                  NULL);
 
     if (Print.showfaceinter == 1 && neut_tess_face_ff (Tess, face) > 0)
     {
@@ -197,13 +216,13 @@ nev_print_real_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
       // edges
       double faceinter_rad = 0;
       double faceinter_trs = 0;
-      for (j = 1; j <= Tess.FaceVerQty[face]; j++)
+      for (j = 1; j <= Tess.FaceEdgeQty[face]; j++)
       {
         faceinter_rad += TessData[1].Rad[Tess.FaceEdgeNb[face][j]];
         faceinter_trs += TessData[1].Trs[Tess.FaceEdgeNb[face][j]];
       }
-      faceinter_rad /= Tess.FaceVerQty[face];
-      faceinter_trs /= Tess.FaceVerQty[face];
+      faceinter_rad /= Tess.FaceEdgeQty[face];
+      faceinter_trs /= Tess.FaceEdgeQty[face];
 
       fprintf (file, "#declare faceinter_rad = " REAL_PRINT_FORMAT ";\n", faceinter_rad);
       fprintf (file,
@@ -249,6 +268,13 @@ nev_print_real_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
              TessData[1].Trs[edge], Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
     sprintf (texture, "edge%d", edge);
+
+    if (nev_print_real_png_tess_edge_iscurved (Tess, CMesh, edge))
+    {
+      nev_print_real_png_tess_edge_mesh (file, CNodes, CMesh[1], edge,
+                                         TessData[1].Rad[edge], texture);
+      continue;
+    }
 
     coo = ut_alloc_2d (2, 3);
 
@@ -344,7 +370,7 @@ nev_print_real_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
     ut_free_1d_char (&string);
     ut_free_1d (&coo);
     ut_free_1d (&rad);
-    ol_g_free (g);
+    ol_g_free (&g);
     ut_free_1d_char (&bordertexture);
   }
 
@@ -357,6 +383,73 @@ nev_print_real_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
   ut_free_1d_int (&crystallist);
   ut_free_1d_int (&neigh);
   ut_free_1d_char (&texture);
+
+  if (CMesh)
+  {
+    neut_nodes_free (&CNodes);
+    for (i = 0; i < 6; i++)
+      neut_mesh_free (CMesh + i);
+    free (CMesh);
+  }
+
+  return;
+}
+
+// Prints the domain (wireframe), i.e. the edges of the tessellation that are
+// on domain edges, with a radius independent of the number of cells
+void
+nev_print_real_png_tess_domain (FILE *file, struct PRINT Print, struct TESS Tess)
+{
+  int i;
+  double rad, **coo = ut_alloc_2d (2, 3);
+  int col[3] = { 0, 0, 0 };
+  struct NODES CNodes;
+  struct MESH *CMesh = (struct MESH *) calloc (6, sizeof (struct MESH));
+
+  // curved edges are printed from a temporary mesh
+  neut_nodes_set_zero (&CNodes);
+  for (i = 0; i < 6; i++)
+    neut_mesh_set_zero (CMesh + i);
+
+  if (!nev_print_real_png_tess_curvedmesh (Tess, &CNodes, CMesh))
+  {
+    free (CMesh);
+    CMesh = NULL;
+  }
+
+  rad = Print.domainrad >= 0 ? Print.domainrad : nev_print_domain_defrad (Tess);
+  if (Print.domaincol)
+    ut_array_1d_int_memcpy (Print.domaincol, 3, col);
+
+  fprintf (file,
+           "#declare domain =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
+           col[0] / 255., col[1] / 255., col[2] / 255.,
+           Print.lightambient, Print.lightdiffuse, Print.lightreflection);
+
+  for (i = 1; i <= Tess.EdgeQty; i++)
+  {
+    if (Tess.EdgeDom[i][0] != 1)
+      continue;
+
+    if (nev_print_real_png_tess_edge_iscurved (Tess, CMesh, i))
+      nev_print_real_png_tess_edge_mesh (file, CNodes, CMesh[1], i, rad, (char *) "domain");
+    else
+    {
+      ut_array_1d_memcpy (Tess.VerCoo[Tess.EdgeVerNb[i][0]], 3, coo[0]);
+      ut_array_1d_memcpy (Tess.VerCoo[Tess.EdgeVerNb[i][1]], 3, coo[1]);
+      nev_print_real_png_segment_wsph (file, coo[0], coo[1], rad, (char *) "domain");
+    }
+  }
+
+  ut_free_2d (&coo, 2);
+
+  if (CMesh)
+  {
+    neut_nodes_free (&CNodes);
+    for (i = 0; i < 6; i++)
+      neut_mesh_free (CMesh + i);
+    free (CMesh);
+  }
 
   return;
 }

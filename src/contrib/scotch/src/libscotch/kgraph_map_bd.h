@@ -1,4 +1,4 @@
-/* Copyright 2010,2011,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2010,2011,2018,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,8 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 05 jan 2010     **/
 /**                                 to   : 07 jun 2018     **/
+/**                # Version 7.0  : from : 07 oct 2026     **/
+/**                                 to   : 07 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -50,9 +52,9 @@
 
 /*+ Flag array accessors. +*/
 
-#define kgraphMapBdFlagSize(n)  (((n) + (sizeof (int) << 3) - 1) / (sizeof (int) << 3))
-#define kgraphMapBdFlagVal(a,n) (((a)[(n) / (sizeof (int) << 3)] >> ((n) & ((sizeof (int) << 3) - 1))) & 1)
-#define kgraphMapBdFlagSet(a,n) (a)[(n) / (sizeof (int) << 3)] |= (1 << ((n) & ((sizeof (int) << 3) - 1)))
+#define kgraphMapBdFlagSize(n)  (((n) + (sizeof (unsigned int) << 3) - 1) / (sizeof (unsigned int) << 3))
+#define kgraphMapBdFlagVal(a,n) (((a)[(n) / (sizeof (unsigned int) << 3)] >> ((n) & ((sizeof (unsigned int) << 3) - 1))) & 1)
+#define kgraphMapBdFlagSet(a,n) (a)[(n) / (sizeof (unsigned int) << 3)] |= (1U << ((n) & ((sizeof (unsigned int) << 3) - 1)))
 
 /*
 **  The type and structure definitions.

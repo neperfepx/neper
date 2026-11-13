@@ -1,2 +1,17 @@
-Created CMakeLists.txt for compilation with CMake.
-Removed files and directories not useful to Neper.
+This is Scotch 7.0.17 (libscotch only, without PT-Scotch), from
+https://gitlab.inria.fr/scotch/scotch (tag v7.0.17).
+
+Changes for Neper:
+
+- Only the files needed to build libscotch, libscotcherr and
+  libscotcherrexit are kept (as listed by Scotch's own build system).
+
+- CMakeLists.txt is specific to Neper.  The library is built with the same
+  options as Scotch's own build system with THREADS=ON (multithreading) and
+  SCOTCH_DETERMINISTIC=FULL.  scotch.h is generated at build time by
+  dummysizes, as in Scotch's own build system.
+
+- The lexer and parser files (src/libscotch/parser_ll.c, parser_lh.h,
+  parser_yy.c and parser_ly.h) have been generated from parser_ll.l and
+  parser_yy.y with flex 2.6.4 and bison 3.8.2, so that flex and bison are
+  not needed to build Neper.

@@ -8,33 +8,33 @@ Expressions and Keys
 Mathematical and Logical Expressions
 ------------------------------------
 
-Neper handles mathematical expressions thanks to the :program:`muparser` library. The expression must contain no space, tabulation or new-line characters, and match the following syntax. [#muparser_doc]_
+Neper handles mathematical expressions thanks to the :program:`muparser` library. The expression must contain no space, tab or newline characters, and match the following syntax. [#muparser_doc]_
 
 .. _functions:
 
 Functions
 ~~~~~~~~~
 
-The following table gives an overview of the functions supported by the default implementation. It lists the function names, the number of arguments and a brief description.
+The following table gives an overview of the functions supported by the default implementation. It lists the function names and a brief description.
 
 =============== =========================================================
 **Name**        **Description**
 :data:`sin`     sine function
 :data:`cos`     cosine function
-:data:`tan`     tangens function
-:data:`asin`    arcus sine function
-:data:`acos`    arcus cosine function
-:data:`atan`    arcus tangens function
+:data:`tan`     tangent function
+:data:`asin`    arc sine function
+:data:`acos`    arc cosine function
+:data:`atan`    arc tangent function
 :data:`sinh`    hyperbolic sine function
-:data:`cosh`    hyperbolic cosine
-:data:`tanh`    hyperbolic tangens function
-:data:`asinh`   hyperbolic arcus sine function
-:data:`acosh`   hyperbolic arcus tangens function
-:data:`atanh`   hyperbolic arcur tangens function
+:data:`cosh`    hyperbolic cosine function
+:data:`tanh`    hyperbolic tangent function
+:data:`asinh`   hyperbolic arc sine function
+:data:`acosh`   hyperbolic arc cosine function
+:data:`atanh`   hyperbolic arc tangent function
 :data:`log2`    logarithm to the base 2
 :data:`log10`   logarithm to the base 10
-:data:`log`     logarithm to the base 10
-:data:`ln`      logarithm to base :math:`e` (2.71828...)
+:data:`log`     logarithm to the base :math:`e` (2.71828...)
+:data:`ln`      logarithm to the base :math:`e` (2.71828...)
 :data:`exp`     e raised to the power of x
 :data:`sqrt`    square root of a value
 :data:`sign`    sign function: -1 if :math:`x<0`; 1 if :math:`x>0`
@@ -75,12 +75,14 @@ The following table lists the default binary operators supported by the parser.
 Ternary Operators
 ~~~~~~~~~~~~~~~~~
 
-The parser has built in support for the if-then-else operator. It uses lazy evaluation in order to make sure only the necessary branch of the expression is evaluated.
+The parser has built-in support for the if-then-else operator. It uses lazy evaluation in order to make sure only the necessary branch of the expression is evaluated.
 
 ==================== ====================================================
 **Operator**         **Description**
 :data:`?:`           if-then-else operator, following the C/C++ syntax: :data:`(\<test\>)?\<value_if_true\>:\<value_if_false\>`.
 ==================== ====================================================
+
+In the options that take string values (such as :data:`-morpho` in a multiscale tessellation), the values must be enclosed in double quotes, as in :data:`(id==1)?"voronoi":"gg"`, and can include other ternaries, as in :data:`(id==1)?"voronoi":(id==2)?"gg":"centroidal"`.
 
 .. _statistical_distributions:
 
@@ -107,7 +109,7 @@ The following table lists the statistical distributions.  Custom endpoints (not 
 :data:`custom(<file_name>)`                   custom
 ============================================= ==================== ======================================
 
-:data:`<mean>` represents the mean (or centre), and :data:`<sigma>` represents the standard deviation (or scale, :math:`> 0`). :data:`<gamma>` depends on the distribution function (see the above table). For all distributions but :data:`weibull` and `beta`, custom endpoints can be added as last arguments, as :data:`<from_value>,\<to_value\>`, where :data:`<from_value>` is the lower endpoint and :data:`<to_value>` is the upper endpoint. The parameter keywords do not need to be provided, but, when they are, the parameters can be given in any order, as in :data:`moffat(gamma=1,from=0,to=1,sigma=0.1,mean=0.5)`.  Endpoints are considered inclusive by default, but exclusive endpoints can be specified using :data:`fromexclusive=\<from_value\>` and :data:`toexclusive=\<to_value\>` (:data:`frominclusive=\<from_value\>` and :data:`toinclusive=\<to_value\>` can be used for inclusive endpoints).  String completion is available for the keywords.  Finally, a sum of distributions of increasing averages can be provided, as in :data:`0.3*lognormal(0.5,0.1)+0.7*normal(1,0.1)`.
+:data:`<mean>` represents the mean (or center), and :data:`<sigma>` represents the standard deviation (or scale, :math:`> 0`). :data:`<gamma>` depends on the distribution function (see the above table). For all distributions but :data:`weibull` and :data:`beta`, custom endpoints can be added as last arguments, as :data:`<from_value>,\<to_value\>`, where :data:`<from_value>` is the lower endpoint and :data:`<to_value>` is the upper endpoint. The parameter keywords do not need to be provided, but, when they are, the parameters can be given in any order, as in :data:`moffat(gamma=1,from=0,to=1,sigma=0.1,mean=0.5)`.  Endpoints are considered inclusive by default, but exclusive endpoints can be specified using :data:`fromexclusive=\<from_value\>` and :data:`toexclusive=\<to_value\>` (:data:`frominclusive=\<from_value\>` and :data:`toinclusive=\<to_value\>` can be used for inclusive endpoints).  String completion is available for the keywords.  Finally, a sum of distributions of increasing averages can be provided, as in :data:`0.3*lognormal(0.5,0.1)+0.7*normal(1,0.1)`.
 
 .. attention:: When :data:`from` and/or :data:`to` are used, they should preferably be so that the distribution retains the same mean; otherwise, the distribution is shifted after truncation to match the specified mean.
 
@@ -131,6 +133,12 @@ Available keys for a tessellation itself are provided below.
 :data:`x`       x coordinate                        tess
 :data:`y`       y coordinate                        tess
 :data:`z`       z coordinate                        tess
+:data:`xmin`    minimum x coordinate                tess
+:data:`ymin`    minimum y coordinate                tess
+:data:`zmin`    minimum z coordinate                tess
+:data:`xmax`    maximum x coordinate                tess
+:data:`ymax`    maximum y coordinate                tess
+:data:`zmax`    maximum z coordinate                tess
 :data:`lengthx` length along x                      tess
 :data:`lengthy` length along y                      tess
 :data:`lengthz` length along z                      tess
@@ -141,7 +149,7 @@ Available keys for a tessellation itself are provided below.
 :data:`step`    simulation step                     tess
 =============== =================================== ==================
 
-Available keys for tessellation seeds, vertices, edges, faces, polyhedra, crystals and cell groups are provided below.  Also note that the keys apply to *cells* if they are tagged to apply to *polyhedra* and the tessellation is 3D and *faces* and the tessellation is 2D, and that keys apply to *crystals* if they apply to *cells*.  You may also replace, in the tessellation keys themselves, :data:`poly` by :data:`cell` if the tessellation is 3D and :data:`face` by :data:`cell` if the tessellation is 2D (it applies only in rare cases).  For example, for a 2D tessellation, you may use :data:`-statcell ncells` instead of :data:`-statface nfaces`. Keys specific to cells are defined accordingly in the following but also apply to *polys* is the tessellation is 3D and *faces* is the tessellations is 2D.
+Available keys for tessellation seeds, vertices, edges, faces, polyhedra, crystals and cell groups are provided below.  Also note that the keys apply to *cells* if they are tagged to apply to *polyhedra* and the tessellation is 3D, or to *faces* and the tessellation is 2D, and that keys apply to *crystals* if they apply to *cells*.  You may also replace, in the tessellation keys themselves, :data:`poly` by :data:`cell` if the tessellation is 3D and :data:`face` by :data:`cell` if the tessellation is 2D (it applies only in rare cases).  For example, for a 2D tessellation, you may use :data:`-statcell ncells` instead of :data:`-statface nfaces`. Keys specific to cells are defined accordingly in the following but also apply to *polys* if the tessellation is 3D and to *faces* if the tessellation is 2D.  The keys of the cell of a seed are available for the seed by prefixing them with :data:`cell_` (e.g., :data:`cell_vol` is the volume of the seed's cell, and :data:`cell_x` is the x coordinate of its centroid, while :data:`x` is the x coordinate of the seed).
 
 To turn a key value into a value relative to the mean over all entities (e.g. the relative cell size), append the key expression with the :data:`:rel` modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the :data:`:uc` modifier.  To use as a reference only the *body* entities (see below), append :data:`b` to the modifiers.
 
@@ -158,8 +166,8 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`xmax`                      maximum x coordinate                                                                                edge, face, poly
 :data:`ymax`                      maximum y coordinate                                                                                edge, face, poly
 :data:`zmax`                      maximum z coordinate                                                                                edge, face, poly
-:data:`w`                         weight (width for a lamellar tessellation)                                                          seed, cell
-:data:`body[<expr>]`              body level                                                                                          ver, edge, face, poly
+:data:`w`                         Laguerre weight (width for a lamellar tessellation)                                                 seed, cell
+:data:`body[(<expr>)]`            body level                                                                                          ver, edge, face, poly
 :data:`state`                     state                                                                                               ver, edge, face, poly
 :data:`domtype`                   type of domain (0 if on a domain vertex, 1 if on a domain edge and 2 if on a domain face)           ver, edge, face
 :data:`domface`                   domain face (-1 if undefined)                                                                       face
@@ -172,9 +180,9 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`vol`                       volume                                                                                              poly, group
 :data:`size`                      size (surface area/volume in 2D/3D)                                                                 cell, group
 :data:`diameq`                    equivalent diameter [#equivalent_diameter]_                                                         face, poly
-:data:`avdiameq`                  average equivalent diameter [#equivalent_diameter]_                                                 face, poly
+:data:`avdiameq`                  average equivalent diameter [#equivalent_diameter]_                                                 poly
 :data:`radeq`                     equivalent radius (half of the eq. diameter)                                                        face, poly
-:data:`avradeq`                   average equivalent radius (half of the eq. diameter)                                                face, poly
+:data:`avradeq`                   average equivalent radius (half of the eq. diameter)                                                poly
 :data:`sphericity`                sphericity [#sphericity]_                                                                           poly
 :data:`circularity`               circularity [#circularity]_                                                                         face
 :data:`convexity`                 convexity [#convexity]_                                                                             face (only for a 2D tessellation), poly
@@ -215,27 +223,26 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`groupnb`                   number of groups of the parent cells                                                                ver, edge, face (in 3D)
 :data:`per`                       periodic (1 if periodic, 0 otherwise)                                                               ver, edge, face (in 3D)
 :data:`fiber(...)`                1 if in orientation fiber and 0 otherwise, see :ref:`orientation_fibers`                            poly
-:data:`<orientation_descriptor>`  :ref:`orientation descriptor <rotation_and_orientation_descriptors>`                                face (in 2D), poly (in 3D)
+:data:`<orientation_descriptor>`  orientation, see :ref:`rotation_and_orientation_descriptors`                                        face (in 2D), poly (in 3D)
 :data:`step`                      simulation step                                                                                     ver, edge, face, poly
 ================================= =================================================================================================== =========================================
 
-  Variables consisting of several values (:data:`vers`, etc.) are not available for sorting
-  (option :option:`-sort`).
+Variables consisting of several values (:data:`vers`, etc.) are not available for sorting (option :option:`-sort`).
 
-  For a cell, the :data:`body` variable is defined as follows:
+For a cell, the :data:`body` variable is defined as follows:
 
-  - In the general case (:data:`body`, no argument provided), it is an integer equal to :data:`0` if the cell is at the domain boundary, i.e. if it shares at least one face with it (edge in 2D), and is equal to :data:`1` or higher otherwise.  This is determined as follows: if a cell is surrounded by cells with :data:`body` values equal to or higher than :data:`n`, its :data:`body` value is equal to :data:`n + 1`.  Therefore, :data:`body` tends to increase with the distance to the domain boundary and can be used to define cells that may suffer from boundary effects.
+- In the general case (:data:`body`, no argument provided), it is an integer equal to :data:`0` if the cell is at the domain boundary, i.e. if it shares at least one face with it (edge in 2D), and is equal to :data:`1` or higher otherwise.  This is determined as follows: if a cell is surrounded by cells with :data:`body` values equal to or higher than :data:`n`, its :data:`body` value is equal to :data:`n + 1`.  Therefore, :data:`body` tends to increase with the distance to the domain boundary and can be used to define cells that may suffer from boundary effects.
 
-  - In the case where an expression is provided as argument (:data:`body(<expr>)`), the expression is a logical expression that defines the boundary to consider, from the domain face (edge in 2D) labels (for a cube, :data:`x0`, :data:`x1`, :data:`y0`, :data:`y1`, :data:`z0` and :data:`z1`).  For example, :data:`body(z0||z1)` considers only the :data:`z0` and :data:`z1` domain faces as the boundary, and the more exotic :data:`body(x1&&y0||z1)` considers only the intersection between the :data:`x1` and :data:`y0` domain faces, and the :data:`z1` domain face as the boundary.
+- In the case where an expression is provided as argument (:data:`body(<expr>)`), the expression is a logical expression that defines the boundary to consider, from the domain face (edge in 2D) labels (for a cube, :data:`x0`, :data:`x1`, :data:`y0`, :data:`y1`, :data:`z0` and :data:`z1`).  For example, :data:`body(z0||z1)` considers only the :data:`z0` and :data:`z1` domain faces as the boundary, and the more exotic :data:`body(x1&&y0||z1)` considers only the intersection between the :data:`x1` and :data:`y0` domain faces, and the :data:`z1` domain face as the boundary.
 
-  For entities of lower dimension than cells (vertices, edges and faces), :data:`body` is equal to the maximum :data:`body` value of the cells they belong to.
+For entities of lower dimension than cells (vertices, edges and faces), :data:`body` is equal to the maximum :data:`body` value of the cells they belong to.
 
 .. _raster_tessellation_keys:
 
 Raster Tessellation Keys
 ------------------------
 
-Available keys for raster tessellation itself are provided below.
+Available keys for a raster tessellation itself are provided below.
 
 ===================== ============================================ ======================
 **Key**               **Descriptor**                               **Apply to**
@@ -260,11 +267,17 @@ Available keys for raster tessellation itself are provided below.
 :data:`x`             x coordinate                                 tesr
 :data:`y`             y coordinate                                 tesr
 :data:`z`             z coordinate                                 tesr
+:data:`xmin`          minimum x coordinate                         tesr
+:data:`ymin`          minimum y coordinate                         tesr
+:data:`zmin`          minimum z coordinate                         tesr
+:data:`xmax`          maximum x coordinate                         tesr
+:data:`ymax`          maximum y coordinate                         tesr
+:data:`zmax`          maximum z coordinate                         tesr
 :data:`coo`           x, y and z coordinates                       tesr
 :data:`step`          simulation step                              tesr
 ===================== ============================================ ======================
 
-Available keys for raster tessellation seeds, cells, cell groups and voxels are provided below.  Mathematical and logical expressions based on these keys can also be used.  To turn a key value into a value relative to the mean over all entities (e.g.the relative cell size), append the key expression with the :data:`:rel` modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the :data:`:uc` modifier.
+Available keys for raster tessellation seeds, cells, cell groups and voxels are provided below.  Mathematical and logical expressions based on these keys can also be used.  To turn a key value into a value relative to the mean over all entities (e.g. the relative cell size), append the key expression with the :data:`:rel` modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the :data:`:uc` modifier.
 
 General
 ~~~~~~~
@@ -318,9 +331,10 @@ Geometry
 
 Orientation
 ~~~~~~~~~~~
+
 ================================ ======================================================================= ====================================
 **Key**                          **Descriptor**                                                          **Applies to**
-:data:`<orientation_descriptor>` :ref:`orientation descriptor <rotation_and_orientation_descriptors>`    voxel, cell
+:data:`<orientation_descriptor>` orientation, see :ref:`rotation_and_orientation_descriptors`            voxel, cell
 :data:`gos`                      grain orientation spread [#gos]_                                        cell
 :data:`oridisanisoangles`        orientation distribution anisotropy / principal angles [#JMPS2015]_     cell
 :data:`oridisanisoaxes[_<csys>]` orientation distribution anisotropy / principal axes [#JMPS2015]_       cell
@@ -384,7 +398,8 @@ The available keys for option :option:`-morphooptilogvar` are provided below.  U
 :data:`x`                   x coordinate             seed
 :data:`y`                   y coordinate             seed
 :data:`z`                   z coordinate             seed
-:data:`w`                   weight                   seed
+:data:`w`                   Laguerre weight          seed
+:data:`error`               total cell error         seed
 =========================== ======================== =====================
 
 .. _objective_function_value_keys:
@@ -405,8 +420,6 @@ The available keys for option :option:`-morphooptilogval` are provided below.  U
 :data:`val0(<i>)`       :data:`i` th subvalue, without smoothing
 :data:`eps`             error on the objective function (see :option:`-morphooptistop`)
 :data:`reps`            relative error on the objective function (see :option:`-morphooptistop`)
-:data:`loop`            optimization loop
-:data:`plateaulength`   current plateau length [#plateau]_
 ======================= ==========================================================================
 
 .. _statistical_distribution_keys:
@@ -414,7 +427,7 @@ The available keys for option :option:`-morphooptilogval` are provided below.  U
 Statistical Distribution Keys
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The available keys for option :option:`-morphooptilogdis` are provided below. PDF stands for *probability density function* and CDF stands for *cumulative probability density function*.  Use :data:`iter(<factor>)`, where :data:`factor` is a reduction factor, to log values only at specific iteration numbers.
+The available keys for option :option:`-morphooptilogdis` are provided below. PDF stands for *probability density function* and CDF stands for *cumulative distribution function*.  Use :data:`iter(<factor>)`, where :data:`factor` is a reduction factor, to log values only at specific iteration numbers.
 
 ================ ==========================
 **Key**          **Descriptor**
@@ -426,6 +439,7 @@ The available keys for option :option:`-morphooptilogdis` are provided below. PD
 :data:`curcdf`   current CDF
 :data:`tarpdf0`  target PDF, not smoothed
 :data:`tarcdf0`  target CDF, not smoothed
+:data:`curpdf0`  current PDF, not smoothed
 :data:`curcdf0`  current CDF, not smoothed
 ================ ==========================
 
@@ -439,7 +453,7 @@ The available keys for option :option:`-morphooptilogtesr` are provided below.  
 ======================= =========================
 **Key**                 **Descriptor**
 :data:`iter`            iteration number
-:data:`id`              cell identifier	
+:data:`id`              cell identifier
 :data:`x`               x coordinate
 :data:`y`               y coordinate
 :data:`z`               z coordinate
@@ -456,7 +470,7 @@ Orientation Optimization Keys
 Variable Keys
 ~~~~~~~~~~~~~
 
-The available keys for option :option:`-orioptilogvar` are provided below.  For all orientation descriptors but :data:`quaternion`, the returned orientation are located in the fundamental region. Use :data:`iter(<factor>)`, where :data:`factor` is an integer reduction factor, to log values only at specific iteration numbers.
+The available keys for option :option:`-orioptilogvar` are provided below.  For all orientation descriptors but :data:`quaternion`, the returned orientations are located in the fundamental region. Use :data:`iter(<factor>)`, where :data:`factor` is an integer reduction factor, to log values only at specific iteration numbers.
 
 ========================== ============================================= ===================
 **Key**                    **Descriptor**                                **Apply to**
@@ -466,7 +480,7 @@ The available keys for option :option:`-orioptilogvar` are provided below.  For 
 :data:`euler-bunge`        Euler angles (Bunge convention)               seed
 :data:`euler-kocks`        Euler angles (Kocks convention)               seed
 :data:`euler-roe`          Euler angles (Roe convention)                 seed
-:data:`rotmat`             Rotation matrix                               seed
+:data:`rotmat`             rotation matrix                               seed
 :data:`axis-angle`         rotation axis / angle pair                    seed
 :data:`quaternion`         quaternion                                    seed
 ========================== ============================================= ===================
@@ -509,7 +523,7 @@ Available keys for a mesh itself are provided below.  "co" stands for "cohesive"
 :data:`step`            simulation step                                   {0-3}D,co mesh
 ======================= ================================================= ==============================
 
-Available keys for mesh node, elements and element sets (of all dimensions) and points are provided below. "co" stands for "cohesive".
+Available keys for mesh nodes, elements and element sets (of all dimensions) and points are provided below. "co" stands for "cohesive".
 
 ================================================= ===================================================================== ===================================================================
 **Key**                                           **Descriptor**                                                        **Apply to**
@@ -517,14 +531,14 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`x`                                         x coordinate                                                          node, {0-3}D,co elt, {0-3}D elset
 :data:`y`                                         y coordinate                                                          node, {0-3}D,co elt, {0-3}D elset
 :data:`z`                                         z coordinate                                                          node, {0-3}D,co elt, {0-3}D elset
-:data:`coo`                                       x, y and z coordinates                                                node, {0-3}D,co elt, {0-3}D elset
+:data:`coo`                                       x, y and z coordinates                                                node, {0-3}D,co elt, 3D elset
 :data:`dim`                                       lowest parent elt dimension                                           node
 :data:`elset0d`                                   0D elset                                                              0D elt
 :data:`elset1d`                                   1D elset                                                              1D elt
 :data:`elset2d`                                   2D elset                                                              2D elt
 :data:`elset3d`                                   3D elset                                                              3D elt
-:data:`elsetco`                                   Cohesive elset                                                        co elt
-:data:`part`                                      partition                                                             {0-3}D elt, node
+:data:`elsetco`                                   cohesive elset                                                        co elt
+:data:`part`                                      partition                                                             {1-3}D elt, node
 :data:`group`                                     group                                                                 {0-3}D elt, {0-3}D elset
 :data:`scaleid(<scale_nb>)`                       identifier of the corresponding tess cell at scale :data:`<scale_nb>` 2D elset, 3D elset
 :data:`scale`                                     scale                                                                 {0-2}D elset [#multiscale_entity_mesh]_
@@ -534,7 +548,7 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`area`                                      surface area                                                          2D elt
 :data:`diameq`                                    equivalent diameter                                                   {2,3}D elt, {2,3}D elset
 :data:`radeq`                                     equivalent radius                                                     {2,3}D elt, {2,3}D elset
-:data:`anisofact`                                 anisotropy factor                                                     {2-3}D elset
+:data:`anisofact`                                 anisotropy factor                                                     {2,3}D elset
 :data:`length`                                    average edge length                                                   {0-3}D elt, 1D elset
 :data:`lengths`                                   edge lengths                                                          2D elt, 3D elt
 :data:`elsetvol`                                  elset volume                                                          3D elt
@@ -550,7 +564,7 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`nodenb`                                    number of nodes                                                       {0-3}D,co elset
 :data:`nodes`                                     nodes                                                                 {0-3}D,co elset
 :data:`body`                                      body level                                                            {0-3}D elt, {0-3}D elset
-:data:`elsetbody`                                 body level, relative to the elset boundary                            {1-3}D elt
+:data:`elsetbody`                                 body level, relative to the elset boundary                            {2,3}D elt
 :data:`domtype`                                   type of domain [#domtype]_                                            {0-2}D elt, {0-2}D elset
 :data:`2dmeshp`                                   closest point of the 2D mesh                                          node, 3D elt
 :data:`2dmeshd`                                   distance to :data:`2dmeshp`                                           node, 3D elt
@@ -562,10 +576,10 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`col_stdtriangle_hexagonal`                 color in IPF convention, hexagonal symmetry [#col_stdtriangle]_       node
 :data:`fiber(...)` [#fiber]_                      1 if in orientation fiber and 0 otherwise                             3D elt, 3D elset
 :data:`theta`                                     disorientation angle (in degrees)                                     1D elt and elset (in 2D), 2D elt and elset (in 3D)
-:data:`gos`                                       grain orientation spread [#gos]_                                      {2,3}D elset
-:data:`anisogos`                                  grain orientation spread estimated from the orientation distribution  [#gos]_            {2,3}D elset
-:data:`<orientation_descriptor>`                  :ref:`orientation descriptor <rotation_and_orientation_descriptors>`  2D elt (in 2D), 2D elset (in 2D), 3D elt (in 3D), 3D elset (in 3D), node [#ori_node]_
-:data:`step`                                      simulation step                                                       {0-3}D,co mesh, {0,3}D,co elt and elset
+:data:`gos`                                       grain orientation spread [#gos]_                                      3D elset
+:data:`anisogos`                                  grain orientation spread estimated from the ODF [#gos]_               3D elset
+:data:`<orientation_descriptor>`                  orientation, see :ref:`rotation_and_orientation_descriptors`          2D elt (in 2D), 2D elset (in 2D), 3D elt (in 3D), 3D elset (in 3D), node [#ori_node]_
+:data:`step`                                      simulation step                                                       {0-3}D,co mesh, {0-3}D,co elt and elset
 ================================================= ===================================================================== ===================================================================
 
 Variables beginning with :data:`2dmesh` are only available for statistics (options beginning with :data:`-stat` of module -M); for elements, they apply to the centroids.
@@ -578,7 +592,7 @@ Point Keys
 Available keys for points are provided below.
 
 ========================== ======================================================== ====================== ======================
-**Key**                    **Descriptor**                                           **Apply to**           **Require**
+**Key**                    **Descriptor**                                           **Apply to**           **Requires**
 :data:`id`                 identifier                                               point
 :data:`x`                  x coordinate                                             point
 :data:`y`                  y coordinate                                             point
@@ -597,7 +611,7 @@ Available keys for points are provided below.
 Simulation Results
 ------------------
 
-A result of a :ref:`simulation_directory` can be invoked simply from its name.  A component of a vectorial or tensorial result can be invoked by prefixing the component to the name, as in :data:`coo1`, :data:`stress11`, etc.  For a symmetrical tensor (for which only 6 values are stored), :data:`t`, both :data:`t\<i\>\<j\>` and :data:`t\<j\>\<i\>` are valid.  The type of a result of the simulation directory is determined automatically. Tessellation results can be obtained from the cell results, by averaging or other statistical treatments.  Similarly, elset and mesh results can be obtained from the element results, by averaging or other statistical treatments.
+A result of a :ref:`simulation_directory` can be invoked simply from its name.  A component of a vector or tensor result can be invoked by appending the component to the name, as in :data:`coo1`, :data:`stress11`, etc.  For a symmetric tensor (for which only 6 values are stored), :data:`t`, both :data:`t\<i\>\<j\>` and :data:`t\<j\>\<i\>` are valid.  The type of a result of the simulation directory is given by its definition file if it specifies one (see :ref:`simulation_directory`), and otherwise by its name, for the following results of known type: :data:`coo`, :data:`disp`, :data:`vel`, :data:`rss`, :data:`crss`, :data:`slip`, :data:`sliprate`, :data:`rotrate`, :data:`rotrate_spin` and :data:`rotrate_slip` (vectors); :data:`stress`, :data:`strain`, :data:`strain_el`, :data:`strain_pl`, :data:`defrate` and :data:`defrate_pl` (symmetric tensors); :data:`velgrad` (non-symmetric tensor); :data:`spinrate` (skew-symmetric tensor); :data:`ori` (orientation); :data:`stress_eq`, :data:`strain_eq`, :data:`strain_el_eq`, :data:`strain_pl_eq`, :data:`defrate_eq`, :data:`defrate_pl_eq`, :data:`work`, :data:`work_pl`, :data:`workrate` and :data:`workrate_pl` (real values).  The type of any other result is undefined.  Such a result can be used if the operation does not depend on its type (in an expression, if it has a single column, or for :data:`mean`, :data:`stddev` or :data:`var`), but its components, :data:`prval`, :data:`prvect` and :data:`<res>_eq` are not available.  Tessellation results can be obtained from the cell results, by averaging or other statistical treatments.  Similarly, elset and mesh results can be obtained from the element results, by averaging or other statistical treatments.
 
 Available results / keys for nodes are the following:
 
@@ -606,7 +620,14 @@ Available results / keys for nodes are the following:
 :data:`disp`                               displacement (computed from positions)                           node
 ========================================== ================================================================ ==================================
 
-Available results / keys for elements sets are the following:
+Available results / keys for elements are the following:
+
+========================================== ================================================================ ==================================
+**Key**                                    **Descriptor**                                                   **Apply to**
+:data:`<res>_eq`                           equivalent value of :data:`<res>` [#equivalent_value]_           elt, elset, mesh
+========================================== ================================================================ ==================================
+
+Available results / keys for element sets are the following:
 
 ========================================== ========================================================================== ===================================
 **Key**                                    **Descriptor**                                                             **Apply to**
@@ -619,16 +640,16 @@ Available results / keys for elements sets are the following:
 :data:`odf(<var>=<value>,...)`             ODF defined at elements of orientation space (see also below)              tess, tesr, mesh, cell, elt, elset
 :data:`odfn(<var>=<value>,...)`            ODF defined at nodes of orientation space (see also below)                 tess, tesr, mesh
 :data:`odfindex(<var>=<value>,...)`        "Texture index" of the ODF                                                 tess, tesr, mesh, cell
-:data:`odfnindex(<var>=<value>,...)`        "Texture index" of the (nodal) ODF                                        tess, tesr, mesh, cell
+:data:`odfnindex(<var>=<value>,...)`       "Texture index" of the (nodal) ODF                                         tess, tesr, mesh, cell
 :data:`orifield(var=<var>,...)`            :data:`<var>` field defined at elements of orientation space (see below)   mesh
 :data:`orifieldn(var=<var>,...)`           :data:`<var>` field defined at nodes of orientation space (see below)      mesh
 ========================================== ========================================================================== ===================================
 
-The ODF (:data:`odf` or :data:`odfn`) of a tessellation or mesh is computed over orientation space (provided using :option:`-orispace`) from the orientations of the (tessellation) cells or (mesh) elsets.  The (optional) parameters are:
+The ODF (:data:`odf` or :data:`odfn`) of a tessellation or mesh is computed over orientation space (provided using :option:`-orispace`) from the orientations of the (tessellation) cells or (mesh) elsets.  It is not available for the triclinic crystal symmetry.  The (optional) parameters are:
 
 - :data:`input`: the input used for the orientations, either :data:`elsets` or :data:`elts` for a mesh (default :data:`elsets`);
 - :data:`theta`: the standard deviation of the kernel (in degrees);
-- :data:`weight`: the weight of a cell or elset, which can be a real value, :data:`file(<file_name>)` to load values from a file, or an expression based on the :ref:`tessellation_keys` (for cells) or :ref:`mesh_keys` (for elsets) --  by default, the volumes of the cells or elsets are used;
+- :data:`weight`: the weight of a cell or elset, which can be a real value, :data:`file(<file_name>)` to load values from a file, or an expression based on the :ref:`tessellation_keys` (for cells) or :ref:`mesh_keys` (for elsets); by default, the volumes of the cells or elsets are used;
 - :data:`clustering`: a logical value controlling orientation clustering, which can be :data:`0` (for no clustering) or :data:`1` (for clustering); the default is :data:`0` for cells or elsets and :data:`1` for voxels or elements;
 - :data:`cutoff`: the cut-off factor used to compute the ODF, which can be :data:`all` (for no cut-off) or any positive real value (default :data:`5`).
 
@@ -636,14 +657,14 @@ For a cell, element or elset, :data:`odf` returns the value of the ODF of the te
 
 The "texture index", :data:`odfindex`, is defined as :math:`\sqrt{\frac{n_c}{\pi^2}\int_g \left(f(g) - 1\right)^2 \hbox{d}g}`, where :math:`n_c` is the orientation multiplicity and :math:`\pi^2` is the volume of orientation space.
 
-The :data:`orifield` and :data:`orifieldn` of a mesh is computed over orientation space (provided using :option:`-orispace`) from the values of the (mesh) elsets.  The mandatory parameter is:
+The :data:`orifield` and :data:`orifieldn` of a mesh are computed over orientation space (provided using :option:`-orispace`) from the values of the (mesh) elsets.  The mandatory parameter is:
 
 - :data:`var`: the variable, which must be defined for elsets (i.e., have its files in the simulation directory);
 
 and the optional parameters are:
 
 - :data:`theta`: the standard deviation of the kernel (in degrees);
-- :data:`weight`: the weight of an elset, which can be a real value or an expression based on the :ref:`mesh_keys` (for elsets) --  by default, the volumes of the elsets are used.
+- :data:`weight`: the weight of an elset, which can be a real value or an expression based on the :ref:`mesh_keys` (for elsets); by default, the volumes of the elsets are used.
 
 .. _rotations_and_orientations:
 
@@ -655,12 +676,11 @@ Rotations and Orientations
 Rotation and Orientation Descriptors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Rotations and orientations can be described using the following
-descriptors.
+Rotations and orientations can be described using the following descriptors.
 
 ============================= ======================================== =============================
 Key                           Descriptor                               Number of parameters
-:data:`label` or :data:`name` Name (see :ref:`ideal_orientations`)     1
+:data:`label` or :data:`name` name (see :ref:`ideal_orientations`)     1
 :data:`rodrigues`             Rodrigues vector                         3
 :data:`euler-bunge`           Euler angles (Bunge convention)          3
 :data:`euler-kocks`           Euler angles (Kocks convention)          3
@@ -672,7 +692,7 @@ Key                           Descriptor                               Number of
 
 The convention can be added to the descriptor, either :data:`active` or :data:`passive`, as in :data:`rodrigues:active`.  When no convention is provided, :data:`passive` is assumed.
 
-Some options can take parameter values as argument, in which case the orientation must be expressed as :data:`<descriptor>(<parameter1>,<parameters2>,...)`. An example is :data:`rodrigues(0.1,0.2,0.3)`.
+Some options can take parameter values as argument, in which case the orientation must be expressed as :data:`<descriptor>(<parameter1>,<parameter2>,...)`. An example is :data:`rodrigues(0.1,0.2,0.3)`.
 
 .. _orientation_convention:
 
@@ -705,7 +725,7 @@ The values of the orientation descriptors under the "active" convention are obta
 Ideal Orientations
 ~~~~~~~~~~~~~~~~~~
 
-Keys are available for ideal orientations (lowercased is accepted):
+Keys are available for ideal orientations (lowercase keys are also accepted):
 
 ======================== ====================================
 **Key**                  **Miller indices**
@@ -733,15 +753,15 @@ Special Orientations
 Keys are available for special orientations, which do not represent single orientations (in contrast with :ref:`ideal_orientations`), but continuous orientation sets:
 
 ========================== =====================================================================================
-**Key**                    **Miller indices**
+**Key**                    **Description**
 :data:`fcc_psc_alpha`      :math:`\alpha`, partial :math:`(1\,1\,0)\|\hbox{Z}` fiber (:math:`\pm45°` about Goss)
 :data:`fcc_psc_alpha2`     :math:`\alpha`, partial :math:`(1\,1\,0)\|\hbox{Z}` fiber (:math:`\pm45°` about U)
 :data:`fcc_psc_alpha_full` :math:`\alpha`, full :math:`(1\,1\,0)\|\hbox{Z}` fiber
 :data:`fcc_psc_beta`       :math:`\beta` partial fiber
-:data:`fcc_psc_beta_bent`  Bent :math:`\beta` partial fiber, that follow (since Brass, S and Copper do not align)
+:data:`fcc_psc_beta_bent`  bent :math:`\beta` partial fiber (through Brass, S and Copper, which are not aligned)
 ========================== =====================================================================================
 
-When loading orientations from an external file, use :data:`file(<file_name>,des=label)` where the orientation descriptor is among those listed above and is :data:`rodrigues:passive` by default.
+When loading special orientations from an external file, use :data:`file(<file_name>,des=label)`.
 
 .. _orientation_fibers:
 
@@ -752,7 +772,7 @@ Orientation fibers are defined by a crystal direction being parallel to a sample
 
 - :data:`fiber(<dirc_x>,<dirc_y>,<dirc_z>,<dirs_x>,<dirs_y>,<dirs_z>)`, where (:data:`<dirc_x>`, :data:`<dirc_y>`, :data:`<dirc_z>`) is the crystal direction and (:data:`<dirs_x>`, :data:`<dirs_y>`, :data:`<dirs_z>`) is the sample direction, corresponds to an ideal orientation fiber;
 - :data:`fiber(<dirc_x>,<dirc_y>,<dirc_z>,<dirs_x>,<dirs_y>,<dirs_z>,<theta>)`, where :data:`<theta>` is an angle expressed in degrees, corresponds to an orientation fiber with the angular tolerance :data:`<theta>` from the ideal fiber;
-- :data:`fiber(<dirc_x>,<dirc_y>,<dirc_z>,<dirs_x>,<dirs_y>,<dirs_z>):normal(<var>=<val>)`, where :data:`<var>` can be :data:`theta` or :data:`thetam`) and :data:`<val>` is the value, corresponds to an orientation fiber with a normal (Gaussian) disorientation normal to the ideal fiber.
+- :data:`fiber(<dirc_x>,<dirc_y>,<dirc_z>,<dirs_x>,<dirs_y>,<dirs_z>):normal(<var>=<val>)`, where :data:`<var>` can be :data:`theta` or :data:`thetam` and :data:`<val>` is the value, corresponds to an orientation fiber with a normal (Gaussian) distribution about the ideal fiber.
 
 .. _crystal_symmetries:
 
@@ -763,19 +783,19 @@ Crystal symmetries can be described using the following descriptors.
 
 ======================== ============================================ ========================
 **Key**                  **Descriptor**                               **Number of operators**
-:data:`triclinic`        triclinic (Laue group :math:`\overline{1}`)  24
-:data:`cubic`            cubic				              24
-:data:`hexagonal`        hexagonal				      1
-:data:`-1`               Laue group :math:`\overline{1}`	      1
-:data:`2/m`              Laue group :math:`2/m`		              2
-:data:`mmm`              Laue group :math:`mmm`		              4
-:data:`4/m`              Laue group :math:`4/m`		              4
-:data:`4/mmm`            Laue group :math:`4/mmm`		      8
-:data:`-3`               Laue group :math:`\overline{3}`	      3
-:data:`-3m`              Laue group :math:`\overline{3}m`	      6
-:data:`6/m`              Laue group :math:`6/m`		              6
-:data:`6/mmm`            Laue group :math:`6/mmm`		      12
-:data:`m-3`              Laue group :math:`m\overline{3}`	      12
+:data:`triclinic`        triclinic (Laue group :math:`\overline{1}`)  1
+:data:`cubic`            cubic (Laue group :math:`m\overline{3}m`)    24
+:data:`hexagonal`        hexagonal (Laue group :math:`6/mmm`)         12
+:data:`-1`               Laue group :math:`\overline{1}`              1
+:data:`2/m`              Laue group :math:`2/m`                       2
+:data:`mmm`              Laue group :math:`mmm`                       4
+:data:`4/m`              Laue group :math:`4/m`                       4
+:data:`4/mmm`            Laue group :math:`4/mmm`                     8
+:data:`-3`               Laue group :math:`\overline{3}`              3
+:data:`-3m`              Laue group :math:`\overline{3}m`             6
+:data:`6/m`              Laue group :math:`6/m`                       6
+:data:`6/mmm`            Laue group :math:`6/mmm`                     12
+:data:`m-3`              Laue group :math:`m\overline{3}`             12
 :data:`m-3m`             Laue group :math:`m\overline{3}m`            24
 ======================== ============================================ ========================
 
@@ -789,7 +809,7 @@ Colors and Color Maps
 Colors
 ~~~~~~
 
-The available colors are provided below, with their corresponding RGB channel values (ranging from 0 to 255). Any other color can be defined from the RGB channel values, under format :data:`<R_value>:\<G_value\>:\<B_value\>`.  `Manim <https://www.manim.community>`_ colors are available and prefixed :data:`manim`.
+The available colors are provided below, with their corresponding RGB channel values (ranging from 0 to 255). Any other color can be defined from the RGB channel values, in the format :data:`<R_value>:\<G_value\>:\<B_value\>`.  `Manim <https://www.manim.community>`_ colors are available and prefixed :data:`manim`. "Highlighting" colors are provided as :data:`hl1`, :data:`hl2` and :data:`hl3`.
 
 ============================= ===================
 **Key**                       **RGB value**
@@ -1016,6 +1036,9 @@ The available colors are provided below, with their corresponding RGB channel va
 :data:`manimyellow_c`         (255, 255, 0)
 :data:`manimyellow_d`         (244, 211, 69)
 :data:`manimyellow_e`         (232, 193, 28)
+:data:`hl1`                   (38, 139, 172)
+:data:`hl2`                   (217, 93, 93)
+:data:`hl3`                   (93, 170, 104)
 ============================= ===================
 
 .. _color_maps:
@@ -1058,20 +1081,490 @@ Alternatively, a custom color map can be provided as :data:`custom(<color1>,<col
 legacy            .. image:: imgs/color-maps-real/legacy.png
 ================= ===================================================
 
-Finally, it is possible to gradually fade the start of a color map, to make it starts with white.  This can be done using the :data:`fade` modifier, following the syntax :data:`<colormap>:fade[(threshold)]`.  The threshold ranges from 0 to 1 and is equal to 0.1 by default.  Fading is applied linearly from 0 (full fading) to the threshold (no fading).  Examples are show below:
+Finally, it is possible to gradually fade the start of a color map, to make it start with white.  This can be done using the :data:`fade` modifier, following the syntax :data:`<colormap>:fade[(threshold)]`.  The threshold ranges from 0 to 1 and is equal to 0.1 by default.  Fading is applied linearly from 0 (full fading) to the threshold (no fading).  Examples are shown below:
 
 ================= ===================================================
 viridis:fade      .. image:: imgs/color-maps-real/viridis-fade.png
 viridis:fade(0.2) .. image:: imgs/color-maps-real/viridis-fade0p2.png
 ================= ===================================================
 
-.. [#muparser_doc] Taken from the :data:`muparser` `documentation <http://beltoforion.de/article.php?a=muparser>`_
+.. _orilib_commands:
+
+Orilib Commands
+---------------
+
+The commands of the :program:`orilib` program (see :ref:`orilib_program`) are provided below.  The angles are in degrees, unless stated otherwise, and the Euler angles follow the Bunge convention.
+
+.. list-table::
+   :header-rows: 1
+
+   * - Command
+     - Description
+   * - :data:`ol_R_Rcrysym`
+     - preferred crystallographically related orientation (Rodrigues vector)
+   * - :data:`ol_R_g`
+     - converts a Rodrigues vector into a rotation matrix
+   * - :data:`ol_R_q`
+     - converts a Rodrigues vector into a quaternion
+   * - :data:`ol_R_rtheta`
+     - converts a Rodrigues vector into a rotation axis / angle pair
+   * - :data:`ol_R_rtheta_rad`
+     - same as ol_R_rtheta, with angles in radians
+   * - :data:`ol_crysym_qty`
+     - number of crystallographically related orientations of a crystal symmetry
+   * - :data:`ol_des_size`
+     - number of values of an orientation descriptor (given by name)
+   * - :data:`ol_e_deg2rad`
+     - converts Euler angles from degrees into radians
+   * - :data:`ol_e_e`
+     - brings Euler angles into their standard ranges
+   * - :data:`ol_e_e_rad`
+     - same as ol_e_e, with angles in radians
+   * - :data:`ol_e_ecrysym`
+     - preferred crystallographically related orientation (Euler angles)
+   * - :data:`ol_e_ecrysym_orthotropic`
+     - equivalent Euler angles in [0, 90]³ under crystal and orthotropic sample symmetries (cubic symmetry)
+   * - :data:`ol_e_ecrysym_orthotropic_rad`
+     - same as ol_e_ecrysym_orthotropic, with angles in radians
+   * - :data:`ol_e_ecrysym_rad`
+     - same as ol_e_ecrysym, with angles in radians
+   * - :data:`ol_e_ek`
+     - converts Euler angles into Euler angles (Kocks convention)
+   * - :data:`ol_e_ek_rad`
+     - same as ol_e_ek, with angles in radians
+   * - :data:`ol_e_er`
+     - converts Euler angles into Euler angles (Roe convention)
+   * - :data:`ol_e_er_rad`
+     - same as ol_e_er, with angles in radians
+   * - :data:`ol_e_g`
+     - converts Euler angles into a rotation matrix
+   * - :data:`ol_e_g_rad`
+     - same as ol_e_g, with angles in radians
+   * - :data:`ol_e_q`
+     - converts Euler angles into a quaternion
+   * - :data:`ol_e_q_rad`
+     - same as ol_e_q, with angles in radians
+   * - :data:`ol_e_rad2deg`
+     - converts Euler angles from radians into degrees
+   * - :data:`ol_eaproj_vect`
+     - unit vector of an equal-area projection (polar coordinates)
+   * - :data:`ol_eaproj_vect_rad`
+     - same as ol_eaproj_vect, with angles in radians
+   * - :data:`ol_eaprojxy_vect`
+     - unit vector of an equal-area projection (Cartesian coordinates)
+   * - :data:`ol_ek_e`
+     - converts Euler angles (Kocks convention) into Euler angles
+   * - :data:`ol_ek_e_rad`
+     - same as ol_ek_e, with angles in radians
+   * - :data:`ol_er_e`
+     - converts Euler angles (Roe convention) into Euler angles
+   * - :data:`ol_er_e_rad`
+     - same as ol_er_e, with angles in radians
+   * - :data:`ol_g_R`
+     - converts a rotation matrix into a Rodrigues vector
+   * - :data:`ol_g_crysym`
+     - crystallographically related orientation (rotation matrix) of given index
+   * - :data:`ol_g_csys`
+     - expresses a rotation matrix in a new coordinate system
+   * - :data:`ol_g_e`
+     - converts a rotation matrix into Euler angles
+   * - :data:`ol_g_e_rad`
+     - same as ol_g_e, with angles in radians
+   * - :data:`ol_g_g_disori`
+     - disorientation angle between two orientations (rotation matrices)
+   * - :data:`ol_g_g_disori_orthotropic`
+     - disorientation angle between two orientations (rotation matrices), with orthotropic sample symmetry
+   * - :data:`ol_g_g_disori_orthotropic_rad`
+     - same as ol_g_g_disori_orthotropic, with angles in radians
+   * - :data:`ol_g_g_disori_rad`
+     - same as ol_g_g_disori, with angles in radians
+   * - :data:`ol_g_g_g`
+     - combination of two rotation matrices (current coordinate systems)
+   * - :data:`ol_g_g_g_cur`
+     - same as ol_g_g_g
+   * - :data:`ol_g_g_g_ref`
+     - combination of two rotation matrices (reference coordinate system)
+   * - :data:`ol_g_g_gdisori`
+     - disorientation (rotation matrix) between two orientations (reference coordinate system)
+   * - :data:`ol_g_g_gdisori_cur`
+     - disorientation (rotation matrix) between two orientations (coordinate system of crystal 1)
+   * - :data:`ol_g_g_gdisori_orthotropic`
+     - disorientation (rotation matrix) between two orientations, with orthotropic sample symmetry
+   * - :data:`ol_g_g_gdisori_ref`
+     - same as ol_g_g_gdisori
+   * - :data:`ol_g_g_gmisori`
+     - misorientation (rotation matrix) between two orientations (reference coordinate system)
+   * - :data:`ol_g_g_gmisori_cur`
+     - misorientation (rotation matrix) between two orientations (coordinate system of crystal 1)
+   * - :data:`ol_g_g_gmisori_orthotropic`
+     - misorientation (rotation matrix) between two orientations, with orthotropic sample symmetry
+   * - :data:`ol_g_g_gmisori_ref`
+     - same as ol_g_g_gmisori
+   * - :data:`ol_g_g_misori`
+     - misorientation angle between two orientations (rotation matrices)
+   * - :data:`ol_g_g_misori_orthotropic`
+     - misorientation angle between two orientations (rotation matrices), with orthotropic sample symmetry
+   * - :data:`ol_g_g_misori_orthotropic_rad`
+     - same as ol_g_g_misori_orthotropic, with angles in radians
+   * - :data:`ol_g_g_misori_rad`
+     - same as ol_g_g_misori, with angles in radians
+   * - :data:`ol_g_gcrysym`
+     - preferred crystallographically related orientation (rotation matrix)
+   * - :data:`ol_g_homochoric`
+     - converts a rotation matrix into a homochoric vector
+   * - :data:`ol_g_inverse`
+     - inverse of a rotation matrix
+   * - :data:`ol_g_ipf_crysym_eaproj`
+     - same as ol_g_ipf_eaproj, in the standard triangle (crystal symmetry)
+   * - :data:`ol_g_ipf_crysym_eaproj_rad`
+     - same as ol_g_ipf_crysym_eaproj, with angles in radians
+   * - :data:`ol_g_ipf_crysym_eaprojxy`
+     - same as ol_g_ipf_eaprojxy, in the standard triangle (crystal symmetry)
+   * - :data:`ol_g_ipf_crysym_stproj`
+     - same as ol_g_ipf_stproj, in the standard triangle (crystal symmetry)
+   * - :data:`ol_g_ipf_crysym_stproj_rad`
+     - same as ol_g_ipf_crysym_stproj, with angles in radians
+   * - :data:`ol_g_ipf_crysym_stprojxy`
+     - same as ol_g_ipf_stprojxy, in the standard triangle (crystal symmetry)
+   * - :data:`ol_g_ipf_eaproj`
+     - equal-area projection in a inverse pole figure of an orientation (rotation matrix), polar coordinates
+   * - :data:`ol_g_ipf_eaproj_rad`
+     - same as ol_g_ipf_eaproj, with angles in radians
+   * - :data:`ol_g_ipf_eaprojxy`
+     - equal-area projection in a inverse pole figure of an orientation (rotation matrix), Cartesian coordinates
+   * - :data:`ol_g_ipf_stproj`
+     - stereographic projection in a inverse pole figure of an orientation (rotation matrix), polar coordinates
+   * - :data:`ol_g_ipf_stproj_rad`
+     - same as ol_g_ipf_stproj, with angles in radians
+   * - :data:`ol_g_ipf_stprojxy`
+     - stereographic projection in a inverse pole figure of an orientation (rotation matrix), Cartesian coordinates
+   * - :data:`ol_g_lng`
+     - logarithm of a rotation matrix
+   * - :data:`ol_g_m`
+     - converts a rotation matrix into Miller indices (several solutions, with their qualities)
+   * - :data:`ol_g_oneline`
+     - prints a rotation matrix on a single line
+   * - :data:`ol_g_pf_eaproj`
+     - equal-area projection in a pole figure of an orientation (rotation matrix), polar coordinates
+   * - :data:`ol_g_pf_eaproj_rad`
+     - same as ol_g_pf_eaproj, with angles in radians
+   * - :data:`ol_g_pf_eaprojxy`
+     - equal-area projection in a pole figure of an orientation (rotation matrix), Cartesian coordinates
+   * - :data:`ol_g_pf_stproj`
+     - stereographic projection in a pole figure of an orientation (rotation matrix), polar coordinates
+   * - :data:`ol_g_pf_stproj_rad`
+     - same as ol_g_pf_stproj, with angles in radians
+   * - :data:`ol_g_pf_stprojxy`
+     - stereographic projection in a pole figure of an orientation (rotation matrix), Cartesian coordinates
+   * - :data:`ol_g_q`
+     - converts a rotation matrix into a quaternion
+   * - :data:`ol_g_r`
+     - converts a rotation matrix into a rotation axis
+   * - :data:`ol_g_refcsys`
+     - expresses an orientation (rotation matrix) in a new reference coordinate system
+   * - :data:`ol_g_refsym`
+     - symmetrical orientation (rotation matrix) with respect to a sample plane
+   * - :data:`ol_g_refsym_g`
+     - disorientation (rotation matrix) between an orientation and a sample plane (cubic symmetry)
+   * - :data:`ol_g_refsym_monoclinic`
+     - symmetrical orientations (rotation matrix) for monoclinic sample symmetry
+   * - :data:`ol_g_refsym_orthotropic`
+     - distinct symmetrical orientations (rotation matrix) for orthotropic sample symmetry
+   * - :data:`ol_g_refsym_orthotropic_all`
+     - the 4 symmetrical orientations (rotation matrix) for orthotropic sample symmetry
+   * - :data:`ol_g_rtheta`
+     - converts a rotation matrix into a rotation axis / angle pair
+   * - :data:`ol_g_rtheta_rad`
+     - same as ol_g_rtheta, with angles in radians
+   * - :data:`ol_g_theta`
+     - converts a rotation matrix into a rotation angle
+   * - :data:`ol_g_theta_rad`
+     - same as ol_g_theta, with angles in radians
+   * - :data:`ol_g_vect_vect`
+     - rotation of a vector by a rotation matrix
+   * - :data:`ol_hpole_vect`
+     - unit vector of a four-index pole (hexagonal)
+   * - :data:`ol_ipf_g_stprojxy`
+     - orientation (rotation matrix) of a given inverse pole figure stereographic projection
+   * - :data:`ol_ipf_q_stprojxy`
+     - orientation (quaternion) of a given inverse pole figure stereographic projection
+   * - :data:`ol_ipfweight_rgb`
+     - color of standard triangle weights
+   * - :data:`ol_label_g`
+     - converts an orientation label into a rotation matrix
+   * - :data:`ol_label_q`
+     - converts an orientation label into a quaternion
+   * - :data:`ol_lng_g`
+     - rotation matrix of a given logarithm
+   * - :data:`ol_lnq_q`
+     - quaternion of a given logarithm
+   * - :data:`ol_m_crysym`
+     - crystallographically related orientation (Miller indices) of given index (cubic symmetry)
+   * - :data:`ol_m_g`
+     - converts Miller indices into a rotation matrix
+   * - :data:`ol_m_mcrysym`
+     - preferred crystallographically related orientation (Miller indices, cubic symmetry)
+   * - :data:`ol_m_q`
+     - converts Miller indices into a quaternion
+   * - :data:`ol_m_refsym`
+     - symmetrical orientation (Miller indices) with respect to a sample plane
+   * - :data:`ol_m_refsym_monoclinic`
+     - symmetrical orientations (Miller indices) for monoclinic sample symmetry
+   * - :data:`ol_m_refsym_orthotropic`
+     - distinct symmetrical orientations (Miller indices) for orthotropic sample symmetry
+   * - :data:`ol_nb_e`
+     - Euler angles from 3 numbers in [0, 1] (uniform distribution)
+   * - :data:`ol_nb_e_rad`
+     - same as ol_nb_e, with angles in radians
+   * - :data:`ol_nb_max_rtheta`
+     - rotation axis / angle pair with an angle lower than a maximum value from 3 numbers in [0, 1] (orientation spread)
+   * - :data:`ol_nb_max_rtheta_mis`
+     - rotation axis / angle pair with an angle lower than a maximum value from 3 numbers in [0, 1] (misorientation distribution)
+   * - :data:`ol_nb_max_rtheta_mis_rad`
+     - same as ol_nb_max_rtheta_mis, with angles in radians
+   * - :data:`ol_nb_max_rtheta_rad`
+     - same as ol_nb_max_rtheta, with angles in radians
+   * - :data:`ol_nb_max_theta`
+     - rotation angle lower than a maximum value from a number in [0, 1] (orientation spread)
+   * - :data:`ol_nb_max_theta_mis`
+     - rotation angle lower than a maximum value from a number in [0, 1] (misorientation distribution)
+   * - :data:`ol_nb_max_theta_mis_rad`
+     - same as ol_nb_max_theta_mis, with angles in radians
+   * - :data:`ol_nb_max_theta_rad`
+     - same as ol_nb_max_theta, with angles in radians
+   * - :data:`ol_nb_r`
+     - rotation axis from 2 numbers in [0, 1] (uniform distribution)
+   * - :data:`ol_pole_crysym`
+     - crystallographically related pole of given index (cubic symmetry)
+   * - :data:`ol_pole_polecrysym`
+     - preferred crystallographically related pole
+   * - :data:`ol_pole_vect`
+     - unit vector of a pole
+   * - :data:`ol_polef_polecrysym`
+     - distinct poles of a pole family
+   * - :data:`ol_q_R`
+     - converts a quaternion into a Rodrigues vector
+   * - :data:`ol_q_aniso_theta`
+     - amplitudes of an orientation (quaternion) along principal axes
+   * - :data:`ol_q_crysym`
+     - crystallographically related orientation (quaternion) of given index
+   * - :data:`ol_q_crysym_nopos`
+     - same as ol_q_crysym, without making the quaternion positive
+   * - :data:`ol_q_csys`
+     - expresses a quaternion in a new coordinate system
+   * - :data:`ol_q_des`
+     - converts a quaternion into an orientation descriptor (given by name)
+   * - :data:`ol_q_e`
+     - converts a quaternion into Euler angles
+   * - :data:`ol_q_e_rad`
+     - same as ol_q_e, with angles in radians
+   * - :data:`ol_q_g`
+     - converts a quaternion into a rotation matrix
+   * - :data:`ol_q_gv`
+     - converts a quaternion into a rotation matrix, written on a single line
+   * - :data:`ol_q_homochoric`
+     - converts a quaternion into a homochoric vector
+   * - :data:`ol_q_inverse`
+     - inverse of a quaternion
+   * - :data:`ol_q_ipf_crysym_eaproj`
+     - same as ol_q_ipf_eaproj, in the standard triangle (crystal symmetry)
+   * - :data:`ol_q_ipf_crysym_eaproj_rad`
+     - same as ol_q_ipf_crysym_eaproj, with angles in radians
+   * - :data:`ol_q_ipf_crysym_eaprojxy`
+     - same as ol_q_ipf_eaprojxy, in the standard triangle (crystal symmetry)
+   * - :data:`ol_q_ipf_crysym_stproj`
+     - same as ol_q_ipf_stproj, in the standard triangle (crystal symmetry)
+   * - :data:`ol_q_ipf_crysym_stproj_rad`
+     - same as ol_q_ipf_crysym_stproj, with angles in radians
+   * - :data:`ol_q_ipf_crysym_stprojxy`
+     - same as ol_q_ipf_stprojxy, in the standard triangle (crystal symmetry)
+   * - :data:`ol_q_ipf_eaproj`
+     - equal-area projection in a inverse pole figure of an orientation (quaternion), polar coordinates
+   * - :data:`ol_q_ipf_eaproj_rad`
+     - same as ol_q_ipf_eaproj, with angles in radians
+   * - :data:`ol_q_ipf_eaprojxy`
+     - equal-area projection in a inverse pole figure of an orientation (quaternion), Cartesian coordinates
+   * - :data:`ol_q_ipf_stproj`
+     - stereographic projection in a inverse pole figure of an orientation (quaternion), polar coordinates
+   * - :data:`ol_q_ipf_stproj_rad`
+     - same as ol_q_ipf_stproj, with angles in radians
+   * - :data:`ol_q_ipf_stprojxy`
+     - stereographic projection in a inverse pole figure of an orientation (quaternion), Cartesian coordinates
+   * - :data:`ol_q_isspecial`
+     - 1 if a quaternion is a special orientation, 0 otherwise
+   * - :data:`ol_q_isuniform`
+     - 1 if a quaternion is the uniform distribution, 0 otherwise
+   * - :data:`ol_q_label`
+     - label of a special orientation (quaternion)
+   * - :data:`ol_q_lnq`
+     - logarithm of a quaternion
+   * - :data:`ol_q_m`
+     - converts a quaternion into Miller indices (several solutions, with their qualities)
+   * - :data:`ol_q_pf_eaproj`
+     - equal-area projection in a pole figure of an orientation (quaternion), polar coordinates
+   * - :data:`ol_q_pf_eaproj_rad`
+     - same as ol_q_pf_eaproj, with angles in radians
+   * - :data:`ol_q_pf_eaprojxy`
+     - equal-area projection in a pole figure of an orientation (quaternion), Cartesian coordinates
+   * - :data:`ol_q_pf_stproj`
+     - stereographic projection in a pole figure of an orientation (quaternion), polar coordinates
+   * - :data:`ol_q_pf_stproj_rad`
+     - same as ol_q_pf_stproj, with angles in radians
+   * - :data:`ol_q_pf_stprojxy`
+     - stereographic projection in a pole figure of an orientation (quaternion), Cartesian coordinates
+   * - :data:`ol_q_q`
+     - makes a quaternion positive
+   * - :data:`ol_q_q_disori`
+     - disorientation angle between two orientations (quaternions)
+   * - :data:`ol_q_q_disori_fr_rad`
+     - faster disorientation angle (radians) between two orientations (quaternions, cubic symmetry)
+   * - :data:`ol_q_q_disori_orthotropic`
+     - disorientation angle between two orientations (quaternions), with orthotropic sample symmetry
+   * - :data:`ol_q_q_disori_orthotropic_rad`
+     - same as ol_q_q_disori_orthotropic, with angles in radians
+   * - :data:`ol_q_q_disori_rad`
+     - same as ol_q_q_disori, with angles in radians
+   * - :data:`ol_q_q_misori`
+     - misorientation angle between two orientations (quaternions)
+   * - :data:`ol_q_q_misori_orthotropic`
+     - misorientation angle between two orientations (quaternions), with orthotropic sample symmetry
+   * - :data:`ol_q_q_misori_orthotropic_rad`
+     - same as ol_q_q_misori_orthotropic, with angles in radians
+   * - :data:`ol_q_q_misori_rad`
+     - same as ol_q_q_misori, with angles in radians
+   * - :data:`ol_q_q_q`
+     - combination of two quaternions (current coordinate systems)
+   * - :data:`ol_q_q_q_cur`
+     - same as ol_q_q_q
+   * - :data:`ol_q_q_q_ref`
+     - combination of two quaternions (reference coordinate system)
+   * - :data:`ol_q_q_qdisori`
+     - disorientation (quaternion) between two orientations (reference coordinate system)
+   * - :data:`ol_q_q_qdisori_cur`
+     - disorientation (quaternion) between two orientations (coordinate system of crystal 1)
+   * - :data:`ol_q_q_qdisori_orthotropic`
+     - disorientation (quaternion) between two orientations, with orthotropic sample symmetry
+   * - :data:`ol_q_q_qdisori_ref`
+     - same as ol_q_q_qdisori
+   * - :data:`ol_q_q_qdisori_update`
+     - disorientation (quaternion) between two orientations, using a previous symmetry operator index
+   * - :data:`ol_q_q_qmisori`
+     - misorientation (quaternion) between two orientations (reference coordinate system)
+   * - :data:`ol_q_q_qmisori_cur`
+     - misorientation (quaternion) between two orientations (coordinate system of crystal 1)
+   * - :data:`ol_q_q_qmisori_orthotropic`
+     - misorientation (quaternion) between two orientations, with orthotropic sample symmetry
+   * - :data:`ol_q_q_qmisori_ref`
+     - same as ol_q_q_qmisori
+   * - :data:`ol_q_qcrysym`
+     - preferred crystallographically related orientation (quaternion)
+   * - :data:`ol_q_qrefsym_orthotropic`
+     - preferred symmetrical orientation (quaternion) for orthotropic sample symmetry
+   * - :data:`ol_q_r`
+     - converts a quaternion into a rotation axis
+   * - :data:`ol_q_refcsys`
+     - expresses an orientation (quaternion) in a new reference coordinate system
+   * - :data:`ol_q_refsym`
+     - symmetrical orientation (quaternion) with respect to a sample plane
+   * - :data:`ol_q_refsym_monoclinic`
+     - symmetrical orientations (quaternion) for monoclinic sample symmetry
+   * - :data:`ol_q_refsym_orthotropic`
+     - distinct symmetrical orientations (quaternion) for orthotropic sample symmetry
+   * - :data:`ol_q_refsym_orthotropic_all`
+     - the 4 symmetrical orientations (quaternion) for orthotropic sample symmetry
+   * - :data:`ol_q_refsym_q`
+     - disorientation (quaternion) between an orientation and a sample plane (cubic symmetry)
+   * - :data:`ol_q_rtheta`
+     - converts a quaternion into a rotation axis / angle pair
+   * - :data:`ol_q_rtheta_rad`
+     - same as ol_q_rtheta, with angles in radians
+   * - :data:`ol_q_specialid`
+     - identifier of a special orientation (quaternion)
+   * - :data:`ol_q_theta`
+     - converts a quaternion into a rotation angle
+   * - :data:`ol_q_theta_rad`
+     - same as ol_q_theta, with angles in radians
+   * - :data:`ol_q_vect_vect`
+     - rotation of a vector by a quaternion
+   * - :data:`ol_rtheta_R`
+     - converts a rotation axis / angle pair into a Rodrigues vector
+   * - :data:`ol_rtheta_R_rad`
+     - same as ol_rtheta_R, with angles in radians
+   * - :data:`ol_rtheta_g`
+     - converts a rotation axis / angle pair into a rotation matrix
+   * - :data:`ol_rtheta_g_rad`
+     - same as ol_rtheta_g, with angles in radians
+   * - :data:`ol_rtheta_q`
+     - converts a rotation axis / angle pair into a quaternion
+   * - :data:`ol_rtheta_q_rad`
+     - same as ol_rtheta_q, with angles in radians
+   * - :data:`ol_rtheta_rtheta`
+     - brings the angle of a rotation axis / angle pair into [0, 180]
+   * - :data:`ol_rtheta_rtheta_rad`
+     - same as ol_rtheta_rtheta, with angles in radians
+   * - :data:`ol_set_filter`
+     - filtering of an orientation set (quaternions)
+   * - :data:`ol_set_filter_iter`
+     - iterative filtering of an orientation set (quaternions)
+   * - :data:`ol_specialid_label`
+     - label of a special orientation (identifier)
+   * - :data:`ol_specialid_q`
+     - quaternion of a special orientation (identifier)
+   * - :data:`ol_srand_e`
+     - random orientations (Euler angles)
+   * - :data:`ol_srand_e_rad`
+     - same as ol_srand_e, with angles in radians
+   * - :data:`ol_stproj_vect`
+     - unit vector of a stereographic projection (polar coordinates)
+   * - :data:`ol_stproj_vect_rad`
+     - same as ol_stproj_vect, with angles in radians
+   * - :data:`ol_stprojxy_vect`
+     - unit vector of a stereographic projection (Cartesian coordinates)
+   * - :data:`ol_theta_deg2rad`
+     - converts an angle from degrees into radians
+   * - :data:`ol_theta_rad2deg`
+     - converts an angle from radians into degrees
+   * - :data:`ol_vect_crysym`
+     - vector obtained by a symmetry operator of given index
+   * - :data:`ol_vect_crysym_all`
+     - distinct vectors obtained by all symmetry operators
+   * - :data:`ol_vect_eaproj`
+     - equal-area projection of a unit vector (polar coordinates)
+   * - :data:`ol_vect_eaproj_rad`
+     - same as ol_vect_eaproj, with angles in radians
+   * - :data:`ol_vect_eaprojxy`
+     - equal-area projection of a unit vector (Cartesian coordinates)
+   * - :data:`ol_vect_ipfweight`
+     - weights of a unit vector with respect to the corners of the standard triangle
+   * - :data:`ol_vect_refsym`
+     - symmetrical vector with respect to a sample plane
+   * - :data:`ol_vect_stproj`
+     - stereographic projection of a unit vector (polar coordinates)
+   * - :data:`ol_vect_stproj_rad`
+     - same as ol_vect_stproj, with angles in radians
+   * - :data:`ol_vect_stprojxy`
+     - stereographic projection of a unit vector (Cartesian coordinates)
+   * - :data:`ol_vect_vect_g`
+     - rotation (rotation matrix) of minimum angle between two vectors
+   * - :data:`ol_vect_vect_q`
+     - rotation (quaternion) of minimum angle between two vectors
+   * - :data:`ol_vect_vect_rtheta`
+     - rotation (axis / angle pair) of minimum angle between two vectors
+   * - :data:`ol_vect_vect_rtheta_rad`
+     - same as ol_vect_vect_rtheta, with angles in radians
+   * - :data:`ol_vect_vect_theta`
+     - angle between two vectors
+   * - :data:`ol_vect_vect_theta_rad`
+     - same as ol_vect_vect_theta, with angles in radians
+
+
+.. [#muparser_doc] Taken from the :data:`muparser` `documentation <https://beltoforion.de/en/muparser>`_.
 
 .. [#multiscale_entity] Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of an entity (vertex, edge or face) is the scale at which the entity was created, and it ranges from 0 (for domain entities) to the number of scales of the tessellation (for the last created entities).  The scale of a cell is determined based on the number of subcells of its parent cell.
 
-.. [#multiscale_entity_mesh] Applies only to a 3D mesh and relevant for meshes of multiscale tessellations.  The scale of an elset is equal to the scale of its corresponding tessellation entity  [#multiscale_entity]_.
+.. [#multiscale_entity_mesh] Applies only to a 3D mesh and relevant for meshes of multiscale tessellations.  The scale of an elset is equal to the scale of its corresponding tessellation entity [#multiscale_entity]_.
 
-.. [#equivalent_diameter] Equivalent diameter = diameter of the circle of equivalent area/volume in 2D/3D
+.. [#equivalent_diameter] Equivalent diameter = diameter of the circle (sphere) of equivalent area (volume) in 2D (3D)
 
 .. [#sphericity] Sphericity of a polyhedron = ratio of the surface area of the sphere of equivalent volume to the surface area of the polyhedron
 
@@ -1081,19 +1574,19 @@ viridis:fade(0.2) .. image:: imgs/color-maps-real/viridis-fade0p2.png
 
 .. [#gos] Grain orientation spread = average disorientation (angle) with respect to the average orientation
 
+.. [#equivalent_value] Equivalent value of a symmetric tensor element result :data:`<res>` (e.g. :data:`stress`, :data:`strain` or :data:`defrate`), as computed by FEPX: :math:`\sqrt{3/2\,t':t'}` for a stress (von Mises equivalent stress) and :math:`\sqrt{2/3\,t':t'}` otherwise, where :math:`t'` is the deviatoric part of the tensor.  It is computed only if :data:`<res>_eq` is not already a result of the simulation directory.  The elset and mesh values are averaged from the element values.
+
 .. [#face_equation] A face equation is specified by the parameters :math:`d`, :math:`a`, :math:`b` and :math:`c`, with the equation being: :math:`a x + b y + c z = d`.  The vector :math:`(a, b, c)` is pointing outwards of the polyhedron.
 
 .. [#nseeds] If a polyhedron has no neighbor on a face, a negative value is returned.
 
 .. [#lam] In the case of a lamellar tessellation with several lamella widths, :data:`lam` stands for the actual lamella width of the cell (starting from 1).
 
-.. [#mode] In the case of a multimodal tessellation (e.g.in terms of cell size), :data:`mode` stands for the actual mode (starting from 1).  Otherwise, it is equal to 1.
+.. [#mode] In the case of a multimodal tessellation (e.g. in terms of cell size), :data:`mode` stands for the actual mode (starting from 1).  Otherwise, it is equal to 1.
 
-.. [#JMPS2015] R Quey, JH Driver, PR Dawson, Intra-grain orientation distributions in hot-deformed aluminium: orientation dependence and relation to deformation mechanisms, Journal of the Mechanics and Physics of Solids, vol. 84, pp. 506-524, 2015.
+.. [#JMPS2015] R. Quey, J.H. Driver and P.R. Dawson, Intra-grain orientation distributions in hot-deformed aluminium: orientation dependence and relation to deformation mechanisms, Journal of the Mechanics and Physics of Solids, vol. 84, pp. 506-524, 2015.
 
 .. [#deltas] For Gaussian distributions, they are equal to 1.349 times the values of :data:`oridisanisoangles`.
-
-.. [#plateau] Number of iterations during which the objective function does not decrease
 
 .. [#domtype] 0 if on a domain vertex, 1 if on a domain edge and 2 if on a domain face
 
@@ -1101,10 +1594,10 @@ viridis:fade(0.2) .. image:: imgs/color-maps-real/viridis-fade0p2.png
 
 .. [#col_stdtriangle] Applies to a mesh of the stereographic triangle
 
-.. [#ori_node] Orientation of the node of a meshed standard triangle, assuming no rotation about the :math:`z` direction.
+.. [#ori_node] Orientation of the node of a meshed stereographic triangle, assuming no rotation about the :math:`z` direction.
 
-.. [#cyl] 1 if polygonize the circular part of a cylindrical domain and 0 otherwise.
+.. [#cyl] 1 if the entity is part of the polygonization of the circular part of a cylindrical domain and 0 otherwise.
 
-.. [#vol_orispace] For a mesh of orientation space (or a fundamental region), returns the volume in orientation space.   Sums to :math:`\pi^2/n_c`, where :math:`n_c` is the multiplicity of the orientation (24 for cubic symmetry).
+.. [#vol_orispace] For a mesh of orientation space (or a fundamental region), returns the volume in orientation space.  Sums to :math:`\pi^2/n_c`, where :math:`n_c` is the multiplicity of the orientation (24 for cubic symmetry).
 
 .. [#fiber] See :ref:`orientation_fibers`.

@@ -39,6 +39,7 @@ neut_polys_neighpolys (struct POLY *Poly, struct SEEDSET SSet, int *polys,
                        int polyqty, int **pneighs, int *pneighqty)
 {
   int poly, i, j, qty = 0, *tmp = NULL;
+  int *isneigh = ut_alloc_1d_int (SSet.N + 1);
 
   ut_free_1d_int (pneighs);
   *pneighqty = 0;
@@ -47,8 +48,15 @@ neut_polys_neighpolys (struct POLY *Poly, struct SEEDSET SSet, int *polys,
     poly = polys[i];
     neut_poly_neighpolys (Poly[poly], SSet, &tmp, &qty);
     for (j = 0; j < qty; j++)
-      ut_array_1d_int_list_addval (pneighs, pneighqty, tmp[j]);
+      if (!isneigh[tmp[j]])
+      {
+        isneigh[tmp[j]] = 1;
+        ut_array_1d_int_list_addval_nocheck (pneighs, pneighqty, tmp[j]);
+      }
   }
+
+  ut_free_1d_int (&isneigh);
+  ut_free_1d_int (&tmp);
 
   return;
 }

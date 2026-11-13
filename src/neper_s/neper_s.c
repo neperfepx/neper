@@ -27,18 +27,19 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
 // #####################################################################
 // ### READING RESULTS #################################################
 
-  // reading simulation and printing simulation content to terminal
-  if (In.simdir)
-  {
-    neut_sim_fscanf (In.simdir, &Sim, "R");
-    neut_sim_verbose (Sim);
-  }
-
-  // merging simulations and loading resulting simulation
-  else if (In.mergedir)
+  // merging simulations and loading resulting simulation (In.simdir is
+  // then the output simulation directory)
+  if (In.mergedir)
   {
     ut_print_message (0, 1, "Merging simulation directories...\n");
     nes_merge (In, &Sim);
+    neut_sim_verbose (Sim);
+  }
+
+  // reading simulation and printing simulation content to terminal
+  else if (In.simdir)
+  {
+    neut_sim_fscanf (In.simdir, &Sim);
     neut_sim_verbose (Sim);
   }
 
@@ -54,15 +55,6 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
 
 // #####################################################################
 // ### RUNNING POST-PROCESSING #########################################
-
-  // loading number of steps
-  if (In.stepqty != -1)
-  {
-    Sim.StepQty = In.stepqty;
-    Sim.StepState = ut_alloc_1d_int (Sim.StepQty + 1);
-    ut_array_1d_int_set (Sim.StepState, Sim.StepQty + 1, 1);
-    neut_sim_fprintf (In.simdir, Sim, "W");
-  }
 
   // going into post-processing
   if (In.simdir && In.entityqty)

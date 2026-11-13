@@ -727,27 +727,6 @@ neut_polys_convexity (struct POLY *Poly, int *polys, int polyqty,
 }
 
 int
-neut_polys_sel (struct POLY *Poly, int *polys, int polyqty, double *pval)
-{
-  int i, j, ver1, ver2;
-  (void) polys;
-
-  if (polyqty != 1)
-    abort ();
-
-  (*pval) = DBL_MAX;
-  for (i = 1; i <= Poly[polys[0]].FaceQty; i++)
-    for (j = 1; j <= Poly[polys[0]].FaceVerQty[i]; j++)
-    {
-      ver1 = Poly[polys[0]].FaceVerNb[i][j];
-      ver2 = Poly[polys[0]].FaceVerNb[i][ut_array_rotpos (1, Poly[polys[0]].FaceVerQty[i], j, 1)];
-      (*pval) = ut_num_min (*pval, ut_space_dist (Poly[polys[0]].VerCoo[ver1], Poly[polys[0]].VerCoo[ver2]));
-    }
-
-  return 0;
-}
-
-int
 neut_polys_sphericity_2d (struct POLY *Poly, int *polys, int polyqty,
                           double pseudosize, double *pval)
 {

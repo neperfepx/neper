@@ -1,0 +1,131 @@
+#!/bin/bash
+
+# Would fail when run from a Makefile
+# set -euo pipefail
+
+mode="talk"       # default mode
+format="png"      # default format
+modeinput=0
+formatinput=0
+files=()
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --mode=*)
+      mode="${1#--mode=}"
+      modeinput=1
+      ;;
+
+    --format=*)
+      format="${1#--format=}"
+      formatinput=1
+      ;;
+
+    -f)
+      shift
+      if [[ $# -eq 0 ]]; then
+        echo "Error: -f requires an argument (png or pdf)"
+        exit 1
+      fi
+      format="$1"
+      formatinput=1
+      ;;
+
+    -f*)
+      format="${1#-f}"
+      formatinput=1
+      ;;
+
+    *)
+      files+=("$1")
+      ;;
+  esac
+
+  shift
+done
+
+# Validate mode
+if [[ "$mode" != "talk" && "$mode" != "paper" ]]
+then
+  echo "Error: mode must be 'talk' or 'paper'"
+  exit 1
+fi
+
+# Validate format
+if [[ "$format" != "png" && "$format" != "pdf" ]]
+then
+  echo "Error: format must be 'png' or 'pdf'"
+  exit 1
+fi
+
+# Check that we have at least one file
+if [[ "${#files[@]}" -eq 0 ]]
+then
+  echo "Usage: $0 [-f png|pdf] [--mode=talk|paper] file1.asy [file2.asy ...]"
+  exit 1
+fi
+
+# Process each file
+for asy in "${files[@]}"; do
+  echo "Processing $asy ($mode mode, $format format)"
+
+  tmpname=$(mktemp --suffix=.asy tmp-XXXXXX)
+
+  cp "$asy" "$tmpname"
+
+  # Replace import pen* lines according to mode
+  if [[ "$mode" == "talk" ]]
+  then
+    penmode="penst;"
+  else
+    penmode="pensp;"
+  fi
+
+  sed -i "s/^import pen.*$/import $penmode/" "$tmpname"
+
+  # Use LaTeX fonts for paper mode
+  if [[ "$mode" == "paper" ]]
+  then
+    sed -i '/settings\.outformat="pdf";/a usepackage("newtxtext"); usepackage("newtxmath");' "$tmpname"
+  fi
+
+  pdf="${tmpname%.asy}.pdf"
+  png="${tmpname%.asy}.png"
+
+  # Determine output filename
+  if [[ "$formatinput" == 0 && "$modeinput" == 0 ]]
+  then
+    output="${asy%.asy}.$format"
+  elif [[ "$modeinput" == 1 ]]
+  then
+    output="${asy%.asy}-$mode.$format"
+  else
+    output="${asy%.asy}.$format"
+  fi
+
+  # Generate PDF
+  asy -f pdf "$tmpname"
+
+  if [[ "$format" == "pdf" ]]
+  then
+    # Move generated PDF to target filename
+    mv "$pdf" "$output"
+
+  elif [[ "$format" == "png" ]]
+  then
+    # Convert PDF to PNG
+    convert -density 400 -background white -flatten "$pdf" "$png"
+
+    # Move PNG to target filename
+    mv "$png" "$output"
+
+    # Remove intermediate PDF
+    rm -f "$pdf"
+  fi
+
+  # Remove temporary Asymptote file
+  rm -f "$tmpname"
+done
+
+exit 0

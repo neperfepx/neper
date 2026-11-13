@@ -7,22 +7,34 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"5.0.1-14\")
-project(neper)
+project(neper VERSION 7.0.0)
+
+# Version: the version above and a suffix, "-dev" until the release (neperfepx-release sets the
+# release's version and an empty suffix, then the next version and "-dev" on devel).  A build
+# also shows the git hash and the commit date of its sources (cmake/BuildInfo.cmake).
+set(NEPER_VERSION_SUFFIX "")
+set(NEPER_VERSION \"${PROJECT_VERSION}${NEPER_VERSION_SUFFIX}\")
 
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8.1)
   message (SEND_ERROR "  GCC 4.8.1 or higher is required.  You are using version ${CMAKE_CXX_COMPILER_VERSION}")
 endif()
 
-# Set the build type for appropriate compile flags
+set(ENABLE_PROFILING OFF CACHE BOOL "Build with gprof profiling support (-pg)")
+
+# Set the build type for appropriate compile flags.  When profiling, default to
+# RelWithDebInfo (optimized, with symbols) rather than Release; an explicit
+# -DCMAKE_BUILD_TYPE=... always takes precedence.
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build: Debug Release" FORCE)
+  if(ENABLE_PROFILING)
+    set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build: Debug Release RelWithDebInfo" FORCE)
+  else()
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build: Debug Release RelWithDebInfo" FORCE)
+  endif()
 endif()
 
 set(BUILD_TESTING_MODE "Normal" CACHE STRING "Choose the testing mode: Normal Minimal Writing")
 
 # should we use the optional libraries?
-set(HAVE_NLOPT     ON  CACHE BOOL "Use NLopt")
 set(HAVE_OPENMP    ON  CACHE BOOL "Use OpenMP")
 set(HAVE_GSL       ON  CACHE BOOL "Use GSL")
 set(HAVE_MUPARSER  ON  CACHE BOOL "Use muParser") # sets to ON in ut, etc.
@@ -30,9 +42,8 @@ set(HAVE_OPENGJK   ON  CACHE BOOL "Use openGJK") # sets to ON in ut, etc.
 set(HAVE_LIBSCOTCH ON  CACHE BOOL "Use Scotch") # sets to ON in ut, etc.
 set(HAVE_PNG       OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
 set(CMAKE_INSTALL_COMPLETION OFF CACHE BOOL "Install Bash completion files")
-set(CMAKE_INSTALL_TYPE "Full" CACHE STRING "Install type: Full|NoPost")
 set(FORCE_BUILTIN_LIBSCOTCH OFF CACHE BOOL "Force to use the built-in libscotch")
-set(FORCE_BUILTIN_NLOPT     ON CACHE BOOL "Force to use the built-in nlopt")
+set(FORCE_BUILTIN_GSL OFF CACHE BOOL "Force to use the built-in GSL")
 set(REAL_PRINT_FORMAT \"%.12f\" CACHE STRING "Printing format of real numbers")
 set(REAL_PRINT_FORMAT3 \"%15.12f\" CACHE STRING "Printing format of real numbers (15 characters)")
 set(REAL_PRINT_FORMAT5 \"%17.12f\" CACHE STRING "Printing format of real numbers (17 characters)")
@@ -52,6 +63,48 @@ function(message)
 endfunction()
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+
+if(ENABLE_PROFILING)
+  if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND NOT APPLE)
+    message(STATUS "Profiling enabled (gprof): adding -pg")
+    add_compile_options(-pg)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+
+    # gprof does not work reliably with position-independent executables, which
+    # are the default on many recent Linux distributions.
+    include(CheckCCompilerFlag)
+    check_c_compiler_flag("-no-pie" HAVE_NO_PIE_FLAG)
+    if(HAVE_NO_PIE_FLAG)
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -no-pie")
+    endif()
+    unset(HAVE_NO_PIE_FLAG CACHE) # hide from ccmake
+
+    if(HAVE_OPENMP)
+      message(WARNING "gprof only profiles the main thread: results are unreliable with OpenMP.  Consider -DHAVE_OPENMP=OFF.")
+    endif()
+  else()
+    message(WARNING "ENABLE_PROFILING (gprof) is only supported with GCC/Clang on Linux; ignored.")
+  endif()
+endif()
+
+# Gmsh library (mandatory)
+find_path(GMSH_INCLUDE_DIR gmshc.h)
+find_library(GMSH_LIBRARY gmsh)
+if(GMSH_INCLUDE_DIR AND GMSH_LIBRARY)
+  # version >= 4.9 (size callback with the lc argument)
+  file(STRINGS "${GMSH_INCLUDE_DIR}/gmshc.h" GMSH_VERSION_LINES
+       REGEX "#define GMSH_API_VERSION_(MAJOR|MINOR) ")
+  string(REGEX REPLACE ".*MAJOR ([0-9]+).*" "\\1" GMSH_VERSION_MAJOR "${GMSH_VERSION_LINES}")
+  string(REGEX REPLACE ".*MINOR ([0-9]+).*" "\\1" GMSH_VERSION_MINOR "${GMSH_VERSION_LINES}")
+  set(GMSH_VERSION "${GMSH_VERSION_MAJOR}.${GMSH_VERSION_MINOR}")
+  if(GMSH_VERSION VERSION_LESS 4.9)
+    message(FATAL_ERROR "Gmsh library version ${GMSH_VERSION} found (${GMSH_LIBRARY}), but version 4.9 or higher is required - update it or set CMAKE_PREFIX_PATH")
+  endif()
+  message("-- Found Gmsh library: ${GMSH_LIBRARY} (version ${GMSH_VERSION})")
+  include_directories(${GMSH_INCLUDE_DIR})
+else()
+  message(FATAL_ERROR "Could NOT find the Gmsh library (gmshc.h and libgmsh) - install it (e.g., package libgmsh-dev) or set CMAKE_PREFIX_PATH")
+endif()
 
 # configure a header file to pass some of the CMake settings to the
 # source code
@@ -105,40 +158,47 @@ set(UT_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut/src")
 # Managing dependencies ########################################################
 ################################################################################
 
+# GSL: system library if available, built-in otherwise (see contrib/gsl)
 if(HAVE_GSL)
-  find_package(GSL REQUIRED)
+  if (FORCE_BUILTIN_GSL)
+    unset(GSL_INCLUDE_DIR CACHE)
+    unset(GSL_LIBRARY CACHE)
+    unset(GSL_LIBRARY_DEBUG CACHE)
+    unset(GSL_CBLAS_LIBRARY CACHE)
+    unset(GSL_CBLAS_LIBRARY_DEBUG CACHE)
+  else()
+    find_package(GSL QUIET)
+  endif()
+
+  if (GSL_FOUND AND NOT FORCE_BUILTIN_GSL)
+    message("-- Found GSL: ${GSL_LIBRARY} (version ${GSL_VERSION})")
+    # A shared GSL library is linked to its CBLAS library (libgslcblas or
+    # another one, e.g. in conda), and Neper does not call CBLAS directly, so
+    # that linking to a CBLAS library is not needed (and would tie Neper to
+    # it); a static GSL library needs it.
+    set(GSL_LIBRARIES ${GSL_LIBRARY})
+    if (GSL_LIBRARY MATCHES "\\.a$")
+      list(APPEND GSL_LIBRARIES ${GSL_CBLAS_LIBRARY})
+    endif()
+  else()
+    if (NOT FORCE_BUILTIN_GSL)
+      message("-- Could NOT find system GSL - using built-in")
+    else()
+      message("-- Ignored system GSL - using built-in")
+    endif()
+    add_subdirectory(contrib/gsl EXCLUDE_FROM_ALL)
+    set(GSL_LIBRARIES gsl)
+    set(GSL_INCLUDE_DIRS "${PROJECT_BINARY_DIR}/contrib/gsl")
+  endif()
   list (APPEND EXTRA_LIBS ${GSL_LIBRARIES})
   include_directories(${GSL_INCLUDE_DIRS})
 endif()
 
 if(HAVE_OPENMP)
-  # AppleClang does not ship OpenMP; look for libomp in LIBOMP_ROOT, then
-  # in Homebrew's (as given by brew --prefix libomp), then in the default
-  # Homebrew (/opt/homebrew, /usr/local) and MacPorts (/opt/local) locations
-  if(APPLE AND CMAKE_C_COMPILER_ID STREQUAL "AppleClang" AND NOT OpenMP_C_FLAGS)
-    find_program(BREW_EXECUTABLE brew)
-    if(BREW_EXECUTABLE)
-      execute_process(COMMAND ${BREW_EXECUTABLE} --prefix libomp
-        OUTPUT_VARIABLE BREW_LIBOMP_PREFIX
-        OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
-    endif()
-    find_path(LIBOMP_INCLUDE_DIR omp.h
-      HINTS ${LIBOMP_ROOT} ENV LIBOMP_ROOT ${BREW_LIBOMP_PREFIX}
-      PATHS /opt/homebrew/opt/libomp /usr/local/opt/libomp /opt/local
-      PATH_SUFFIXES include include/libomp)
-    find_library(LIBOMP_LIBRARY omp
-      HINTS ${LIBOMP_ROOT} ENV LIBOMP_ROOT ${BREW_LIBOMP_PREFIX}
-      PATHS /opt/homebrew/opt/libomp /usr/local/opt/libomp /opt/local
-      PATH_SUFFIXES lib lib/libomp)
-    if(LIBOMP_INCLUDE_DIR AND LIBOMP_LIBRARY)
-      foreach(lang C CXX)
-        set(OpenMP_${lang}_FLAGS "-Xpreprocessor -fopenmp -I${LIBOMP_INCLUDE_DIR}" CACHE STRING "OpenMP flags for AppleClang.")
-        set(OpenMP_${lang}_LIB_NAMES "omp" CACHE STRING "OpenMP lib names for AppleClang.")
-      endforeach()
-      set(OpenMP_omp_LIBRARY "${LIBOMP_LIBRARY}" CACHE FILEPATH "OpenMP library for AppleClang.")
-    else()
-      message(WARNING "libomp not found; install it (e.g., brew install libomp), set LIBOMP_ROOT, or set HAVE_OPENMP=OFF.")
-    endif()
+  if(APPLE AND XCODE)
+      set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include" CACHE INTERNAL "OpenMP flags for Xcode toolchain.")
+      set(OpenMP_CXX_LIB_NAMES "omp" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
+      set(OpenMP_omp_LIBRARY "/usr/local/opt/libomp/lib/libomp.dylib" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
   endif()
 
   find_package(OpenMP REQUIRED)
@@ -181,50 +241,8 @@ if(HAVE_LIBSCOTCH)
     set(Scotch_LIBRARIES ${scotch_LIBRARY} ${scotcherr_LIBRARY}
                          ${scotcherrexit_LIBRARY})
     list(APPEND EXTRA_LIBS scotch scotcherr scotcherrexit)
-    include_directories("${PROJECT_SOURCE_DIR}/contrib/scotch/src/libscotch")
-    include_directories("${PROJECT_BINARY_DIR}/contrib/scotch")
-  endif()
-endif()
-
-if (HAVE_NLOPT)
-  if (FORCE_BUILTIN_NLOPT)
-    unset(NLOPT_LIBRARY CACHE)
-    unset(NLOPT_INCLUDE_DIR CACHE)
-  endif()
-
-  if (NOT FORCE_BUILTIN_NLOPT)
-    find_package(NLOPT QUIET)
-  endif()
-
-  if(EXISTS "${NLOPT_LIBRARIES}")
-    message("-- Found NLopt: ${NLOPT_LIBRARIES}")
-    list (APPEND EXTRA_LIBS ${NLOPT_LIBRARIES})
-    include_directories(${NLOPT_INCLUDE_DIRS})
-  else(${NLOPT_LIBRARIES})
-    if (NOT FORCE_BUILTIN_NLOPT)
-      message("-- Could NOT find system NLopt - using built-in")
-    else()
-      message("-- Ignored system NLopt - using built-in")
-    endif()
-    set(NLOPT_CXX ON)
-    set(NLOPT_FORTRAN OFF)
-    set(NLOPT_GUILE OFF)
-    set(NLOPT_MATLAB OFF)
-    set(NLOPT_OCTAVE OFF)
-    set(NLOPT_PYTHON OFF)
-    set(NLOPT_SWIG OFF)
-    set(NLOPT_TESTS OFF)
-    set(BUILD_SHARED_LIBS OFF)
-    set(MESSAGE_QUIET ON)
-    add_subdirectory(contrib/nlopt EXCLUDE_FROM_ALL)
-    set(MESSAGE_QUIET OFF)
-    set(NLOPT_INCLUDE_DIR "${PROJECT_BINARY_DIR}/contrib/nlopt/src/api")
-    set(NLOPT_INCLUDE_DIRS "${NLOPT_INCLUDE_DIR}")
-    set(NLOPT_LIBRARY "nlopt")
-    set(NLOPT_LIBRARIES "nlopt")
-    list(APPEND EXTRA_LIBS nlopt)
-    include_directories("${PROJECT_SOURCE_DIR}/contrib/nlopt")
-    include_directories("${PROJECT_BINARY_DIR}/contrib/nlopt/src/api")
+    include_directories("${PROJECT_BINARY_DIR}/contrib/scotch") # scotch.h
+    set(BUILTIN_LIBSCOTCH ON)
   endif()
 endif()
 
@@ -254,44 +272,57 @@ set(MESSAGE_QUIET OFF)
 
 add_executable(neper neper.c)
 
+# The build information (git hash and commit date of the sources, cmake/BuildInfo.cmake), written
+# into neper_build_info.h at every build (the file is rewritten only when it changes).
+set(neper_build_info_command ${CMAKE_COMMAND} -DSOURCE_DIR=${PROJECT_SOURCE_DIR}/..
+    -DOUTPUT=${PROJECT_BINARY_DIR}/neper_build_info.h -DVERSION=${PROJECT_VERSION}
+    -DSUFFIX=${NEPER_VERSION_SUFFIX} -P ${PROJECT_SOURCE_DIR}/cmake/BuildInfo.cmake)
+execute_process(COMMAND ${neper_build_info_command})
+add_custom_target(neper_build_info COMMAND ${neper_build_info_command}
+                  BYPRODUCTS ${PROJECT_BINARY_DIR}/neper_build_info.h VERBATIM)
+add_dependencies(neper neper_build_info)
+
+# the built-in scotch.h is generated at build time (and is included by
+# neut_mesh_op.h)
+if(BUILTIN_LIBSCOTCH)
+  foreach(target neut neper_t neper_m neper_v neper_s neper)
+    add_dependencies(${target} scotch_h)
+  endforeach()
+endif()
+
 list(APPEND EXTRA_LIBS openGJKlib)
 if (HAVE_MUPARSER)
   list(APPEND EXTRA_LIBS muparser)
 endif()
 list(APPEND EXTRA_LIBS ut)
-list(APPEND EXTRA_LIBS orilib)
+list(APPEND EXTRA_LIBS orilib-lib)
 list(APPEND EXTRA_LIBS neut)
 list(APPEND EXTRA_LIBS neper_t)
 list(APPEND EXTRA_LIBS neper_m)
 list(APPEND EXTRA_LIBS neper_v)
 list(APPEND EXTRA_LIBS neper_s)
+list(APPEND EXTRA_LIBS ${GMSH_LIBRARY})
+# (threads: Gmsh worker watchdog, see nem_mesh_gmsh3.c)
+find_package(Threads REQUIRED QUIET)
+list(APPEND EXTRA_LIBS ${CMAKE_THREAD_LIBS_INIT})
 
 # Hide variables that come from subdirectories #################################
 unset(HAVE_GLPK CACHE)           # hide from ccmake (comes from orilib)
 unset(VERSION_ACCURATE CACHE)    # hide from ccmake (comes from openGJK)
-unset(INSTALL_BIN_DIR CACHE)     # hide from ccmake (comes from NLopt)
-unset(INSTALL_CMAKE_DIR CACHE)   # hide from ccmake (comes from NLopt)
-unset(INSTALL_DATA_DIR CACHE)    # hide from ccmake (comes from NLopt)
-unset(INSTALL_INCLUDE_DIR CACHE) # hide from ccmake (comes from NLopt)
-unset(INSTALL_LIB_DIR CACHE)     # hide from ccmake (comes from NLopt)
-unset(INSTALL_MAN_DIR CACHE)     # hide from ccmake (comes from NLopt)
-unset(THREADLOCAL CACHE)         # hide from ccmake (comes from NLopt)
-unset(WITH_THREADLOCAL CACHE)    # hide from ccmake (comes from NLopt)
-unset(NLOPT_TESTS CACHE)         # hide from ccmake (comes from NLopt)
 unset(HAVE_PNG CACHE)            # hide from ccmake (comes from Orilib)
-unset(BUILD_SHARED_LIBS CACHE)   # hide from ccmake (comes from NLopt)
-unset(CMAKE_INSTALL_RPATH CACHE) # hide from ccmake (comes from NLopt)
-unset(CMAKE_INSTALL_RPATH_USE_LINK_PATH CACHE) # hide from ccmake (comes from NLopt)
-unset(DISABLE_FP_CONTRACT CACHE) # hide from ccmake (comes from NLopt)
 unset(ENABLE_SAMPLES CACHE)
 unset(ENABLE_WIDE_CHAR CACHE)
-unset(GSL_CONFIG CACHE)
-unset(GSL_CONFIG_PREFER_PATH CACHE)
-unset(GSL_EXE_LINKER_FLAGS CACHE)
 
 target_link_libraries(neper ${EXTRA_LIBS})
 
 install(TARGETS neper DESTINATION bin
+    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
+               GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+# the orilib program (Orilib's functions from the command line, also used by
+# the Python interface), built and installed with neper
+add_dependencies(neper orilib-prog)
+install(PROGRAMS ${CMAKE_BINARY_DIR}/orilib DESTINATION bin
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
                GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
@@ -300,42 +331,17 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
         FILES_MATCHING
         PATTERN "*")
 
-# Only run post-processing for a Full install
-if("${CMAKE_INSTALL_TYPE}" STREQUAL "Full")
-    install(CODE "
-        message(STATUS \"Generating orispace tree files...\")
-
-        file(GLOB msh_files
-            \"\${CMAKE_INSTALL_PREFIX}/share/neper/orispace/*/fr*.msh\"
-        )
-
-        foreach(msh_file IN LISTS msh_files)
-            get_filename_component(dir_name \${msh_file} DIRECTORY)
-            get_filename_component(base_name \${msh_file} NAME)
-            file(RELATIVE_PATH rel_dir \"\${CMAKE_INSTALL_PREFIX}/share/neper\" \${dir_name})
-
-            message(STATUS \"  Processing \${rel_dir}/\${base_name}\")
-
-            execute_process(
-                COMMAND \${CMAKE_INSTALL_PREFIX}/bin/neper --rcfile none -M
-                        -tmp ${CMAKE_BINARY_DIR}
-                        \${rel_dir}/fr.tess
-                        -loadmesh \${rel_dir}/\${base_name}
-                        -nset none -faset none -order 1 -format etree,ntree
-                WORKING_DIRECTORY \${CMAKE_INSTALL_PREFIX}/share/neper
-                RESULT_VARIABLE result
-                OUTPUT_QUIET
-                ERROR_QUIET
-            )
-
-            if(NOT result EQUAL 0)
-                message(WARNING \"Neper failed on \${rel_dir}/\${base_name} (code \${result})\")
-            endif()
-        endforeach()
-
-        message(STATUS \"Finished processing all meshes.\")
-    ")
-endif()
+# remove the orientation-space trees written by former installations (they
+# are now generated at run time and saved in the cache directory)
+install(CODE "
+  file(GLOB _neper_trees
+       \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/share/neper/orispace/*/*.etree\"
+       \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/share/neper/orispace/*/*.ntree\")
+  if(_neper_trees)
+    message(STATUS \"Removing the orientation-space trees of a former installation\")
+    file(REMOVE \${_neper_trees})
+  endif()
+")
 
 add_custom_target(userinstall
     COMMAND ${CMAKE_COMMAND}
@@ -346,6 +352,28 @@ add_custom_target(userinstall
     COMMENT "Installing to $HOME/.local"
 )
 add_dependencies(userinstall neper)
+
+# conda package (recipe in ../conda/recipe), built from the local source tree
+# and tested with rattler-build, in conda/<platform>/
+find_program(RATTLER_BUILD rattler-build)
+mark_as_advanced(RATTLER_BUILD)
+if(RATTLER_BUILD)
+  add_custom_target(conda
+    COMMAND ${RATTLER_BUILD} build -r ${PROJECT_SOURCE_DIR}/../conda/recipe
+            -c conda-forge --output-dir ${CMAKE_BINARY_DIR}/conda
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/..
+    COMMENT "Building and testing the conda package in ${CMAKE_BINARY_DIR}/conda"
+    USES_TERMINAL
+    VERBATIM
+  )
+else()
+  add_custom_target(conda
+    COMMAND ${CMAKE_COMMAND} -E echo
+            "rattler-build not found: install it (e.g., conda install -n base -c conda-forge rattler-build) and rerun cmake."
+    COMMAND ${CMAKE_COMMAND} -E false
+    VERBATIM
+  )
+endif()
 
 add_custom_target(devinstall
   COMMAND ${CMAKE_SOURCE_DIR}/data/dev/dev.sh
@@ -389,4 +417,19 @@ if(BUILD_TESTING)
              -P ${test}
              WORKING_DIRECTORY ${test_dir})
   endforeach()
+
+  # Python interface (../python), if a Python 3 interpreter is available
+  find_package(Python3 COMPONENTS Interpreter QUIET)
+  if(Python3_Interpreter_FOUND AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../python/tests)
+    add_test(NAME python
+             COMMAND ${CMAKE_COMMAND} -E env
+                     NEPER_EXECUTABLE=$<TARGET_FILE:neper>
+                     ${Python3_EXECUTABLE} -B -m unittest discover
+                     -s ${CMAKE_CURRENT_SOURCE_DIR}/../python/tests)
+    execute_process(COMMAND ${Python3_EXECUTABLE} -c "import numpy"
+                    RESULT_VARIABLE NUMPY_STATUS OUTPUT_QUIET ERROR_QUIET)
+    if(NOT NUMPY_STATUS EQUAL 0)
+      message(STATUS "NumPy not found by ${Python3_EXECUTABLE}: the Python reader tests will be skipped (set Python3_EXECUTABLE)")
+    endif()
+  endif()
 endif()

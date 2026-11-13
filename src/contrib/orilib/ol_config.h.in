@@ -3,10 +3,3 @@
 /* see the COPYING file in the top-level directory.*/
 // #cmakedefine HAVE_GSL
 #cmakedefine HAVE_GLPK
-#cmakedefine HAVE_NLOPT
-#cmakedefine HAVE_PNG
-
-#define OL_VERSION_MAJOR @OL_VERSION_MAJOR@
-#define OL_VERSION_MINOR @OL_VERSION_MINOR@
-#define OL_VERSION_PATCH @OL_VERSION_PATCH@
-#define OL_VERSION_DEVEL @OL_VERSION_DEVEL@

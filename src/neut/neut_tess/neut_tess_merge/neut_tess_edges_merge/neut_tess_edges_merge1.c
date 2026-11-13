@@ -56,7 +56,7 @@ neut_tess_edges_merge (struct TESS *pTess, int *edges, int edgeqty)
 
     pos =
       ut_array_1d_int_eltpos ((*pTess).FaceEdgeNb[face] + 1,
-                              (*pTess).FaceVerQty[face], keepedge);
+                              (*pTess).FaceEdgeQty[face], keepedge);
     if (pos == -1)
       abort ();
 
@@ -65,7 +65,7 @@ neut_tess_edges_merge (struct TESS *pTess, int *edges, int edgeqty)
     qty = 0;
     ut_array_1d_int_list_addval (&tmp, &qty, keepedge);
 
-    for (j = 1; j <= (*pTess).FaceVerQty[face]; j++)
+    for (j = 1; j <= (*pTess).FaceEdgeQty[face]; j++)
     {
       edge = (*pTess).FaceEdgeNb[face][j];
       if (ut_array_1d_int_eltpos (deledges, deledgeqty, edge) == -1)

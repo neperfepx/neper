@@ -1,9 +1,11 @@
 .. _ori_statistics:
 
-Specifying Orientation Information for Tessellation Cells
-=========================================================
+Specifying Orientation Information for Tessellation Cells (-T)
+==============================================================
 
-.. important:: Read first: :ref:`simple_model` and (optionally) :ref:`orientation_space` and :ref:`pole_figure`.
+.. note::
+
+  This tutorial presents the :option:`-crysym`, :option:`-ori` and :option:`-orisampling` options of the :ref:`neper_t`.  Read first: :ref:`voronoi_tessellation` and (optionally) :ref:`pole_figure`.  For details on the use of the :ref:`neper_v` in this tutorial, see :ref:`pole_figure`.
 
 Orientations for the cells can be specified as input, using option :option:`-ori`. By default, "random orientations" are generated:
 
@@ -27,14 +29,16 @@ The orientations can be visualized on a pole figure using the :ref:`neper_v` and
 
 .. image:: ori_statistics/img1.png
 
-We recognize a distribution of random orientations.  The apparent higher density in the center is due to the use of the stereographic projection (see :option:`-pfprojection`), and an equal-area projection would effectively produce uniform density.
+We recognize a distribution of random orientations.  The apparent higher density in the center is due to the use of the stereographic projection (see :data:`-pfprojection`), and an equal-area projection would effectively produce uniform density.
 
 .. _specifying_an_odf:
 
 Using an ODF
 ------------
 
-An ODF can be specified by providing a mesh of orientation space and intensity values at the mesh elements.  A mesh of the fundamental region of Rodrigues space (for the considered crystal symmetry, here *cubic*) can be generated as follows (see tutorial ":ref:`orientation_space`"):
+.. attention:: This section is out of date.  Since version 5.0.0, the ODF must be provided as an :ref:`odf_file` (:option:`-ori` :data:`odf(<odf_file>)`), which is defined on a built-in mesh of orientation space, and the :data:`odf(mesh=...,val=...)` syntax used below is no longer available.
+
+An ODF can be specified by providing a mesh of orientation space and intensity values at the mesh elements.  A mesh of the fundamental region of Rodrigues space (for the considered crystal symmetry, here *cubic*) can be generated as follows:
 
 .. code-block:: console
 
@@ -112,3 +116,29 @@ The orientations can be visualized as before:
 .. image:: ori_statistics/img4.png
 
 Incidentally, it is similar to the one generated in :ref:`specifying_an_odf`.
+
+Sampling Orientations Uniformly
+-------------------------------
+
+Random orientations are sampled independently of each other, which produces local clusters and gaps.  Random orientations can instead be sampled uniformly, i.e. so that they are evenly distributed in orientation space, using :option:`-orisampling` :data:`uniform` [JAC2018]_.  This is particularly useful for small numbers of orientations.  Uniform sampling does not take the cell volumes into account, so that the cells must have equal volumes for the orientation distribution to be uniform.  To illustrate it, regular tessellations into 1000 equal cubic cells (see :ref:`regular_tessellation`) can be generated with random and uniformly distributed orientations, as follows:
+
+.. code-block:: console
+
+  $ neper -T -morpho "cube(10)" -crysym cubic -o random
+  $ neper -T -morpho "cube(10)" -crysym cubic -orisampling uniform -o uniform
+
+This produces :ref:`tess_file`\ s named :file:`random.tess` and :file:`uniform.tess`.
+
+.. note:: Uniform sampling requires the crystal symmetry to be specified (:option:`-crysym`).
+
+The orientation densities can be visualized in orientation space, using :option:`-space` :data:`ori` and :option:`-orimode` :data:`density`, with a color scale ranging from 0.2 to 1.8 (:data:`-datacellscale`), and ImageMagick's :command:`convert` can be used to assemble the images:
+
+.. code-block:: console
+
+  $ neper -V random.tess -imagesize 500:500 -space ori -orimode density -orilayout surface -showcsys 0 -datacellscale 0.2:1.8 -print img6a
+  $ neper -V uniform.tess -imagesize 500:500 -space ori -orimode density -orilayout surface -showcsys 0 -datacellscale 0.2:1.8 -print img6b
+  $ convert img6a.png img6b.png +append img6.png
+
+.. image:: ori_statistics/img6.png
+
+The uniformly distributed orientations (right) produce a more even density than the random orientations (left).

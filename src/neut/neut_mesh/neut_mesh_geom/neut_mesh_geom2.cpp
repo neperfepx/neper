@@ -17,7 +17,7 @@ neut_mesh_elset_points_closestelts_search (struct MESH Mesh, int elset,
   nanoflann::KNNResultSet < double >resultSet (qty);
   resultSet.init (&ret_index[0], &out_dist_sqr[0]);
 
-  nf_tree->findNeighbors (resultSet, coo, nanoflann::SearchParams (INT_MAX));
+  (*nf_tree).findNeighbors (resultSet, coo, nanoflann::SearchParams (INT_MAX));
   (*pelt) = Mesh.Elsets[elset][ret_index[0] + 1];
 
   return 0;

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -40,14 +40,14 @@
 /**                                                        **/
 /**   DATES      : # Version 4.0  : from : 01 jan 2002     **/
 /**                                 to   : 27 jan 2004     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HMESH_ORDER_SI
 
 #include "module.h"
 #include "common.h"
@@ -71,7 +71,7 @@
 
 int
 hmeshOrderSi (
-const Hmesh * restrict const  meshptr,
+Hmesh * restrict const        meshptr,
 Order * restrict const        ordeptr,
 const Gnum                    ordenum,
 OrderCblk * restrict const    cblkptr)            /*+ Single column-block +*/
@@ -83,7 +83,7 @@ OrderCblk * restrict const    cblkptr)            /*+ Single column-block +*/
 #ifdef SCOTCH_DEBUG_ORDER2
     if (meshptr->m.vnodnbr != ordeptr->vnodnbr) {
       errorPrint ("hmeshOrderSi: invalid permutation bounds");
-      return     (1);
+      return (1);
     }
 #endif /* SCOTCH_DEBUG_ORDER2 */
     for (vnodnum = ordeptr->baseval, ordeval = ordenum;
@@ -99,7 +99,7 @@ OrderCblk * restrict const    cblkptr)            /*+ Single column-block +*/
       if ((ordeptr->peritab[ordeval] <   ordeptr->baseval) ||
           (ordeptr->peritab[ordeval] >= (ordeptr->baseval + ordeptr->vnodnbr))) {
         errorPrint ("hmeshOrderSi: invalid permutation index");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_ORDER2 */
     }

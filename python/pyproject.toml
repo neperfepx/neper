@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neper"
+version = "0.1.0"
+description = "Python interface to Neper, polycrystal generation and meshing"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = ["numpy"]
+license = { text = "GPL-3.0-only" }
+authors = [{ name = "Romain Quey" }]
+keywords = ["polycrystal", "tessellation", "voronoi", "mesh", "finite element"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: POSIX",
+    "Topic :: Scientific/Engineering",
+]
+
+[project.urls]
+Homepage = "https://neper.info"
+Documentation = "https://neper.info/docs"
+Repository = "https://github.com/neperfepx/neper"
+
+[tool.setuptools]
+packages = ["neper"]

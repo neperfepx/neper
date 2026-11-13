@@ -1,20 +1,22 @@
 .. _morpho_statistics:
 
-Generating a Tessellation from Statistical Cell Properties
-==========================================================
-
-Statistical morphological properties for the cells can be specified as input, using option :option:`-morpho`.  In this case, instead of a Voronoi tessellation, Neper generates a Laguerre tessellation (which can represent any tessellation comprised of convex cells, and therefore does not involve particular limitations) by optimizing the attributes of its seeds until the specified input is reached [CMAME2018]_.
+Generating a Tessellation from Statistical Cell Properties (-T)
+===============================================================
 
 .. note::
 
-  To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :option:`--rcfile`)::
+  This tutorial presents the :option:`-morpho`, :option:`-n`, :option:`-statcell` and :option:`-morphooptistop` options of the :ref:`neper_t`. For details on the use of the :ref:`neper_v` in this tutorial, see :ref:`visualize_tessellation`.
+
+  To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :data:`--rcfile`)::
 
     neper -V -imagesize 800:400
+
+Statistical morphological properties for the cells can be specified as input, using option :option:`-morpho`.  In this case, instead of a Voronoi tessellation, Neper generates a Laguerre tessellation (which can represent any tessellation comprised of convex cells, and therefore does not involve particular limitations) by optimizing the attributes of its seeds until the specified input is reached [CMAME2018]_.
 
 Using the Built-in :data:`graingrowth`
 --------------------------------------
 
-Option :option:`-morpho` includes the :data:`graingrowth` (or :data:`gg`, for short) properties, which corresponds to those of an experimental polycrystal subjected to grain growth.  Both the cell size distribution and the cell sphericity distribution (how close are the cells from a sphere) are defined [CMAME2018]_.
+Option :option:`-morpho` includes the :data:`graingrowth` (or :data:`gg`, for short) properties, which correspond to those of an experimental polycrystal subjected to grain growth.  Both the cell size distribution and the cell sphericity distribution (how close the cells are to spheres) are defined [CMAME2018]_.
 
 A 100-cell tessellation with grain-growth properties can be generated using the :ref:`neper_t` as follows:
 
@@ -37,7 +39,7 @@ This produces a PNG file named :file:`img1.png`.
 Specifying Custom Properties
 ----------------------------
 
-Statistical properties other than those of :data:`gg` can be specified.  :data:`gg` actually is an alias for :data:`diameq:lognormal(1,0.35),1-sphericity:lognormal(0.145,0.03)`, where :data:`diameq::lognormal(1,0.35)` specifies a lognormal distribution of the (normalized) cell equivalent diameters of average 1 and standard deviation 0.35, and :data:`1-sphericity:lognormal(0.145,0.03)` corresponds to a lognormal distribution of the cell "1-sphericities" of average 0.145 and standard deviation 0.03. It is therefore possible to use this longer argument and change the numerical values.  For example, to get nearly equal-size cells (small standard deviation of the cell size lognormal distribution), one may use:
+Statistical properties other than those of :data:`gg` can be specified.  :data:`gg` actually is an alias for :data:`diameq:lognormal(1,0.35),1-sphericity:lognormal(0.145,0.03)`, where :data:`diameq:lognormal(1,0.35)` specifies a lognormal distribution of the (normalized) cell equivalent diameters of average 1 and standard deviation 0.35, and :data:`1-sphericity:lognormal(0.145,0.03)` corresponds to a lognormal distribution of the cell "1-sphericities" of average 0.145 and standard deviation 0.03. It is therefore possible to use this longer argument and change the numerical values.  For example, to get nearly equal-size cells (small standard deviation of the cell size lognormal distribution), one may use:
 
 .. code-block:: console
 
@@ -99,12 +101,12 @@ Consider a cell-size (:data:`diameq`) distribution defined from a file, :file:`m
   0.3 20.0
   0.4  5.0
 
-i.e., 10 cells have a :data:`diameq` equal to 0.2, 20 cells have a :data:`diameq` equal to 0.3, and 5 cells have a :data:`diameq` equal to 0.4 (for a tessellation comprising 35 cells).  The numbers on the right column are actually only considered relative to each other.
+i.e., 10 cells have a :data:`diameq` equal to 0.2, 20 cells have a :data:`diameq` equal to 0.3, and 5 cells have a :data:`diameq` equal to 0.4 (for a tessellation comprising 35 cells).  The numbers in the right column are actually only considered relative to each other.
 
 .. note::
 
     - In contrast to analytical distributions, numerical distributions do not need to be normalized to 1.
-    - As for an analytical distribution, if :option:`-morpho` :data:`from_morpho` is used, Neper determines the number of cells from the cell size distribution and the domain size.
+    - As for an analytical distribution, if :option:`-n` :data:`from_morpho` is used, Neper determines the number of cells from the cell size distribution and the domain size.
 
 The corresponding tessellation can be generated as follows:
 
@@ -117,7 +119,7 @@ The corresponding tessellation can be generated as follows:
 
 where option :option:`-statcell` is used to output the cell equivalent diameters to file :file:`mytess.stcell`.
 
-The tessellation can be visualized by coloring the cells from their equivalent diameters using options :option:`-datacellcol` and :option:`-datacellscale`:
+The tessellation can be visualized by coloring the cells from their equivalent diameters using options :data:`-datacellcol` and :data:`-datacellscale`:
 
 .. code-block:: console
 
@@ -129,7 +131,7 @@ The tessellation can be visualized by coloring the cells from their equivalent d
 
 This produces a PNG file named :file:`img5.png` for the tessellation and a PNG file named :file:`img5-scale3.png` for the scale bar.
 
-To include the scale bar to the image, ImageMagick can be used:
+To include the scale bar in the image, ImageMagick can be used:
 
 .. code-block:: console
 
@@ -137,9 +139,56 @@ To include the scale bar to the image, ImageMagick can be used:
 
 .. image:: morpho_statistics/img5.png
 
+Specifying Global Properties
+----------------------------
+
+In addition to the cell size and sphericity distributions, global properties can be specified, which apply to all cells.  They can be combined with the other properties using :data:`,`.
+
+An aspect ratio can be specified using :data:`aspratio`, which takes the relative cell lengths along :data:`x`, :data:`y` and :data:`z`.  For example, to get cells elongated along :data:`x` and flattened along :data:`z`, one may use:
+
+.. code-block:: console
+
+  $ neper -T -n 100 -morpho "gg,aspratio(2,1,0.5)"
+
+The size and sphericity distributions are considered to apply to the cells as if they had no aspect ratio.  The tessellation can be visualized as before:
+
+.. code-block:: console
+
+  $ neper -V n100-id1.tess -print img6
+
+.. image:: morpho_statistics/img6.png
+
+A columnar morphology, i.e. with cells that span the domain along a direction, can be specified using :data:`columnar`:
+
+.. code-block:: console
+
+  $ neper -T -n 100 -morpho "columnar(z)"
+
+The tessellation can be visualized as before:
+
+.. code-block:: console
+
+  $ neper -V n100-id1.tess -print img7
+
+.. image:: morpho_statistics/img7.png
+
+Conversely, a bamboo morphology, i.e. with cells that span the domain section, can be specified using :data:`bamboo`.  This is typically used with an elongated domain, such as a wire:
+
+.. code-block:: console
+
+  $ neper -T -n 10 -domain "cube(1,0.2,0.2)" -morpho "bamboo(x)"
+
+The tessellation can be visualized as before:
+
+.. code-block:: console
+
+  $ neper -V n10-id1.tess -print img8
+
+.. image:: morpho_statistics/img8.png
+
+.. note:: :data:`aspratio`, :data:`columnar` and :data:`bamboo` are mutually exclusive.
+
 Speeding up Tessellation
 ------------------------
 
-When statistical properties (or other properties) are specified as input, Neper employs an interative approach, and so tessellation generation is longer than for a standard Voronoi tessellation. Even though the tessellation generation remains relatively fast, to speed up the tessellation process, a first way is through multithreading, as a performace increase is expected up about 16 threads.  A second way is to modify the termination criterion, which is controlled by option :option:`-morphooptistop` and set to :data:`val=1e-5` by default, which is relatively low.  The value can be increased, or another criterion can be used.
-
-.. [CMAME2018] :ref:`singlescale`
+When statistical properties (or other properties) are specified as input, Neper employs an iterative approach, and so tessellation generation is longer than for a standard Voronoi tessellation. Even though the tessellation generation remains relatively fast, to speed up the tessellation process, a first way is through multithreading, as a performance increase is expected up to about 16 threads.  A second way is to modify the termination criterion, which is controlled by option :option:`-morphooptistop` and set to :data:`eps<1e-6||val<1e-12` by default, which is relatively low.  The value can be increased, or another criterion can be used.

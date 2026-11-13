@@ -32,7 +32,7 @@ neut_ori_des_expand (char *des, char **pdes2)
 {
   int qty;
   char **parts = NULL;
-  char *part1 = NULL, *part2 = NULL;
+  char *part1 = NULL, *part2 = NULL, *des2 = NULL;
 
   ut_list_break (des, NEUT_SEP_DEP, &parts, &qty);
 
@@ -70,8 +70,11 @@ neut_ori_des_expand (char *des, char **pdes2)
   else
     ut_string_string ("passive", &part2);
 
-  *pdes2 = ut_alloc_1d_char (strlen (part1) + strlen (part2) + 2);
-  sprintf (*pdes2, "%s%s%s", part1, NEUT_SEP_DEP, part2);
+  // des may be *pdes2
+  des2 = ut_alloc_1d_char (strlen (part1) + strlen (part2) + 2);
+  sprintf (des2, "%s%s%s", part1, NEUT_SEP_DEP, part2);
+  ut_free_1d_char (pdes2);
+  *pdes2 = des2;
 
   ut_free_2d_char (&parts, qty);
   ut_free_1d_char (&part1);
@@ -289,7 +292,6 @@ int
 neut_ori_fscanf (FILE *file, char *desconv, char *format, double **q, int *ids, int qty, char *prefix)
 {
   int i, j, pos, status;
-  double theta;
   double **g = ol_g_alloc ();
   double *tmp = ut_alloc_1d (9);
   char *des = NULL, *conv = NULL;
@@ -381,18 +383,16 @@ neut_ori_fscanf (FILE *file, char *desconv, char *format, double **q, int *ids, 
     {
       if (!strcmp (format, "ascii"))
       {
-        if (ol_rtheta_fscanf (file, tmp, &theta) != 1)
+        if (ol_rtheta_fscanf (file, tmp) != 1)
           return -1;
       }
       else
       {
-        if (fread (tmp, sizeof (double), 3, file) != 3)
-          return -1;
-        if (fread (&theta, sizeof (double), 1, file) != 1)
+        if (fread (tmp, sizeof (double), 4, file) != 4)
           return -1;
       }
 
-      ol_rtheta_q (tmp, theta, q[pos]);
+      ol_rtheta_q (tmp, q[pos]);
     }
     else if (!strcmp (des, "rodrigues") || !strcmp (des, "R"))
     {
@@ -448,8 +448,10 @@ neut_ori_fscanf (FILE *file, char *desconv, char *format, double **q, int *ids, 
   ut_free_1d_char (&des);
   ut_free_1d_char (&conv);
   ut_free_1d (&tmp);
-  ol_g_free (g);
+  ol_g_free (&g);
   ut_free_1d_char (&label);
+  ut_free_1d_int (&ids2);
+  ut_free_1d_int (&idinv);
 
   return 1;
 }
@@ -509,7 +511,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
             fwrite (e, sizeof (double), 3, file);
         }
       }
-    ol_e_free (e);
+    ol_e_free (&e);
   }
   else if (!strcmp (des, "euler-kocks"))
   {
@@ -532,7 +534,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
             fwrite (e, sizeof (double), 3, file);
         }
       }
-    ol_e_free (e);
+    ol_e_free (&e);
   }
   else if (!strcmp (des, "euler-roe"))
   {
@@ -555,7 +557,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
             fwrite (e, sizeof (double), 3, file);
         }
       }
-    ol_e_free (e);
+    ol_e_free (&e);
   }
   else if (!strcmp (des, "rotmat"))
   {
@@ -587,12 +589,11 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
           }
         }
       }
-    ol_g_free (g);
+    ol_g_free (&g);
   }
   else if (!strcmp (des, "axis-angle"))
   {
-    double *r = ol_r_alloc ();
-    double theta;
+    double *rtheta = ol_rtheta_alloc ();
     for (i = 0; i < qty; i++)
       if (!indexed ||  indexed[i])
       {
@@ -603,17 +604,16 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
           neut_ori_fprintf_aslabel (file, format, label);
         else
         {
-          ol_q_rtheta (q[i], r, &theta);
+          ol_q_rtheta (q[i], rtheta);
           if (!strcmp (format, "ascii"))
-            ol_rtheta_fprintf (file, r, theta, REAL_PRINT_FORMAT5);
+            ol_rtheta_fprintf (file, rtheta, REAL_PRINT_FORMAT5);
           else
           {
-            fwrite (r, sizeof (double), 3, file);
-            fwrite (&theta, sizeof (double), 1, file);
+            fwrite (rtheta, sizeof (double), 4, file);
           }
         }
       }
-    ol_r_free (r);
+    ol_rtheta_free (&rtheta);
   }
   else if (strcmp (des, "angle") == 0)
   {
@@ -656,7 +656,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
             fwrite (R, sizeof (double), 3, file);
         }
       }
-    ol_R_free (R);
+    ol_R_free (&R);
   }
   else if (!strcmp (des, "quaternion"))
   {
@@ -732,7 +732,7 @@ neut_ori_rodriguescol (double *q, char *crysym, double *col)
 
   neut_ori_rodriguescol_R (R, crysym, col);
 
-  ol_R_free (R);
+  ol_R_free (&R);
 
   return;
 }
@@ -811,7 +811,7 @@ void
 neut_ori_fiber (double *dirc, double *dirs, long random, int qty, double **q)
 {
   int i;
-  double theta;
+  double *rtheta = ol_rtheta_alloc ();
   double *q_align = ol_q_alloc ();
   double *q_rand = ol_q_alloc ();
 
@@ -825,13 +825,15 @@ neut_ori_fiber (double *dirc, double *dirs, long random, int qty, double **q)
   // 2nd rotation, about the fiber
   for (i = 0; i < qty; i++)
   {
-    theta = 2.0 * M_PI * gsl_rng_uniform (rnd);
-    ol_rtheta_q_rad (dirs, theta, q_rand);
+    ol_r_memcpy (dirs, rtheta);
+    rtheta[3] = 2.0 * M_PI * gsl_rng_uniform (rnd);
+    ol_rtheta_q_rad (rtheta, q_rand);
     ol_q_q_q_ref (q_align, q_rand, q[i]);
   }
 
-  ol_q_free (q_align);
-  ol_q_free (q_rand);
+  ol_rtheta_free (&rtheta);
+  ol_q_free (&q_align);
+  ol_q_free (&q_rand);
   gsl_rng_free (rnd);
 
   return;
@@ -859,7 +861,7 @@ neut_ori_fiber_spread (char *spread, double *dirs, long random, int qty, char *c
 
   ut_free_1d (&z);
   ol_set_free (&OSet2);
-  ol_q_free (q_align);
+  ol_q_free (&q_align);
 
   return;
 }
@@ -910,8 +912,8 @@ neut_ori_fiber_in (double *q, char *crysym, double *dirc, double *dirs, double t
     }
   }
 
-  ol_q_free (qc);
-  ol_vect_free (dirc2);
+  ol_q_free (&qc);
+  ol_vect_free (&dirc2);
 
   return status;
 }
@@ -982,10 +984,10 @@ neut_ori_des_ori (double *q0, char *des0, double *ori)
     ut_array_1d_memcpy (g[0], 3, ori);
     ut_array_1d_memcpy (g[1], 3, ori + 3);
     ut_array_1d_memcpy (g[2], 3, ori + 6);
-    ol_g_free (g);
+    ol_g_free (&g);
   }
   else if (!strcmp (des, "axis-angle"))
-    ol_q_rtheta (q, ori, ori + 3);
+    ol_q_rtheta (q, ori);
 
   else if (!strcmp (des, "rodrigues"))
     ol_q_R (q, ori);
@@ -996,7 +998,7 @@ neut_ori_des_ori (double *q0, char *des0, double *ori)
   else
     status = -1;
 
-  ol_q_free (q);
+  ol_q_free (&q);
   ut_free_1d_char (&des);
   ut_free_1d_char (&conv);
 
@@ -1024,6 +1026,7 @@ neut_ori_set_zero (struct ORI *pOri)
   (*pOri).mode = NULL;
   (*pOri).layout = NULL;
   (*pOri).field = NULL;
+  (*pOri).sym = NULL;
 
   (*pOri).inputqty = 0;
   (*pOri).inputs = NULL;
@@ -1044,7 +1047,11 @@ neut_ori_free (struct ORI *pOri)
   ut_free_1d_char (&(*pOri).mode);
   ut_free_1d_char (&(*pOri).layout);
   ut_free_1d_char (&(*pOri).field);
+  ut_free_1d_char (&(*pOri).sym);
   ut_free_1d_char (&(*pOri).crysym);
+  ut_free_2d_char (&(*pOri).inputs, (*pOri).inputqty);
+  (*pOri).inputqty = 0;
+  neut_orispace_free (&(*pOri).Sp);
 
   return;
 }
@@ -1078,9 +1085,77 @@ neut_ori_R_Rcrysym_all (struct ORI Ori, double *R, double ***pRs, int *pqty)
     }
   }
 
-  ol_q_free (q);
-  ol_q_free (qs);
-  ol_R_free (Rs);
+  ol_q_free (&q);
+  ol_q_free (&qs);
+  ol_R_free (&Rs);
+
+  return;
+}
+
+int
+neut_ori_sym_qty (char *sym)
+{
+  return !strcmp (sym, "orthotropic") ? 4 : 1;
+}
+
+// The operators are the identity and the rotations of 180 degrees about the
+// sample axes (id = 0 to 3).  A sample symmetry applies on the left of the
+// (passive) orientation, while a crystal symmetry applies on its right.
+void
+neut_ori_sym_q (char *sym, int id, double *q, double *q2)
+{
+  double *qs = ol_q_alloc ();
+
+  if (id < 0 || id >= neut_ori_sym_qty (sym))
+    ut_print_neperbug ();
+
+  ut_array_1d_zero (qs, 4);
+  qs[id] = 1;
+
+  ol_q_q_q (qs, q, q2);
+  ol_q_q (q2, q2);
+
+  ol_q_free (&qs);
+
+  return;
+}
+
+void
+neut_ori_sym_oset (char *sym, struct OL_SET OSet, struct OL_SET *pOSet2)
+{
+  int i, j, id, qty = neut_ori_sym_qty (sym);
+  struct OL_SET Exp;
+
+  ol_set_zero (&Exp);
+  ol_set_expandset (OSet, &Exp);
+
+  (*pOSet2) = ol_set_alloc (Exp.size * qty, Exp.crysym);
+
+  if (Exp.theta)
+    (*pOSet2).theta = ut_alloc_1d ((*pOSet2).size);
+
+  if (Exp.theta3)
+    (*pOSet2).theta3 = ut_alloc_1d_pdouble ((*pOSet2).size);
+
+  for (i = 0; i < (int) Exp.size; i++)
+    for (j = 0; j < qty; j++)
+    {
+      id = i * qty + j;
+
+      neut_ori_sym_q (sym, j, Exp.q[i], (*pOSet2).q[id]);
+      (*pOSet2).weight[id] = Exp.weight ? Exp.weight[i] : 1;
+
+      if (Exp.theta)
+        (*pOSet2).theta[id] = Exp.theta[i];
+
+      if (Exp.theta3 && Exp.theta3[i])
+      {
+        (*pOSet2).theta3[id] = ut_alloc_1d (3);
+        ut_array_1d_memcpy (Exp.theta3[i], 3, (*pOSet2).theta3[id]);
+      }
+    }
+
+  ol_set_free (&Exp);
 
   return;
 }

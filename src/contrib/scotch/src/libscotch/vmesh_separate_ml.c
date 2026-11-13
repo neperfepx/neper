@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2019,2020,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -42,6 +42,8 @@
 /**                                 to   : 31 aug 2005     **/
 /**                # Version 5.0  : from : 30 jan 2008     **/
 /**                                 to   : 30 jan 2008     **/
+/**                # Version 7.0  : from : 13 sep 2019     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -49,7 +51,7 @@
 **  The defines and includes.
 */
 
-#define VMESH_SEPARATE_ML
+#define SCOTCH_VMESH_SEPARATE_ML
 
 #include "module.h"
 #include "common.h"
@@ -91,12 +93,14 @@ const VmeshSeparateMlParam * const  paraptr)      /*+ Method parameters         
   if (finemeshptr->m.vnodnbr <= (Gnum) paraptr->vnodnbr)
     return (1);
 
-  if ((o = meshCoarsen (&finemeshptr->m, &coarmeshptr->m, finecoarptr, (Gnum) paraptr->vnodnbr, paraptr->coarrat, paraptr->coartype)) != 0)
+  if ((o = meshCoarsen (&finemeshptr->m, &coarmeshptr->m, finecoarptr, (Gnum) paraptr->vnodnbr,
+                        paraptr->coarrat, paraptr->coartype, finemeshptr->contptr)) != 0)
     return (o);                                   /* Return if coarsening failed */
 
   coarmeshptr->parttax = NULL;                    /* Do not allocate partition data yet     */
   coarmeshptr->frontab = finemeshptr->frontab;    /* Re-use frontier array for coarser mesh */
   coarmeshptr->levlnum = finemeshptr->levlnum + 1; /* Mesh level is coarsening level        */
+  coarmeshptr->contptr = finemeshptr->contptr;
 
   return (0);
 }
@@ -122,7 +126,7 @@ const Gnum * restrict const   finecoartax)        /*+ Multinode array +*/
   if (finemeshptr->parttax == NULL) {             /* If partition array not yet allocated */
     if ((finemeshptr->parttax = (GraphPart *) memAlloc ((finemeshptr->m.velmnbr + finemeshptr->m.vnodnbr) * sizeof (GraphPart))) == NULL) {
       errorPrint ("vmeshSeparateMlUncoarsen: out of memory");
-      return     (1);                             /* Allocated data will be freed along with mesh structure */
+      return (1);                                 /* Allocated data will be freed along with mesh structure */
     }
     finemeshptr->parttax -= finemeshptr->m.baseval;
   }
@@ -143,7 +147,7 @@ const Gnum * restrict const   finecoartax)        /*+ Multinode array +*/
       if ((finecoartax[finevelmnum] < coarmeshptr->m.baseval) ||
           (finecoartax[finevelmnum] >= (coarmeshptr->m.velmnbr + coarmeshptr->m.vnodnbr + coarmeshptr->m.baseval))) {
         errorPrint ("vmeshSeparateMlUncoarsen: internal error (1)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_VMESH2 */
       partval = (Gnum) coarmeshptr->parttax[finecoartax[finevelmnum]];
@@ -163,7 +167,7 @@ const Gnum * restrict const   finecoartax)        /*+ Multinode array +*/
       if ((finecoartax[finevnodnum] <  coarmeshptr->m.vnodbas) || /* Sons of nodes are always nodes */
           (finecoartax[finevnodnum] >= coarmeshptr->m.vnodnnd)) {
         errorPrint ("vmeshSeparateMlUncoarsen: internal error (2)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_VMESH2 */
       partval = coarmeshptr->parttax[finecoartax[finevnodnum]];

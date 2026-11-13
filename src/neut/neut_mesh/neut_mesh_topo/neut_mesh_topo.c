@@ -101,10 +101,7 @@ void
 neut_mesh_nodes_comelts (struct MESH Mesh, int *nodes, int NodeQty,
                          int **pelts, int *peltqty)
 {
-  int i;
-  int *tmp1 = NULL;
-  int *tmp2 = NULL;
-  int tmp2qty = -1;
+  int i, j, k, id, elt, eltnodeqty, *candidates = NULL, candidateqty;
 
   if (Mesh.NodeElts == NULL)
   {
@@ -127,36 +124,38 @@ neut_mesh_nodes_comelts (struct MESH Mesh, int *nodes, int NodeQty,
       return;
     }
 
-  tmp1 = ut_alloc_1d_int (Mesh.NodeElts[nodes[0]][0] + 1);
-  tmp2 = ut_alloc_1d_int (Mesh.NodeElts[nodes[0]][0] + 1);
+  // the common elts are searched among the elts of the last node
+  // (candidates), as the elts that include all other nodes (an elt listed
+  // several times for the last node, which happens for degenerated elts,
+  // is recorded as many times)
+  id = NodeQty - 1;
+  candidates = Mesh.NodeElts[nodes[id]] + 1;
+  candidateqty = Mesh.NodeElts[nodes[id]][0];
 
-  ut_array_1d_int_memcpy (Mesh.NodeElts[nodes[0]] + 1,
-                          Mesh.NodeElts[nodes[0]][0], tmp1);
+  eltnodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder);
 
-  (*peltqty) = Mesh.NodeElts[nodes[0]][0];
-
-  for (i = 1; i < NodeQty; i++)
+  (*pelts) = ut_realloc_1d_int (*pelts, candidateqty);
+  (*peltqty) = 0;
+  for (j = 0; j < candidateqty; j++)
   {
-    ut_array_1d_int_inter (tmp1, *peltqty, Mesh.NodeElts[nodes[i]] + 1,
-                           Mesh.NodeElts[nodes[i]][0], tmp2, &tmp2qty);
+    elt = candidates[j];
 
-    ut_array_1d_int_memcpy (tmp2, tmp2qty, tmp1);
-    (*peltqty) = tmp2qty;
+    for (i = 0; i < NodeQty; i++)
+      if (i != id)
+      {
+        for (k = 0; k < eltnodeqty; k++)
+          if (Mesh.EltNodes[elt][k] == nodes[i])
+            break;
+        if (k == eltnodeqty)
+          break;
+      }
 
-    /*
-       printf ("node %d elt: ", nodes[i]);
-       ut_array_1d_int_fprintf (stdout, tmp, tmpqty, "%d");
-       printf ("> elt: ");
-       ut_array_1d_int_fprintf (stdout, elts, *peltqty, "%d");
-     */
+    if (i == NodeQty)
+      (*pelts)[(*peltqty)++] = elt;
   }
 
-  (*pelts) = ut_realloc_1d_int (*pelts, tmp2qty);
-  ut_array_1d_int_memcpy (tmp2, tmp2qty, *pelts);
+  (*pelts) = ut_realloc_1d_int (*pelts, *peltqty);
   ut_array_1d_int_sort (*pelts, *peltqty);
-
-  ut_free_1d_int (&tmp1);
-  ut_free_1d_int (&tmp2);
 
   return;
 }
@@ -1361,6 +1360,28 @@ neut_mesh_elt2d_elts3d (struct MESH Mesh2D, int elt2d, struct MESH Mesh3D,
 }
 
 int
+neut_mesh_elt2d_elt3d (struct MESH Mesh2D, int elt2d, struct MESH Mesh3D,
+                       int *pelt3d)
+{
+  int status, elt3dqty, *elts3d = NULL;
+
+  neut_mesh_elt2d_elts3d (Mesh2D, elt2d, Mesh3D, &elts3d, &elt3dqty);
+
+  if (elt3dqty != 1)
+    status = -1;
+
+  else
+  {
+    (*pelt3d) = elts3d[0];
+    status = 0;
+  }
+
+  ut_free_1d_int (&elts3d);
+
+  return status;
+}
+
+int
 neut_mesh_elt2d_elsets3d (struct MESH Mesh2D, int elt2d, struct MESH Mesh3D,
                           int **pelset3d, int *pelset3dqty)
 {
@@ -1720,6 +1741,9 @@ neut_mesh_elts_boundelts (struct MESH Mesh, int *elts, int EltQty,
   ut_array_1d_int_inv (elts, EltQty, &eltsinv, &eltsmax);
 
   // for each elt, recording neighboring elts
+#ifdef HAVE_OPENMP
+#pragma omp parallel for schedule(static)
+#endif
   for (i = 0; i < EltQty; i++)
     neut_mesh_elt_neighelts (Mesh, elts[i], &(eltneighs[i]),
                              &(eltneighqty[i]));
@@ -2319,7 +2343,7 @@ neut_mesh_domface_elts3d (struct TESS Tess, struct MESH Mesh2D,
          neut_mesh_elt_normal (Mesh2D, Nodes, elt2d, n);
          res = ut_vector_scalprod (n0, n);
        */
-      neut_elt_nodes_facet (3, Mesh3D.EltNodes[elt3d[0]],
+      neut_elt_nodes_facet (Mesh3D.EltType, 3, Mesh3D.EltNodes[elt3d[0]],
                             Mesh2D.EltNodes[elt2d], &surf, &surfori);
 
       (*pelts)[(*peltqty)] = elt3d[0];
@@ -2384,34 +2408,55 @@ neut_mesh_nodeqty (struct MESH Mesh, int *pnodeqty)
 int
 neut_mesh_elt1d_isembedded (struct MESH Mesh3D, struct MESH Mesh1D, int elt1d)
 {
-  int i, j, id, node;
-  int elt, EltQty, *elts = NULL;
-  int facetnodeqty, *facetnodes = NULL;
+  int i, j, k, elt, EltQty, *elts = NULL, *edge = Mesh1D.EltNodes[elt1d];
+  int boundqty, boundnodeqty, **bounds = NULL;
+  int facetqty, distinctqty, **facets = NULL;
 
-  neut_mesh_nodes_comelts (Mesh3D, Mesh1D.EltNodes[elt1d], 2, &elts, &EltQty);
+  neut_mesh_nodes_comelts (Mesh3D, edge, 2, &elts, &EltQty);
 
-  facetnodeqty = 2 * EltQty;
-  facetnodes = ut_alloc_1d_int (facetnodeqty);
+  neut_elt_boundlist (Mesh3D.EltType, 3, &bounds, &boundqty, &boundnodeqty);
 
-  id = 0;
+  // facets of the elts that contain the 1D elt (2 per elt, whatever the elt
+  // type), recorded as sorted node lists
+  facets = ut_alloc_2d_int (2 * EltQty, boundnodeqty);
+
+  facetqty = 0;
   for (i = 0; i < EltQty; i++)
   {
     elt = elts[i];
 
-    for (j = 0; j < 4; j++)
+    for (j = 0; j < boundqty && facetqty < 2 * EltQty; j++)
     {
-      node = Mesh3D.EltNodes[elt][j];
-      if (ut_array_1d_int_eltpos (Mesh1D.EltNodes[elt1d], 2, node) == -1)
-        facetnodes[id++] = node;
+      for (k = 0; k < boundnodeqty; k++)
+        facets[facetqty][k] = Mesh3D.EltNodes[elt][bounds[j][k]];
+
+      if (ut_array_1d_int_eltpos (facets[facetqty], boundnodeqty, edge[0]) != -1
+       && ut_array_1d_int_eltpos (facets[facetqty], boundnodeqty, edge[1]) != -1)
+      {
+        ut_array_1d_int_sort (facets[facetqty], boundnodeqty);
+        facetqty++;
+      }
     }
   }
 
-  ut_array_1d_int_sort_uniq (facetnodes, facetnodeqty, &facetnodeqty);
+  // the 1D elt is embedded if the elts form a closed ring around it, i.e. if
+  // each facet is shared by two elts
+  distinctqty = 0;
+  for (i = 0; i < facetqty; i++)
+  {
+    for (j = 0; j < i; j++)
+      if (ut_array_1d_int_equal (facets[i], boundnodeqty, facets[j], boundnodeqty))
+        break;
+
+    if (j == i)
+      distinctqty++;
+  }
 
   ut_free_1d_int (&elts);
-  ut_free_1d_int (&facetnodes);
+  ut_free_2d_int (&bounds, boundqty);
+  ut_free_2d_int (&facets, 2 * EltQty);
 
-  return EltQty == facetnodeqty;
+  return facetqty == 2 * EltQty && 2 * distinctqty == facetqty;
 }
 
 int
@@ -2419,7 +2464,7 @@ neut_mesh_node_domtype (struct TESS Tess, struct MESH Mesh0D,
                         struct MESH Mesh1D, struct MESH Mesh2D,
                         struct MESH Mesh3D, int node, int *pdomtype)
 {
-  struct MESH **Mesh = (struct MESH **) calloc (sizeof (struct MESH *), 4);
+  struct MESH **Mesh = (struct MESH **) calloc (4, sizeof (struct MESH *));
 
   Mesh[0] = &Mesh0D;
   Mesh[1] = &Mesh1D;
@@ -2501,6 +2546,8 @@ neut_mesh_order1nodes_order2node (struct MESH Mesh, int node1, int node2,
 
   ut_free_1d_int (&nodes);
   ut_free_1d_int (&elts);
+  ut_free_2d_int (&fir, nodeqty_tot);
+  ut_free_2d_int (&sec, nodeqty_o1);
 
   return;
 }
@@ -2539,28 +2586,54 @@ neut_mesh_elt_nodes_per (struct NODES Nodes, struct MESH Mesh, int elt, int **pn
 void
 neut_mesh_node_elts_per (struct NODES Nodes, struct MESH Mesh, int node, int **pelts, int *peltqty)
 {
-  int nodeeltqty, *nodeelts = NULL;
+  int i, master, nodeeltqty, *nodeelts = NULL, slaveqty, *slaves = NULL;
 
-  (*peltqty) = Mesh.NodeElts[node][0];
-  (*pelts) = ut_alloc_1d_int (*peltqty);
+  // node of no elt of the mesh (e.g. a node of cohesive elts only),
+  // which can still be periodic (with -interface)
+  if (node > Mesh.NodeQty)
+  {
+    (*peltqty) = 0;
+    (*pelts) = NULL;
+  }
 
-  ut_array_1d_int_memcpy (Mesh.NodeElts[node] + 1, Mesh.NodeElts[node][0], *pelts);
+  else
+  {
+    (*peltqty) = Mesh.NodeElts[node][0];
+    (*pelts) = ut_alloc_1d_int (*peltqty);
+
+    ut_array_1d_int_memcpy (Mesh.NodeElts[node] + 1, Mesh.NodeElts[node][0], *pelts);
+  }
 
   // periodic
   if (Nodes.PerNodeQty > 0)
   {
-    // is slave
+    // is slave (with -interface, the master can be a node of no elt of
+    // the mesh)
     if (Nodes.PerNodeMaster[node] > 0)
-      ut_array_1d_int_listpair_merge (*pelts, *peltqty, Mesh.NodeElts[Nodes.PerNodeMaster[node]] + 1,
-                                      Mesh.NodeElts[Nodes.PerNodeMaster[node]][0], pelts, peltqty);
+    {
+      master = Nodes.PerNodeMaster[node];
+      if (master <= Mesh.NodeQty)
+        ut_array_1d_int_listpair_merge (*pelts, *peltqty, Mesh.NodeElts[master] + 1,
+                                        Mesh.NodeElts[master][0], pelts, peltqty);
+    }
 
-    // is master
+    // is master (same for the slaves)
     else if (Nodes.PerNodeSlaveQty[node] > 0)
     {
-      neut_mesh_nodes_allelts (Mesh, Nodes.PerNodeSlaveNb[node] + 1, Nodes.PerNodeSlaveQty[node], &nodeelts, &nodeeltqty);
+      slaveqty = 0;
+      slaves = ut_alloc_1d_int (Nodes.PerNodeSlaveQty[node]);
+      for (i = 1; i <= Nodes.PerNodeSlaveQty[node]; i++)
+        if (Nodes.PerNodeSlaveNb[node][i] <= Mesh.NodeQty)
+          slaves[slaveqty++] = Nodes.PerNodeSlaveNb[node][i];
+
+      neut_mesh_nodes_allelts (Mesh, slaves, slaveqty, &nodeelts, &nodeeltqty);
       ut_array_1d_int_listpair_merge (*pelts, *peltqty, nodeelts, nodeeltqty, pelts, peltqty);
+
+      ut_free_1d_int (&slaves);
     }
   }
+
+  ut_free_1d_int (&nodeelts);
 
   return;
 }

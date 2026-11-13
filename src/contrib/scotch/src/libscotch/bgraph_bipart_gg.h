@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2011,2016,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2011,2016,2018,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -51,6 +51,8 @@
 /**                                 to   : 09 jan 2004     **/
 /**                # Version 6.0  : from : 23 feb 2011     **/
 /**                                 to   : 05 apr 2018     **/
+/**                # Version 7.0  : from : 17 jan 2023     **/
+/**                                 to   : 16 sep 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -64,7 +66,7 @@ typedef struct BgraphBipartGgParam_ {
   INT                       passnbr;              /*+ Number of passes to do +*/
 } BgraphBipartGgParam;
 
-#ifdef BGRAPH_BIPART_GG                           /* Private part of the module */
+#ifdef SCOTCH_BGRAPH_BIPART_GG                    /* Private part of the module */
 
 /*+ The complementary vertex structure. For
     trick reasons, the gain table data structure
@@ -83,12 +85,30 @@ typedef FiboNode BgraphBipartGgLink;
 #endif /* SCOTCH_TABLE_GAIN */
 
 typedef struct BgraphBipartGgVertex_ {
-  BgraphBipartGgLink        gainlink;             /*+ Gain link: FIRST                       +*/
-  Gnum                      commgain0;            /*+ Gain if vertex and neighbors in part 0 +*/
-  Gnum                      commgain;             /*+ Gain value                             +*/
+  BgraphBipartGgLink        linkdat;              /*+ Gain link: FIRST         +*/
+  Gnum                      cmgnval;              /*+ Communication gain value +*/
 } BgraphBipartGgVertex;
 
-#endif /* BGRAPH_BIPART_GG */
+#endif /* SCOTCH_BGRAPH_BIPART_GG */
+
+/*+ The thread-specific data block. +*/
+
+typedef struct BgraphBipartGgThread_ {
+  Gnum                      cmloval;              /*+ Communication load value +*/
+  Gnum                      cpl0dlt;              /*+ Computation imbalance    +*/
+  GraphPart *               parttab;              /*+ Local part array         +*/
+} BgraphBipartGgThread;
+
+/*+ The loop routine parameter
+    structure. It contains the
+    thread-independent data.   +*/
+
+typedef struct BgraphBipartGgData_ {
+  Bgraph *                  grafptr;              /*+ Graph to work on              +*/
+  Gnum *                    cmg0tax;              /*+ Gain initialization array     +*/
+  BgraphBipartGgThread *    thrdtab;              /*+ Array of thread-specific data +*/
+  INT                       passnbr;              /*+ Number of passes per thread   +*/
+} BgraphBipartGgData;
 
 /*
 **  The function prototypes.
@@ -120,15 +140,15 @@ int                         bgraphBipartGg      (Bgraph * restrict const, const 
                                       if (*(t) != NULL)      \
                                         gainTablExit (*(t)); \
                                     } while (0)
-#define bgraphBipartGgTablAdd(t,v)  gainTablAdd ((*(t)), &(v)->gainlink, (v)->commgain)
-#define bgraphBipartGgTablDel(t,v)  gainTablDel ((*(t)), &(v)->gainlink)
+#define bgraphBipartGgTablAdd(t,v)  gainTablAdd ((*(t)), &(v)->linkdat, (v)->cmgnval)
+#define bgraphBipartGgTablDel(t,v)  gainTablDel ((*(t)), &(v)->linkdat)
 #define bgraphBipartGgTablFrst(t)   gainTablFrst (*(t))
-#define bgraphBipartGgIsFree(v)     ((v)->gainlink.next == BGRAPHBIPARTGGSTATEFREE)
-#define bgraphBipartGgIsTabl(v)     ((v)->gainlink.next >= BGRAPHBIPARTGGSTATELINK)
-#define bgraphBipartGgIsUsed(v)     ((v)->gainlink.next == BGRAPHBIPARTGGSTATEUSED)
-#define bgraphBipartGgSetFree(v)    ((v)->gainlink.next = BGRAPHBIPARTGGSTATEFREE)
-#define bgraphBipartGgSetUsed(v)    ((v)->gainlink.next = BGRAPHBIPARTGGSTATEUSED)
-#define bgraphBipartGgNext(v)       ((v)->gainlink.next)
+#define bgraphBipartGgIsFree(v)     ((v)->linkdat.next == BGRAPHBIPARTGGSTATEFREE)
+#define bgraphBipartGgIsTabl(v)     ((v)->linkdat.next >= BGRAPHBIPARTGGSTATELINK)
+#define bgraphBipartGgIsUsed(v)     ((v)->linkdat.next == BGRAPHBIPARTGGSTATEUSED)
+#define bgraphBipartGgSetFree(v)    ((v)->linkdat.next = BGRAPHBIPARTGGSTATEFREE)
+#define bgraphBipartGgSetUsed(v)    ((v)->linkdat.next = BGRAPHBIPARTGGSTATEUSED)
+#define bgraphBipartGgNext(v)       ((v)->linkdat.next)
 
 #else /* SCOTCH_TABLE_GAIN */
 
@@ -143,14 +163,14 @@ int                         bgraphBipartGg      (Bgraph * restrict const, const 
 #define bgraphBipartGgTablInit(t)   (fiboHeapInit ((t), bgraphBipartGgCmpFunc))
 #define bgraphBipartGgTablFree(t)   fiboHeapFree (t)
 #define bgraphBipartGgTablExit(t)   fiboHeapExit (t)
-#define bgraphBipartGgTablAdd(t,v)  fiboHeapAdd ((t), &(v)->gainlink)
-#define bgraphBipartGgTablDel(t,v)  fiboHeapDel ((t), &(v)->gainlink)
+#define bgraphBipartGgTablAdd(t,v)  fiboHeapAdd ((t), &(v)->linkdat)
+#define bgraphBipartGgTablDel(t,v)  fiboHeapDel ((t), &(v)->linkdat)
 #define bgraphBipartGgTablFrst(t)   fiboHeapMin ((t))
-#define bgraphBipartGgIsFree(v)     ((v)->gainlink.linkdat.nextptr == BGRAPHBIPARTGGSTATEFREE)
-#define bgraphBipartGgIsTabl(v)     ((v)->gainlink.linkdat.nextptr >= BGRAPHBIPARTGGSTATELINK)
-#define bgraphBipartGgIsUsed(v)     ((v)->gainlink.linkdat.nextptr == BGRAPHBIPARTGGSTATEUSED)
-#define bgraphBipartGgSetFree(v)    ((v)->gainlink.linkdat.nextptr = BGRAPHBIPARTGGSTATEFREE)
-#define bgraphBipartGgSetUsed(v)    ((v)->gainlink.linkdat.nextptr = BGRAPHBIPARTGGSTATEUSED)
-#define bgraphBipartGgNext(v)       ((v)->gainlink.linkdat.nextptr)
+#define bgraphBipartGgIsFree(v)     ((v)->linkdat.linkdat.nextptr == BGRAPHBIPARTGGSTATEFREE)
+#define bgraphBipartGgIsTabl(v)     ((v)->linkdat.linkdat.nextptr >= BGRAPHBIPARTGGSTATELINK)
+#define bgraphBipartGgIsUsed(v)     ((v)->linkdat.linkdat.nextptr == BGRAPHBIPARTGGSTATEUSED)
+#define bgraphBipartGgSetFree(v)    ((v)->linkdat.linkdat.nextptr = BGRAPHBIPARTGGSTATEFREE)
+#define bgraphBipartGgSetUsed(v)    ((v)->linkdat.linkdat.nextptr = BGRAPHBIPARTGGSTATEUSED)
+#define bgraphBipartGgNext(v)       ((v)->linkdat.linkdat.nextptr)
 
 #endif /* SCOTCH_TABLE_GAIN */

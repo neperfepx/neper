@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -40,14 +40,14 @@
 /**                                                        **/
 /**   DATES      : # Version 4.0  : from : 29 dec 2001     **/
 /**                                 to   : 05 may 2004     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define MESH
 
 #include "module.h"
 #include "common.h"
@@ -78,7 +78,7 @@ Mesh * const                meshptr)
 
 /* This routine frees a source mesh structure.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -99,7 +99,7 @@ Mesh * const                meshptr)
 ** freeing. This is also much simpler, as
 ** load arrays can be grouped or not.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void

@@ -10,7 +10,7 @@ nev_print_data (struct IN_V In, struct SIM Sim, struct TESS *pTess,
                 struct POINT **pPoints, int PointQty, struct DATA *TessData,
                 struct DATA *TesrData, struct DATA *pNodeData,
                 struct DATA **MeshData, struct DATA *pCsysData,
-                struct DATA **pPointData)
+                struct DATA **pPointData, struct PRINT *pPrint)
 {
   int i, j;
   char *entity = ut_alloc_1d_char (100);
@@ -43,10 +43,13 @@ nev_print_data (struct IN_V In, struct SIM Sim, struct TESS *pTess,
     else if (!strncmp (entity, "elt", 3) || !strncmp (entity, "elset", 5)
           || !strncmp (entity, "mesh", 4))
       nev_print_data_mesh (Sim, pTess, pNodes, pMesh, entity, attribute,
-                           In.data[i][1], MeshData);
+                           In.data[i][1], In.space, MeshData);
 
     else if (!strcmp (entity, "csys"))
       nev_print_data_csys (Sim, attribute, In.data[i][1], pCsysData);
+
+    else if (!strcmp (entity, "domain"))
+      nev_print_data_domain (*pTess, *pNodes, *pMesh, In.space, attribute, In.data[i][1], pPrint);
 
     else
     {

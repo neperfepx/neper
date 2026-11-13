@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2011,2012,2016,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2011,2012,2016,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -58,14 +58,14 @@
 /**                                 to   : 02 oct 2007     **/
 /**                # Version 6.0  : from : 27 jun 2011     **/
 /**                                 to   : 23 feb 2018     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 12 mar 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define GRAPH
 
 #include "module.h"
 #include "common.h"
@@ -102,9 +102,15 @@ const Graph * const         grafptr)
   const Gnum * restrict const edgetax = grafptr->edgetax;
   const Gnum * restrict const edlotax = grafptr->edlotax;
 
-  if (grafptr->vertnbr != (grafptr->vertnnd - baseval)) {
+  if ((grafptr->vertnbr < 0) ||
+      (grafptr->vertnbr != (grafptr->vertnnd - baseval))) {
     errorPrint ("graphCheck: invalid vertex numbers");
-    return     (1);
+    return (1);
+  }
+  if ((grafptr->edgenbr < 0) ||
+      ((grafptr->edgenbr & 1) != 0)) {
+    errorPrint ("graphCheck: invalid edge numbers");
+    return (1);
   }
 
   degrmax =
@@ -117,7 +123,7 @@ const Graph * const         grafptr)
     if ((verttax[vertnum] < baseval) ||
         (vendtax[vertnum] < verttax[vertnum])) {
       errorPrint ("graphCheck: invalid vertex arrays");
-      return     (1);
+      return (1);
     }
 
     degrval = vendtax[vertnum] - verttax[vertnum];
@@ -136,33 +142,33 @@ const Graph * const         grafptr)
         edlotmp = edlosum + edlotax[edgenum];
         if (edlotmp < edlosum) {                  /* If overflow */
           errorPrint ("graphCheck: edge load sum overflow");
-          return     (1);
+          return (1);
         }
         edlosum = edlotmp;
       }
 
       if ((vertend < baseval) || (vertend >= grafptr->vertnnd)) { /* If invalid edge end */
         errorPrint ("graphCheck: invalid edge array");
-        return     (1);
+        return (1);
       }
       if (vertend == vertnum) {                   /* Loops not allowed */
         errorPrint ("graphCheck: loops not allowed");
-        return     (1);
+        return (1);
       }
-      for (edgeend = verttax[vertend];   /* Search for matching arc */
+      for (edgeend = verttax[vertend];            /* Search for matching arc */
            (edgeend < vendtax[vertend]) && (edgetax[edgeend] != vertnum);
            edgeend ++) ;
       if ((edgeend >= vendtax[vertend]) ||
           ((edlotax != NULL) && (edlotax[edgenum] != edlotax[edgeend]))) {
         errorPrint ("graphCheck: arc data do not match");
-        return     (1);
+        return (1);
       }
       for (edgeend ++;                            /* Search for duplicate arcs */
            (edgeend < vendtax[vertend]) && (edgetax[edgeend] != vertnum);
            edgeend ++) ;
       if (edgeend < vendtax[vertend]) {
         errorPrint ("graphCheck: duplicate arc");
-        return     (1);
+        return (1);
       }
     }
     if (velotax != NULL) {
@@ -170,31 +176,31 @@ const Graph * const         grafptr)
 
       if (velotax[vertnum] < 0) {                 /* If non positive loads */
         errorPrint ("graphCheck: invalid vertex load array");
-        return     (1);
+        return (1);
       }
       velotmp = velosum + velotax[vertnum];
       if (velotmp < velosum) {                    /* If overflow */
         errorPrint ("graphCheck: vertex load sum overflow");
-        return     (1);
+        return (1);
       }
       velosum = velotmp;
     }
   }
   if (grafptr->edgenbr != edgenbr) {
     errorPrint ("graphCheck: invalid number of edges");
-    return     (1);
+    return (1);
   }
   if (grafptr->velosum != velosum) {
     errorPrint ("graphCheck: invalid vertex load sum");
-    return     (1);
+    return (1);
   }
   if (grafptr->edlosum != edlosum) {
     errorPrint ("graphCheck: invalid edge load sum");
-    return     (1);
+    return (1);
   }
   if (grafptr->degrmax < degrmax) {
     errorPrint ("graphCheck: invalid maximum degree");
-    return     (1);
+    return (1);
   }
 
   return (0);

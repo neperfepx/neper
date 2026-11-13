@@ -6,21 +6,25 @@
 void
 ol_map_memcpy (struct OL_MAP Map1, struct OL_MAP *pMap2)
 {
-  size_t i, j, k;
+  size_t i, j;
 
   (*pMap2).stepsize = Map1.stepsize;
   (*pMap2).xsize = Map1.xsize;
   (*pMap2).ysize = Map1.ysize;
-  (*pMap2).gmap = ol_g_alloc ();
+  if (!(*pMap2).gmap)
+    (*pMap2).gmap = ol_g_alloc ();
   ol_g_memcpy (Map1.gmap, (*pMap2).gmap);
+
+  if (Map1.crysym)
+    ut_string_string (Map1.crysym, &((*pMap2).crysym));
+  else
+    ut_free_1d_char (&(*pMap2).crysym);
 
   for (i = 0; i < (*pMap2).xsize; i++)
     for (j = 0; j < (*pMap2).ysize; j++)
     {
       (*pMap2).id[i][j] = Map1.id[i][j];
       ol_q_memcpy (Map1.q[i][j], (*pMap2).q[i][j]);
-      for (k = 0; k < 3; k++)
-        (*pMap2).rgb[i][j][k] = Map1.rgb[i][j][k];
     }
 
   return;
@@ -30,7 +34,7 @@ void
 ol_map_submap (struct OL_MAP Map1, int X0, int Y0, size_t xsize, size_t ysize,
                struct OL_MAP *pMap2)
 {
-  size_t i, j, k;
+  size_t i, j;
 
   (*pMap2).stepsize = Map1.stepsize;
   (*pMap2).xsize = xsize;
@@ -46,8 +50,6 @@ ol_map_submap (struct OL_MAP Map1, int X0, int Y0, size_t xsize, size_t ysize,
     {
       (*pMap2).id[i][j] = Map1.id[i + X0][j + Y0];
       ol_q_memcpy (Map1.q[i + X0][j + Y0], (*pMap2).q[i][j]);
-      for (k = 0; k < 3; k++)
-        (*pMap2).rgb[i][j][k] = Map1.rgb[i + X0][j + Y0][k];
     }
 
   return;

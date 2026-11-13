@@ -89,27 +89,15 @@ double
 ut_vector_int_angle_rad (int *a, int *b)
 {
   int i;
-  double angle;
-  double *a2 = ut_alloc_1d (3);
-  double *b2 = ut_alloc_1d (3);
+  double a2[3], b2[3];
 
   for (i = 0; i < 3; i++)
+  {
     a2[i] = (double) a[i];
-
-  for (i = 0; i < 3; i++)
     b2[i] = (double) b[i];
+  }
 
-  angle = ut_vector_scalprod (a2, b2);
-  angle /= ut_vector_norm (a2);
-  angle /= ut_vector_norm (b2);
-  angle = acos (angle);
-  if (angle != angle)           // NaN
-    angle = 0;
-
-  ut_free_1d (&a2);
-  ut_free_1d (&b2);
-
-  return angle;
+  return ut_vector_angle_rad (a2, b2);
 }
 
 double
@@ -137,6 +125,8 @@ ut_vector_set_covar (double **v, double *weight_in, int qty, int dim, double **c
         covar[i][j] += weight[k] * v[k][i] * v[k][j];
 
   ut_array_2d_scale (covar, dim, dim, 1. / ut_array_1d_sum (weight, qty));
+
+  ut_free_1d (&weight);
 
   return;
 }

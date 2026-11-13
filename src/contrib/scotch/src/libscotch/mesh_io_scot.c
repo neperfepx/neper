@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2019,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -46,14 +46,14 @@
 /**                                 to   : 11 aug 2010     **/
 /**                # Version 6.0  : from : 28 apr 2019     **/
 /**                                 to   : 28 apr 2019     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define MESH_IO_SCOT
 
 #include "module.h"
 #include "common.h"
@@ -101,11 +101,11 @@ const char * const          dataptr)              /* No use           */
       (dimnnbr < 1)                         ||
       (dimnnbr > 3)) {
     errorPrint ("meshGeomLoadScot: bad input (1)");
-    return     (1);
+    return (1);
   }
   if ((filesrcptr != NULL) && (meshptr->vnodnbr != coornbr)) {
     errorPrint ("meshGeomLoadScot: inconsistent number of vertices");
-    return     (1);
+    return (1);
   }
 
   if (meshptr->vnodnbr == 0)
@@ -114,7 +114,7 @@ const char * const          dataptr)              /* No use           */
   if ((geomptr->geomtab == NULL) &&               /* Allocate geometry if necessary */
       ((geomptr->geomtab = (double *) memAlloc (meshptr->vnodnbr * dimnnbr * sizeof (double))) == NULL)) {
     errorPrint ("meshGeomLoadScot: out of memory (1)");
-    return     (1);
+    return (1);
   }
 
   if (memAllocGroup ((void **)
@@ -122,7 +122,7 @@ const char * const          dataptr)              /* No use           */
                      &coorsorttab, (size_t) (coornbr           * sizeof (MeshGeomScotSort)),
                      &vnodsorttab, (size_t) (meshptr->vnodnbr  * sizeof (MeshGeomScotSort)), NULL) == NULL) {
     errorPrint ("meshGeomLoadScot: out of memory (2)");
-    return     (1);
+    return (1);
   }
 
   o = 0;
@@ -150,7 +150,7 @@ const char * const          dataptr)              /* No use           */
   if (o != 0) {
     errorPrint ("meshGeomLoadScot: bad input (2)");
     memFree    (coorfiletab);                     /* Free group leader */
-    return     (1);
+    return (1);
   }
 
   if (coorsortflag != 1)                          /* If geometry data not sorted        */
@@ -159,7 +159,7 @@ const char * const          dataptr)              /* No use           */
     if (coorsorttab[coornum].labl == coorsorttab[coornum - 1].labl) {
       errorPrint ("meshGeomLoadScot: duplicate vertex label");
       memFree    (coorfiletab);                   /* Free group leader */
-      return     (1);
+      return (1);
     }
   }
 
@@ -188,7 +188,7 @@ const char * const          dataptr)              /* No use           */
       errorPrint ("meshGeomLoadScot: vertex geometry data not found (%d)",
                   vnodsorttab[vnodnum].labl);
       memFree    (coorfiletab);                   /* Free group leader */
-      return     (1);
+      return (1);
     }
     memCpy (&geomptr->geomtab[vnodsorttab[vnodnum].num * dimnnbr], &coorfiletab[coorsorttab[coornum ++].num * dimnnbr], dimnnbr * sizeof (double));
   }
@@ -255,7 +255,7 @@ const char * const            dataptr)            /* No use           */
 #ifdef SCOTCH_DEBUG_MESH2
       default :
         errorPrint ("meshGeomSaveScot: invalid geometry type");
-        return     (1);
+        return (1);
 #endif /* SCOTCH_DEBUG_MESH2 */
     }
 

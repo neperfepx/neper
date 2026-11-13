@@ -1,4 +1,4 @@
-/* Copyright 2007-2010 ENSEIRB, INRIA & CNRS
+/* Copyright 2007-2010,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,14 +44,14 @@
 /**                                 to   : 01 jul 2008     **/
 /**                # Version 6.0  : from : 05 nov 2010     **/
 /**                                 to   : 30 may 2010     **/
+/**                # Version 7.0  : from : 16 jan 2023     **/
+/**                                 to   : 16 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define WGRAPH_STORE
 
 #include "module.h"
 #include "common.h"
@@ -84,7 +84,7 @@ WgraphStore * const         storptr)
 
   if ((storptr->datatab = (byte *) memAlloc (savsize)) == NULL) { /* Allocate save structure */
     errorPrint ("wgraphStoreInit: out of memory");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -92,7 +92,7 @@ WgraphStore * const         storptr)
 
 /* This routine frees a save structure.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -108,7 +108,7 @@ WgraphStore * const         storptr)
 /* This routine saves partition data from the
 ** given active graph to the given save structure.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -139,7 +139,7 @@ WgraphStore * const         storptr)
 /* This routine updates partition data of the
 ** given active graph, using the given save graph.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void

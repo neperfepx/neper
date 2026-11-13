@@ -1,0 +1,11 @@
+# Variants for local builds (rattler-build build -r conda/recipe -c conda-forge),
+# which conda-forge's CI otherwise provides (conda-forge-pinning): not to be
+# submitted to conda-forge.
+c_stdlib:
+  - sysroot
+c_stdlib_version:
+  - "2.17"
+c_compiler:
+  - gcc
+cxx_compiler:
+  - gxx

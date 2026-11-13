@@ -8,6 +8,7 @@
 #include<string.h>
 #include<limits.h>
 #include<ctype.h>
+#include<unistd.h>
 
 #include "neut_sim_fprintf.h"
 

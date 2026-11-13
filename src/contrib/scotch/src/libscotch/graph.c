@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2011,2012,2014 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2011,2012,2014,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -58,14 +58,14 @@
 /**                                 to   : 08 mar 2011     **/
 /**                # Version 6.0  : from : 09 sep 2012     **/
 /**                                 to   : 09 aug 2014     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define GRAPH
 
 #include "module.h"
 #include "common.h"
@@ -95,7 +95,7 @@ Graph * const               grafptr)
 
 /* This routine frees a source graph structure.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -111,7 +111,7 @@ Graph * const               grafptr)
 
 /* This routine frees the graph data.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void

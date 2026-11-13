@@ -36,7 +36,7 @@
 /**   AUTHOR     : Francois PELLEGRINI                     **/
 /**                Sebastien FOURESTIER (v6.0)             **/
 /**                                                        **/
-/**   FUNCTION   : These lines are the data declaration    **/
+/**   FUNCTION   : These lines are the data declarations   **/
 /**                for the decomposition-defined target    **/
 /**                architecture functions.                 **/
 /**                                                        **/
@@ -62,6 +62,8 @@
 /**                                 to   : 27 sep 2008     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 28 may 2018     **/
+/**                # Version 7.0  : from : 18 feb 2018     **/
+/**                                 to   : 18 feb 2018     **/
 /**                                                        **/
 /************************************************************/
 
@@ -146,9 +148,6 @@ int                         archDecoDomLoad     (const ArchDeco * const, ArchDec
 int                         archDecoDomSave     (const ArchDeco * const, const ArchDecoDom * const, FILE * restrict const);
 int                         archDecoDomBipart   (const ArchDeco * const, const ArchDecoDom * const, ArchDecoDom * restrict const, ArchDecoDom * restrict const);
 int                         archDecoDomIncl     (const ArchDeco * const, const ArchDecoDom * const, const ArchDecoDom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archDecoDomMpiType  (const ArchDeco * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 /*
 **  The macro definitions.

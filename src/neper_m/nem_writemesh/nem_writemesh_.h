@@ -18,3 +18,6 @@ extern void nem_writemesh_msh (struct IN_M In, struct TESS Tess, struct NODES No
 extern void nem_writemesh_sim (struct IN_M In, struct TESS Tess, struct NODES Nodes,
                    struct MESH *Mesh, struct NSET *NSet, char *nsetlist,
                    char *fasetlist);
+
+extern void nem_writemesh_fasetlist (struct IN_M In, struct MESH MeshFasets, struct NSET *NSet, char **pfasetlist);
+extern void nem_writemesh_fasetlist_add (char **pfasetlist, char *faset);

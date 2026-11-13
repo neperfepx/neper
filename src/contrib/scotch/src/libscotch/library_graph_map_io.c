@@ -1,4 +1,4 @@
-/* Copyright 2011,2012,2015,2018,2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2011,2012,2015,2018,2019,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,8 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 16 apr 2011     **/
 /**                                 to   : 26 oct 2019     **/
+/**                # Version 7.0  : from : 07 may 2019     **/
+/**                                 to   : 21 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -48,10 +50,9 @@
 **  The defines and includes.
 */
 
-#define LIBRARY
-
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "graph.h"
 #include "arch.h"
 #include "library_mapping.h"
@@ -66,12 +67,12 @@
 /*                                   */
 /*************************************/
 
-/*+ This routine loads the contents of the
-*** given mapping array from the given stream.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine loads the contents of the
+** given mapping array from the given stream.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphTabLoad (
@@ -91,7 +92,7 @@ FILE * const                  stream)             /*+ Input stream  +*/
   Graph *               grafptr;
   Gnum                  vertnbr;
 
-  grafptr = (Graph *) actgrafptr;
+  grafptr = (Graph *) CONTEXTOBJECT (actgrafptr);
   vertnbr = grafptr->vertnbr;
   memSet (parttab, ~0, vertnbr * sizeof (Anum));  /* Pre-initialize the partition array */
 
@@ -163,12 +164,12 @@ FILE * const                  stream)             /*+ Input stream  +*/
       while (mappsorttab[mappfilenum].labl < vertsorttab[vertsortnum].labl) {
         mappfilenum ++;                           /* Search mapping vertex with same label */
         if (mappfilenum >= mappfilenbr)           /* If all mapping data processed         */
-          goto end;                               /* Exit main loop                        */
+          goto skip;                              /* Exit main loop                        */
       }
       if (mappsorttab[mappfilenum].labl == vertsorttab[vertsortnum].labl) /* If label match found */
         ((Anum *) parttab)[vertsorttab[vertsortnum].num] = mappsorttab[mappfilenum ++].num;
     }
-end: ;
+skip: ;
   }
   else {                                          /* Graph does not have vertex labels */
     const Gnum          baseval = grafptr->baseval;
@@ -187,12 +188,12 @@ end: ;
   return (0);
 }
 
-/*+ This routine saves the contents of the
-*** given mapping array to the given stream.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine saves the contents of the
+** given mapping array to the given stream.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphTabSave (
@@ -202,7 +203,7 @@ FILE * const                stream)               /*+ Input stream  +*/
 {
   Gnum                vertnum;
 
-  const Graph * restrict const  grafptr = (Graph *) libgrafptr;
+  const Graph * restrict const  grafptr = (Graph *) CONTEXTOBJECT (libgrafptr);
   const Gnum * restrict const   vlbltax = grafptr->vlbltax;
   const Gnum * restrict const   parttax = parttab - grafptr->baseval;
 
@@ -223,13 +224,13 @@ FILE * const                stream)               /*+ Input stream  +*/
   return (0);
 }
 
-/*+ This routine loads the contents of
-*** the given user mapping from the
-*** given stream.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine loads the contents of
+** the given user mapping from the
+** given stream.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphMapLoad (
@@ -237,7 +238,7 @@ const SCOTCH_Graph * const  actgrafptr,           /*+ Graph to map    +*/
 SCOTCH_Mapping * const      mappptr,              /*+ Mapping to save +*/
 FILE * const                stream)               /*+ Output stream   +*/
 {
-  const Graph * restrict const  grafptr = (Graph *) actgrafptr;
+  const Graph * restrict const  grafptr = (Graph *) CONTEXTOBJECT (actgrafptr);
   LibMapping * restrict         lmapptr = (LibMapping *) mappptr;
 #ifdef SCOTCH_DEBUG_GRAPH2
   if (grafptr != lmapptr->grafptr) {
@@ -257,13 +258,13 @@ FILE * const                stream)               /*+ Output stream   +*/
   return (SCOTCH_graphTabLoad (actgrafptr, (SCOTCH_Num *) lmapptr->parttab, stream));
 }
 
-/*+ This routine saves the contents of
-*** the given user mapping to the given
-*** stream.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine saves the contents of
+** the given user mapping to the given
+** stream.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphMapSave (
@@ -272,7 +273,7 @@ const SCOTCH_Mapping * const  mappptr,            /*+ Mapping to save +*/
 FILE * const                  stream)             /*+ Output stream   +*/
 {
 #ifdef SCOTCH_DEBUG_GRAPH2
-  const Graph * restrict const  grafptr = (Graph *) actgrafptr;
+  const Graph * restrict const  grafptr = (Graph *) CONTEXTOBJECT (actgrafptr);
   if (grafptr != (((LibMapping *) mappptr)->grafptr)) {
     errorPrint (STRINGIFY (SCOTCH_graphMapSave) ": mapping structure must derive from graph");
     return     (1);

@@ -1,4 +1,4 @@
-/* Copyright 2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2019,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -40,14 +40,14 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 27 dec 2019     **/
 /**                                 to   : 29 dec 2019     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define GRAPH_DUMP
 
 #include "module.h"
 #include "common.h"

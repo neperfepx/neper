@@ -25,27 +25,22 @@ extern "C"
 extern int  ol_label_g (char *, double **);
 extern int  ol_label_q (char *, double *);
 extern int  ol_q_label (double *, char *);
+extern void ol_specialid_label (int id, char *label);
 
 extern void ol_nb_e (double, double, double, double *);
 extern void ol_nb_e_rad (double, double, double, double *);
-extern void ol_srand_e_rad (int, int, double **);
 extern void ol_srand_e (int, int, double **);
+extern void ol_srand_e_rad (int, int, double **);
 
 extern void ol_nb_r (double, double, double *);
-extern void ol_nb_max_theta_rad (double, double, double *);
 extern void ol_nb_max_theta (double, double, double *);
-extern void ol_nb_max_theta_mis_rad (double, double, double *);
+extern void ol_nb_max_theta_rad (double, double, double *);
+extern void ol_nb_max_rtheta (double, double, double, double, double *);
+extern void ol_nb_max_rtheta_rad (double, double, double, double, double *);
 extern void ol_nb_max_theta_mis (double, double, double *);
-extern void ol_nb_max_rtheta (double, double, double, double, double *,
-			      double *);
-extern void ol_nb_max_rtheta_mis_rad (double, double, double, double,
-				      double *, double *);
-extern void ol_nb_max_rtheta_mis (double, double, double, double, double *,
-				  double *);
-extern void ol_nb_max_rtheta_rad (double, double, double, double, double *,
-				  double *);
-
-extern void ol_specialid_label (int id, char *label);
+extern void ol_nb_max_theta_mis_rad (double, double, double *);
+extern void ol_nb_max_rtheta_mis (double, double, double, double, double *);
+extern void ol_nb_max_rtheta_mis_rad (double, double, double, double, double *);
 
 #endif /* OL_GEN */
 #ifndef OL_GENx

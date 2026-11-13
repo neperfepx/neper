@@ -94,29 +94,33 @@ nem_partition_elts_direct_findelt (struct MESH Mesh, struct PART Part,
                                    int **eltnodeparts, int *eltnodepartqty,
                                    int **eltnodepartnodeqty,
                                    int ***nodepartelts, int **nodeparteltqty,
-                                   int eltnodeqty, int *ppart, int *pelt)
+                                   int *availqty, int eltnodeqty, int *ppart,
+                                   int *pelt)
 {
-  int i, j, k, part, elt, eltqty, pos, missing, avail;
-  int *elts = NULL, *tmp = ut_alloc_1d_int (Part.qty);
+  int i, j, k, part, elt, eltqty, pos, missing, avail, qty, minqty;
+  int *elts = NULL;
   double *vals = NULL, targeteltqty = Mesh.EltQty / Part.qty;
 
-  // part: the one with the least number of elements
+  // part: the one with the least number of elements (among those which
+  // have available elements)
 
-  ut_array_1d_int_memcpy (Part.EltQty, Part.qty, tmp);
-
+  *ppart = 0;
+  minqty = INT_MAX;
   for (i = 0; i < Part.qty; i++)
-    if (ut_array_1d_int_sum (nodeparteltqty[i] + 1, eltnodeqty) == 0)
-      tmp[i] = INT_MAX;
-
-  *ppart = ut_array_1d_int_min_index (tmp, Part.qty);
-
-  ut_free_1d_int (&tmp);
+  {
+    qty = (availqty[i] == 0) ? INT_MAX : Part.EltQty[i];
+    if (qty < minqty)
+    {
+      minqty = qty;
+      *ppart = i;
+    }
+  }
 
   // elt in part
 
   (*pelt) = 0;
 
-  eltqty = ut_array_1d_int_sum (nodeparteltqty[*ppart] + 1, eltnodeqty);
+  eltqty = availqty[*ppart];
 
   if (eltqty == 0)
     return -1;
@@ -134,10 +138,10 @@ nem_partition_elts_direct_findelt (struct MESH Mesh, struct PART Part,
       {
         part = eltnodeparts[elt][k];
         missing = targeteltqty - Part.EltQty[part];
-        avail = ut_array_1d_int_sum (nodeparteltqty[part] + 1, eltnodeqty);
+        avail = availqty[part];
 
         if (part != *ppart)
-          vals[pos] += (avail <= missing) ? DBL_MAX : eltnodepartnodeqty[elt][k] / pow (avail - missing, 2);
+          vals[pos] += (avail <= missing) ? DBL_MAX : eltnodepartnodeqty[elt][k] / ((double) (avail - missing) * (avail - missing));
       }
       vals[pos] /= i;
 
@@ -158,7 +162,8 @@ void
 nem_partition_elts_direct_recordelt (struct PART *pPart, int part, int elt,
                                      int *eltnodepartqty, int **eltnodeparts,
                                      int **eltnodepartnodeqty,
-                                     int ***nodepartelts, int **nodeparteltqty)
+                                     int ***nodepartelts, int **nodeparteltqty,
+                                     int *availqty)
 {
   int i, status, nodeqty;
 
@@ -179,6 +184,7 @@ nem_partition_elts_direct_recordelt (struct PART *pPart, int part, int elt,
     if (status != 1)
       abort ();
     nodeparteltqty[part][nodeqty]--;
+    availqty[part]--;
   }
 }
 

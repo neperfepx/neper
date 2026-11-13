@@ -5,53 +5,6 @@
 #include"nem_meshing_1d_.h"
 
 void
-nem_meshing_1d_pre (struct MESHPARA *pMeshPara, struct TESS Tess,
-                    struct NODES RNodes, struct MESH *RMesh,
-                    struct NODES Nodes, double **pNodeCl)
-{
-  int i, j, edge;
-  struct NODES N;
-  struct MESH M;
-
-  neut_nodes_set_zero (&N);
-  neut_mesh_set_zero (&M);
-
-  (*pNodeCl) = ut_alloc_1d (Nodes.NodeQty + 1);
-  ut_array_1d_memcpy (Nodes.NodeCl + 1, Nodes.NodeQty, (*pNodeCl) + 1);
-
-  // in case of faces with < 3 edges, we want to make sure that the
-  // face contour has >= 3 elts
-  for (i = 1; i <= Tess.FaceQty; i++)
-    if (Tess.FaceVerQty[i] > 0 && Tess.FaceVerQty[i] <= 2)
-    {
-      int EltQty = 0;
-      double *edgel = ut_alloc_1d (Tess.FaceVerQty[i]);
-      for (j = 1; j <= Tess.FaceVerQty[i]; j++)
-      {
-        edge = Tess.FaceEdgeNb[i][j];
-        nem_meshing_1d_edge (*pMeshPara, Tess, RNodes, RMesh, edge,
-                             (*pMeshPara).edge_cl[edge], (*pMeshPara).pl,
-                             Nodes, *pNodeCl, &N, &M);
-        edgel[j - 1] = Tess.EdgeLength[edge];
-        EltQty += M.EltQty;
-      }
-      int id = 1 + ut_array_1d_max_index (edgel, Tess.FaceVerQty[i]);
-      edge = Tess.FaceEdgeNb[i][id];
-
-      // if < 3, we add elt(s) to the longest edge
-      if (EltQty < 3)
-        (*pMeshPara).edge_cl[edge] =
-          ut_num_min ((*pMeshPara).edge_cl[edge],
-                      Tess.EdgeLength[edge] / (4 - Tess.FaceVerQty[i]));
-    }
-
-  neut_mesh_free (&M);
-  neut_nodes_free (&N);
-
-  return;
-}
-
-void
 nem_meshing_1d_edge (struct MESHPARA MeshPara, struct TESS Tess,
                      struct NODES RNodes, struct MESH *RMesh, int edge,
                      double cl, double pl, struct NODES Nodes,
@@ -140,8 +93,8 @@ nem_meshing_1d_post (struct NODES *pNodes, struct MESH *Mesh, int Node0DQty,
   int i, j;
   double max, *cl = NULL;
 
-  // Node0DCl may have been changed for some 0D nodes because of the 5%
-  // tolerancy involved during 1d meshing.  Here, we are assiging all
+  // Node0DCl may have been increased for some 0D nodes during 1d meshing
+  // (see nem_meshing_1d_edge_algo_mesh).  Here, we are assiging all
   // periodic nodes the same cl, which is the maximum of all values (not
   // the master value).
   if ((*pNodes).PerNodeQty > 0)

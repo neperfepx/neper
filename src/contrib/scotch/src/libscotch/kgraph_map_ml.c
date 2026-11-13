@@ -1,4 +1,4 @@
-/* Copyright 2010,2011,2012,2014,2015 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2010,2011,2012,2014,2015,2018,2021,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,6 +44,8 @@
 /**                                 to   : 14 jul 2010     **/
 /**                # Version 6.0  : from : 03 mar 2011     **/
 /**                                 to   : 25 feb 2018     **/
+/**                # Version 7.0  : from : 03 aug 2018     **/
+/**                                 to   : 19 jul 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -51,7 +53,7 @@
 **  The defines and includes.
 */
 
-#define KGRAPH_MAP_ML
+#define SCOTCH_KGRAPH_MAP_ML
 
 #include "module.h"
 #include "common.h"
@@ -88,63 +90,56 @@ Kgraph * restrict const               coargrafptr, /*+ Coarser graph to build   
 GraphCoarsenMulti * restrict * const  coarmultptr, /*+ Pointer to un-based multinode table to build +*/
 const KgraphMapMlParam * const        paraptr)    /*+ Method parameters                             +*/
 {
-  GraphCoarsenMulti * restrict  coarmulttab;
-  Gnum                          coarvertnum;      /* Number of current multinode vertex */
-
   const Anum * restrict const finepfixtax = finegrafptr->pfixtax;
 
 #ifdef SCOTCH_DEBUG_KGRAPH2
-  if ((finegrafptr->comploadavg == NULL) || (finegrafptr->comploaddlt == NULL)) {
+  if ((finegrafptr->comploadavg == NULL) ||
+      (finegrafptr->comploaddlt == NULL)) {
     errorPrint ("kgraphMapMlCoarsen: internal error (1)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
 
   *coarmultptr = NULL;                            /* Allocate coarmulttab along with coarse graph */
-  if (graphCoarsen (&finegrafptr->s, &coargrafptr->s, NULL, coarmultptr, paraptr->coarnbr, paraptr->coarval, GRAPHCOARSENNONE,
-                    finegrafptr->r.m.parttax, finegrafptr->pfixtax, finegrafptr->vfixnbr, &coargrafptr->vfixnbr) != 0)
-    return (1);                                   /* Return if coarsening failed */
+  if (graphCoarsen (&finegrafptr->s, &coargrafptr->s, NULL, coarmultptr, paraptr->coarnbr, paraptr->coarval, GRAPHCOARSENNOCOMPACT,
+                    finegrafptr->r.m.parttax, finepfixtax, finegrafptr->vfixnbr, finegrafptr->contptr) != 0)
+    return (1);
 
-  finegrafptr->s.flagval  &= ~KGRAPHFREECOMP;     /* Now it's the coarse graph job to handle the load array             */
-  coargrafptr->s.flagval   = (coargrafptr->s.flagval & ~KGRAPHFREEFRON) | KGRAPHFREECOMP; /* Share frontier array       */
+  coargrafptr->domnorg = finegrafptr->domnorg;    /* Keep initial domain */
+  mapInit2 (&coargrafptr->m,   &coargrafptr->s, finegrafptr->m.archptr,   finegrafptr->m.domnmax,   finegrafptr->m.domnnbr);
+  mapInit2 (&coargrafptr->r.m, &coargrafptr->s, finegrafptr->r.m.archptr, finegrafptr->r.m.domnmax, finegrafptr->r.m.domnnbr);
+
   coargrafptr->comploadavg = finegrafptr->comploadavg; /* By default, use fine target load arrays as coarse load arrays */
   coargrafptr->comploaddlt = finegrafptr->comploaddlt;
-  coargrafptr->frontab     = finegrafptr->frontab; /* Share frontier array of finer graph as coarse frontier array */
-  coargrafptr->a           = finegrafptr->a;
-  coargrafptr->m.parttax   = NULL;                /* Do not allocate partition data yet */
-  coargrafptr->m.domntab   = finegrafptr->m.domntab; /* Get domain private array if any */
-  coargrafptr->m.archptr   = &coargrafptr->a;
-  coargrafptr->m.grafptr   = &coargrafptr->s;
-  coargrafptr->m.flagval   = finegrafptr->m.flagval & MAPPINGFREEDOMN; /* Get fine private domain array, if any       */
-  finegrafptr->m.flagval  &= ~MAPPINGFREEDOMN;    /* Now it's the coarse graph job to handle the domain array, if any */
-  coargrafptr->m.domnorg   = finegrafptr->m.domnorg;
-  coargrafptr->m.domnnbr   = 0;                   /* Number of domains not known yet  */
-  coargrafptr->m.domnmax   = finegrafptr->m.domnmax; /* Propagate relevant estimation */
+  coargrafptr->frontab     = finegrafptr->frontab; /* Share frontier array of finer graph as coarse frontier array (no freeing) */
+  coargrafptr->contptr     = finegrafptr->contptr;
 
-  coarmulttab = *coarmultptr;
-
+  coargrafptr->r.cmloval = finegrafptr->r.cmloval;
+  coargrafptr->r.crloval = finegrafptr->r.crloval;
   if (finegrafptr->r.m.parttax != NULL) {
-    const Gnum * restrict fineparotax;
-    const Gnum * restrict finevmlotax;
-    Gnum *                coarparotab;
-    Gnum *                coarvmlotab;
-    Gnum                  coarvertnbr;
+    Gnum * restrict     coarparotab;
+    Gnum * restrict     coarvmlotab;
+    Gnum                coarvertnum;
 
-    coarvertnbr = coargrafptr->s.vertnbr;
-    if ((coarparotab = (Anum *) memAlloc (coarvertnbr * sizeof (Anum))) == NULL) {
+    const Gnum * restrict const         fineparotax = finegrafptr->r.m.parttax;
+    const Gnum * restrict const         finevmlotax = finegrafptr->r.vmlotax;
+    const Gnum                          coarvertnbr = coargrafptr->s.vertnbr;
+    const GraphCoarsenMulti * restrict  coarmulttab = *coarmultptr;
+
+    coargrafptr->r.m.domntab = finegrafptr->r.m.domntab; /* Re-use old mapping domain array in band graph (no freeing) */
+
+    if (memAllocGroup ((void **) (void *)
+                       &coarparotab, (size_t) (coarvertnbr * sizeof (Anum)),
+                       &coarvmlotab, (size_t) (coarvertnbr * sizeof (Gnum)), NULL) == NULL) {
       errorPrint ("kgraphMapMlCoarsen: out of memory (1)");
-      return     (1);
+      kgraphExit (coargrafptr);
+      return (1);
     }
+    coargrafptr->r.m.flagval = MAPPINGINCOMPLETE | MAPPINGFREEPART; /* Free group leader  */
+    coargrafptr->r.m.parttax = coarparotab - coargrafptr->s.baseval; /* Set coarse arrays */
+    coargrafptr->r.vmlotax   = coarvmlotab - coargrafptr->s.baseval;
 
-    if ((coarvmlotab = (Gnum *) memAlloc (coarvertnbr * sizeof (Gnum))) == NULL) {
-      errorPrint ("kgraphMapMlCoarsen: out of memory (2)");
-      memFree    (coarparotab);
-      return     (1);
-    }
-
-    fineparotax = finegrafptr->r.m.parttax;
-    finevmlotax = finegrafptr->r.vmlotax;
-    for (coarvertnum = 0; coarvertnum < coarvertnbr; coarvertnum ++) {
+    for (coarvertnum = 0; coarvertnum < coarvertnbr; coarvertnum ++) { /* Un-based traversal */
       Gnum                finevertnum0;
       Gnum                finevertnum1;
 
@@ -156,41 +151,34 @@ const KgraphMapMlParam * const        paraptr)    /*+ Method parameters         
                                  : ((finevertnum0 == finevertnum1) ? 1 : 2);
 #ifdef SCOTCH_DEBUG_KGRAPH2
       if ((fineparotax[finevertnum1] != fineparotax[finevertnum0]) && /* If vertices were not in the same part */
-          ((finegrafptr->pfixtax == NULL) || 
+          ((finegrafptr->pfixtax == NULL) ||
            ((finepfixtax[finevertnum1] == -1) &&  /* And both are not fixed */
             (finepfixtax[finevertnum0] == -1)))) {
         errorPrint ("kgraphMapMlCoarsen: internal error (2)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
     }
-
-    coargrafptr->r.m.flagval = MAPPINGFREEPART;
-    coargrafptr->r.m.grafptr = &coargrafptr->s;
-    coargrafptr->r.m.archptr = finegrafptr->r.m.archptr;
-    coargrafptr->r.m.parttax = coarparotab - coargrafptr->s.baseval; /* Set coarse arrays */
-    coargrafptr->r.m.domntab = finegrafptr->r.m.domntab; /* Clone old domain array        */
-    coargrafptr->r.m.domnnbr = finegrafptr->r.m.domnnbr;
-    coargrafptr->r.m.domnmax = finegrafptr->r.m.domnmax;
-    coargrafptr->r.vmlotax   = coarvmlotab - coargrafptr->s.baseval;
-    coargrafptr->s.flagval  |= KGRAPHFREEVMLO;
   }
-  else {                                          /* No old mapping */
-    coargrafptr->r.m.flagval = MAPPINGNONE;
-    coargrafptr->r.m.parttax = NULL;
-    coargrafptr->r.vmlotax   = NULL;
-  }
+  else
+    coargrafptr->r.vmlotax = NULL;
 
-  if (finepfixtax != NULL) {                      /* If we have fixed vertices */ 
-    Gnum                coarvertnbr;
+  if (finepfixtax != NULL) {                      /* If we have fixed vertices */
     Anum * restrict     coarpfixtab;
     Gnum                coarvfixnbr;
+    Gnum                coarvertnbr;
+    Gnum                coarvertnum;
+
+    const GraphCoarsenMulti * restrict  coarmulttab = *coarmultptr;
 
     coarvertnbr = coargrafptr->s.vertnbr;
     if ((coarpfixtab = (Anum *) memAlloc (coarvertnbr * sizeof (Anum))) == NULL) {
-      errorPrint ("kgraphMapMlCoarsen: out of memory (3)");
-      return     (1);
+      errorPrint ("kgraphMapMlCoarsen: out of memory (2)");
+      kgraphExit (coargrafptr);
+      return (1);
     }
+    coargrafptr->s.flagval |= KGRAPHFREEPFIX;
+    coargrafptr->pfixtax    = coarpfixtab - coargrafptr->s.baseval;
 
     coarvfixnbr = coarvertnbr;                    /* Assume all vertices are fixed */
     for (coarvertnum = 0; coarvertnum < coarvertnbr; coarvertnum ++) {
@@ -203,23 +191,18 @@ const KgraphMapMlParam * const        paraptr)    /*+ Method parameters         
 #ifdef SCOTCH_DEBUG_KGRAPH2
       if (finepfixtax[coarmulttab[coarvertnum].vertnum[1]] != coarpfixval) {
         errorPrint ("kgraphMapMlCoarsen: internal error (3)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
     }
-
-    coargrafptr->s.flagval |= KGRAPHFREEPFIX;
-    coargrafptr->pfixtax    = coarpfixtab - coargrafptr->s.baseval;
-    coargrafptr->vfixnbr    = coarvfixnbr;
+    coargrafptr->vfixnbr = coarvfixnbr;
   }
   else {
-    coargrafptr->pfixtax = NULL;
     coargrafptr->vfixnbr = 0;
+    coargrafptr->pfixtax = NULL;
   }
 
   coargrafptr->comploadrat = finegrafptr->comploadrat;
-  coargrafptr->r.cmloval   = finegrafptr->r.cmloval;
-  coargrafptr->r.crloval   = finegrafptr->r.crloval;
   coargrafptr->kbalval     = finegrafptr->kbalval;
   coargrafptr->levlnum     = finegrafptr->levlnum + 1;
 
@@ -253,36 +236,23 @@ const GraphCoarsenMulti * const coarmulttab)      /*+ Pointer to multinode array
   Gnum                  finefronnum;
   Anum * restrict       fineparttax;              /* May not have been allocated yet             */
 
-  const GraphCoarsenMulti * const coarmulttax = coarmulttab - finegrafptr->s.baseval;
-  const Gnum * restrict const     fineverttax = finegrafptr->s.verttax; /* Fast accesses */
-  const Gnum * restrict const     finevendtax = finegrafptr->s.vendtax;
-  const Gnum * restrict const     fineedgetax = finegrafptr->s.edgetax;
+  const GraphCoarsenMulti * restrict const coarmulttax = coarmulttab - finegrafptr->s.baseval;
+  const Gnum * restrict const              fineverttax = finegrafptr->s.verttax;
+  const Gnum * restrict const              finevendtax = finegrafptr->s.vendtax;
+  const Gnum * restrict const              fineedgetax = finegrafptr->s.edgetax;
 
-  if (coargrafptr == NULL) {                      /* If no coarse graph provided        */
-    if (mapAlloc (&finegrafptr->m) != 0) {        /* Allocate partition array if needed */
-      errorPrint ("kdgraphMapMlUncoarsen: cannot allocate mapping (1)");
-      return     (1);
+  if (coargrafptr == NULL) {                      /* If no coarse graph provided             */
+    if (mapAlloc (&finegrafptr->m) != 0) {        /* Allocate mapping arrays at lowest level */
+      errorPrint ("kgraphMapMlUncoarsen: cannot allocate mapping arrays (1)");
+      return (1);
     }
     kgraphFrst (finegrafptr);                     /* Assign all vertices to first subdomain */
-    return     (0);
+    return (0);
   }
 
-#ifdef SCOTCH_DEBUG_KGRAPH2
-  if (((finegrafptr->m.flagval & MAPPINGFREEDOMN) != 0) && /* Fine graph should not have a private domain array because of coarsening */
-      (finegrafptr->m.domntab != NULL)) {
-    errorPrint ("kdgraphMapMlUncoarsen: internal error");
-    return     (1);
-  }
-#endif /* SCOTCH_DEBUG_KGRAPH2 */
-
-  finegrafptr->m.domnnbr   = coargrafptr->m.domnnbr; /* Propagate coarse domain array */
-  finegrafptr->m.domnmax   = coargrafptr->m.domnmax;
-  finegrafptr->m.domntab   = coargrafptr->m.domntab;
-  finegrafptr->m.flagval  |= MAPPINGFREEDOMN;
-  coargrafptr->m.domntab   = NULL;                /* No need to free coarse graph domain array as it has been transferred */
-  if (mapAlloc (&finegrafptr->m) != 0) {          /* Allocate partition array if needed                                   */
-    errorPrint ("kdgraphMapMlUncoarsen: cannot allocate mapping (2)");
-    return     (1);
+  if (mapAlloc (&finegrafptr->m) != 0) {          /* Allocate partition array if needed */
+    errorPrint ("kgraphMapMlUncoarsen: cannot allocate mapping arrays (2)");
+    return (1);
   }
 
   finegrafptr->s.flagval  |= KGRAPHFREECOMP;
@@ -319,7 +289,7 @@ const GraphCoarsenMulti * const coarmulttab)      /*+ Pointer to multinode array
     coarvertnum  = coarfrontab[coarfronnum];
     finevertnum0 = coarmulttax[coarvertnum].vertnum[0];
     finevertnum1 = coarmulttax[coarvertnum].vertnum[1];
-     
+
     if (finevertnum0 != finevertnum1) {           /* If multinode si made of two distinct vertices */
       Gnum                fineedgenum;
       Gnum                partval;
@@ -353,7 +323,7 @@ const GraphCoarsenMulti * const coarmulttab)      /*+ Pointer to multinode array
 #ifdef SCOTCH_DEBUG_KGRAPH2
       if (coarfrontab[coarfronnum] == ~0) {
         errorPrint ("kgraphMapMlUncoarsen: internal error");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
     }
@@ -365,7 +335,7 @@ const GraphCoarsenMulti * const coarmulttab)      /*+ Pointer to multinode array
 #ifdef SCOTCH_DEBUG_KGRAPH2
   if (kgraphCheck (finegrafptr) != 0) {
     errorPrint ("kgraphMapMlUncoarsen: inconsistent graph data");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
 
@@ -390,7 +360,19 @@ const KgraphMapMlParam * const    paraptr)        /*+ Method parameters +*/
   int                 o;
 
   if (kgraphMapMlCoarsen (grafptr, &coargrafdat, &coarmulttab, paraptr) == 0) {
-    if (((o = kgraphMapMl2         (&coargrafdat, paraptr))              == 0) &&
+    coargrafdat.m.flagval |= MAPPINGFREEDOMN;     /* Transfer ownership of mapping domain array to coarse graph */
+    coargrafdat.m.domntab  = grafptr->m.domntab;
+    grafptr->m.domntab     = NULL;
+
+    o = kgraphMapMl2 (&coargrafdat, paraptr);     /* Compute mapping on coarsened graph */
+
+    grafptr->m.flagval    = coargrafdat.m.flagval; /* Transfer (back) mapping domain array to fine graph */
+    grafptr->m.domntab    = coargrafdat.m.domntab;
+    grafptr->m.domnnbr    = coargrafdat.m.domnnbr;
+    grafptr->m.domnmax    = coargrafdat.m.domnmax;
+    coargrafdat.m.domntab = NULL;
+
+    if ((o == 0) &&                               /* If coarsened mapping succeeded */
         ((o = kgraphMapMlUncoarsen (grafptr, &coargrafdat, coarmulttab)) == 0) &&
         ((o = kgraphMapSt          (grafptr, paraptr->stratasc))         != 0)) /* Apply ascending strategy */
       errorPrint ("kgraphMapMl2: cannot apply ascending strategy");

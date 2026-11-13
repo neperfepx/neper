@@ -56,7 +56,7 @@ extern "C"
     //periodic)
     double **SeedCoo;
 
-    /// Seed weights
+    /// Laguerre weights of the seeds (power distance: d^2 - w)
     double *SeedWeight;
 
     /// Seed ids

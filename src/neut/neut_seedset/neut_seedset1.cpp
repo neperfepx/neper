@@ -72,9 +72,7 @@ neut_seedset_free (struct SEEDSET *pSSet)
 
   ut_free_1d (&(*pSSet).SeedOriTheta);
   ut_free_1d (&(*pSSet).SeedOriWeight);
-  // UNCOMMENT and DEBUG with
-  // neper -T -n from_morpho -morpho "lamellar(w=0.1)" -o new
-  // ut_free_2d (&(*pSSet).LamEq, (*pSSet).N + 1);
+  ut_free_2d (&(*pSSet).LamEq, (*pSSet).N + 1);
   ut_free_1d (&(*pSSet).LamWidth);
   ut_free_1d_int (&(*pSSet).LamWidthId);
   ut_free_2d (&(*pSSet).SeedOri, (*pSSet).N + 1);
@@ -315,26 +313,45 @@ neut_seedset_seed_updateslaves (struct SEEDSET *pSSet, int id)
   return;
 }
 
+// Measure of how much the cell of seed (supposed to be void) is
+// overlapped by the other seeds, and list of these seeds.  The cell of a
+// seed i is {p : |p - x_i|^2 - w_i^2 <= |p - x_j|^2 - w_j^2}, so that seed
+// i is inside the cell of seed j (with respect to seed i) if w_j^2 - w_i^2
+// > |x_i - x_j|^2.
 double
-neut_seedset_voidcell_distance (struct SEEDSET SSet, int seed)
+neut_seedset_voidcell_distance (struct SEEDSET SSet, int seed, int **pseeds, int *pseedqty)
 {
   int i;
   double dist, res, *plane = ut_alloc_1d (4);
 
+  if (pseedqty)
+    (*pseedqty) = 0;
   res = 0;
   for (i = 1; i <= SSet.Nall; i++)
   {
     if (i == seed)
       continue;
 
-    ut_space_points_bisplane_power (SSet.SeedCoo[seed], SSet.SeedCoo[i],
-                                    SSet.SeedWeight[seed], SSet.SeedWeight[i],
-                                    plane);
-    dist = ut_space_point_plane_dist_signed (SSet.SeedCoo[seed], plane);
+    dist = SSet.SeedWeight[i] - SSet.SeedWeight[seed]
+         - ut_space_dist2 (SSet.SeedCoo[seed], SSet.SeedCoo[i]);
 
     if (dist > 0)
+    {
       res += dist;
+
+      if (pseedqty)
+      {
+        (*pseedqty)++;
+        if (pseeds)
+        {
+          (*pseeds) = ut_realloc_1d_int (*pseeds, *pseedqty);
+          (*pseeds)[(*pseedqty) - 1] = i;
+        }
+      }
+    }
   }
+
+  res = sqrt (res);
 
   ut_free_1d (&plane);
 
@@ -516,6 +533,16 @@ neut_seedset_kdtree_update (struct SEEDSET SSet, int *seedmoved,
                                          pnf_cloud, pnf_tree, pptid_seedid,
                                          pseedid_ptid);
 
+  // A moved seed is added as a new point, while its old point remains in
+  // the tree, so that the tree grows and searches slow down.  Rebuilding
+  // it from the seeds once it holds twice their number.
+  if ((int) (*pnf_cloud).pts.size () >= 2 * SSet.Nall)
+  {
+    ut_free_1d_int (pptid_seedid);
+    ut_free_1d_int (pseedid_ptid);
+    neut_seedset_kdtree (SSet, pnf_cloud, pnf_tree, pptid_seedid, pseedid_ptid);
+  }
+
   return;
 }
 
@@ -679,9 +706,11 @@ neut_seedset_periodize (int *periodic, int level, struct TESS Dom,
   else
     ut_string_string ("standard", &(*pSSet).Type);
 
+  ut_free_1d_int (&(*pSSet).Periodic);
   (*pSSet).Periodic = ut_alloc_1d_int (3);
   ut_array_1d_int_memcpy (periodic, 3, (*pSSet).Periodic);
 
+  ut_free_1d (&(*pSSet).PeriodicDist);
   (*pSSet).PeriodicDist = ut_alloc_1d (3);
   for (i = 0; i < 3; i++)
     if ((*pSSet).Periodic[i])

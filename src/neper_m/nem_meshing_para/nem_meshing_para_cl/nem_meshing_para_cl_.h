@@ -18,6 +18,8 @@
 
 extern int nem_meshing_para_cl_cell (char *, struct MESHPARA *,
 				     struct TESS *pTess);
+extern int nem_meshing_para_cl_poly (char *clstring, struct MESHPARA *pMeshPara,
+                                     struct TESS *pTess);
 extern int nem_meshing_para_cl_face (char *clstring, struct MESHPARA *pMeshPara,
                                      struct TESS *pTess);
 extern int nem_meshing_para_cl_edge (char *clstring, struct MESHPARA *pMeshPara,
@@ -31,6 +33,8 @@ extern int nem_meshing_para_cl_poly_mesh (char *, struct MESHPARA *pMeshPara,
 					  struct MESH *Mesh,
 					  struct TESS *pTess);
 
+extern int nem_meshing_para_cl2rcl (struct MESHPARA *pMeshPara, struct TESS Tess,
+                                    char *entity, double *cl);
 extern int nem_meshing_para_rcl2cl (struct MESHPARA *pMeshPara, int cellqty, int dim,
                                     double *cell_cl);
 extern int nem_meshing_para_rcl2cl_face (struct MESHPARA *pMeshPara, struct TESS Tess,

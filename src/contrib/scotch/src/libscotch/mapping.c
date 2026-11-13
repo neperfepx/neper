@@ -1,4 +1,4 @@
-/* Copyright 2004,2007-2009,2011,2012,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007-2009,2011,2012,2014,2018,2021,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -66,14 +66,14 @@
 /**                                 to   : 28 apr 2009     **/
 /**                # Version 6.0  : from : 04 mar 2011     **/
 /**                                 to   : 26 fev 2018     **/
+/**                # Version 7.0  : from : 15 jul 2021     **/
+/**                                 to   : 19 jul 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define MAPPING
 
 #include "module.h"
 #include "common.h"
@@ -107,17 +107,16 @@ const ArchDom * restrict const  domnptr)          /*+ Target architecture initia
             : archDomSize (archptr, domnptr);     /* Else get architecture size                  */
   domnmax ++;                                     /* +1 for empty domain in mapBuild()/mapLoad() */
 
-  mapInit2 (mappptr, grafptr, archptr, domnptr, domnmax, 0);
+  mapInit2 (mappptr, grafptr, archptr, domnmax, 0);
 }
 
 void
 mapInit2 (
-Mapping * restrict const        mappptr,          /*+ Mapping structure                  +*/
-const Graph * restrict const    grafptr,          /*+ Graph data                         +*/
-const Arch * restrict const     archptr,          /*+ Architecture data                  +*/
-const ArchDom * restrict const  domnptr,          /*+ Target architecture initial domain +*/
-const Anum                      domnmax,
-const Anum                      domnnbr)
+Mapping * restrict const        mappptr,          /*+ Mapping structure                         +*/
+const Graph * restrict const    grafptr,          /*+ Graph data                                +*/
+const Arch * restrict const     archptr,          /*+ Architecture data                         +*/
+const Anum                      domnmax,          /*+ Size of domain array                      +*/
+const Anum                      domnnbr)          /*+ Current number of domains in domain array +*/
 {
   mappptr->flagval = MAPPINGNONE;
   mappptr->grafptr = grafptr;
@@ -126,7 +125,6 @@ const Anum                      domnnbr)
   mappptr->domntab = NULL;
   mappptr->domnnbr = domnnbr;
   mappptr->domnmax = domnmax;
-  mappptr->domnorg = *domnptr;                    /* Use provided domain as original domain (e.g. when running a piece of parallel partitioning) */
 }
 
 /* This routine allocates the contents of a mapping.
@@ -139,21 +137,24 @@ int
 mapAlloc (
 Mapping * restrict const    mappptr)              /*+ Mapping structure to fill +*/
 {
-  if ((mappptr->flagval & MAPPINGFREEPART) == 0) { /* If no private partition array yet */
+  if (mappptr->parttax == NULL) {                 /* If part array not yet allocated */
     Anum * restrict     parttab;
    
     if ((parttab = (Anum *) memAlloc (mappptr->grafptr->vertnbr * sizeof (Anum))) == NULL) {
       errorPrint ("mapAlloc: out of memory (1)");
-      return     (1);
+      return (1);
     }
-    mappptr->flagval |= MAPPINGFREEPART;
+    mappptr->flagval |= MAPPINGFREEPART;          /* Part array is locally owned */
     mappptr->parttax  = parttab - mappptr->grafptr->baseval;
   }
+#ifdef SCOTCH_DEBUG_MAP2
+  memSet (mappptr->parttax + mappptr->grafptr->baseval, ~0, mappptr->grafptr->vertnbr * sizeof (Anum)); /* Pre-set part array anyway */
+#endif /* SCOTCH_DEBUG_MAP2 */
 
-  if ((mappptr->flagval & MAPPINGFREEDOMN) == 0) { /* If no private domain array yet */
+  if (mappptr->domntab == NULL) {                 /* If domain array not yet allocated */
     if ((mappptr->domntab = (ArchDom *) memAlloc (mappptr->domnmax * sizeof (ArchDom))) == NULL) {
       errorPrint ("mapAlloc: out of memory (2)");
-      return     (1);
+      return (1);
     }
     mappptr->flagval |= MAPPINGFREEDOMN;
   }
@@ -173,46 +174,16 @@ mapResize (
 Mapping * restrict const    mappptr,              /*+ Mapping structure to fill +*/
 const Anum                  domnmax)
 {
-  int                       flagval;
-  const ArchDom * restrict  domntab;
-
-  flagval = mappptr->flagval;                     /* Save old flag value              */
-  domntab = mappptr->domntab;                     /* Save pointer to old domain array */
-
-  if (mapResize2 (mappptr, domnmax) != 0)         /* Resize array */
-    return (1);
-
-  if (flagval != mappptr->flagval)                /* If a new private array has been created */
-    memCpy (mappptr->domntab, domntab, mappptr->domnnbr * sizeof (ArchDom));
-
-  return (0);
-}
-
-/* This routine resizes the domain array of a
-** mapping without preserving its existing contents.
-** It returns:
-** - 0   : if mapping successfully allocated.
-** - !0  : on error.
-*/
-
-int
-mapResize2 (
-Mapping * restrict const    mappptr,              /*+ Mapping structure to fill +*/
-const Anum                  domnmax)
-{
   ArchDom *           domntab;
 
-  domntab = ((mappptr->flagval & MAPPINGFREEDOMN) != 0) /* If it was a privately owned array */
-            ? memRealloc (mappptr->domntab, domnmax * sizeof (ArchDom)) /* Reallocate it     */
-            : memAlloc (domnmax * sizeof (ArchDom)); /* Else allocate it privately           */
-  if (domntab == NULL) {
-    errorPrint ("mapResize2: out of memory");
-    return     (1);
+  if (mappptr->domntab != NULL) {
+    if ((domntab = memRealloc (mappptr->domntab, domnmax * sizeof (ArchDom))) == NULL) { /* Reallocate domain array */
+      errorPrint ("mapResize: out of memory");
+      return (1);
+    }
+    mappptr->domntab = domntab;
   }
-
-  mappptr->domntab  = domntab;
-  mappptr->domnmax  = domnmax;
-  mappptr->flagval |= MAPPINGFREEDOMN;            /* Array is now private anyway */
+  mappptr->domnmax = domnmax;
 
   return (0);
 }
@@ -224,10 +195,11 @@ const Anum                  domnmax)
 
 void
 mapFrst (
-Mapping * restrict const    mappptr)              /*+ Mapping structure to fill +*/
+Mapping * restrict const        mappptr,          /*+ Mapping structure to fill +*/
+const ArchDom * restrict const  domnptr)          /*+ Initial (sub)domain       +*/
 {
   mappptr->domnnbr = 1;                           /* One domain in mapping to date */
-  mappptr->domntab[0] = mappptr->domnorg;         /* Set first domain              */
+  mappptr->domntab[0] = *domnptr;                 /* Set initial domain            */
   memSet (mappptr->parttax + mappptr->grafptr->baseval, 0, mappptr->grafptr->vertnbr * sizeof (Anum)); /* Set parttax to first domain */
 }
 
@@ -241,15 +213,17 @@ void
 mapFree (
 Mapping * const             mappptr)
 {
-  if (((mappptr->flagval & MAPPINGFREEDOMN) != 0) && /* If domntab must be freed */
-      (mappptr->domntab != NULL))                 /* And if exists               */
-    memFree (mappptr->domntab);                   /* Free it                     */
   if (((mappptr->flagval & MAPPINGFREEPART) != 0) && /* If parttax must be freed */
       (mappptr->parttax != NULL))                 /* And if exists               */
     memFree (mappptr->parttax + mappptr->grafptr->baseval); /* Free it           */
+  if (((mappptr->flagval & MAPPINGFREEDOMN) != 0) && /* If domntab must be freed */
+      (mappptr->domntab != NULL))                 /* And if exists               */
+    memFree (mappptr->domntab);                   /* Free it                     */
 
+#ifdef SCOTCH_DEBUG_MAP2
   mappptr->parttax = NULL;
   mappptr->domntab = NULL;
+#endif /* SCOTCH_DEBUG_MAP2 */
 }
 
 /* This routine frees the contents
@@ -280,24 +254,34 @@ mapCopy (
 Mapping * restrict const       mappptr,           /*+ Mapping to set +*/
 const Mapping * restrict const mapoptr)           /*+ Old mapping    +*/
 {
-  Anum                domnnbr;
-  Gnum                baseval;
+  const Gnum                baseval = mapoptr->grafptr->baseval;
+  const Anum                domnnbr = mapoptr->domnnbr;
 
 #ifdef SCOTCH_DEBUG_MAP2
-  if (mappptr->grafptr->vertnbr != mapoptr->grafptr->vertnbr) {
-    errorPrint ("mapCopy: mappings do not match");
-    return     (1);
+  if (mappptr->grafptr != mapoptr->grafptr) {
+    errorPrint ("mapCopy: mappings do not correspond to same graph");
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_MAP2 */
 
-  baseval = mapoptr->grafptr->baseval;
-  domnnbr = mapoptr->domnnbr;
-  if (domnnbr > mappptr->domnmax) {               /* If we have to resize domain array */
-    if (mapResize2 (mappptr, domnnbr) != 0)       /* Resize it                         */
+  if (mappptr->domntab != NULL) {
+    if (domnnbr > mappptr->domnmax) {             /* If we have to resize domain array */
+      if (mapResize (mappptr, domnnbr) != 0) {    /* Resize it                         */
+        errorPrint ("mapCopy: cannot resize mapping arrays");
+        return (1);
+      }
+    }
+  }
+  else {
+    mappptr->domnmax = domnnbr;
+    if (mapAlloc (mappptr) != 0) {                /* Do not fill array if incomplete mapping, as it will be copied */
+      errorPrint ("mapCopy: cannot allocate mapping arrays");
       return (1);
+    }
   }
 
-  mappptr->domnnbr = domnnbr;
+  mappptr->flagval |= mapoptr->flagval & MAPPINGINCOMPLETE; /* Preserve incomplete mapping flag */
+  mappptr->domnnbr  = domnnbr;                    /* Copy domain and mapping data               */
   memCpy (mappptr->domntab, mapoptr->domntab, domnnbr * sizeof (ArchDom));
   memCpy (mappptr->parttax + baseval, mapoptr->parttax + baseval, mapoptr->grafptr->vertnbr * sizeof (Anum));
 
@@ -328,7 +312,7 @@ Gnum * const                    hashsizptr)       /*+ Size of hash table        
 #ifdef SCOTCH_DEBUG_MAP2
   if (mappptr->domnmax < 1) {
     errorPrint ("mapBuild2: domain array is too small");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_MAP2 */
 
@@ -472,7 +456,7 @@ const Anum * restrict const termtab)              /*+ Terminal array to load +*/
 #ifdef SCOTCH_DEBUG_MAP2
       if (hashtab[hashnum].termnum == termnum) {  /* If hash slot found                         */
         errorPrint ("mapMerge: internal error");  /* Multiple domains with same terminal number */
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_MAP2 */
       if (hashtab[hashnum].termnum == ~0) {       /* If hash slot empty */

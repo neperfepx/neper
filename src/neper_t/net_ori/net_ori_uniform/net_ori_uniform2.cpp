@@ -40,16 +40,41 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
 
   // optiini
 
-  if (!strcmp (In.optiini[1][level], "random"))
+  // the orientations are random unless specified otherwise, by file(...) or
+  // ori:... (the other attributes do not apply here)
+  char *oriini = NULL;
+  ut_string_string (ut_string_isfilename (In.optiini[1][level]) ? In.optiini[1][level] : "random",
+                    &oriini);
+
+  if (strstr (In.optiini[1][level], "ori" NEUT_SEP_DEP))
+  {
+    int i, qty, *qty1 = NULL;
+    char ***parts = NULL;
+    ut_list_break2 (In.optiini[1][level], NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty1, &qty);
+    for (i = 0; i < qty; i++)
+      if (!strcmp (parts[i][0], "ori"))
+        ut_string_string (parts[i][1], &oriini);
+    ut_free_3d_char (&parts, qty, 2);
+    ut_free_1d_int (&qty1);
+  }
+
+  if (!strcmp (oriini, "random"))
     net_ori_random (random, pOSet);
-  else if (ut_string_isfilename (In.optiini[1][level]))
+  else if (ut_string_isfilename (oriini))
   {
     ut_print_message (0, verbositylevel,
                       "Loading orientations from file...\n");
-    net_ori_file (In.optiini[1][level], pOSet);
+    // net_ori_file resets the crystal symmetry
+    char *crysym = NULL;
+    ut_string_string ((*pOSet).crysym, &crysym);
+    net_ori_file (oriini, pOSet);
+    ut_string_string (crysym, &(*pOSet).crysym);
+    ut_free_1d_char (&crysym);
   }
   else
     abort ();
+
+  ut_free_1d_char (&oriini);
 
   // optioptifix
 
@@ -184,6 +209,8 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet,
   ut_free_1d (&E);
   ut_free_2d (&fc, (*pOSet).size);
   ut_free_2d (&qc, (*pOSet).size);
+  ut_free_2d (&dq, (*pOSet).size);
+  ut_free_1d (&Etot);
 
   delete qtree;
 

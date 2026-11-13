@@ -84,7 +84,7 @@ net_tess_file_updatedomain (struct MTESS *pMTess, struct TESS *Tess,
   int DomFaceQty = Dom.FaceQty;
   int *DomFaceEdgeQty = ut_alloc_1d_int (DomFaceQty);
   int **DomFaceEdgeNb = ut_alloc_1d_pint (DomFaceQty);
-  ut_array_1d_int_memcpy (Dom.FaceVerQty + 1, DomFaceQty, DomFaceEdgeQty);
+  ut_array_1d_int_memcpy (Dom.FaceEdgeQty + 1, DomFaceQty, DomFaceEdgeQty);
   for (i = 0; i < DomFaceQty; i++)
   {
     DomFaceEdgeNb[i] = ut_alloc_1d_int (DomFaceEdgeQty[i]);

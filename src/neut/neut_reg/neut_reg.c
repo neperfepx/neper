@@ -9,6 +9,7 @@ net_reg_set_zero (struct REG *pReg)
 {
   (*pReg).mloop = 2;
   (*pReg).maxedgedelqty = INT_MAX;
+  (*pReg).delcell = 0;
   (*pReg).fmax = 20;
   (*pReg).seltype = NULL;
   (*pReg).PolySel = NULL;

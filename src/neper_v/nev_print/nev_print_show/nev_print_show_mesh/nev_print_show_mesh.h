@@ -9,5 +9,5 @@ extern void nev_print_show_mesh_elset (char *entity, char *expr, struct TESS *pT
 				 struct NODES Nodes, struct MESH *Mesh,
 				 struct PRINT *pPrint);
 extern void nev_print_show_mesh_nodes (char *expr, struct TESS *pTess,
-				 struct NODES Nodes, struct MESH *Mesh,
+				 struct NODES Nodes, struct MESH *Mesh, struct NSET NSet,
 				 struct PRINT *pPrint);

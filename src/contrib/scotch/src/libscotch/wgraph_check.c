@@ -1,4 +1,4 @@
-/* Copyright 2007-2010,2018,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2007-2010,2018,2020,2021,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -46,7 +46,9 @@
 /**                # Version 6.0  : from : 05 nov 2009     **/
 /**                                 to   : 31 may 2018     **/
 /**                # Version 6.1  : from : 09 aug 2020     **/
-/**                                 to   : 09 aug 2020     **/
+/**                                 to   : 02 dec 2021     **/
+/**                # Version 7.0  : from : 16 jan 2023     **/
+/**                                 to   : 16 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -54,11 +56,10 @@
 **  The defines and includes.
 */
 
-#define WGRAPH_CHECK
-
 #include "module.h"
 #include "common.h"
 #include "graph.h"
+#include "arch.h"
 #include "wgraph.h"
 
 /*************************/
@@ -112,13 +113,13 @@ const Wgraph * const        grafptr)
     if ((partnum >= grafptr->partnbr) ||
         (partnum <  -1)) {
       errorPrint ("wgraphCheck: invalid part array");
-      goto abort;
+      goto fail;
     }
   }
 
   if (grafptr->fronnbr < 0) {
     errorPrint ("wgraphCheck: invalid frontier size");
-    goto abort;
+    goto fail;
   }
   for (fronnum = 0; fronnum < grafptr->fronnbr; fronnum ++) {
     Gnum                vertnum;
@@ -126,7 +127,7 @@ const Wgraph * const        grafptr)
     vertnum = grafptr->frontab[fronnum];
     if (grafptr->parttax[vertnum] != -1) {
       errorPrint ("wgraphCheck: invalid frontier array");
-      goto abort;
+      goto fail;
     }
   }
 
@@ -167,25 +168,25 @@ const Wgraph * const        grafptr)
   for (partnum = 0; partnum < grafptr->partnbr; partnum ++) {
     if (grafptr->compsize[partnum] != compsizetab[partnum]) {
       errorPrint ("wgraphCheck: invalid part size array");
-      goto abort;
+      goto fail;
     }
     if (grafptr->compload[partnum] != comploadtab[partnum]) {
       errorPrint ("wgraphCheck: invalid part load array");
-      goto abort;
+      goto fail;
     }
   }
 
   if (grafptr->fronload != frlosum) {
     errorPrint ("wgraphCheck: invalid frontier load");
-    goto abort;
+    goto fail;
   }
   if (grafptr->fronnbr != fronnbr) {
     errorPrint ("wgraphCheck: invalid frontier size");
-    goto abort;
+    goto fail;
   }
 
   o = 0;                                          /* Everything went all right */
-abort :
+fail:
   memFree (flagtab);                              /* Free group leader */
 
   return (o);

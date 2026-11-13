@@ -7,7 +7,6 @@
 void
 nes_in_set_zero (struct IN_S *pIn)
 {
-  (*pIn).fepxdir = NULL;
   (*pIn).simdir = NULL;
   (*pIn).mergedir = NULL;
   (*pIn).orispace = NULL;
@@ -18,7 +17,6 @@ nes_in_set_zero (struct IN_S *pIn)
   (*pIn).entities = NULL;
   (*pIn).entityresexpr = NULL;
 
-  (*pIn).stepqty = -1; // uninitialized
 
   return;
 }
@@ -26,7 +24,6 @@ nes_in_set_zero (struct IN_S *pIn)
 void
 nes_in_free (struct IN_S *pIn)
 {
-  ut_free_1d_char (&(*pIn).fepxdir);
   ut_free_1d_char (&(*pIn).simdir);
   ut_free_1d_char (&(*pIn).mergedir);
   ut_free_1d_char (&(*pIn).orispace);
@@ -79,7 +76,7 @@ nes_loadtesr (struct SIM *pSim, struct TESR *pTesr, int verbosity)
       ut_print_message (0, verbosity + 1, "%s...\n", (*pSim).tesr);
 
     file = ut_file_open (filename, "R");
-    neut_tesr_fscanf (file, dirname, NULL, NULL, pTesr);
+    neut_tesr_fscanf (file, dirname, pTesr);
     ut_file_close (file, filename, "R");
   }
   else
@@ -107,7 +104,7 @@ nes_loadmesh (struct SIM *pSim, struct NODES *pNodes, struct MESH *Mesh,
       ut_print_message (0, verbosity + 1, "%s...\n", (*pSim).msh);
 
     file = ut_file_open (filename, "R");
-    neut_mesh_fscanf_msh (file, pNodes, Mesh, Mesh +1, Mesh + 2, Mesh + 3, NULL, NULL);
+    neut_mesh_fscanf_msh (file, pNodes, Mesh, Mesh +1, Mesh + 2, Mesh + 3, NULL, NULL, NULL, NULL);
     ut_file_close (file, filename, "R");
   }
 
@@ -122,7 +119,7 @@ nes_loadmesh (struct SIM *pSim, struct NODES *pNodes, struct MESH *Mesh,
 void
 nes_loadconfig (struct SIM Sim, char ***pGroupCrySym, int *pGroupQty, int verbosity)
 {
-  int id;
+  int i, id = 0;
   char *filename = ut_string_paste3 (Sim.simdir, "/inputs/", Sim.cfg);
   char *string = ut_alloc_1d_char (1000);
   FILE *fp = NULL;
@@ -134,40 +131,53 @@ nes_loadconfig (struct SIM Sim, char ***pGroupCrySym, int *pGroupQty, int verbos
 
     fp = ut_file_open (filename, "R");
 
-    while (fscanf (fp, "%s", string) == 1)
+    // keywords and values are case-insensitive, as in FEPX, and crystal_type
+    // applies to the current phase
+    while (fscanf (fp, "%999s", string) == 1)
     {
-      if (!strcmp (string, "number_of_phases"))
+      // comment: skipping the rest of the line
+      if (string[0] == '#')
+        ut_file_skip_line (fp, 1);
+
+      else if (!strcasecmp (string, "number_of_phases"))
       {
-        if (fscanf (fp, "%d", pGroupQty) != 1)
-          abort ();
+        if (fscanf (fp, "%d", pGroupQty) != 1 || *pGroupQty < 1)
+          ut_print_message (2, 3, "%s: failed to read `number_of_phases'.\n", Sim.cfg);
         (*pGroupCrySym) = ut_alloc_1d_pchar (*pGroupQty);
       }
 
-      else if (!strcmp (string, "phase"))
+      else if (!strcasecmp (string, "phase"))
       {
         if (fscanf (fp, "%d", &id) != 1)
-          abort ();
+          ut_print_message (2, 3, "%s: failed to read `phase' id.\n", Sim.cfg);
+        if (id < 1 || id > *pGroupQty)
+          ut_print_message (2, 3, "%s: `phase' id %d is not in [1, %d] (`number_of_phases').\n",
+                            Sim.cfg, id, *pGroupQty);
+      }
 
-        while (fscanf (fp, "%s", string) == 1)
-        {
-          if (!strcmp (string, "crystal_type"))
-          {
-            if (fscanf (fp, "%s", string) != 1)
-              abort ();
-            if (!strcmp (string, "FCC") || !strcmp (string, "BCC"))
-              ut_string_string ("cubic", (*pGroupCrySym) + id - 1);
-            else if (!strcmp (string, "HCP"))
-              ut_string_string ("hexagonal", (*pGroupCrySym) + id - 1);
-            else
-              abort ();
+      else if (!strcasecmp (string, "crystal_type"))
+      {
+        if (id == 0)
+          ut_print_message (2, 3, "%s: `crystal_type' is not preceded by `phase'.\n", Sim.cfg);
+        if (fscanf (fp, "%999s", string) != 1)
+          ut_print_message (2, 3, "%s: failed to read `crystal_type'.\n", Sim.cfg);
 
-            break;
-          }
-        }
+        if (!strcasecmp (string, "fcc") || !strcasecmp (string, "bcc"))
+          ut_string_string ("cubic", (*pGroupCrySym) + id - 1);
+        else if (!strcasecmp (string, "hcp"))
+          ut_string_string ("hexagonal", (*pGroupCrySym) + id - 1);
+        else if (!strcasecmp (string, "bct"))
+          ut_string_string ("4/mmm", (*pGroupCrySym) + id - 1);
+        else
+          ut_print_message (2, 3, "%s: unknown `crystal_type' `%s'.\n", Sim.cfg, string);
       }
     }
 
     ut_file_close (fp, filename, "R");
+
+    for (i = 0; i < *pGroupQty; i++)
+      if (!(*pGroupCrySym)[i])
+        ut_print_message (2, 3, "%s: missing `crystal_type' for phase %d.\n", Sim.cfg, i + 1);
   }
 
   else

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2011,2014,2016,2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2011,2014,2016,2019,2023-2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -66,6 +66,8 @@
 /**                                 to   : 14 apr 2011     **/
 /**                # Version 6.0  : from : 23 feb 2011     **/
 /**                                 to   : 20 aug 2019     **/
+/**                # Version 7.0  : from : 17 jan 2023     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -73,7 +75,7 @@
 **  The defines and includes.
 */
 
-#define BGRAPH_BIPART_FM
+#define SCOTCH_BGRAPH_BIPART_FM
 
 #define SCOTCH_TABLE_GAIN
 
@@ -131,7 +133,7 @@ const Gnum                           deltmax)     /*+ Maximum imbalance +*/
     deltnew = deltcur + vexxptr->compgain;
     if ((deltnew >= deltmin) &&                   /* If vertex enforces balance */
         (deltnew <= deltmax)) {
-      deltnew = abs (deltnew);
+      deltnew = ABS (deltnew);
       if ((vexxptr->commgain < gainbest) ||       /* And if it gives better gain */
           ((vexxptr->commgain == gainbest) &&     /* Or if it gives better load  */
            (deltnew < deltbest))) {
@@ -205,7 +207,7 @@ const Gnum                           deltmax)     /*+ Maximum imbalance +*/
     deltnew = deltcur + vexxptr->compgain;
     if ((deltnew >= deltmin) &&                   /* If vertex enforces balance */
         (deltnew <= deltmax)) {
-      deltnew = abs (deltnew);
+      deltnew = ABS (deltnew);
       if (deltnew <= deltbest) {                  /* If vertex enforces balance  */
         vertbest = vexxptr;
         gainbest = gainval;
@@ -450,7 +452,7 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_BGRAPH3
   if (bgraphBipartFmCheck (grafptr, hashtab, hashmsk, 0, compload0dltbst, commloadbst, commgainextnbst) != 0) {
     errorPrint ("bgraphBipartFm: internal error (2)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_BGRAPH3 */
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
@@ -491,7 +493,7 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_BGRAPH3
     if (bgraphBipartFmCheck (grafptr, hashtab, hashmsk, swapval, compload0dlt, commload, commgainextn) != 0) {
       errorPrint ("bgraphBipartFm: internal error (3)");
-      return     (1);
+      return (1);
     }
 #endif /* SCOTCH_DEBUG_BGRAPH3 */
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
@@ -528,7 +530,7 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
 
       if (vexxptr->mswpnum != mswpnum) {          /* If vertex data not yet recorded */
         vexxptr->mswpnum = mswpnum;
-        savetab[savenbr].hashnum  = vexxptr - hashtab;
+        savetab[savenbr].hashnum  = (Gnum) (vexxptr - hashtab);
         savetab[savenbr].partval  = partval;
         savetab[savenbr].compgain = vexxptr->compgain;
         savetab[savenbr].commgain = vexxptr->commgain;
@@ -625,7 +627,7 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_BGRAPH2
             if (grafptr->parttax[vertend] != (partval ^ swapval)) {
               errorPrint ("bgraphBipartFm: internal error (4)");
-              return     (1);
+              return (1);
             }
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
             partold = partval ^ swapval ^ swapvalbst; /* Get part of vertex as in latest accepted configuration               */
@@ -661,8 +663,9 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
         movenbr         =
         savenbr         = 0;
         mswpnum ++;
-      } else if (commload == commloadbst) {
-        if (abs (compload0dlt) < abs (compload0dltbst)) {
+      }
+      else if (commload == commloadbst) {
+        if (ABS (compload0dlt) < ABS (compload0dltbst)) {
           compload0dltbst = compload0dlt;         /* This move was effective */
           commgainextnbst = commgainextn;
           swapvalbst      = swapval;
@@ -671,7 +674,7 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
           savenbr         = 0;
           mswpnum ++;
         }
-        else if (abs (compload0dlt) == abs (compload0dltbst)) {
+        else if (ABS (compload0dlt) == ABS (compload0dltbst)) {
           compload0dltbst = compload0dlt;         /* Forget backtracking */
           commgainextnbst = commgainextn;
           swapvalbst      = swapval;
@@ -701,7 +704,7 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_BGRAPH3
       if (bgraphBipartFmCheck (grafptr, hashtab, hashmsk, swapval, compload0dlt, commload, commgainextn) != 0) {
         errorPrint ("bgraphBipartFm: internal error (5)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_BGRAPH3 */
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
@@ -712,12 +715,12 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_BGRAPH2
         if (veextax == NULL) {                    /* commgainextn should always be 0 if (veextab == NULL) */
           errorPrint ("bgraphBipartFm: internal error (6)");
-          return     (1);
+          return (1);
         }
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
 
         compload0dlttmp = grafptr->s.velosum - compload0dlt - 2 * grafptr->compload0avg;
-        if (abs (compload0dlttmp) <= compload0dltmax) { /* If still within bounds, perform actual swapping */
+        if (ABS (compload0dlttmp) <= compload0dltmax) { /* If still within bounds, perform actual swapping */
           Gnum                    hashnum;
 
           commload    +=   commgainextn;          /* Perform global swap */
@@ -747,7 +750,7 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
             commgain = veextax[hashtab[hashnum].vertnum];
             if (commgain != 0) {                  /* If vertex has external cocycle edges                         */
               hashtab[hashnum].commgain += 2 * (1 - 2 * hashtab[hashnum].partval) * commgain; /* Compute new gain */
-              if (bgraphBipartFmIsTabl (&hashtab[hashnum])) {       /* If vertex is linked                        */
+              if (bgraphBipartFmIsTabl (&hashtab[hashnum])) { /* If vertex is linked                              */
                 bgraphBipartFmTablDel (tablptr, &hashtab[hashnum]); /* Remove it from table                       */
                 bgraphBipartFmTablAdd (tablptr, &hashtab[hashnum]); /* Re-link it                                 */
               }
@@ -756,7 +759,7 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
 
           if ((commload < commloadbst) ||         /* If move improves cost */
               ((commload == commloadbst) &&
-               (abs (compload0dlt) < abs (compload0dltbst)))) {
+               (ABS (compload0dlt) < ABS (compload0dltbst)))) {
             compload0dltbst = compload0dlt;       /* Then record best move done */
             commloadbst     = commload;
             commgainextnbst = commgainextn;
@@ -771,7 +774,7 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_BGRAPH3
           if (bgraphBipartFmCheck (grafptr, hashtab, hashmsk, swapval, compload0dlt, commload, commgainextn) != 0) {
             errorPrint ("bgraphBipartFm: internal error (7)");
-            return     (1);
+            return (1);
           }
 #endif /* SCOTCH_DEBUG_BGRAPH3 */
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
@@ -785,7 +788,7 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_BGRAPH3
   if (bgraphBipartFmCheck (grafptr, hashtab, hashmsk, swapval, compload0dlt, commload, commgainextn) != 0) {
     errorPrint ("bgraphBipartFm: internal error (8)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_BGRAPH3 */
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
@@ -839,7 +842,7 @@ const BgraphBipartFmParam * const paraptr)        /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_BGRAPH2
   if (bgraphCheck (grafptr) != 0) {
     errorPrint ("bgraphBipartFm: inconsistent graph data");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
 
@@ -876,8 +879,8 @@ BgraphBipartFmVertex ** const     lockptr)        /*+ Pointer to locked list    
   Gnum                            hashsiz;
   Gnum                            hashmax;
   Gnum                            hashmsk;
-  Gnum                            hashsta;        /* Start index of range of hash indices to move */
-  Gnum                            hashend;        /* End index of range of hash indices to move   */
+  Gnum                            hashbas;        /* Start index of range of hash indices to move */
+  Gnum                            hashnnd;        /* End index of range of hash indices to move   */
   Gnum                            hashnum;
 
   hashmax = *hashmaxptr << 1;                     /* Compute new sizes */
@@ -888,7 +891,7 @@ BgraphBipartFmVertex ** const     lockptr)        /*+ Pointer to locked list    
 #ifdef SCOTCH_DEBUG_BGRAPH2
   if (sizeof (BgraphBipartFmVertex) < sizeof (BgraphBipartFmSave)) { /* Should always be true */
     errorPrint ("bgraphBipartFmResize: internal error (1)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
 
@@ -918,10 +921,10 @@ BgraphBipartFmVertex ** const     lockptr)        /*+ Pointer to locked list    
   bgraphBipartFmTablFree (tablptr);               /* Reset gain table  */
   *lockptr = NULL;                                /* Rebuild lock list */
 
-  for (hashsta = hashold - 1; hashtab[hashsta].vertnum != ~0; hashsta --) ; /* Start index of first segment to reconsider is last empty slot */
-  hashend = hashold;                              /* First segment to reconsider ends at the end of the old array                            */
-  while (hashend != hashsta) {                    /* For each of the two segments to consider                                                */
-    for (hashnum = hashsta; hashnum < hashend; hashnum ++) { /* Re-compute position of vertices in new table                                 */
+  for (hashbas = hashold - 1; hashtab[hashbas].vertnum != ~0; hashbas --) ; /* Start index of first segment to reconsider is last empty slot */
+  hashnnd = hashold;                              /* First segment to reconsider ends at the end of the old array                            */
+  while (hashnnd != hashbas) {                    /* For each of the two segments to consider                                                */
+    for (hashnum = hashbas; hashnum < hashnnd; hashnum ++) { /* Re-compute position of vertices in new table                                 */
       Gnum                        vertnum;
 
       vertnum = hashtab[hashnum].vertnum;
@@ -933,9 +936,9 @@ BgraphBipartFmVertex ** const     lockptr)        /*+ Pointer to locked list    
             break;                                /* There is nothing to do   */
           if (hashtab[hashnew].vertnum == ~0) {   /* If new slot is empty     */
 #ifdef SCOTCH_DEBUG_BGRAPH2
-            if ((hashnew > hashnum) && (hashnew < hashend)) { /* If vertex is not moved either before its old position or after the end of the segment */
+            if ((hashnew > hashnum) && (hashnew < hashnnd)) { /* If vertex is not moved either before its old position or after the end of the segment */
               errorPrint ("bgraphBipartFmResize: internal error (2)");
-              return     (1);
+              return (1);
             }
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
             hashtab[hashnew] = hashtab[hashnum];  /* Copy data to new slot         */
@@ -947,14 +950,14 @@ BgraphBipartFmVertex ** const     lockptr)        /*+ Pointer to locked list    
 
         if (bgraphBipartFmIsTabl (&hashtab[hashnew])) /* If vertex was linked, re-link it */
           bgraphBipartFmTablAdd (tablptr, &hashtab[hashnew]);
-        else if (bgraphBipartFmIsUsed (&hashtab[hashnew]))  /* Re-lock used vertices      */
-          bgraphBipartFmChain (lockptr, &hashtab[hashnew]); /* Lock it                    */
+        else if (bgraphBipartFmIsUsed (&hashtab[hashnew]))  /* Re-lock used vertices */
+          bgraphBipartFmChain (lockptr, &hashtab[hashnew]); /* Lock it               */
       }
     }
 
-    hashend = hashsta;                            /* End of second segment to consider is start of first one    */
-    hashsta = 0;                                  /* Start of second segment is beginning of array              */
-  }                                               /* After second segment, hashsta = hashend = 0 and loop stops */
+    hashnnd = hashbas;                            /* End of second segment to consider is start of first one    */
+    hashbas = 0;                                  /* Start of second segment is beginning of array              */
+  }                                               /* After second segment, hashbas = hashnnd = 0 and loop stops */
 
   for (savenum = 0; savenum < savenbr; savenum ++) {
     Gnum                  vertnum;
@@ -965,7 +968,7 @@ BgraphBipartFmVertex ** const     lockptr)        /*+ Pointer to locked list    
 #ifdef SCOTCH_DEBUG_BGRAPH2
       if (hashtab[hashnum].vertnum == ~0) {
         errorPrint ("bgraphBipartFmResize: internal error (3)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
     }
@@ -1032,11 +1035,11 @@ const Gnum                                  commgainextn)
     partval = hashtab[hashnum].partval;
     if ((partval < 0) || (partval > 1)) {
       errorPrint ("bgraphBipartFmCheck: invalid vertex part value");
-      return     (1);
+      return (1);
     }
     if (hashtab[hashnum].compgain != (2 * partval - 1) * veloval) {
       errorPrint ("bgraphBipartFmCheck: invalid vertex computation gain");
-      return     (1);
+      return (1);
     }
     partold = grafptr->parttax[vertnum] ^ swapval;
     veexval = (veextax != NULL) ? veextax[vertnum] : 0;
@@ -1078,24 +1081,24 @@ const Gnum                                  commgainextn)
     }
     if (commcut != hashtab[hashnum].commcut) {
       errorPrint ("bgraphBipartFmCheck: invalid vertex cut value");
-      return     (1);
+      return (1);
     }
     if ((commgain * domndist + commgainextn) != hashtab[hashnum].commgain) {
       errorPrint ("bgraphBipartFmCheck: invalid vertex communication gain value");
-      return     (1);
+      return (1);
     }
   }
   if ((compload0tmp - grafptr->compload0avg) != compload0dlt) {
     errorPrint ("bgraphBipartFmCheck: invalid computation load");
-    return     (1);
+    return (1);
   }
   if ((grafptr->commload + (commloaddlttmp / 2) * domndist) != (commload - commloadextndlttmp)) {
     errorPrint ("bgraphBipartFmCheck: invalid communication load");
-    return     (1);
+    return (1);
   }
   if (commgainextntmp != commgainextn) {
     errorPrint ("bgraphBipartFmCheck: invalid external communication gain");
-    return     (1);
+    return (1);
   }
 
   return (0);

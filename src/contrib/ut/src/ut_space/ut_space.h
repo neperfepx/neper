@@ -153,8 +153,8 @@ extern "C"
 /// \brief Compute the bisector plane between two weighted points (à la Laguerre)
 /// \param pt1: point 1
 /// \param pt2: point 2
-/// \param wt1: weight of point 1
-/// \param wt2: weight of point 2
+/// \param wA: Laguerre weight of point 1 (power distance: d^2 - w)
+/// \param wB: Laguerre weight of point 2 (power distance: d^2 - w)
 /// \param plane: bisector plane
   extern void ut_space_points_bisplane_power (double *pt1, double *pt2,
                                               double wA, double wB,
@@ -701,6 +701,33 @@ extern "C"
                                                 double *segpt2, double *plane,
                                                 double *interpt);
 
+/// \brief Get the intersection point between a segment and a sphere
+/// \param segpt1: segment 1st point
+/// \param segpt2: segment 2nd point
+/// \param center: sphere center
+/// \param radius: sphere radius
+/// \param interpt: intersection point
+/// \note the segment is considered finite
+  extern int ut_space_segment_sphere_intersect (double *segpt1,
+                                                double *segpt2, double *center, double rad,
+                                                double *interpt);
+
+/// \brief Get the intersection point between a segment and a cylinder
+/// \param segpt1: segment 1st point
+/// \param segpt2: segment 2nd point
+/// \param center: sphere center
+/// \param radius: sphere radius
+/// \param interpt: intersection point
+/// \note the segment is considered finite
+  extern int ut_space_segment_cylinder_intersect (double *segpt1,
+                                                  double *segpt2, double *basis,
+                                                  double *axis, double rad,
+                                                  double *interpt);
+  extern int
+  ut_space_segment_torus_intersect (double *P1, double *P2,
+                                    double *basis, double *axis,
+                                    double R, double Rs, double *I);
+
 #endif
 
 /// \brief Determine the intersection between 2 segments
@@ -777,12 +804,29 @@ extern "C"
 
   extern int ut_space_polypts_point_dist (double **pts, int ptqty,
                                           double *pt, double *pdist);
+  extern int ut_space_polypts_polypts_dist (double **pts1, int ptqty1,
+                                            double **pts2, int ptqty2,
+                                            double *pdist);
   extern int ut_space_polypts_point_dist_verbosity (double **pts, int
                                                     ptqty, double *pt,
                                                     double *pdist,
                                                     int verbosity);
 
+#ifdef HAVE_GSL
   extern void ut_space_tet_randompt (double *v0, double *v1, double *v2, double *v3, gsl_rng *r, double *pt);
+#endif
+
+  extern int ut_space_point_intorus (double *P, double *C, double *axis, double R, double Rs);
+
+  extern int ut_space_segment_ecylinder_intersect (double *P1, double *P2, double *basis, double *axis,
+                                       double *section_axis1, double *section_axis2,
+                                       double section_rad1, double section_rad2, double *I);
+
+  extern int ut_space_segment_cube_intersect (double *P1, double *P2,
+                                              double xmin, double xmax,
+                                              double ymin, double ymax,
+                                              double zmin, double zmax,
+                                              double rad, double *I);
 
 /// @endcond
 

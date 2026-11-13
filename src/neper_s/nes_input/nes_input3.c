@@ -8,7 +8,6 @@
 void
 nes_input_options_default (struct IN_S *pIn)
 {
-  (*pIn).fepxdir = NULL;
   (*pIn).simdir = NULL;
   ut_string_string ("none", &((*pIn).orispace));
 
@@ -28,7 +27,6 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
   sprintf (ArgList[++ArgQty], "-o");
   sprintf (ArgList[++ArgQty], "-orispace");
   sprintf (ArgList[++ArgQty], "-entity");
-  sprintf (ArgList[++ArgQty], "-step");
 
   for (i = 1; i <= argc - 1; i++)
     if (argv[i][0] != '-')
@@ -36,17 +34,16 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
       if (readinput)
         ut_print_message (2, 0, "Input directory already loaded.\n");
 
-      status = neut_sim_name_type (argv[i], &type, NULL, NULL);
+      status = neut_sim_name_type (argv[i], &type);
 
       if (status == -1)
-        ut_print_message (2, 2, "Failed to parse directory.\n");
+        ut_print_message (2, 0, "`%s' is not a simulation directory (no inputs or results directory found).\n",
+                          argv[i]);
 
-      if (!strcmp (type, "fepx"))
-        ut_string_string (argv[i], &(*pIn).fepxdir);
-      else if (!strcmp (type, "sim"))
+      if (!strcmp (type, "sim"))
       {
         if ((*pIn).simdir)
-          ut_print_messagewnc (2, 72, "Using `-o' and loading a simulation directory as input are mutually exclusive.\n");
+          ut_print_message (2, 0, "Option `-o' can only be used when merging simulation directories.\n");
         ut_string_string (argv[i], &(*pIn).simdir);
       }
       else if (!strcmp (type, "merge"))
@@ -60,27 +57,19 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
     {
       Res = ut_string_completion (argv[i], ArgList, ArgQty, &Arg);
       if (Res == 1)
-      {
-        ut_print_lineheader (2);
-        printf ("Several possibilities for option `%s'.\n", argv[i]);
-        ut_arg_badarg ();
-      }
+        ut_print_message (2, 0, "Several possibilities for option `%s'.\n", argv[i]);
       else if (Res == -1)
       {
         if (!strncmp (argv[i], "-res", 4))
           ut_string_string (argv[i], &Arg);
         else
-        {
-          ut_print_lineheader (2);
-          printf ("Unknown option `%s'.\n", argv[i]);
-          ut_arg_badarg ();
-        }
+          ut_print_message (2, 0, "Unknown option `%s'.\n", argv[i]);
       }
 
       if (!strcmp (Arg, "-o"))
       {
         if (!ut_string_strcmp (type, "sim"))
-          ut_print_messagewnc (2, 72, "Using `-o' and loading a simulation directory as input are mutually exclusive.\n");
+          ut_print_message (2, 0, "Option `-o' can only be used when merging simulation directories.\n");
 
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).simdir));
       }
@@ -90,8 +79,6 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
         nes_in_addres (Arg, argv[++i], pIn);
       else if (!strcmp (Arg, "-entity"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).entity));
-      else if (!strcmp (Arg, "-step"))
-        ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).stepqty));
       else
         ut_arg_badarg ();
     }

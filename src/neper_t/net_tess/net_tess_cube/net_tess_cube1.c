@@ -94,8 +94,8 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
   net_tess_cube_cells (N, Tess + TessId);
   net_tess_cube_vers (N, bbox, verid, Tess + TessId);
   net_tess_cube_edges (N, verid, edgeid, Tess + TessId);
-  net_tess_cube_faces (N, verid, edgeid, faceid, Tess + TessId);
-  net_tess_cube_polys (N, faceid, polyid, Tess + TessId);
+  net_tess_cube_faces (N, dim, verid, edgeid, faceid, Tess + TessId);
+  net_tess_cube_polys (N, dim, faceid, polyid, Tess + TessId);
   neut_tess_init_seeds_fromcell (Tess + TessId);
   net_tess_cube_sset (Tess[1], SSet + TessId);
 

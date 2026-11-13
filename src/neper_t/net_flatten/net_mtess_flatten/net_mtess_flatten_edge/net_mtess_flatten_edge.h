@@ -9,6 +9,7 @@ extern "C"
 
   extern void net_mtess_flatten_edge (struct MTESS MTess, struct TESS *Tess,
 				      int TessId, int *CTessIds, int CTessQty,
+				      int *VTessIds, int VTessQty,
 				      struct TESS *pFTess, struct TESSE *TessE,
 				      struct FLATTEN *pFlatten);
 

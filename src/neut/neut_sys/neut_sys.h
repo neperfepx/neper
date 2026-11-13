@@ -16,6 +16,8 @@ extern "C"
 #define NEUT_SYS_H
 
   extern int neut_sys_data (char **pdata, int verbosity);
+  extern int neut_sys_exedir (char **pdir);
+  extern int neut_sys_cache (char *subdir, char **pcache);
 
 #endif				/* NEUT_SYS_H */
 

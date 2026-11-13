@@ -24,6 +24,7 @@ neut_tdyn_set_zero (struct TDYN *pTD)
   (*pTD).seedmoved = NULL;
   (*pTD).cellchangedqty = 0;
   (*pTD).cellchanged = NULL;
+  (*pTD).cellchangedflag = NULL;
   (*pTD).cellvoidqty = 0;
   (*pTD).cellvoid = NULL;
   (*pTD).domcellqty = 0;
@@ -31,6 +32,7 @@ neut_tdyn_set_zero (struct TDYN *pTD)
 
   (*pTD).changedneighs = NULL;
   (*pTD).changedneighqty = 0;
+  (*pTD).changedneighflag = NULL;
 
   (*pTD).shiftw = NULL;
   (*pTD).shiftwmax = 0;
@@ -80,12 +82,27 @@ neut_tdyn_set_zero (struct TDYN *pTD)
 void
 neut_tdyn_alloc (struct TDYN *pTD, int N, int Nall)
 {
+  // freeing a previous allocation (the other fields are kept)
+  ut_free_1d (&(*pTD).shift);
+  ut_free_1d_int (&(*pTD).seedchanged);
+  ut_free_1d_int (&(*pTD).cellchanged);
+  ut_free_1d_int (&(*pTD).cellchangedflag);
+  ut_free_1d_int (&(*pTD).changedneighflag);
+  ut_free_2d_int (&(*pTD).neighlist, (*pTD).Nall + 1);
+  ut_free_1d_int (&(*pTD).neighqty);
+  ut_free_2d (&(*pTD).neighdist, (*pTD).Nall + 1);
+  ut_free_2d (&(*pTD).neighrefcoo, (*pTD).Nall + 1);
+  ut_free_1d (&(*pTD).neighrefw);
+  ut_free_1d (&(*pTD).shiftw);
+
   (*pTD).N = N;
   (*pTD).Nall = Nall;
 
   (*pTD).shift = ut_alloc_1d (N + 1);
   (*pTD).seedchanged = ut_alloc_1d_int (N + 1);
   (*pTD).cellchanged = ut_alloc_1d_int (N + 1);
+  (*pTD).cellchangedflag = ut_alloc_1d_int (N + 1);
+  (*pTD).changedneighflag = ut_alloc_1d_int (N + 1);
   (*pTD).neighlist = ut_alloc_1d_pint (Nall + 1);
   (*pTD).neighqty = ut_alloc_1d_int (Nall + 1);
   (*pTD).neighdist = ut_alloc_1d_pdouble (Nall + 1);
@@ -106,7 +123,9 @@ neut_tdyn_free (struct TDYN *pTD)
   ut_free_2d (&(*pTD).neighdist, (*pTD).Nall + 1);
 
   ut_free_1d_int (&(*pTD).seedchanged);
+  ut_free_1d_int (&(*pTD).seedmoved);
   ut_free_1d_int (&(*pTD).cellchanged);
+  ut_free_1d_int (&(*pTD).cellchangedflag);
   ut_free_1d_int (&(*pTD).cellvoid);
   ut_free_1d_int (&(*pTD).domcells);
   ut_free_1d (&(*pTD).shift);
@@ -120,6 +139,7 @@ neut_tdyn_free (struct TDYN *pTD)
   ut_free_1d_char (&(*pTD).body);
 
   ut_free_1d_int (&(*pTD).changedneighs);
+  ut_free_1d_int (&(*pTD).changedneighflag);
 
   neut_tdyn_set_zero (pTD);
 

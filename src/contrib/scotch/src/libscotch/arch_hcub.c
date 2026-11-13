@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010-2011,2015 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010-2011,2015,2018,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -61,14 +61,14 @@
 /**                                 to   : 11 aug 2010     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 02 may 2015     **/
+/**                # Version 7.0  : from : 19 feb 2018     **/
+/**                                 to   : 07 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define ARCH_HCUB
 
 #include "module.h"
 #include "common.h"
@@ -97,15 +97,15 @@ FILE * restrict const       stream)
   if ((sizeof (ArchHcub)    > sizeof (ArchDummy)) ||
       (sizeof (ArchHcubDom) > sizeof (ArchDomDummy))) {
     errorPrint ("archHcubArchLoad: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
   if ((intLoad (stream, &archptr->dimnnbr) != 1) ||
       (archptr->dimnnbr < 1)                     ||
-      (archptr->dimnnbr > (sizeof (archptr->dimnnbr) << 3))) {
+      (archptr->dimnnbr > (Anum) ((sizeof (Anum) << 3) - 2))) { /* Should have enough bits in ArchHcubDom bitsset field */
     errorPrint ("archHcubArchLoad: bad input");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -127,13 +127,13 @@ FILE * restrict const       stream)
   if ((sizeof (ArchHcub)    > sizeof (ArchDummy)) ||
       (sizeof (ArchHcubDom) > sizeof (ArchDomDummy))) {
     errorPrint ("archHcubArchSave: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
   if (fprintf (stream, ANUMSTRING "\n", (Anum) archptr->dimnnbr) == EOF) {
     errorPrint ("archHcubArchSave: bad output");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -158,7 +158,7 @@ const ArchHcub * restrict const archptr)
   vertnbr = 1 << archptr->dimnnbr;
   if ((matcptr->multtab = memAlloc ((vertnbr >> 1) * sizeof (ArchCoarsenMulti))) == NULL) { /* Multinodes are half the number of vertices */
     errorPrint ("archHcubMatchInit: out of memory");
-    return     (1);
+    return (1);
   }
 
   matcptr->vertnbr = vertnbr;
@@ -327,7 +327,7 @@ FILE * restrict const         stream)
       (intLoad (stream, &domnptr->bitsset) != 1) ||
       (domnptr->dimncur > archptr->dimnnbr)) {
     errorPrint ("archHcubDomLoad: bad input");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -350,7 +350,7 @@ FILE * restrict const       stream)
                (Anum) domnptr->dimncur,
                (Anum) domnptr->bitsset) == EOF) {
     errorPrint ("archHcubDomSave: bad output");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -402,22 +402,3 @@ const ArchHcubDom * const   dom1ptr)
 
   return (0);
 }
-
-/* This function creates the MPI_Datatype for
-** hypercube domains.
-** It returns:
-** - 0  : if type could be created.
-** - 1  : on error.
-*/
-
-#ifdef SCOTCH_PTSCOTCH
-int
-archHcubDomMpiType (
-const ArchHcub * const        archptr,
-MPI_Datatype * const          typeptr)
-{
-  MPI_Type_contiguous (2, ANUM_MPI, typeptr);
-
-  return (0);
-}
-#endif /* SCOTCH_PTSCOTCH */

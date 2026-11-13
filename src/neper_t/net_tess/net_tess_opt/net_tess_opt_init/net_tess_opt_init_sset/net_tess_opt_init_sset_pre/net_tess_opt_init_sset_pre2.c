@@ -73,15 +73,15 @@ net_tess_opt_init_sset_pre_default_weight (struct TOPT TOpt, char *var,
   if (TOpt.tarqty == 0)
     ut_string_string ("0", pweightexpr);
   else if (!strcmp (var, "centroid"))
-    ut_string_string ("avradeq", pweightexpr);
+    ut_string_string ("avradeq^2", pweightexpr);
   else if (!strcmp (var, "centroiddiameq"))
-    ut_string_string ("radeq", pweightexpr);
+    ut_string_string ("radeq^2", pweightexpr);
   else if (!strcmp (var, "tesr"))
-    ut_string_string ("radeq", pweightexpr);
+    ut_string_string ("radeq^2", pweightexpr);
   else if (!strcmp (var, "size") || !strcmp (var, "diameq"))
-    ut_string_string ("avradeq", pweightexpr);
+    ut_string_string ("avradeq^2", pweightexpr);
   else
-    ut_string_string ("avradeq", pweightexpr);
+    ut_string_string ("avradeq^2", pweightexpr);
 
   return;
 }

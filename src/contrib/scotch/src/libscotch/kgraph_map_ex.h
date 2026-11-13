@@ -1,4 +1,4 @@
-/* Copyright 2011,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2011,2018,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,8 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 08 jun 2011     **/
 /**                                 to   : 07 jun 2018     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 28 jul 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -71,8 +73,9 @@ typedef struct KgraphMapExDom_ {
     candidate domain found to date. +*/
 
 typedef struct KgraphMapExFind_ {
-  Gnum                      comploaddlt;          /*+ Best imbalance +*/
-  Anum                      domnnum;              /*+ Domain number  +*/
+  Gnum                      comploaddlt;          /*+ Best imbalance       +*/
+  Anum                      domnwght;             /*+ Weight of the domain +*/
+  Anum                      domnnum;              /*+ Domain number        +*/
 } KgraphMapExFind;
 
 /*+ This structure allows one to
@@ -104,10 +107,10 @@ typedef struct KgraphMapExTree_ {
 **  The function prototypes.
 */
 
-#ifdef KGRAPH_MAP_EX
+#ifdef SCOTCH_KGRAPH_MAP_EX
 static Anum                 kgraphMapExTree     (const Arch * restrict const, const KgraphMapExTerm * restrict const, const Anum, KgraphMapExDom * restrict const, KgraphMapExTree * restrict const, Anum * restrict const, const ArchDom * restrict const);
 static Anum                 kgraphMapExFind     (const Arch * restrict const, const KgraphMapExTree * restrict const, const KgraphMapExDom * restrict const, const Anum, const Gnum);
 static int                  kgraphMapExFind2    (const Arch * restrict const, const KgraphMapExTree * restrict const, const KgraphMapExDom * restrict const, KgraphMapExFind * restrict const, const Anum, const Anum, const Gnum);
-#endif /* KGRAPH_MAP_EX */
+#endif /* SCOTCH_KGRAPH_MAP_EX */
 
 int                         kgraphMapEx         (Kgraph * restrict const, const KgraphMapExParam * const);

@@ -1,4 +1,4 @@
-/* Copyright 2010,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2010,2014,2018,2019,2021,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,10 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 28 may 2010     **/
 /**                                 to   : 25 apr 2018     **/
+/**                # Version 6.1  : from : 02 dec 2021     **/
+/**                                 to   : 20 dec 2021     **/
+/**                # Version 7.0  : from : 07 may 2019     **/
+/**                                 to   : 08 feb 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -48,12 +52,12 @@
 **  The defines and includes.
 */
 
-#define LIBRARY
-
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "parser.h"
 #include "graph.h"
+#include "arch.h"
 #include "wgraph.h"
 #include "wgraph_part_st.h"
 #include "scotch.h"
@@ -65,57 +69,69 @@
 /*                                  */
 /************************************/
 
-/*+ This routine computes a partition with
-*** overlap of the given graph structure
-*** with respect to the given strategy.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine computes a partition with
+** overlap of the given graph structure
+** with respect to the given strategy.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphPartOvl (
-SCOTCH_Graph * const        grafptr,              /*+ Graph to map          +*/
+SCOTCH_Graph * const        libgrafptr,           /*+ Graph to map          +*/
 const SCOTCH_Num            partnbr,              /*+ Number of parts       +*/
 SCOTCH_Strat * const        straptr,              /*+ Partitioning strategy +*/
 SCOTCH_Num * const          parttab)              /*+ Partition array       +*/
 {
   Wgraph              grafdat;
   const Strat *       partstraptr;
+  CONTEXTDECL        (libgrafptr);
   int                 o;
 
-  if (*((Strat **) straptr) == NULL)              /* Set default partitioning strategy if necessary */
-    SCOTCH_stratGraphPartOvlBuild (straptr, SCOTCH_STRATQUALITY, (Gnum) partnbr, (double) 0.05);
+  o = 1;                                          /* Assume an error */
 
-  partstraptr = *((Strat **) straptr);
-  if (partstraptr->tabl != &wgraphpartststratab) {
-    errorPrint (STRINGIFY (SCOTCH_graphPartOvl) ": not a graph partitioning with overlap strategy");
-    return     (1);
+  if (CONTEXTINIT (libgrafptr)) {
+    errorPrint (STRINGIFY (SCOTCH_graphPartOvl) ": cannot initialize context");
+    return     (o);
   }
 
-  intRandInit ();                                 /* Check that random number generator is initialized */
+  if (*((Strat **) straptr) == NULL) {            /* Set default partitioning strategy if necessary */
+    if (SCOTCH_stratGraphPartOvlBuild (straptr, SCOTCH_STRATQUALITY, (Gnum) partnbr, (double) 0.05))
+      goto fail;
+  }
 
-  wgraphInit (&grafdat, (Graph *) grafptr, partnbr); /* Initialize graph from given graph    */
-  grafdat.parttax = ((Gnum *) parttab) - grafdat.s.baseval; /* Directly use given part array */
+  partstraptr = *((Strat **) straptr);
+  if (partstraptr->tablptr != &wgraphpartststratab) {
+    errorPrint (STRINGIFY (SCOTCH_graphPartOvl) ": not a sequential graph partitioning with overlap strategy");
+    goto fail;
+  }
+
+  wgraphInit (&grafdat, (Graph *) CONTEXTGETOBJECT (libgrafptr), partnbr); /* Initialize graph from given graph */
+  grafdat.parttax = ((Gnum *) parttab) - grafdat.s.baseval; /* Directly use given part array                    */
   grafdat.levlnum = 0;
+  grafdat.contptr = CONTEXTGETDATA (libgrafptr);
+
   if (wgraphAlloc (&grafdat) != 0) {              /* Always allocate graph data when calling */
     errorPrint (STRINGIFY (SCOTCH_graphPartOvl) ": out of memory");
-    return     (1);
+    goto fail;
   }
 
   o = wgraphPartSt (&grafdat, partstraptr);
 
   wgraphExit (&grafdat);
 
+fail:
+  CONTEXTEXIT (libgrafptr);
   return (o);
 }
 
-/*+ This routine parses the given
-*** partitioning strategy.
-*** It returns:
-*** - 0   : if string successfully scanned.
-*** - !0  : on error.
-+*/
+/* This routine parses the given
+** partitioning strategy.
+** It returns:
+** - 0   : if string successfully scanned.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_stratGraphPartOvl (
@@ -127,18 +143,18 @@ const char * const          string)
 
   if ((*((Strat **) straptr) = stratInit (&wgraphpartststratab, string)) == NULL) {
     errorPrint (STRINGIFY (SCOTCH_stratGraphPartOvl) ": error in sequential overlap partitioning strategy");
-    return     (1);
+    return (1);
   }
 
   return (0);
 }
 
-/*+ This routine provides predefined
-*** overlap partitioning strategies.
-*** It returns:
-*** - 0   : if string successfully initialized.
-*** - !0  : on error.
-+*/
+/* This routine provides predefined
+** overlap partitioning strategies.
+** It returns:
+** - 0   : if string successfully initialized.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_stratGraphPartOvlBuild (
@@ -150,16 +166,14 @@ const double                balrat)               /*+ Desired imbalance ratio   
   char                bufftab[8192];              /* Should be enough */
   char                kbaltab[64];
 
-  sprintf (bufftab, "m{vert=%ld,low=r{sep=m{rat=0.7,vert=100,low=h{pass=10},asc=b{width=3,bnd=f{bal=<KBAL>},org=(|h{pass=10})f{bal=<KBAL>}}}|m{rat=0.7,vert=100,low=h{pass=10},asc=b{width=3,bnd=f{bal=<KBAL>},org=(|h{pass=10})f{bal=<KBAL>}}}},asc=f{bal=<KBAL>}}",
-           (long) (20 * partnbr));
-
   sprintf (kbaltab, "%lf", balrat);
+
+  if ((flagval & SCOTCH_STRATRECURSIVE) != 0)
+    strcpy (bufftab, "<RECU>");                   /* Use only the recursive bipartitioning framework */
+  else
+    sprintf (bufftab, "m{vert=%ld,low=<RECU>,asc=f{bal=<KBAL>}}", (long) (20 * partnbr));
+  stringSubst (bufftab, "<RECU>", "r{sep=m{rat=0.7,vert=100,low=h{pass=10},asc=b{width=3,bnd=f{bal=<KBAL>},org=(|h{pass=10})f{bal=<KBAL>}}}|m{rat=0.7,vert=100,low=h{pass=10},asc=b{width=3,bnd=f{bal=<KBAL>},org=(|h{pass=10})f{bal=<KBAL>}}}}");
   stringSubst (bufftab, "<KBAL>", kbaltab);
 
-  if (SCOTCH_stratGraphPartOvl (straptr, bufftab) != 0) {
-    errorPrint (STRINGIFY (SCOTCH_stratGraphPartOvlBuild) ": error in sequential overlap partitioning strategy");
-    return     (1);
-  }
-
-  return (0);
+  return (SCOTCH_stratGraphPartOvl (straptr, bufftab));
 }

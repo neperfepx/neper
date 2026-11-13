@@ -65,6 +65,7 @@ neut_tess_fscanf_ovm_face (FILE *file, struct TESS *pTess)
     ut_print_message (2, 0, "Input file is not a valid OVM file.\n");
 
   (*pTess).FaceVerQty = ut_alloc_1d_int ((*pTess).FaceQty + 1);
+  (*pTess).FaceEdgeQty = ut_alloc_1d_int ((*pTess).FaceQty + 1);
   (*pTess).FaceEdgeNb = ut_alloc_1d_pint ((*pTess).FaceQty + 1);
   (*pTess).FaceEdgeOri = ut_alloc_1d_pint ((*pTess).FaceQty + 1);
   (*pTess).FaceVerNb = ut_alloc_1d_pint ((*pTess).FaceQty + 1);

@@ -9,6 +9,7 @@ nev_print (struct IN_V In,
            struct PRINT *pPrint, struct SIM *pSim,
            struct TESS *pTess, struct DATA *TessData, struct TESR Tesr,
            struct DATA *pTesrData, struct NODES Nodes, struct MESH *Mesh,
+           struct NSET NSet,
            struct DATA *pNodeData, struct DATA **MeshData,
            struct DATA *pCsysData, struct POINT *Points, int PointQty,
            struct DATA *PointData)
@@ -56,9 +57,9 @@ nev_print (struct IN_V In,
 
     nev_print_data (In, *pSim, pTess, &Tesr, &Nodes, &Mesh, &Points,
                     PointQty, TessData, pTesrData, pNodeData, MeshData,
-                    pCsysData, &PointData);
+                    pCsysData, &PointData, pPrint);
 
-    nev_print_show (In, pTess, Tesr, Nodes, Mesh, Points, PointQty, pPrint);
+    nev_print_show (In, pTess, Tesr, Nodes, Mesh, NSet, Points, PointQty, pPrint);
 
     nev_print_init (In, pPrint, &Pf, &Ori, pSim, *pTess, TessData, Tesr, pTesrData, Nodes, Mesh,
                     pNodeData, MeshData, &SQty, &SNodes, &SMesh,
@@ -66,7 +67,7 @@ nev_print (struct IN_V In,
                     PointQty, PointData);
 
     if (!strcmp (In.space, "real"))
-      nev_print_real (In, basename, *pPrint, *pSim, *pTess, TessData, Tesr, pTesrData, Nodes,
+      nev_print_real (In, basename, *pPrint, *pTess, TessData, Tesr, pTesrData, Nodes,
                       Mesh, SQty, SNodes, SMesh, pNodeData, MeshData, pCsysData,
                       Points, PointQty, PointData, SNodeData, SMeshData, SElt2dElt3d);
 
@@ -84,14 +85,17 @@ nev_print (struct IN_V In,
       nev_print_tree (In, basename, *pSim);
 
     if ((*pPrint).showscale && islaststep)
-      nev_print_scale (In, basename, *pPrint, *pSim, TessData, pTesrData, pNodeData,
+      nev_print_scale (In, basename, *pPrint, TessData, pTesrData, pNodeData,
                      MeshData, PointQty, PointData);
+
+    neut_mesh_slice_free (SQty, &SNodes, &SMesh, &SNodeData, &SMeshData, &SElt2dElt3d);
+    SQty = 0;
   }
 
   ut_free_1d_char (&basename);
   ut_free_1d_int (&steps);
   neut_pf_free (&Pf);
-  // neut_ori_free (&Ori);
+  neut_ori_free (&Ori);
 
   return;
 }

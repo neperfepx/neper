@@ -4,61 +4,45 @@
 
 #include "net_tess_opt_comp_post_.h"
 
-#ifdef HAVE_NLOPT
-
+// printing the result of the optimization
 void
-net_tess_opt_comp_post (struct TOPT TOpt, int res)
+net_tess_opt_comp_post (struct TOPT TOpt)
 {
+  const char *res = TOpt.result ? TOpt.result : "";
+
   if (TOpt.tarqty == 0)
     return;
 
   printf ("\n");
 
-  if (res >= 0)
-  {
-    if (res == NLOPT_STOPVAL_REACHED)
-      ut_print_message (0, 3, "Reached `val' criterion.");
-    else if (res == NLOPT_FTOL_REACHED)
-      ut_print_message (0, 3, "Reached `nlopt_(r)eps' criterion.");
-    else if (res == NLOPT_XTOL_REACHED)
-      ut_print_message (0, 3, "Reached `x(r)eps' criterion.");
-    else if (res == NLOPT_MAXEVAL_REACHED)
-      ut_print_message (0, 3, "Reached `itermax' criterion.");
-    else if (res == NLOPT_MAXTIME_REACHED)
-      ut_print_message (0, 3, "Reached `time' criterion.");
-    else
-      ut_print_message (0, 3, "Reached unknown criterion.");
-  }
+  if (!strcmp (res, "stopval"))
+    ut_print_message (0, 4, "Reached `val' criterion.");
+  else if (!strcmp (res, "ftol"))
+    ut_print_message (0, 4, "Reached `nlopt_(r)eps' criterion.");
+  else if (!strcmp (res, "xtol"))
+    ut_print_message (0, 4, "Reached `x(r)eps' criterion.");
+  else if (!strcmp (res, "maxeval"))
+    ut_print_message (0, 4, "Reached `itermax' criterion.");
+  else if (!strcmp (res, "maxtime"))
+    ut_print_message (0, 4, "Reached `time' criterion.");
+  else if (!strcmp (res, "eps"))
+    ut_print_message (0, 4, "Reached `eps' criterion.");
+  else if (!strcmp (res, "reps"))
+    ut_print_message (0, 4, "Reached `reps' criterion.");
+  else if (!strcmp (res, "ctrlc"))
+    ut_print_message (1, 4, "Stopping on Ctrl+C invocation.");
+  else if (!strcmp (res, "failure"))
+    ut_print_message (1, 4, "Failed optimization.");
+  else if (!strcmp (res, "roundoff_limited"))
+    ut_print_message (1, 4, "Failed due to roundoff error.");
+  else if (!strcmp (res, "forced_stop"))
+    ut_print_message (1, 4, "Stopping on unknown forced stop.");
+  else if (!strcmp (res, "invalid_args") || !strcmp (res, "out_of_memory"))
+    ut_print_message (1, 4, "Failed due to unknown error.");
   else
-  {
-    if (res == NLOPT_FAILURE)
-      ut_print_message (1, 3, "Failed optimization.");
-    else if (res == NLOPT_ROUNDOFF_LIMITED)
-      ut_print_message (1, 3, "Failed due to roundoff error.");
-    else if (res == NLOPT_FORCED_STOP)
-    {
-      if (nlopt_get_force_stop (TOpt.opt) == -5)
-        ut_print_message (1, 3, "Stopping on Ctrl+C invocation.");
-      else if (nlopt_get_force_stop (TOpt.opt) == -6)
-        ut_print_message (0, 3, "Reached `eps' criterion.");
-      else if (nlopt_get_force_stop (TOpt.opt) == -7)
-        ut_print_message (0, 3, "Reached `reps' criterion.");
-      else if (nlopt_get_force_stop (TOpt.opt) == -8)
-        ut_print_message (0, 3, "Reached `loopmax' criterion.");
-      else if (nlopt_get_force_stop (TOpt.opt) <= -101)
-        ut_print_message (0, 3, "Stopping on failed convergence (%d).",
-                          nlopt_get_force_stop (TOpt.opt));
-      else
-        ut_print_message (1, 3, "Stopping on unknown forced stop (%d).",
-                          nlopt_get_force_stop (TOpt.opt));
-    }
-    else
-      ut_print_message (1, 3, "Failed due to unknown error.");
-  }
+    ut_print_message (0, 4, "Reached unknown criterion.");
 
   printf ("\n");
 
   return;
 }
-
-#endif

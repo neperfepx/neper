@@ -34,10 +34,19 @@ nem_meshing_2d (struct IN_M In, struct MESHPARA MeshPara, struct TESS *pTess,
   neut_multim_set_zero (&Multim);
   neut_multim_init (2, In.mesh2dalgo, (*pTess).FaceQty, &Multim);
 
-  Mesh[2] = neut_mesh_alloc (2, "tri", 1, 0, 0);
+  // (quad elts with split elts in 2D, see nem_meshing_2d_face_mesh_gmsh)
+  Mesh[2] = neut_mesh_alloc (2, MeshPara.eltsplit && (*pTess).Dim == 2 ? "quad" : "tri", 1,
+                            0, 0);
 
   // faces to mesh; default is 'all'
-  neut_tess_expr_faces (pTess, In.meshface, &faces, &faceqty);
+  if (In.meshfacelist)
+  {
+    faceqty = In.meshfacelist[0];
+    faces = ut_alloc_1d_int (faceqty);
+    ut_array_1d_int_memcpy (In.meshfacelist + 1, faceqty, faces);
+  }
+  else
+    neut_tess_expr_faces (pTess, In.meshface, &faces, &faceqty);
 
   nem_meshing_2d_progress (Multim, 0, faceqty, message);
 
@@ -45,7 +54,7 @@ nem_meshing_2d (struct IN_M In, struct MESHPARA MeshPara, struct TESS *pTess,
   qty = 0;
 #pragma omp parallel for schedule(dynamic) private(i,face)
   for (i = 0; i < faceqty; i++)
-    if ((*pTess).FaceVerQty[faces[i]] > 0)
+    if ((*pTess).FaceEdgeQty[faces[i]] > 0)
     {
       face = faces[i];
 
@@ -59,10 +68,12 @@ nem_meshing_2d (struct IN_M In, struct MESHPARA MeshPara, struct TESS *pTess,
       nem_meshing_2d_progress (Multim, ++qty, faceqty, message);
     }
 
+  nem_mesh_gmsh_lib_stop ();
+
   // slave parallel faces, if any
 #pragma omp parallel for schedule(dynamic) private(i,face)
   for (i = 0; i < faceqty; i++)
-    if ((*pTess).FaceVerQty[faces[i]] > 0)
+    if ((*pTess).FaceEdgeQty[faces[i]] > 0)
     {
       face = faces[i];
 
@@ -82,7 +93,7 @@ nem_meshing_2d (struct IN_M In, struct MESHPARA MeshPara, struct TESS *pTess,
     while (Mesh[2].ElsetQty != face - 1)
       neut_mesh_addelset (Mesh + 2, NULL, 0);
 
-    if ((*pTess).FaceVerQty[face] > 0)
+    if ((*pTess).FaceEdgeQty[face] > 0)
       nem_meshing_2d_face_record ((*pTess), face, N[face], M[face], bnodes[face],
                                   lbnodes[face], bnodeqty[face],
                                   master_id[face], pNodes, N_global_id, Mesh);

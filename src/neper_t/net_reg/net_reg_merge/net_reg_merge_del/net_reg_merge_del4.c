@@ -5,8 +5,10 @@
 #include"net_reg_merge_del_.h"
 
 /* Delete edge from face; note that this routine DOES modify */
-/* FaceVerQty (it is also the face edge quantity).		 */
-void
+/* FaceEdgeQty.                                                  */
+/* Returns 0 on success and -1 if the face does not contain the edge */
+/* (inconsistent tessellation).                                  */
+int
 net_reg_merge_delFromFace (struct TESS *pTess, int face, int edge,
                            int verbosity)
 {
@@ -19,38 +21,41 @@ net_reg_merge_delFromFace (struct TESS *pTess, int face, int edge,
 
     ut_print_lineheader (0);
     printf ("    ");
-    for (i = 1; i <= (*pTess).FaceVerQty[face]; i++)
+    for (i = 1; i <= (*pTess).FaceEdgeQty[face]; i++)
       printf ("%d ", (*pTess).FaceEdgeNb[face][i]);
   }
 
   pos =
-    oneDIntEltPos ((*pTess).FaceEdgeNb[face], 1, (*pTess).FaceVerQty[face],
+    oneDIntEltPos ((*pTess).FaceEdgeNb[face], 1, (*pTess).FaceEdgeQty[face],
                    edge);
+  if (pos == -1)
+    return -1;
 
   ut_array_1d_int_rmelt ((*pTess).FaceEdgeNb[face] + 1,
-                         (*pTess).FaceVerQty[face], edge, 1);
+                         (*pTess).FaceEdgeQty[face], edge, 1);
 
   ut_array_1d_int_memcpy ((*pTess).FaceEdgeOri[face] + pos + 1,
-                          (*pTess).FaceVerQty[face] - pos,
+                          (*pTess).FaceEdgeQty[face] - pos,
                           (*pTess).FaceEdgeOri[face] + pos);
 
-  (*pTess).FaceVerQty[face]--;
+  (*pTess).FaceEdgeQty[face]--;
 
   if (verbosity >= 3)
   {
     printf (" become  ");
-    for (i = 1; i <= (*pTess).FaceVerQty[face]; i++)
+    for (i = 1; i <= (*pTess).FaceEdgeQty[face]; i++)
       printf ("%d ", (*pTess).FaceEdgeNb[face][i]);
     printf ("\n");
   }
 
-  return;
+  return 0;
 }
 
-/* Delete ver from face; note that this routine DOES NOT modify
- * FaceVerQty.
+/* Delete ver from face; note that this routine DOES modify
+ * FaceVerQty.  Returns 0 on success and -1 if the face does not contain
+ * the vertex once (inconsistent tessellation).
  */
-void
+int
 DeleteVerFromFace (struct TESS *pTess, int face, int delver, int verbosity)
 {
   int qty;                      /* for the test */
@@ -65,20 +70,15 @@ DeleteVerFromFace (struct TESS *pTess, int face, int delver, int verbosity)
     ut_array_1d_int_rmelt ((*pTess).FaceVerNb[face] + 1,
                            (*pTess).FaceVerQty[face], delver, 1);
 
-  /* test */
-  if (qty != 1)
-  {
-    printf ("qty!=1 =%d\n", qty);
-    abort ();
-  }
+  (*pTess).FaceVerQty[face] -= qty;
 
-  return;
+  return (qty == 1) ? 0 : -1;
 }
 
-/* Delete ver from face; note that this routine modifies
- * FaceVerQty.
+/* Replace ver in face.  Returns 0 on success and -1 if the face does not
+ * contain the vertex (inconsistent tessellation).
  */
-void
+int
 ReplaceVerInFace (struct TESS *pTess, int face, int delver, int newver)
 {
   int pos;                      /* for the test */
@@ -91,16 +91,12 @@ ReplaceVerInFace (struct TESS *pTess, int face, int delver, int newver)
     oneDIntEltPos ((*pTess).FaceVerNb[face], 1, (*pTess).FaceVerQty[face],
                    delver);
 
-  /* test */
   if (pos == -1)
-  {
-    printf ("pos==-1 =%d\n", pos);
-    abort ();
-  }
+    return -1;
 
   (*pTess).FaceVerNb[face][pos] = newver;
 
-  return;
+  return 0;
 }
 
 int
@@ -122,7 +118,8 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
     printf ("Deleting face %d\n", face);
   }
 
-  DeleteFaceFromItsPoly (pTess, face);
+  if (DeleteFaceFromItsPoly (pTess, face) != 0)
+    return -1;
 
   /* We search out the two remaining edges of the face; they
    * become the same: we keep the one with the lower id.
@@ -244,14 +241,16 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
     {
       ut_print_lineheader (-1);
       printf ("        face %d: ", tmpface);
-      for (j = 1; j <= (*pTess).FaceVerQty[tmpface]; j++)
+      for (j = 1; j <= (*pTess).FaceEdgeQty[tmpface]; j++)
         printf ("%d ", (*pTess).FaceEdgeNb[tmpface][j]);
       printf ("\n");
     }
 
     pos =
       oneDIntEltPos ((*pTess).FaceEdgeNb[tmpface], 1,
-                     (*pTess).FaceVerQty[tmpface], old);
+                     (*pTess).FaceEdgeQty[tmpface], old);
+    if (pos == -1)
+      return -1;
     (*pTess).FaceEdgeNb[tmpface][pos] = nnew;
     (*pTess).FaceEdgeOri[tmpface][pos] *= ori;
 
@@ -259,7 +258,7 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
     {
       ut_print_lineheader (-1);
       printf ("          become: ");
-      for (j = 1; j <= (*pTess).FaceVerQty[tmpface]; j++)
+      for (j = 1; j <= (*pTess).FaceEdgeQty[tmpface]; j++)
         printf ("%d ", (*pTess).FaceEdgeNb[tmpface][j]);
       printf ("\nvertices:\n");
       for (j = 1; j <= (*pTess).FaceVerQty[tmpface]; j++)
@@ -267,25 +266,26 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
       printf ("\n");
     }
 
-    for (j = 1; j <= (*pTess).FaceVerQty[tmpface] - 1; j++)
+    for (j = 1; j <= (*pTess).FaceEdgeQty[tmpface] - 1; j++)
       if ((*pTess).FaceEdgeNb[tmpface][j] ==
           (*pTess).FaceEdgeNb[tmpface][j + 1])
       {
         ut_array_1d_int_rmelt ((*pTess).FaceEdgeNb[tmpface] + 1,
-                               (*pTess).FaceVerQty[tmpface],
+                               (*pTess).FaceEdgeQty[tmpface],
                                (*pTess).FaceEdgeNb[tmpface][j], 2);
-        for (k = (*pTess).FaceVerQty[tmpface]; k >= j + 2; k--)
+        for (k = (*pTess).FaceEdgeQty[tmpface]; k >= j + 2; k--)
           (*pTess).FaceEdgeOri[tmpface][k - 2] =
             (*pTess).FaceEdgeOri[tmpface][k];
         for (k = (*pTess).FaceVerQty[tmpface]; k >= j + 2; k--)
           (*pTess).FaceVerNb[tmpface][k - 2] = (*pTess).FaceVerNb[tmpface][k];
 
+        (*pTess).FaceEdgeQty[tmpface] -= 2;
         (*pTess).FaceVerQty[tmpface] -= 2;
         if (verbosity >= 2)
         {
           ut_print_message (1, 3, "critical case detected\n");
 
-          for (j = 1; j <= (*pTess).FaceVerQty[tmpface]; j++)
+          for (j = 1; j <= (*pTess).FaceEdgeQty[tmpface]; j++)
             printf ("%d ", (*pTess).FaceEdgeNb[tmpface][j]);
           printf ("\n");
         }
@@ -293,17 +293,19 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
         break;
       }
     if ((*pTess).FaceEdgeNb[tmpface][1] ==
-        (*pTess).FaceEdgeNb[tmpface][(*pTess).FaceVerQty[tmpface]])
+        (*pTess).FaceEdgeNb[tmpface][(*pTess).FaceEdgeQty[tmpface]])
     {
-      for (k = 1; k <= (*pTess).FaceVerQty[tmpface] - 1; k++)
+      for (k = 1; k <= (*pTess).FaceEdgeQty[tmpface] - 1; k++)
         (*pTess).FaceEdgeNb[tmpface][k] = (*pTess).FaceEdgeNb[tmpface][k + 1];
-      for (k = 1; k <= (*pTess).FaceVerQty[tmpface] - 1; k++)
+      for (k = 1; k <= (*pTess).FaceEdgeQty[tmpface] - 1; k++)
         (*pTess).FaceEdgeOri[tmpface][k] =
           (*pTess).FaceEdgeOri[tmpface][k + 1];
       for (k = 1; k <= (*pTess).FaceVerQty[tmpface] - 1; k++)
         (*pTess).FaceVerNb[tmpface][k] = (*pTess).FaceVerNb[tmpface][k + 1];
 
+      (*pTess).FaceEdgeQty[tmpface] -= 2;
       (*pTess).FaceVerQty[tmpface] -= 2;
+
       if (verbosity >= 2)
         ut_print_message (1, 3, "critical case 2 detected\n");
       return 1;

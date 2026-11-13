@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2012,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2012,2014,2018,2019,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,14 +43,14 @@
 /**                                 to   : 23 nov 2005     **/
 /**                # Version 6.0  : from : 08 oct 2012     **/
 /**                                 to   : 25 apr 2018     **/
+/**                # Version 7.0  : from : 15 sep 2019     **/
+/**                                 to   : 06 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -68,6 +68,74 @@
 */
 
 SCOTCH_FORTRAN (                      \
+RANDOMLOAD, randomload, (             \
+int * const                 fileptr,  \
+int * const                 revaptr), \
+(fileptr, revaptr))
+{
+  FILE *              stream;                     /* Stream to build from handle */
+  int                 filenum;                    /* Duplicated handle           */
+  int                 o;
+
+  if ((filenum = dup (*fileptr)) < 0) {           /* If cannot duplicate file descriptor */
+    errorPrint (STRINGIFY (SCOTCH_NAME_PUBLICFU (RANDOMLOAD)) ": cannot duplicate handle");
+    *revaptr = 1;                                 /* Indicate error */
+    return;
+  }
+  if ((stream = fdopen (filenum, "r")) == NULL) { /* Build stream from handle */
+    errorPrint (STRINGIFY (SCOTCH_NAME_PUBLICFU (RANDOMLOAD)) ": cannot open input stream");
+    close      (filenum);
+    *revaptr = 1;
+    return;
+  }
+  setbuf (stream, NULL);                          /* Do not buffer on input */
+
+  o = SCOTCH_randomLoad (stream);
+
+  fclose (stream);                                /* This closes filenum too */
+
+  *revaptr = o;
+}
+
+/*
+**
+*/
+
+SCOTCH_FORTRAN (                      \
+RANDOMSAVE, randomsave, (             \
+int * const                 fileptr,  \
+int * const                 revaptr), \
+(fileptr, revaptr))
+{
+  FILE *              stream;                     /* Stream to build from handle */
+  int                 filenum;                    /* Duplicated handle           */
+  int                 o;
+
+  if ((filenum = dup (*fileptr)) < 0) {           /* If cannot duplicate file descriptor */
+    errorPrint (STRINGIFY (SCOTCH_NAME_PUBLICFU (RANDOMSAVE)) ": cannot duplicate handle");
+
+    *revaptr = 1;                                 /* Indicate error */
+    return;
+  }
+  if ((stream = fdopen (filenum, "w")) == NULL) { /* Build stream from handle */
+    errorPrint (STRINGIFY (SCOTCH_NAME_PUBLICFU (RANDOMSAVE)) ": cannot open output stream");
+    close      (filenum);
+    *revaptr = 1;
+    return;
+  }
+
+  o = SCOTCH_randomSave (stream);
+
+  fclose (stream);                                /* This closes filenum too */
+
+  *revaptr = o;
+}
+
+/*
+**
+*/
+
+SCOTCH_FORTRAN (                      \
 RANDOMPROC, randomproc, (             \
 const int * const           procnum), \
 (procnum))
@@ -79,8 +147,8 @@ const int * const           procnum), \
 **
 */
 
-SCOTCH_FORTRAN (              \
-RANDOMRESET, randomreset, (), \
+SCOTCH_FORTRAN (                  \
+RANDOMRESET, randomreset, (void), \
 ())
 {
   SCOTCH_randomReset ();
@@ -96,4 +164,17 @@ const SCOTCH_Num * const  seedptr), \
 (seedptr))
 {
   SCOTCH_randomSeed (*seedptr);
+}
+
+/*
+**
+*/
+
+SCOTCH_FORTRAN (                      \
+RANDOMVAL, randomval, (               \
+const SCOTCH_Num * const    randmax,  \
+SCOTCH_Num * const          revaptr), \
+(randmax, revaptr))
+{
+  *revaptr = SCOTCH_randomVal (*randmax);
 }

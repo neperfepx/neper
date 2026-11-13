@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -47,6 +47,8 @@
 /**                                 to   : 19 aug 2004     **/
 /**                # Version 6.0  : from : 30 apr 2018     **/
 /**                                 to   : 30 apr 2018     **/
+/**                # Version 7.0  : from : 16 jan 2023     **/
+/**                                 to   : 16 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -102,13 +104,13 @@ typedef enum VgraphSeparateEsTrav_ {
 **  The function prototypes.
 */
 
-#ifdef VGRAPH_SEPARATE_ES
+#ifdef SCOTCH_VGRAPH_SEPARATE_ES
 
 static int                  vgraphSeparateEsCover (const Graph * const, const Gnum, Gnum * const, Gnum * const);
 static int                  vgraphSeparateEsCoverAugment (const Gnum * restrict const, const Gnum, Gnum * restrict const, VgraphSeparateEsTrav * restrict const, const Gnum * restrict const, const Gnum * restrict const, const Gnum * restrict const, const Gnum);
 static void                 vgraphSeparateEsCoverCol (const Gnum * restrict const, VgraphSeparateEsType * restrict const, const Gnum * restrict const, const Gnum * restrict const, const Gnum * restrict const, const Gnum);
 static void                 vgraphSeparateEsCoverRow (const Gnum * restrict const, VgraphSeparateEsType * restrict const, const Gnum * restrict const, const Gnum * restrict const, const Gnum * restrict const, const Gnum);
 
-#endif /* VGRAPH_SEPARATE_ES */
+#endif /* SCOTCH_VGRAPH_SEPARATE_ES */
 
 int                         vgraphSeparateEs    (Vgraph * const, const VgraphSeparateEsParam * const);

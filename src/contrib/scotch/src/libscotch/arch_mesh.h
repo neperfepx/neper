@@ -36,7 +36,7 @@
 /**   AUTHOR     : Francois PELLEGRINI                     **/
 /**                Sebastien FOURESTIER (v6.0)             **/
 /**                                                        **/
-/**   FUNCTION   : These lines are the data declaration    **/
+/**   FUNCTION   : These lines are the data declarations   **/
 /**                for the mesh graph target architecture  **/
 /**                functions.                              **/
 /**                                                        **/
@@ -64,6 +64,8 @@
 /**                                 to   : 21 jan 2008     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 28 may 2018     **/
+/**                # Version 7.0  : from : 19 feb 2018     **/
+/**                                 to   : 19 feb 2018     **/
 /**                                                        **/
 /************************************************************/
 
@@ -86,7 +88,7 @@ typedef struct ArchMeshX_ {
 } ArchMeshX;
 
 typedef struct ArchMeshXDom_ {
-  Anum                      c[ARCHMESHDIMNMAX][2]; /*+ Inclusive X and Y coordinates +*/
+  Anum                      c[ARCHMESHDIMNMAX][2]; /*+ Inclusive box coordinates +*/
 } ArchMeshXDom;
 
 typedef struct ArchMeshXMatch_ {
@@ -139,9 +141,6 @@ int                         archMesh2DomBipart  (const ArchMesh2 * const, const 
 int                         archMesh2DomBipartO (const ArchMesh2 * const, const ArchMesh2Dom * const, ArchMesh2Dom * restrict const, ArchMesh2Dom * restrict const);
 int                         archMesh2DomBipartU (const ArchMesh2 * const, const ArchMesh2Dom * const, ArchMesh2Dom * restrict const, ArchMesh2Dom * restrict const);
 int                         archMesh2DomIncl    (const ArchMesh2 * const, const ArchMesh2Dom * const, const ArchMesh2Dom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archMesh2DomMpiType (const ArchMesh2 * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 int                         archMesh3ArchLoad   (ArchMesh3 * restrict const, FILE * restrict const);
 int                         archMesh3ArchSave   (const ArchMesh3 * const, FILE * restrict const);
@@ -161,9 +160,6 @@ Anum                        archMesh3DomDist    (const ArchMesh3 * const, const 
 #define archMesh3DomSave            archMeshXDomSave
 int                         archMesh3DomBipart  (const ArchMesh3 * const, const ArchMesh3Dom * const, ArchMesh3Dom * restrict const, ArchMesh3Dom * restrict const);
 int                         archMesh3DomIncl    (const ArchMesh3 * const, const ArchMesh3Dom * const, const ArchMesh3Dom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archMesh3DomMpiType (const ArchMesh3 * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 int                         archMeshXArchLoad   (ArchMeshX * restrict const, FILE * restrict const);
 int                         archMeshXArchSave   (const ArchMeshX * const, FILE * restrict const);
@@ -184,9 +180,6 @@ int                         archMeshXDomLoad    (const ArchMeshX * const, ArchMe
 int                         archMeshXDomSave    (const ArchMeshX * const, const ArchMeshXDom * const, FILE * restrict const);
 int                         archMeshXDomBipart  (const ArchMeshX * const, const ArchMeshXDom * const, ArchMeshXDom * restrict const, ArchMeshXDom * restrict const);
 int                         archMeshXDomIncl    (const ArchMeshX * const, const ArchMeshXDom * const, const ArchMeshXDom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archMeshXDomMpiType (const ArchMeshX * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 #endif /* ARCH_MESH_H_PROTO */
 #endif /* ARCH_NOPROTO      */

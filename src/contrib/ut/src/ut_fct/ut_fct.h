@@ -344,6 +344,13 @@ extern "C"
 
   extern int ut_fct_invert (struct FCT Fct1, struct FCT *pFct2);
 
+  extern void ut_fct_normalizecdf (struct FCT *pFct);
+  extern void ut_fct_normalizecdf_samegrid (struct FCT *pFct);
+  extern void ut_fct_scalepdf (struct FCT *pFct, double fact);
+  extern void ut_fct_scalecdf (struct FCT *pFct, double fact);
+
+  extern int ut_fct_samex (struct FCT Fct1, struct FCT Fct2);
+
 #endif                          /* UT_FCT_H */
 
 #endif

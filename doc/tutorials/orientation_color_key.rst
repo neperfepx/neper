@@ -1,7 +1,11 @@
 .. _orientation_color_key:
 
-Plotting an Orientation Color Key
-=================================
+Plotting an Orientation Color Key (-T, -M, -V)
+==============================================
+
+.. note::
+
+  This tutorial presents the :option:`-domain` option of the :ref:`neper_t`, the :data:`-statnode` option of the :ref:`neper_m` and the :data:`-datanodecol` and :data:`-dataeltcol` options of the :ref:`neper_v`, for plotting orientation color keys.
 
 The :ref:`neper_v` can color cells, elements, etc. according to their orientations, but an image of the color key itself is not generated.  Color keys can be obtained as described in the following.
 
@@ -12,13 +16,13 @@ The :ref:`neper_v` can color cells, elements, etc. according to their orientatio
 Rodrigues Color Key
 -------------------
 
-Cubic crystal symmetry is assumed.  The color map onto the fundamental region of Rodrigues space is created by generating a tessellation corresponding to the fundamental region, meshing it, getting the node colors, and visualizing it - as the space is 3D, we also produce a slice view:
+Cubic crystal symmetry is assumed.  The color map onto the fundamental region of Rodrigues space is created by generating a tessellation corresponding to the fundamental region, meshing it, getting the node colors, and visualizing it; as the space is 3D, we also produce a slice view:
 
 .. code-block:: console
 
   $ neper -T -n 1 -domain "rodrigues(cubic)" -o rodrigues
   $ neper -M rodrigues.tess -cl 0.05 -statnode col_rodrigues
-  $ neper -V rodrigues.tess,rodrigues.msh -datanodecol "col:file(rodrigues.stnode)" -dataeltcol from_nodes -dataelt3dedgerad 0 -dataelt1drad 0.002 -showelt1d all -showcsys 1 -datacsyscoo 0.44:-0.44:0.65 -datacsysrad 0.005 -datacsyslength 0.15 -datacsyslabel " : : " -cameracoo 4:4:3 -imagesize 400:400 -cameraangle 14 -cameraprojection orthographic -sceneshadow 0 -print tmp1 -slicemesh "x=0,y=0,z=0" -showtess 1 -showcell 0 -showedge all -dataedgerad 0.002 -showmesh 0 -showmeshslice 1 -showcsys 0 -print tmp2
+  $ neper -V rodrigues.tess,rodrigues.msh -datanodecol "col:file(rodrigues.stnode)" -dataeltcol from_nodes -dataelt3dedgerad 0 -dataelt1drad "default*0.2" -showelt1d all -showcsys 1 -datacsyscoo 0.44:-0.44:0.65 -datacsysrad 0.005 -datacsyslength 0.15 -datacsyslabel " : : " -cameracoo 4:4:3 -imagesize 400:400 -cameraangle 14 -cameraprojection orthographic -lightambient 1 -lightsource none -print tmp1 -slicemesh "x=0,y=0,z=0" -showtess 1 -showcell 0 -showedge all -dataedgerad "default*0.2" -showmesh 0 -showmeshslice 1 -showcsys 0 -print tmp2
   $ convert -pointsize 20 -draw "text 1,86 'X1' text 55,86 'X2' text 28,17 'X3'" tmp1.png tmp1b.png
   $ convert +append tmp1b.png tmp2.png rodrigues.png
 
@@ -29,13 +33,13 @@ Cubic crystal symmetry is assumed.  The color map onto the fundamental region of
 IPF Color Key
 -------------
 
-The color map onto the standard stereographical triangle (cubic crystal symmetry) is created by generating a tessellation corresponding to the triangle, meshing it, getting the node colors, and visualizing it:
+The color map onto the standard stereographic triangle (cubic crystal symmetry) is created by generating a tessellation corresponding to the triangle, meshing it, getting the node colors, and visualizing it:
 
 .. code-block:: console
 
   $ neper -T -n 1 -domain stdtriangle -dim 2 -o stdtriangle
   $ neper -M stdtriangle.tess -cl 0.02 -statnode col_stdtriangle
-  $ neper -V stdtriangle.msh -datanodecol "col:file(stdtriangle.stnode)" -dataeltcol from_nodes -dataelt2dedgerad 0 -dataelt1drad 0.001 -showelt1d all -imagesize 800:400 -print tmp
+  $ neper -V stdtriangle.msh -datanodecol "col:file(stdtriangle.stnode)" -dataeltcol from_nodes -dataelt2dedgerad 0 -dataelt1drad "default*0.2" -showelt1d all -imagesize 800:400 -print tmp
   $ convert -pointsize 32 -draw "text 180,390 '[001]' text 545,390 '[011]' text 505,30 '[111]'" tmp.png stdtriangle.png
 
 .. image:: orientation_color_key/stdtriangle.png
@@ -46,7 +50,7 @@ A color map for hexagonal crystal symmetry can be generated using the :data:`cry
 
   $ neper -T -n 1 -domain "stdtriangle(crysym=hexagonal)" -dim 2 -o stdtriangleh
   $ neper -M stdtriangleh.tess -cl 0.02 -statnode col_stdtriangle_hexagonal
-  $ neper -V stdtriangleh.msh -datanodecol "col:file(stdtriangleh.stnode)" -dataeltcol from_nodes -dataelt2dedgerad 0 -dataelt1drad 0.0015 -showelt1d all -cameracoo x:y:2.84 -imagesize 800:400 -print tmp
+  $ neper -V stdtriangleh.msh -datanodecol "col:file(stdtriangleh.stnode)" -dataeltcol from_nodes -dataelt2dedgerad 0 -dataelt1drad "default*0.2" -showelt1d all -cameracoo x:y:2.84 -imagesize 800:400 -print tmp
   $ convert -pointsize 32 -draw "text 35,390 '[0001]' text 702,359 '_' text 715,359 '_' text 676,390 '[2110]' text 590,30 '[1010]' text 631,-1 '_'" tmp.png stdtriangleh.png
 
 .. image:: orientation_color_key/stdtriangleh.png

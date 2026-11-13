@@ -14,6 +14,9 @@
 #include"ut.h"
 #include"neut.h"
 
-extern void neut_sim_simres_parentres (char *res, struct SIMRES *pSimRes);
+extern void neut_sim_simres_parentres (struct SIM Sim, char *entity, char *res,
+                                       struct SIMRES *pSimRes);
 
-extern int neut_sim_simres_type (char *res, struct SIMRES *pSimRes);
+extern int neut_sim_simres_type (struct SIM Sim, char *entity, char *res, struct SIMRES *pSimRes);
+
+extern void neut_sim_simres_type_read (struct SIM Sim, char *entity, char *res, char **ptype);

@@ -1,4 +1,4 @@
-/* Copyright 2007-2011,2014,2015 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2007-2011,2014,2015,2019,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -46,6 +46,8 @@
 /**                                 to   : 01 jul 2008     **/
 /**                # Version 6.0  : from : 05 nov 2009     **/
 /**                                 to   : 16 aug 2015     **/
+/**                # Version 7.0  : from : 23 aug 2019     **/
+/**                                 to   : 17 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -53,7 +55,7 @@
 **  The defines and includes.
 */
 
-#define WGRAPH_PART_ML
+#define SCOTCH_WGRAPH_PART_ML
 
 #include "module.h"
 #include "common.h"
@@ -99,13 +101,14 @@ const WgraphPartMlParam * const       paraptr)     /*+ Method parameters        
   *coarmultptr = NULL;                            /* Allocate coarmulttab along with coarse graph */
   if (graphCoarsen (&finegrafptr->s, &coargrafptr->s, NULL, coarmultptr,
                     (paraptr->coarnbr * finegrafptr->partnbr), paraptr->coarval, GRAPHCOARSENNONE,
-                    NULL, NULL, 0, NULL) != 0)
+                    NULL, NULL, 0, finegrafptr->contptr) != 0)
     return (1);                                   /* Return if coarsening failed */
 
   coargrafptr->parttax  = NULL;                   /* Do not allocate partition data yet */
   coargrafptr->compload = NULL;
   coargrafptr->partnbr  = finegrafptr->partnbr;
   coargrafptr->levlnum  = finegrafptr->levlnum + 1; /* Graph level is coarsening level */
+  coargrafptr->contptr  = finegrafptr->contptr;
 
   return (0);
 }
@@ -148,12 +151,12 @@ const GraphCoarsenMulti * restrict const  coarmulttab) /*+ Un-based multinode ar
   if ((finegrafptr->levlnum > 0) &&               /* If partition data not yet allocated */
       (wgraphAlloc (finegrafptr) != 0)) {         /* Allocate tables before processing   */
     errorPrint ("wgraphPartMlUncoarsen: out of memory (1)");
-    return     (1);
+    return (1);
   }
 
   if (coargrafptr == NULL) {                      /* If no coarse graph provided */
     wgraphZero (finegrafptr);
-    return     (0);
+    return (0);
   }
 
   finecompload = finegrafptr->compload;
@@ -161,7 +164,7 @@ const GraphCoarsenMulti * restrict const  coarmulttab) /*+ Un-based multinode ar
 
   if ((finelisttab = (WgraphPartList *) memAlloc ((finegrafptr->partnbr + 1) * sizeof (WgraphPartList))) == NULL) { /* TRICK: "+1" to create slot for a "-1" index */
     errorPrint ("wgraphPartMlUncoarsen: out of memory (2)");
-    return     (1);
+    return (1);
   }
   finelisttab ++;                                 /* TRICK: trim array so that finelisttab[-1] is valid */
   memSet (finelisttab, ~0, finegrafptr->partnbr * sizeof (WgraphPartList)); /* Set vertex indices to ~0 */
@@ -252,7 +255,7 @@ const GraphCoarsenMulti * restrict const  coarmulttab) /*+ Un-based multinode ar
 #ifdef SCOTCH_DEBUG_WGRAPH2
   if (wgraphCheck (finegrafptr) != 0) {
     errorPrint ("wgraphPartMlUncoarsen: inconsistent graph data");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
 
@@ -299,8 +302,8 @@ const WgraphPartMlParam * const paraptr)
 
 /* This routine performs the muti-level separation.
 ** It returns:
-** - 0 : if separator could be computed.
-** - 1 : on error.
+** - 0  : if separator could be computed.
+** - 1  : on error.
 */
 
 int

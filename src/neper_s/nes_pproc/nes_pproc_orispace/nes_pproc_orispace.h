@@ -2,4 +2,4 @@
 /* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nes_pproc_orispace (struct IN_S In, char *crysym, struct SIM *pSim);
+extern void nes_pproc_orispace (struct IN_S In, struct SIM *pSim);

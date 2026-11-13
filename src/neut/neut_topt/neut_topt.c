@@ -29,9 +29,11 @@ neut_topt_set_zero (struct TOPT *pTOpt)
 
   (*pTOpt).optitype = NULL;
   (*pTOpt).xqty = 0;
+  (*pTOpt).x = NULL;
   (*pTOpt).x_pvar = NULL;
   (*pTOpt).x_seed = NULL;
   (*pTOpt).x_var = NULL;
+  (*pTOpt).seedvar_x = NULL;
 
   (*pTOpt).dof = NULL;
   (*pTOpt).tarobjective = NULL;
@@ -44,11 +46,11 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).cvlmethod = NULL;
 
   (*pTOpt).curval = NULL;
+  (*pTOpt).curval0 = NULL;
   (*pTOpt).tarqty = 0;
   (*pTOpt).tarcellval = NULL;
   (*pTOpt).tarcellvalqty = NULL;
 
-  (*pTOpt).taractive = NULL;
   (*pTOpt).tarvar = NULL;
   (*pTOpt).tartype = NULL;
   (*pTOpt).tarexpr = NULL;
@@ -65,7 +67,6 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).dist = 0;
   (*pTOpt).eps = 0;
   (*pTOpt).reps = 0;
-  (*pTOpt).loopmax = 0;
 
   (*pTOpt).boundlstring = NULL;
   (*pTOpt).boundustring = NULL;
@@ -73,21 +74,24 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).boundu = NULL;
 
   (*pTOpt).algoname = NULL;
-  (*pTOpt).algomaxiter = NULL;
-
-  (*pTOpt).algoid = 0;
-
-#ifdef HAVE_NLOPT
-  (*pTOpt).algo = 0;
-#endif
+  (*pTOpt).subplexsubspaces = NULL;
 
   (*pTOpt).inistep = 0;
 
   (*pTOpt).curcellpenalty = NULL;
+  (*pTOpt).curcellweight = NULL;
   (*pTOpt).curcellval = NULL;
+  (*pTOpt).curcellerror = NULL;
+  (*pTOpt).curcelltotalerror = NULL;
+  (*pTOpt).curcellpdf = NULL;
+  (*pTOpt).curcellcdf = NULL;
+  (*pTOpt).oldcellweight = NULL;
   (*pTOpt).oldcellpenalty = NULL;
   (*pTOpt).oldcellval = NULL;
+  (*pTOpt).oldcellpdf = NULL;
+  (*pTOpt).oldcellcdf = NULL;
   (*pTOpt).tarrefval = NULL;
+  (*pTOpt).tarmean = NULL;
 
   (*pTOpt).curcellpenaltyqty = 0;
   (*pTOpt).mincellpenaltyqty = INT_MAX;
@@ -99,7 +103,7 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).curpdf = NULL;
   (*pTOpt).curcdf = NULL;
   (*pTOpt).curcdf0 = NULL;
-  (*pTOpt).curpenalty = NULL;
+  (*pTOpt).curpenalty = 0;
 
   (*pTOpt).tarmodeqty = 0;
   (*pTOpt).tarmodefact = NULL;
@@ -119,6 +123,7 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).tarcellptqty = NULL;
   (*pTOpt).tarcellfact = NULL;
   (*pTOpt).tarcellptscells = NULL;
+  (*pTOpt).tarcellptsdist = NULL;
 
   (*pTOpt).seedopti = NULL;
   (*pTOpt).seedoptiqty = 0;
@@ -136,10 +141,7 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).objval0 = DBL_MAX;
   (*pTOpt).objvalmin0 = NULL;
   (*pTOpt).iter = 0;
-  (*pTOpt).loop = 0;
-  (*pTOpt).loop_start = NULL;
-  (*pTOpt).loop_plateau_length = NULL;
-  (*pTOpt).loop_status = NULL;
+  (*pTOpt).result = NULL;
   (*pTOpt).message = NULL;
 
   gettimeofday (&((*pTOpt).end_time), NULL);
@@ -180,17 +182,22 @@ neut_topt_free (struct TOPT *pTOpt)
     ut_free_1d_ppint (&(*pTOpt).tarcellptscells);
   }
 
+  ut_free_2d (&(*pTOpt).tarcellptsdist, (*pTOpt).tartesr.CellQty + 1);
   ut_free_2d (&(*pTOpt).tarcellptweights, (*pTOpt).tartesr.CellQty + 1);
   ut_free_1d_int (&(*pTOpt).tarcellptqty);
 
   neut_tesr_free (&(*pTOpt).tartesr);
 
+  ut_free_1d (&(*pTOpt).x);
+  ut_free_1d_char (&(*pTOpt).result);
   ut_free_1d_pdouble (&(*pTOpt).x_pvar);
   ut_free_1d_int (&(*pTOpt).x_seed);
   ut_free_1d_int (&(*pTOpt).x_var);
+  ut_free_2d_int (&(*pTOpt).seedvar_x, (*pTOpt).SSet.N + 1);
+  ut_free_1d_char (&(*pTOpt).optitype);
 
-  ut_free_2d_char (&(*pTOpt).algoname, (*pTOpt).algoqty);
-  ut_free_1d_int (&(*pTOpt).algomaxiter);
+  ut_free_1d_char (&(*pTOpt).algoname);
+  ut_free_1d_char (&(*pTOpt).subplexsubspaces);
   ut_free_1d_char (&(*pTOpt).dof);
 
   if ((*pTOpt).tarcellval)
@@ -202,7 +209,6 @@ neut_topt_free (struct TOPT *pTOpt)
   }
   ut_free_1d_int (&(*pTOpt).tarcellvalqty);
 
-  ut_free_1d_int (&(*pTOpt).taractive);
   ut_free_2d_char (&(*pTOpt).tarvar, (*pTOpt).tarqty);
   ut_free_2d_char (&(*pTOpt).tartype, (*pTOpt).tarqty);
   ut_free_2d_char (&(*pTOpt).tarexpr, (*pTOpt).tarqty);
@@ -215,12 +221,15 @@ neut_topt_free (struct TOPT *pTOpt)
   ut_free_1d (&(*pTOpt).boundu);
 
   ut_free_1d (&(*pTOpt).curcellpenalty);
+  ut_free_2d (&(*pTOpt).curcellweight, (*pTOpt).tarqty);
   ut_free_3d (&(*pTOpt).curcellval, (*pTOpt).tarqty, (*pTOpt).CellQty + 1);
+  ut_free_2d (&(*pTOpt).curcellerror, (*pTOpt).tarqty);
+  ut_free_1d (&(*pTOpt).curcelltotalerror);
+  ut_free_2d (&(*pTOpt).oldcellweight, (*pTOpt).tarqty);
   ut_free_1d (&(*pTOpt).oldcellpenalty);
   ut_free_3d (&(*pTOpt).oldcellval, (*pTOpt).tarqty, (*pTOpt).CellQty + 1);
   ut_free_1d (&(*pTOpt).tarrefval);
-
-  ut_free_1d (&(*pTOpt).curpenalty);
+  ut_free_1d (&(*pTOpt).tarmean);
 
   for (i = 0; i < (*pTOpt).tarqty; i++)
     ut_fct_free ((*pTOpt).tarpdf0 + i);
@@ -250,6 +259,54 @@ neut_topt_free (struct TOPT *pTOpt)
     ut_fct_free ((*pTOpt).curcdf0 + i);
   free ((*pTOpt).curcdf0);
 
+  if ((*pTOpt).curcellcdf)
+  {
+    for (i = 0; i < (*pTOpt).tarqty; i++)
+      if ((*pTOpt).curcellcdf[i])
+      {
+        for (j = 0; j <= (*pTOpt).CellQty; j++)
+          ut_fct_free ((*pTOpt).curcellcdf[i] + j);
+        free ((*pTOpt).curcellcdf[i]);
+      }
+    free ((*pTOpt).curcellcdf);
+  }
+
+  if ((*pTOpt).oldcellcdf)
+  {
+    for (i = 0; i < (*pTOpt).tarqty; i++)
+      if ((*pTOpt).oldcellcdf[i])
+      {
+        for (j = 0; j <= (*pTOpt).CellQty; j++)
+          ut_fct_free ((*pTOpt).oldcellcdf[i] + j);
+        free ((*pTOpt).oldcellcdf[i]);
+      }
+    free ((*pTOpt).oldcellcdf);
+  }
+
+  if ((*pTOpt).curcellpdf)
+  {
+    for (i = 0; i < (*pTOpt).tarqty; i++)
+      if ((*pTOpt).curcellpdf[i])
+      {
+        for (j = 0; j <= (*pTOpt).CellQty; j++)
+          ut_fct_free ((*pTOpt).curcellpdf[i] + j);
+        free ((*pTOpt).curcellpdf[i]);
+      }
+    free ((*pTOpt).curcellpdf);
+  }
+
+  if ((*pTOpt).oldcellpdf)
+  {
+    for (i = 0; i < (*pTOpt).tarqty; i++)
+      if ((*pTOpt).oldcellpdf[i])
+      {
+        for (j = 0; j <= (*pTOpt).CellQty; j++)
+          ut_fct_free ((*pTOpt).oldcellpdf[i] + j);
+        free ((*pTOpt).oldcellpdf[i]);
+      }
+    free ((*pTOpt).oldcellpdf);
+  }
+
   for (i = 0; i < (*pTOpt).tarqty; i++)
   {
     for (j = 0; j < (*pTOpt).tarmodeqty[i]; j++)
@@ -258,9 +315,9 @@ neut_topt_free (struct TOPT *pTOpt)
   }
   free ((*pTOpt).tarmodecdf0);
 
+  ut_free_1d_int (&(*pTOpt).tarmodeqty);
   ut_free_2d (&(*pTOpt).tarmodefact, (*pTOpt).tarqty);
 
-  /*
   neut_odf_free (&(*pTOpt).tarOdf);
   if ((*pTOpt).CellOdf)
   {
@@ -268,11 +325,16 @@ neut_topt_free (struct TOPT *pTOpt)
       neut_odf_free ((*pTOpt).CellOdf + i);
     free ((*pTOpt).CellOdf);
   }
-  */
 
   // free SpecialOdf
 
   ut_free_1d (&(*pTOpt).curval);
+  ut_free_1d_int (&(*pTOpt).ptid_seedid);
+  ut_free_1d_int (&(*pTOpt).seedid_ptid);
+  ut_free_1d (&(*pTOpt).curval0);
+  ut_free_1d (&(*pTOpt).cvlsig);
+  ut_free_1d (&(*pTOpt).objvalmin);
+  ut_free_1d (&(*pTOpt).objvalmin0);
 
   ut_free_1d_int (&(*pTOpt).seedopti);
   ut_free_1d_int (&(*pTOpt).scellchanged);
@@ -281,16 +343,10 @@ neut_topt_free (struct TOPT *pTOpt)
   ut_free_2d_int (&(*pTOpt).CellSCellList, (*pTOpt).CellQty + 1);
   ut_free_1d_int (&(*pTOpt).SCellCell);
 
-  ut_free_1d_int (&(*pTOpt).loop_start);
-  ut_free_1d_int (&(*pTOpt).loop_plateau_length);
-  ut_free_1d_int (&(*pTOpt).loop_status);
-
   ut_free_1d_char (&(*pTOpt).message);
   ut_free_2d_char (&(*pTOpt).tarobjective, (*pTOpt).tarqty);
   ut_free_1d_char (&(*pTOpt).objective);
   ut_free_1d_char (&(*pTOpt).objective_tesrval);
-
-  neut_topt_set_zero (pTOpt);
 
   ut_free_1d_char (&(*pTOpt).DomType);
   neut_tess_free (&(*pTOpt).Dom0);
@@ -311,8 +367,6 @@ neut_topt_free (struct TOPT *pTOpt)
 
   ut_free_1d_char (&(*pTOpt).cvlmethod);
 
-  // nlopt_destroy ((*pTOpt).opt);
-
   return;
 }
 
@@ -332,10 +386,10 @@ neut_topt_subcell_add (struct TOPT *pTOpt, int scell, int cell)
 }
 
 void
-neut_topt_seed_subcell_add (struct TOPT *pTOpt, double *coo, double rad,
+neut_topt_seed_subcell_add (struct TOPT *pTOpt, double *coo, double weight,
                             int cell)
 {
-  neut_seedset_addseed (&(*pTOpt).SSet, coo, rad);
+  neut_seedset_addseed (&(*pTOpt).SSet, coo, weight);
   neut_topt_subcell_add (pTOpt, (*pTOpt).SSet.N, cell);
 
   return;
@@ -347,7 +401,7 @@ neut_topt_eps (struct TOPT TOpt, double *peps)
   int status, status2, deltaiter, refiter;
   double alpha = 10;
 
-  if (TOpt.iter - TOpt.loop_start[TOpt.loop - 1] <= TOpt.xqty)
+  if (TOpt.iter <= TOpt.xqty)
   {
     (*peps) = -1;
     status = -1;
@@ -361,8 +415,8 @@ neut_topt_eps (struct TOPT TOpt, double *peps)
 
     if (status2)
     {
-      deltaiter = TOpt.iter - 1;
-      refiter = 1;
+      deltaiter = TOpt.iter;
+      refiter = 0;
     }
 
     (*peps) =
@@ -387,96 +441,13 @@ neut_topt_reps (struct TOPT TOpt, double *preps)
   return status;
 }
 
-int
-neut_topt_plateau (struct TOPT *pTOpt)
-{
-  int i, status;
-  int maxiter = (*pTOpt).algomaxiter[(*pTOpt).algoid];
-
-  // setting loop_plateau_length
-
-  if ((*pTOpt).iter == 1)
-    (*pTOpt).loop_plateau_length[(*pTOpt).loop - 1] = 0;
-  else if ((*pTOpt).objvalmin[(*pTOpt).iter] <
-           (*pTOpt).objvalmin[(*pTOpt).iter - 1])
-    (*pTOpt).loop_plateau_length[(*pTOpt).loop - 1] = 0;
-  else
-    (*pTOpt).loop_plateau_length[(*pTOpt).loop - 1]++;
-
-  // setting loop_status
-
-  if ((*pTOpt).iter - (*pTOpt).loop_start[(*pTOpt).loop - 1] <= maxiter)
-    (*pTOpt).loop_status[(*pTOpt).loop - 1] = 0;
-  else
-  {
-    if ((*pTOpt).objvalmin[(*pTOpt).iter] ==
-        (*pTOpt).objvalmin[(*pTOpt).loop_start[(*pTOpt).loop - 1]])
-      (*pTOpt).loop_status[(*pTOpt).loop - 1] = -2;
-    else if ((*pTOpt).objvalmin[(*pTOpt).iter] ==
-             (*pTOpt).objvalmin[(*pTOpt).iter - maxiter])
-      (*pTOpt).loop_status[(*pTOpt).loop - 1] = -1;
-  }
-
-  status = 0;
-  for (i = (*pTOpt).loop; i >= 1; i--)
-  {
-    if ((*pTOpt).loop_status[i - 1] == -2)
-      status++;
-    else if ((*pTOpt).loop_status[i - 1] == -1)
-    {
-      status++;
-      break;
-    }
-    else
-      break;
-  }
-
-  return status;
-}
-
+// reference iteration, deltaiter iterations before the current one
 int
 neut_topt_refiter (struct TOPT TOpt, int deltaiter, int *prefiter)
 {
-  int i, loop, status = 0;
-
   (*prefiter) = TOpt.iter - deltaiter;
 
-  status = neut_topt_iter_loop (TOpt, *prefiter, &loop);
-
-  if (!status)
-    for (i = TOpt.loop; i >= loop; i--)
-    {
-      (*prefiter) -= TOpt.loop_plateau_length[i - 1];
-
-      status = neut_topt_iter_loop (TOpt, *prefiter, &loop);
-
-      if (status)
-        break;
-    }
-
-  return status;
-}
-
-int
-neut_topt_iter_loop (struct TOPT TOpt, int iter, int *ploop)
-{
-  int i;
-
-  (*ploop) = -1;
-
-  if (iter < 1 || iter > TOpt.iter)
-    return -1;
-
-  for (i = TOpt.loop; i >= 1; i--)
-  {
-    if (iter >= TOpt.loop_start[i - 1])
-    {
-      (*ploop) = i;
-      break;
-    }
-  }
-
-  return 0;
+  return (*prefiter >= 0 && *prefiter <= TOpt.iter) ? 0 : -1;
 }
 
 int

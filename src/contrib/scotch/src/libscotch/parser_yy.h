@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2018,2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2018,2019,2021,2023,2025 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -51,6 +51,8 @@
 /**                                 to   : 07 aug 2010     **/
 /**                # Version 6.0  : from : 27 apr 2018     **/
 /**                                 to   : 26 oct 2019     **/
+/**                # Version 7.0  : from : 02 mar 2018     **/
+/**                                 to   : 08 jun 2025     **/
 /**                                                        **/
 /************************************************************/
 
@@ -58,27 +60,25 @@
 **  The defines.
 */
 
-/* Change some function names. */
+/* Parser token limits. */
 
-#if ((defined SCOTCH_RENAME_PARSER) || (defined yylex)) /* If prefix renaming    */
-#define scotchyyparse               stratParserParse2 /* Parser function name    */
-#ifndef yylval
-#define yylval                      SCOTCH_NAME_MACRO3 (scotchyy, SCOTCH_NAME_SUFFIXC, lval) /* It should be Yacc/Bison's job to redefine it! */
-#endif /* yylval              */
-#else /* SCOTCH_RENAME_PARSER */
-#define yylex                       stratParserLex /* Lexical analyzer           */
-#define yyparse                     stratParserParse2 /* Parser function name    */
-#endif /* SCOTCH_RENAME_PARSER */
+#define PARSERSTRINGLEN             256           /*+ Length of parser strings +*/
+
+/* Preliminary declaration. */
+
+extern unsigned int         stratmethtokentab[];
+
+/* Backward compatibility with un-pure Flex or Bison. */
+
+#define PARSERLLBEGIN(s)            stratParserLexBegin (scanptr, s)
+#define PARSERYYLVAL(s)             yylval_param->s
 
 /*
 **  The function prototypes.
 */
 
+#ifdef SCOTCH_PARSER_YY
+static void                 yyerror             (const ParserLocation * const, void * const, const ParserEnv * const, const char * const);
+#endif /* SCOTCH_PARSER_YY */
+
 Strat *                     stratParserParse    (const StratTab * const, const char * const);
-
-int                         yylex               (void);
-int                         yyparse             (void);
-
-#ifdef PARSER_YY
-static int                  yyerror             (const char * const);
-#endif /* PARSER_YY */

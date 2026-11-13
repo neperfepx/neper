@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2012,2015,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2012,2015,2018,2021,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -48,6 +48,10 @@
 /**                                 to   : 27 jun 2010     **/
 /**                # Version 6.0  : from : 11 jun 2012     **/
 /**                                 to   : 15 may 2018     **/
+/**                # Version 6.1  : from : 24 jun 2021     **/
+/**                                 to   : 24 jun 2021     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 06 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -55,11 +59,7 @@
 **  The defines and includes.
 */
 
-#define COMMON_MEMORY
-
-#ifndef COMMON_NOMODULE
 #include "module.h"
-#endif /* COMMON_NOMODULE */
 #include "common.h"
 
 #define COMMON_MEMORY_SZSP          (MAX ((sizeof (size_t)), (sizeof (double)))) /* Space for size, properly aligned */
@@ -94,7 +94,7 @@ static void *               memorycheckwtchval = NULL; /* Block address to watch
 #ifdef COMMON_MEMORY_CHECK
 
 static
-void
+int
 memCheckBlock (
 void *            blokptr)
 {
@@ -102,8 +102,10 @@ void *            blokptr)
   char *              zoneend;
   int                 zoneidx;
   size_t              bloksiz;
+  int                 o;
 
-  bloksiz = *((size_t *) blokptr);
+  o = 0;                                          /* Assume no error     */
+  bloksiz = *((size_t *) blokptr);                /* Get real block size */
 
   for (zoneptr = (char *) blokptr + COMMON_MEMORY_SZSP, /* Check "before" sentinel */
        zoneend = (char *) blokptr + MEMORY_CHECK_BORDER, zoneidx = 0;
@@ -112,6 +114,7 @@ void *            blokptr)
       errorPrintW ("memoryCheck: error before block at %p, real size %ld",
                    (char *) blokptr + MEMORY_CHECK_BORDER,
                    (long) bloksiz);
+      o = 1;                                      /* Error detected */
       break;
     }
   }
@@ -123,18 +126,26 @@ void *            blokptr)
       errorPrintW ("memoryCheck: error after block at %p, real size %ld",
                    (char *) blokptr + MEMORY_CHECK_BORDER,
                    (long) bloksiz);
+      o = 1;                                      /* Error detected */
       break;
     }
   }
+
+  return (o);
 }
 
 int
 memCheck ()
 {
   int                 bloknum;
+  int                 o;
+
+  o = 0;                                          /* Assume no error */
 
   for (bloknum = 0; bloknum < memorycheckbloknbr; bloknum ++)
-    memCheckBlock (memorycheckbloktab[bloknum]);
+    o |= memCheckBlock (memorycheckbloktab[bloknum]);
+
+  return (o);
 }
 
 int
@@ -336,7 +347,7 @@ size_t                      newsiz)
 #endif /* COMMON_PTHREAD_MEMORY */
 
 #ifdef COMMON_MEMORY_CHECK
-    memCheckDelist (tmpptr);
+  memCheckDelist (tmpptr);
 #endif /* COMMON_MEMORY_CHECK */
 
   if ((newptr = realloc (tmpptr, newsiz + COMMON_MEMORY_OVHD)) != NULL) {
@@ -381,7 +392,8 @@ void *                      oldptr)
 #endif /* COMMON_PTHREAD_MEMORY */
 
 #ifdef COMMON_MEMORY_CHECK
-    memCheckDelist (tmpptr);
+  memCheckBlock  (tmpptr);                        /* Check the block first */
+  memCheckDelist (tmpptr);                        /* Then check all blocks */
 #endif /* COMMON_MEMORY_CHECK */
 
   free (tmpptr);
@@ -400,7 +412,7 @@ void *                      oldptr)
 */
 
 IDX
-memCur ()
+memCur (void)
 {
   intptr_t            memotmp;
 
@@ -425,7 +437,7 @@ memCur ()
 */
 
 IDX
-memMax ()
+memMax (void)
 {
   intptr_t            memotmp;
 
@@ -449,13 +461,13 @@ memMax ()
 */
 
 IDX
-memCur ()
+memCur (void)
 {
   return ((IDX) -1);
 }
 
 IDX
-memMax ()
+memMax (void)
 {
   return ((IDX) -1);
 }
@@ -470,7 +482,7 @@ memMax ()
 ** terminated by a NULL pointer.
 ** It returns:
 ** - !NULL  : pointer to block, all arrays allocated.
-** - NULL   : no array allocated.
+** - NULL   : no array allocated; first block pointer is also set to NULL.
 */
 
 void *

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2012,2014,2018,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2012,2014,2018-2020,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -46,6 +46,8 @@
 /**                                 to   : 24 oct 2010     **/
 /**                # Version 6.0  : from : 27 mar 2012     **/
 /**                                 to   : 20 aug 2020     **/
+/**                # Version 7.0  : from : 05 may 2019     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -53,8 +55,7 @@
 **  The defines and includes.
 */
 
-#define HGRAPH
-#define HGRAPH_INDUCE
+#define SCOTCH_HGRAPH_INDUCE
 
 #include "module.h"
 #include "common.h"
@@ -103,13 +104,13 @@ Hgraph * restrict const           indgrafptr)     /* Pointer to induced subgraph
 
   indvertnbr = indvnumnbr + indhalonbr;           /* Compute upper bound on number of vertices */
   indvelosiz = (orggrafptr->s.velotax != NULL) ? indvertnbr : 0;
-  if (memAllocGroup ((void **) (void *)
+  if (memAllocGroup ((void **) (void *)           /* Allocate induced graph structure */
                      &indgrafptr->s.verttax, (size_t) ((indvertnbr + 1) * sizeof (Gnum)),
                      &indgrafptr->vnhdtax,   (size_t) ( indvnumnbr      * sizeof (Gnum)), /* Put closest to beginning of array because no padding after */
                      &indgrafptr->s.velotax, (size_t) ( indvelosiz      * sizeof (Gnum)),
                      &indgrafptr->s.vnumtax, (size_t) ( indvertnbr      * sizeof (Gnum)), NULL) == NULL) {
-    errorPrint ("hgraphInduceList: out of memory (1)"); /* Allocate induced graph structure */
-    return     (1);
+    errorPrint ("hgraphInduceList: out of memory (1)");
+    return (1);
   }
   memCpy (indgrafptr->s.vnumtax, indvnumtab, indvnumnbr * sizeof (Gnum)); /* Copy vertex number array from list */
   indgrafptr->s.velotax  = (orggrafptr->s.velotax != NULL) ? (indgrafptr->s.velotax - indgrafptr->s.baseval) : NULL;
@@ -136,7 +137,7 @@ Hgraph * restrict const           indgrafptr)     /* Pointer to induced subgraph
                         &orgindxtax, (size_t) (orggrafptr->s.vertnbr * sizeof (Gnum)), NULL) == NULL)) {
       errorPrint ("hgraphInduceList: out of memory (2)");
       hgraphExit (indgrafptr);
-      return     (1);
+      return (1);
     }
   }
   memSet (orgindxtax, ~0, orggrafptr->s.vertnbr * sizeof (Gnum)); /* Preset index array */
@@ -175,7 +176,7 @@ Gnum * restrict const           indedgetab)       /* Pointer to pre-allocated sp
   if (indedgetnd > (void *) (orgindxtax + orggrafptr->s.baseval)) {
     errorPrint ("hgraphInduce2: invalid edge array size (1)");
     hgraphExit (indgrafptr);
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_HGRAPH2 */
   if (orggrafptr->s.edlotax != NULL) {
@@ -187,13 +188,13 @@ Gnum * restrict const           indedgetab)       /* Pointer to pre-allocated sp
     if (indedgetnd > (void *) (orgindxtax + orggrafptr->s.baseval)) {
       errorPrint ("hgraphInduce2: invalid edge array size (2)");
       hgraphExit (indgrafptr);                    /* Indedgetab is now freed as part of indgrafptr */
-      return     (1);
+      return (1);
     }
 #endif /* SCOTCH_DEBUG_HGRAPH2 */
     hgraphInduce2L (orggrafptr, orgindxtax, indgrafptr);
 
     indedlooftval = indgrafptr->s.edlotax - indgrafptr->s.edgetax;
-    memReallocGroup ((void *) indedgetab,         /* Implicitely free orgindxtab */
+    memReallocGroup ((void *) indedgetab,         /* Implicitly free orgindxtab */
                      &indgrafptr->s.edgetax, (size_t) (indedgenbr            * sizeof (Gnum)), /* Keep first offset as estimated number of edges */
                      &indgrafptr->s.edlotax, (size_t) (indgrafptr->s.edgenbr * sizeof (Gnum)), /* Use real number of edges for second array      */
                      NULL);
@@ -208,6 +209,7 @@ Gnum * restrict const           indedgetab)       /* Pointer to pre-allocated sp
   }
   indgrafptr->s.vendtax = indgrafptr->s.verttax + 1; /* Use compact representation of arrays */
   indgrafptr->levlnum   = orggrafptr->levlnum + 1; /* Induced subgraph is one level below    */
+  indgrafptr->contptr   = orggrafptr->contptr;    /* Use same execution context              */
 
   if (orggrafptr->s.vnumtax != NULL) {            /* Adjust vnumtax */
     const Gnum * restrict const orgvnumtax = orggrafptr->s.vnumtax;
@@ -221,7 +223,7 @@ Gnum * restrict const           indedgetab)       /* Pointer to pre-allocated sp
   if (hgraphCheck (indgrafptr) != 0) {            /* Check graph consistency */
     errorPrint ("hgraphInduce2: inconsistent graph data");
     hgraphExit (indgrafptr);
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_HGRAPH2 */
 

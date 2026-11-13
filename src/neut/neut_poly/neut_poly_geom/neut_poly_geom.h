@@ -41,6 +41,7 @@ extern "C"
   extern int neut_polys_volume (struct POLY *Poly, int *polys, int polyqty, double *pvol);
   extern int neut_polys_volume_2d (struct POLY *Poly, int *polys, int polyqty, double Size, double *pval);
   extern void neut_polys_diameq (struct POLY *Poly, int *polys, int polyqty, double *val);
+  // diameter of a 2D poly
   extern void neut_polys_diameq_2d (struct POLY *Poly, int *polys, int polyqty, double h, double *val);
 
   extern void neut_polys_area (struct POLY *Poly, int *polys,
@@ -61,8 +62,6 @@ extern "C"
 
   extern int neut_poly_point_dist (struct POLY Poly, double *ptcoo,
                                    double *pdist);
-  extern int neut_polys_sel (struct POLY *Poly, int *polys, int
-      polyqty, double *pval);
   extern int neut_polys_convexity (struct POLY *Poly, int *polys, int
       polyqty, double *pval);
   extern int neut_polys_convexity_2d (struct POLY *Poly, int *polys, int

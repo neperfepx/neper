@@ -63,6 +63,15 @@ extern "C"
 
   extern void neut_ori_R_Rcrysym_all (struct ORI Ori, double *R, double ***pRs, int *pqty);
 
+  /// \brief Get the number of operators of a sample symmetry
+  extern int neut_ori_sym_qty (char *sym);
+
+  /// \brief Apply an operator of a sample symmetry to an orientation
+  extern void neut_ori_sym_q (char *sym, int id, double *q, double *q2);
+
+  /// \brief Apply a sample symmetry to an orientation set
+  extern void neut_ori_sym_oset (char *sym, struct OL_SET OSet, struct OL_SET *pOSet2);
+
 #ifdef __cplusplus
 }
 #endif

@@ -16,17 +16,27 @@ ut_list_break_2 (const char *string, const char *sep, char **ppart1, char **ppar
   int qty;
   char **tmp = NULL;
 
-  ut_free_1d_char (ppart1);
-  ut_free_1d_char (ppart2);
-
   ut_list_break (string, sep, &tmp, &qty);
 
-  ut_string_string (tmp[0], ppart1);
+  if (ppart1 && qty >= 1)
+    ut_string_string (tmp[0], ppart1);
 
-  if (qty == 2)
+  if (ppart2 && qty == 2)
     ut_string_string (tmp[1], ppart2);
 
   ut_free_2d_char (&tmp, qty);
+
+  return;
+}
+
+// appends a string to a string (which may be NULL)
+static void
+ut_list_append (char **pstring, const char *add)
+{
+  int length = (*pstring) ? strlen (*pstring) : 0;
+
+  (*pstring) = ut_realloc_1d_char (*pstring, length + strlen (add) + 1);
+  strcpy (*pstring + length, add);
 
   return;
 }
@@ -35,7 +45,7 @@ void
 ut_list_break (const char *string0, const char *sep, char ***pparts, int *pqty)
 {
   int i, pos, bracket, len;
-  char **tmp = NULL, *val = NULL;
+  char **tmp = NULL, *val = NULL, *part = NULL;
   char *string = NULL;
 
   ut_string_string (string0, &string);
@@ -55,7 +65,6 @@ ut_list_break (const char *string0, const char *sep, char ***pparts, int *pqty)
       break;
   }
 
-  tmp = ut_alloc_2d_char (strlen (string) + 1, strlen (string) + 1);
   val = ut_alloc_1d_char (strlen (string) + 1);
 
   (*pqty) = 0;
@@ -65,21 +74,27 @@ ut_list_break (const char *string0, const char *sep, char ***pparts, int *pqty)
   {
     bracket +=
       ut_string_thischarqty (val, '(') - ut_string_thischarqty (val, ')');
-    if (bracket >= 0)
-    {
-      tmp[*pqty] = strcat (tmp[*pqty], val);
-      if (bracket > 0)
-        tmp[*pqty] = strcat (tmp[*pqty], sep);
-      else
-        (*pqty)++;
-      pos += strlen (sep);
-    }
+    if (bracket < 0)
+      ut_print_message (2, 0, "Unbalanced parentheses in `%s'.\n", string);
+
+    ut_list_append (&part, val);
+    if (bracket > 0)
+      ut_list_append (&part, sep);
     else
-      abort ();
+    {
+      tmp = ut_realloc_1d_pchar_null (tmp, ++(*pqty), 1);
+      tmp[(*pqty) - 1] = part;
+      part = NULL;
+    }
+    pos += strlen (sep);
   }
 
   if ((unsigned int) pos == strlen (string) && strlen (string) > 0)
-    (*pqty)++;
+  {
+    tmp = ut_realloc_1d_pchar_null (tmp, ++(*pqty), 1);
+    tmp[(*pqty) - 1] = part ? part : ut_alloc_1d_char (1);
+    part = NULL;
+  }
 
   if (pparts)
   {
@@ -88,7 +103,8 @@ ut_list_break (const char *string0, const char *sep, char ***pparts, int *pqty)
       ut_string_string (tmp[i], *pparts + i);
   }
 
-  ut_free_2d_char (&tmp, strlen (string) + 1);
+  ut_free_2d_char (&tmp, *pqty);
+  ut_free_1d_char (&part);
   ut_free_1d_char (&val);
   ut_free_1d_char (&string);
 
@@ -180,9 +196,9 @@ ut_list_break_int_range (const char *string, const char *sep, int **pparts, int 
 
   ut_list_break2 (string, sep, "-", &tmp, &qty2, &qty);
 
+  (*pqty) = 0;
   if (pparts)
   {
-    *pqty = 0;
     for (i = 0; i < qty; i++)
     {
       if (qty2[i] == 1)
@@ -223,8 +239,8 @@ ut_list_testelt (const char *string, const char *c, const char *part)
   if (!string)
     return 0;
 
-  tmp = ut_alloc_1d_char (strlen (string) + 3);
-  tmp2 = ut_alloc_1d_char (strlen (part) + 3);
+  tmp = ut_alloc_1d_char (strlen (string) + 2 * strlen (c) + 1);
+  tmp2 = ut_alloc_1d_char (strlen (part) + 2 * strlen (c) + 1);
 
   sprintf (tmp, "%s%s%s", c, string, c);
   sprintf (tmp2, "%s%s%s", c, part, c);
@@ -261,8 +277,7 @@ ut_list_addelt (char **pstring, char *c, char *new)
     ut_string_string (new, pstring);
   else
   {
-    length = (*pstring) ? strlen (*pstring) : 0;
-    length += 1 + strlen (new);
+    length = strlen (*pstring) + strlen (c) + strlen (new);
 
     (*pstring) = ut_realloc_1d_char (*pstring, length + 1);
     sprintf (*pstring + strlen (*pstring), "%s%s", c, new);
@@ -306,7 +321,7 @@ ut_list_iter_test (char *string, char *sep, int iter)
 
   ut_free_2d_char (&vars, varqty);
 
-  return (iterstep == 1 || (iter - 1) % iterstep == 0);
+  return (iterstep <= 1 || (iter - 1) % iterstep == 0);
 }
 
 void
@@ -316,7 +331,8 @@ ut_list_create (char **parts, int size, const char *sep, char **plist)
 
   for (i = 0; i < size; i++)
     length += strlen (parts[i]);
-  length += (size - 1) * strlen (sep);
+  if (size > 1)
+    length += (size - 1) * strlen (sep);
 
   (*plist) = ut_alloc_1d_char (length + 1);
 

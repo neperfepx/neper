@@ -16,7 +16,7 @@ extern void neut_ospace_fnscanf_tess (char *filename, char *space, struct OSPACE
 extern void neut_ospace_fnscanf_mesh (char *crysym, char *space, char *fr, struct OSPACE *pOSpace, char *mode);
 extern void neut_ospace_mesh_olset (struct OSPACE *pOSpace, struct OL_SET *pOSet);
 extern void neut_ospace_mesh_olset_allnodes (struct OSPACE *pOSp, struct OL_SET *pOSet);
-// extern void neut_ospace_free (struct OSPACE *pOSpace);
+extern void neut_orispace_free (struct OSPACE *pOSpace);
 
 #endif /* NEUT_OSPACE_H */
 

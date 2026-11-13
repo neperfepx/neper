@@ -1,4 +1,4 @@
-/* Copyright 2015,2016,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2015,2016,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -35,12 +35,14 @@
 /**                                                        **/
 /**   AUTHOR     : Francois PELLEGRINI                     **/
 /**                                                        **/
-/**   FUNCTION   : These lines are the data declaration    **/
+/**   FUNCTION   : These lines are the data declarations   **/
 /**                for the type-2 decomposition-defined    **/
 /**                target architecture functions.          **/
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 01 may 2015     **/
 /**                                 to   : 28 may 2018     **/
+/**                # Version 7.0  : from : 17 jan 2023     **/
+/**                                 to   : 17 jan 2023     **/
 /**                                                        **/
 /**   NOTES      : # The internals of the "deco2"          **/
 /**                  architecture derive from those of     **/
@@ -81,7 +83,7 @@
 **  The internal type and structure definitions.
 */
 
-#ifdef ARCH_DECO2
+#ifdef SCOTCH_ARCH_DECO2
 
 typedef struct ArchDeco2Levl_ {
   Graph                     grafdat;              /*+ Graph at this level     +*/
@@ -98,7 +100,7 @@ typedef struct ArchDeco2Data_ {
   Anum                      vnumidx;              /*+ Index to vertex number index array     +*/
 } ArchDeco2Data;
 
-#endif /* ARCH_DECO2 */
+#endif /* SCOTCH_ARCH_DECO2 */
 
 /*
 **  The type and structure definitions.

@@ -101,7 +101,10 @@ net_tess_cube_edges_per (int *N, int ****edgeid, struct TESS *pTess)
 
         ut_array_1d_int_list1_addval (&(*pTess).PerEdgeNb, &(*pTess).PerEdgeQty, sec);
       }
+  }
 
+  if ((*pTess).Periodic[1])
+  {
     for (i = 0; i <= N[0]; i++)
       for (k = 0; k < N[2]; k++)
       {
@@ -123,12 +126,15 @@ net_tess_cube_edges_per (int *N, int ****edgeid, struct TESS *pTess)
 
         ut_array_1d_int_list1_addval (&(*pTess).PerEdgeNb, &(*pTess).PerEdgeQty, sec);
       }
+  }
 
+  if ((*pTess).Periodic[2])
+  {
     for (j = 0; j <= N[1]; j++)
       for (i = 0; i < N[0]; i++)
       {
         pri = edgeid[0][i][j][0];
-        sec = edgeid[0][i][j][N[1]];
+        sec = edgeid[0][i][j][N[2]];
         (*pTess).PerEdgeMaster[sec] = pri;
         ut_array_1d_int_set_3 ((*pTess).PerEdgeShift[sec], 0, 0, 1);
 
@@ -139,13 +145,12 @@ net_tess_cube_edges_per (int *N, int ****edgeid, struct TESS *pTess)
       for (i = 0; i <= N[0]; i++)
       {
         pri = edgeid[1][i][j][0];
-        sec = edgeid[1][i][j][N[1]];
+        sec = edgeid[1][i][j][N[2]];
         (*pTess).PerEdgeMaster[sec] = pri;
         ut_array_1d_int_set_3 ((*pTess).PerEdgeShift[sec], 0, 0, 1);
 
         ut_array_1d_int_list1_addval (&(*pTess).PerEdgeNb, &(*pTess).PerEdgeQty, sec);
       }
-
   }
 
   net_tess3d_periodic_edge_shrinkmaster (pTess);
@@ -179,7 +184,10 @@ net_tess_cube_faces_per (int *N, int ****faceid, struct TESS *pTess)
 
         ut_array_1d_int_list1_addval (&(*pTess).PerFaceNb, &(*pTess).PerFaceQty, sec);
       }
+  }
 
+  if ((*pTess).Periodic[1])
+  {
     for (i = 0; i < N[0]; i++)
       for (k = 0; k < N[2]; k++)
       {
@@ -190,7 +198,10 @@ net_tess_cube_faces_per (int *N, int ****faceid, struct TESS *pTess)
 
         ut_array_1d_int_list1_addval (&(*pTess).PerFaceNb, &(*pTess).PerFaceQty, sec);
       }
+  }
 
+  if ((*pTess).Periodic[2])
+  {
     for (j = 0; j < N[1]; j++)
       for (i = 0; i < N[0]; i++)
       {

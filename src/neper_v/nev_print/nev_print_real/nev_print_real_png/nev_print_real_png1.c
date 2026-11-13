@@ -5,7 +5,7 @@
 #include"nev_print_real_png_.h"
 
 void
-nev_print_real_png (struct IN_V In, char *basename, struct PRINT Print, struct SIM Sim,
+nev_print_real_png (struct IN_V In, char *basename, struct PRINT Print,
                struct TESS Tess, struct DATA *TessData, struct TESR Tesr,
                struct DATA *TesrData, struct NODES Nodes, struct MESH *Mesh,
                int SQty, struct NODES *SNodes, struct MESH **SMesh,
@@ -17,12 +17,10 @@ nev_print_real_png (struct IN_V In, char *basename, struct PRINT Print, struct S
   int i, imageheight, imagewidth;
   FILE *file = NULL;
   char *filename = NULL, *filename2 = ut_alloc_1d_char (10000);
-  char *outdir = NULL;
   char *suffix = ut_alloc_1d_char (10);
 
-  neut_print_outdir (In.outdir, Sim, "png", &outdir);
 
-  ut_file_dir_basename_extension_filename (outdir, basename, "pov", &filename);
+  ut_file_dir_basename_extension_filename (".", basename, "pov", &filename);
 
   neut_print_imagesize (In.imagesize, &imagewidth, &imageheight);
 
@@ -64,6 +62,13 @@ nev_print_real_png (struct IN_V In, char *basename, struct PRINT Print, struct S
   }
 
 
+  // domain (wireframe) ------------------------------------------------
+  if (Print.showdomain == 1 && !neut_tess_isvoid (Tess))
+  {
+    ut_print_message (0, 2, "Printing domain...\n");
+    nev_print_real_png_tess_domain (file, Print, Tess);
+  }
+
   if (SQty > 0 && Print.showslice)
   {
     ut_print_message (0, 2, "Printing mesh slice%s...\n", SQty > 1? "s" : "");
@@ -76,8 +81,7 @@ nev_print_real_png (struct IN_V In, char *basename, struct PRINT Print, struct S
                  NEUT_SEP_NODEP, "pov") ? "w" : "W");
 
   if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
-    neut_print_pov2png (In.povray, filename, imagewidth, imageheight,
-                       In.povrayantialiasing, 2);
+    neut_print_pov2png (In.povray, filename, imagewidth, imageheight, 2);
 
   if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov") == 0
       && ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov:objects") == 0)
@@ -85,7 +89,6 @@ nev_print_real_png (struct IN_V In, char *basename, struct PRINT Print, struct S
 
   ut_free_1d_char (&filename);
   ut_free_1d_char (&filename2);
-  ut_free_1d_char (&outdir);
   ut_free_1d_char (&suffix);
 
   return;

@@ -9,15 +9,14 @@ nes_merge_input (struct SIM Sim, char *sim2)
 {
   int i, fileqty;
   char **fullfiles = NULL, **files = NULL;
-  char *fullfile2 = ut_alloc_1d_char (1000);
+  char *fullfile2 = NULL;
 
   neut_sim_input_files (Sim, &fullfiles, &files, &fileqty);
 
   for (i = 0; i < fileqty; i++)
   {
     ut_print_message (0, 3, "%s...\n", files[i]);
-    sprintf (fullfile2, "%s", fullfiles[i]);
-    ut_string_fnrs (fullfile2, Sim.simdir, sim2, 1);
+    ut_string_sprintf (&fullfile2, "%s%s", sim2, fullfiles[i] + strlen (Sim.simdir));
     ut_file_cp (fullfiles[i], fullfile2);
   }
 
@@ -34,7 +33,7 @@ nes_merge_entity_res (struct SIM Sim, char *entity, int step, char *sim2)
   int i, resqty;
   char **res = NULL;
   char *entitydir = NULL;
-  char *filename2 = ut_alloc_1d_char (1000);
+  char *filename2 = NULL;
   struct SIMRES SimRes;
 
   neut_simres_set_zero (&SimRes);
@@ -45,7 +44,7 @@ nes_merge_entity_res (struct SIM Sim, char *entity, int step, char *sim2)
   for (i = 0; i < resqty; i++)
   {
     neut_sim_simres (Sim, entity, res[i], &SimRes);
-    sprintf (filename2, "%s/results/%s/%s/%s.step%d", sim2, entitydir, res[i], res[i], step);
+    ut_string_sprintf (&filename2, "%s/results/%s/%s/%s.step%d", sim2, entitydir, res[i], res[i], step);
     ut_file_cp (SimRes.file, filename2);
   }
 
@@ -58,15 +57,20 @@ nes_merge_entity_res (struct SIM Sim, char *entity, int step, char *sim2)
 }
 
 void
-nes_merge_post (struct IN_S In, char *sim, int stepqty,
-                struct SIM LastSim, struct SIM *pFullSim)
+nes_merge_post (struct IN_S In, char *sim, struct SIM *pFullSim)
 {
-  neut_sim_fscanf (sim, pFullSim, "R");
-  ut_string_string (In.simdir, &(*pFullSim).simdir);
-  (*pFullSim).StepQty = stepqty;
-  (*pFullSim).RestartFiles = LastSim.RestartFiles;
+  struct SIM Sim;
 
-  neut_sim_fprintf (In.simdir, *pFullSim, "W");
+  neut_sim_set_zero (&Sim);
+
+  // writing the entity and result definitions of the first simulation
+  neut_sim_fscanf (sim, &Sim);
+  ut_string_string (In.simdir, &Sim.simdir);
+  neut_sim_fprintf (Sim, "W");
+
+  neut_sim_fscanf (In.simdir, pFullSim);
+
+  neut_sim_free (&Sim);
 
   return;
 }
@@ -74,36 +78,34 @@ nes_merge_post (struct IN_S In, char *sim, int stepqty,
 void
 nes_merge_restart (struct SIM Sim, char *indir, char *outdir)
 {
-  int i;
+  int i, fileqty = 0;
   char *dir = ut_string_paste (outdir, "/restart");
-  char *filename = ut_alloc_1d_char (1000);
-  char *infile = ut_alloc_1d_char (1000);
-  char *outfile = ut_alloc_1d_char (1000);
+  char *prefix = NULL, *infile = NULL, *outfile = NULL, **files = NULL;
 
   ut_dir_openmessage (dir, "w");
-  ut_sys_mkdir (dir);
+  ut_sys_mkdir ("%s", dir);
 
-  sprintf (filename, "rst%d.control", Sim.RestartId);
-  sprintf (infile, "%s/restart/%s", indir, filename);
-  sprintf (outfile, "%s/restart/%s", outdir, filename);
+  ut_string_sprintf (&infile, "%s/restart", indir);
+  ut_dir_allfiles (infile, &files, &fileqty);
+  ut_array_1d_pchar_sort (files, fileqty);
 
-  ut_print_message (0, 4, "%s...\n", filename);
-  ut_file_cp (infile, outfile);
-
-  ut_print_message (0, 4, "rst%d.field.core*...\n", Sim.RestartId);
-  for (i = 1; i <= Sim.PartQty; i++)
-  {
-    sprintf (filename, "rst%d.field.core%d", Sim.RestartId, i);
-    sprintf (infile, "%s/restart/%s", indir, filename);
-    sprintf (outfile, "%s/restart/%s", outdir, filename);
-
-    ut_file_cp (infile, outfile);
-  }
+  // copying the restart files, rst<id>.control and rst<id>.field.core* (FEPX 1 and 2), or
+  // restart.rank<r> (FEPX 3)
+  ut_string_sprintf (&prefix, "rst%d.", Sim.RestartId);
+  for (i = 0; i < fileqty; i++)
+    if (!strncmp (files[i], prefix, strlen (prefix)) || !strncmp (files[i], "restart.rank", 12))
+    {
+      ut_print_message (0, 4, "%s...\n", files[i]);
+      ut_string_sprintf (&infile, "%s/restart/%s", indir, files[i]);
+      ut_string_sprintf (&outfile, "%s/restart/%s", outdir, files[i]);
+      ut_file_cp (infile, outfile);
+    }
 
   ut_free_1d_char (&dir);
-  ut_free_1d_char (&filename);
+  ut_free_1d_char (&prefix);
   ut_free_1d_char (&infile);
   ut_free_1d_char (&outfile);
+  ut_free_2d_char (&files, fileqty);
 
   return;
 }

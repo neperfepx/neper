@@ -5,13 +5,48 @@
 #include"neut_mesh_fprintf_inp_.h"
 
 void
+neut_mesh_fprintf_inp_shift (char *dim, struct MESH Mesh0D, struct MESH Mesh1D,
+                             struct MESH Mesh2D, struct MESH Mesh3D,
+                             struct MESH MeshCo, int *shift)
+{
+  int i, qty = 0;
+  struct MESH *Mesh[5] = { &Mesh0D, &Mesh1D, &Mesh2D, &Mesh3D, &MeshCo };
+
+  for (i = 0; i < 5; i++)
+    if (i == 4 || ut_list_testelt_int (dim, NEUT_SEP_NODEP, i))
+    {
+      shift[i] = qty;
+      qty += Mesh[i]->EltQty;
+    }
+
+  return;
+}
+
+void
+neut_mesh_fprintf_inp_mesh0d (FILE * file, struct MESH Mesh0D, int shift_elt)
+{
+  int i;
+
+  fprintf (file, "*Element, type=MASS\n");
+
+  for (i = 1; i <= Mesh0D.EltQty; i++)
+    fprintf (file, "%d, %d\n", i + shift_elt, Mesh0D.EltNodes[i][0]);
+
+  fprintf (file, "\n");
+
+  return;
+}
+
+void
 neut_mesh_fprintf_inp_mesh1d (FILE * file, struct MESH Mesh1D, int shift_elt,
                               int dim)
 {
   int i, j;
   int eltnodeqty1D =
     neut_elt_nodeqty (Mesh1D.EltType, Mesh1D.Dimension, Mesh1D.EltOrder);
-  int seq1d[6] = { 0, 1, 2 };
+  int seq1d1[2] = { 0, 1 };
+  int seq1d2[3] = { 0, 2, 1 };    // the mid node is the second one
+  int *seq1d = (eltnodeqty1D == 2) ? seq1d1 : seq1d2;
   (void) dim;
 
   fprintf (file, "*Element, type=");
@@ -38,14 +73,15 @@ neut_mesh_fprintf_inp_mesh2d (FILE * file, struct MESH Mesh2D, int shift_elt,
   int eltnodeqty2D =
     neut_elt_nodeqty (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder);
   int seq2d[6] = { 0, 2, 1, 5, 4, 3 };
+  int issurf = type && !strcmp (type, "surface");
 
   if (!strcmp (Mesh2D.EltType, "tri"))
   {
     fprintf (file, "*Element, type=");
     if (Mesh2D.EltOrder == 1)
-      fprintf (file, "CPE3\n");
+      fprintf (file, "%s3\n", issurf ? "SFM3D" : "CPE");
     else if (Mesh2D.EltOrder == 2)
-      fprintf (file, "CPE6\n");
+      fprintf (file, "%s6\n", issurf ? "SFM3D" : "CPE");
 
     for (i = 1; i <= Mesh2D.EltQty; i++)
     {
@@ -63,6 +99,8 @@ neut_mesh_fprintf_inp_mesh2d (FILE * file, struct MESH Mesh2D, int shift_elt,
     {
       if (!type || !strcmp (type, "standard"))
         fprintf (file, "CPE4\n");
+      else if (!strcmp (type, "surface"))
+        fprintf (file, "SFM3D4\n");
       else if (!strcmp (type, "cohesive"))
         fprintf (file, "COH2D4\n");
       else
@@ -82,6 +120,8 @@ neut_mesh_fprintf_inp_mesh2d (FILE * file, struct MESH Mesh2D, int shift_elt,
     {
       if (!type || !strcmp (type, "standard"))
         fprintf (file, "CPE8\n");
+      else if (!strcmp (type, "surface"))
+        fprintf (file, "SFM3D8\n");
       else if (!strcmp (type, "cohesive"))
         fprintf (file, "COH2D8\n");
       else
@@ -124,7 +164,7 @@ neut_mesh_fprintf_inp_mesh2d (FILE * file, struct MESH Mesh2D, int shift_elt,
   {
     fprintf (file, "*Element, type=");
 
-    fprintf (file, "CPE9\n");
+    fprintf (file, "%s9\n", issurf ? "M3D" : "CPE");
 
     for (i = 1; i <= Mesh2D.EltQty; i++)
     {
@@ -328,27 +368,32 @@ neut_mesh_fprintf_inp_nset (FILE * file, char *name, int qty, int *nodeset,
 }
 
 void
-neut_mesh_fprintf_inp_boundary (FILE * file, struct BOUNDARY Bound)
+neut_mesh_fprintf_inp_boundary (FILE * file, struct BOUNDARY Bound,
+                                int shift_elt)
 {
   int i, j, k;
 
   for (i = 1; i <= Bound.BoundQty; i++)
     if (Bound.BoundDom[i][0] == -1)
       for (j = 0; j < 2; j++)
-        if (Bound.BoundNames[i][j] && strlen (Bound.BoundNames[i][j]) > 0)
+        // (the periodic side of a periodic interface has no elements)
+        if (Bound.BoundNames[i][j] && strlen (Bound.BoundNames[i][j]) > 0
+            && (Bound.BoundEltQty[i] == 0 || Bound.BoundElts[i][j][1] > 0))
         {
           for (k = 1; k <= Bound.BoundEltQty[i]; k++)
           {
             fprintf (file,
                      "*Elset, elset=elt%d-S%d, internal, instance=tess\n",
-                     Bound.BoundElts[i][j][k], Bound.BoundEltFacets[i][j][k]);
-            fprintf (file, "%d,\n", Bound.BoundElts[i][j][k]);
+                     Bound.BoundElts[i][j][k] + shift_elt,
+                     Bound.BoundEltFacets[i][j][k]);
+            fprintf (file, "%d,\n", Bound.BoundElts[i][j][k] + shift_elt);
           }
           fprintf (file, "*Surface, type=ELEMENT, name=%s\n",
                    Bound.BoundNames[i][j]);
 
           for (k = 1; k <= Bound.BoundEltQty[i]; k++)
-            fprintf (file, "elt%d-S%d, S%d\n", Bound.BoundElts[i][j][k],
+            fprintf (file, "elt%d-S%d, S%d\n",
+                     Bound.BoundElts[i][j][k] + shift_elt,
                      Bound.BoundEltFacets[i][j][k],
                      Bound.BoundEltFacets[i][j][k]);
         }
@@ -359,7 +404,8 @@ neut_mesh_fprintf_inp_boundary (FILE * file, struct BOUNDARY Bound)
 void
 neut_mesh_fprintf_inp_fasets (FILE * file, struct TESS Tess,
                               struct MESH Mesh2D, struct MESH Mesh3D,
-                              struct NODES Nodes, char *fasetlist)
+                              struct NODES Nodes, char *fasetlist,
+                              int shift_elt)
 {
   struct BOUNDARY Bound;
 
@@ -373,7 +419,7 @@ neut_mesh_fprintf_inp_fasets (FILE * file, struct TESS Tess,
 
   neut_mesh_fasets_bound (Tess, Nodes, Mesh2D, Mesh3D, fasetlist, &Bound);
 
-  neut_mesh_fprintf_inp_boundary (file, Bound);
+  neut_mesh_fprintf_inp_boundary (file, Bound, shift_elt);
 
   neut_boundary_free (&Bound);
 

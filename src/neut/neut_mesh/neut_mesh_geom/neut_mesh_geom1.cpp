@@ -18,7 +18,8 @@ neut_mesh_elt_area (struct NODES Nodes, struct MESH Mesh, int elt,
       ut_space_triangle_area (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
                               Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
                               Nodes.NodeCoo[Mesh.EltNodes[elt][2]]);
-  else if (!strcmp (Mesh.EltType, "quad"))
+  // (quad6: 2D cohesive elt, whose 4 first nodes are the vertices)
+  else if (!strcmp (Mesh.EltType, "quad") || !strcmp (Mesh.EltType, "quad6"))
     (*parea) =
       ut_space_triangle_area (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
                               Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
@@ -56,6 +57,17 @@ neut_mesh_elt_volume (struct NODES Nodes, struct MESH Mesh, int elt,
                             Nodes.NodeCoo[Mesh.EltNodes[elt][5]],
                             Nodes.NodeCoo[Mesh.EltNodes[elt][6]],
                             Nodes.NodeCoo[Mesh.EltNodes[elt][7]]);
+  else if (strcmp (Mesh.EltType, "triprism") == 0) // split into 3 tets
+  {
+    int i, tets[3][4] = { {0, 1, 2, 3}, {1, 2, 3, 4}, {2, 3, 4, 5} };
+
+    (*pvol) = 0;
+    for (i = 0; i < 3; i++)
+      (*pvol) += ut_space_tet_volume (Nodes.NodeCoo[Mesh.EltNodes[elt][tets[i][0]]],
+                                      Nodes.NodeCoo[Mesh.EltNodes[elt][tets[i][1]]],
+                                      Nodes.NodeCoo[Mesh.EltNodes[elt][tets[i][2]]],
+                                      Nodes.NodeCoo[Mesh.EltNodes[elt][tets[i][3]]]);
+  }
   else
     abort ();
 
@@ -111,7 +123,7 @@ neut_mesh_elt_volume_orispace (struct NODES Nodes, struct MESH Mesh, int elt,
 
   ut_free_1d_char (&space);
   ut_free_1d (&coo);
-  ol_q_free (q);
+  ol_q_free (&q);
 
   return 0;
 }
@@ -120,17 +132,26 @@ int
 neut_mesh_volume (struct NODES Nodes, struct MESH Mesh, double *pvol)
 {
   int i;
-  double eltvol;
+  double *eltvol = NULL;
 
   if (Mesh.Dimension != 3)
     return -1;
 
+  // the elt volumes are computed in parallel, and summed in sequence (so
+  // that the result does not depend on the number of threads)
+  eltvol = ut_alloc_1d (Mesh.EltQty + 1);
+
+#ifdef HAVE_OPENMP
+#pragma omp parallel for schedule(static)
+#endif
+  for (i = 1; i <= Mesh.EltQty; i++)
+    neut_mesh_elt_volume (Nodes, Mesh, i, eltvol + i);
+
   (*pvol) = 0;
   for (i = 1; i <= Mesh.EltQty; i++)
-  {
-    neut_mesh_elt_volume (Nodes, Mesh, i, &eltvol);
-    (*pvol) += eltvol;
-  }
+    (*pvol) += eltvol[i];
+
+  ut_free_1d (&eltvol);
 
   return 0;
 }
@@ -755,6 +776,13 @@ neut_mesh_Odis (struct NODES Nodes, struct MESH Mesh, char *Odisexpr,
                         Nodes.NodeCoo[Mesh.EltNodes[i][1]],
                         Nodes.NodeCoo[Mesh.EltNodes[i][2]],
                         Nodes.NodeCoo[Mesh.EltNodes[i][3]]);
+  // (quad elts: scaled Jacobian)
+  else if (Mesh.Dimension == 2 && !strcmp (Mesh.EltType, "quad"))
+    for (i = 1; i <= Mesh.EltQty; i++)
+      rr[i] = ut_num_max (0, neut_elt_sj_quad (Nodes.NodeCoo[Mesh.EltNodes[i][0]],
+                                               Nodes.NodeCoo[Mesh.EltNodes[i][1]],
+                                               Nodes.NodeCoo[Mesh.EltNodes[i][2]],
+                                               Nodes.NodeCoo[Mesh.EltNodes[i][3]]));
   else if (Mesh.Dimension == 2)
     for (i = 1; i <= Mesh.EltQty; i++)
       rr[i] =
@@ -946,90 +974,51 @@ neut_mesh_centre_z (struct NODES Nodes, struct MESH Mesh, double *px)
   return;
 }
 
-void
+// lengths of the edges of an elt (1 for a 1D elt, 3 for a triangle, 4 for a
+// quadrangle, 6 for a tetrahedron and 12 for a hexahedron; lengths must be of
+// size 12); returns the number of edges
+int
 neut_mesh_elt_lengths (struct NODES Nodes, struct MESH Mesh, int elt,
                        double *lengths)
 {
-  int node1, node2, node3, node4;
+  int i, j, qty = 0;
+  int *nodes = Mesh.EltNodes[elt];
+  int quad = (Mesh.EltType && !strcmp (Mesh.EltType, "quad"));
+  int quadedges[4][2] = { {0, 1}, {1, 2}, {2, 3}, {3, 0} };
+  int hexedges[12][2] = { {0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6},
+                          {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7} };
 
-  if (Mesh.Dimension == 1)
-    lengths[0] =
-      ut_space_dist (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
-                     Nodes.NodeCoo[Mesh.EltNodes[elt][1]]);
-
-  else if (Mesh.Dimension == 2)
-  {
-    node1 = Mesh.EltNodes[elt][0];
-    node2 = Mesh.EltNodes[elt][1];
-    node3 = Mesh.EltNodes[elt][2];
-
-    lengths[0] = ut_space_dist (Nodes.NodeCoo[node1], Nodes.NodeCoo[node2]);
-    lengths[1] = ut_space_dist (Nodes.NodeCoo[node2], Nodes.NodeCoo[node3]);
-    lengths[2] = ut_space_dist (Nodes.NodeCoo[node3], Nodes.NodeCoo[node1]);
-  }
-
-  else if (Mesh.Dimension == 3)
-  {
-    node1 = Mesh.EltNodes[elt][0];
-    node2 = Mesh.EltNodes[elt][1];
-    node3 = Mesh.EltNodes[elt][2];
-    node4 = Mesh.EltNodes[elt][3];
-
-    lengths[0] = ut_space_dist (Nodes.NodeCoo[node1], Nodes.NodeCoo[node2]);
-    lengths[1] = ut_space_dist (Nodes.NodeCoo[node2], Nodes.NodeCoo[node3]);
-    lengths[2] = ut_space_dist (Nodes.NodeCoo[node3], Nodes.NodeCoo[node4]);
-    lengths[3] = ut_space_dist (Nodes.NodeCoo[node4], Nodes.NodeCoo[node1]);
-  }
-
-  else
+  if (Mesh.Dimension < 1 || Mesh.Dimension > 3)
     ut_print_neperbug ();
 
-  return;
+  if (quad && Mesh.Dimension == 2)
+    for (i = 0; i < 4; i++)
+      lengths[qty++] = ut_space_dist (Nodes.NodeCoo[nodes[quadedges[i][0]]],
+                                      Nodes.NodeCoo[nodes[quadedges[i][1]]]);
+
+  else if (quad && Mesh.Dimension == 3)
+    for (i = 0; i < 12; i++)
+      lengths[qty++] = ut_space_dist (Nodes.NodeCoo[nodes[hexedges[i][0]]],
+                                      Nodes.NodeCoo[nodes[hexedges[i][1]]]);
+
+  // simplices: all pairs of vertices
+  else
+    for (i = 0; i <= Mesh.Dimension; i++)
+      for (j = i + 1; j <= Mesh.Dimension; j++)
+        lengths[qty++] = ut_space_dist (Nodes.NodeCoo[nodes[i]], Nodes.NodeCoo[nodes[j]]);
+
+  return qty;
 }
 
+// average length of the edges of an elt
 void
 neut_mesh_elt_length (struct NODES Nodes, struct MESH Mesh, int elt,
                       double *pavlength)
 {
-  int node1, node2, node3, node4;
-  double *length = ut_alloc_1d (4);
+  double lengths[12];
+  int qty = neut_mesh_elt_lengths (Nodes, Mesh, elt, lengths);
 
-  if (Mesh.Dimension == 1)
-    (*pavlength) =
-      ut_space_dist (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
-                     Nodes.NodeCoo[Mesh.EltNodes[elt][1]]);
-
-  else if (Mesh.Dimension == 2)
-  {
-    node1 = Mesh.EltNodes[elt][0];
-    node2 = Mesh.EltNodes[elt][1];
-    node3 = Mesh.EltNodes[elt][2];
-
-    length[0] = ut_space_dist (Nodes.NodeCoo[node1], Nodes.NodeCoo[node2]);
-    length[1] = ut_space_dist (Nodes.NodeCoo[node2], Nodes.NodeCoo[node3]);
-    length[2] = ut_space_dist (Nodes.NodeCoo[node3], Nodes.NodeCoo[node1]);
-
-    (*pavlength) = ut_array_1d_mean (length, 3);
-  }
-
-  else if (Mesh.Dimension == 3)
-  {
-    node1 = Mesh.EltNodes[elt][0];
-    node2 = Mesh.EltNodes[elt][1];
-    node3 = Mesh.EltNodes[elt][2];
-    node4 = Mesh.EltNodes[elt][3];
-
-    length[0] = ut_space_dist (Nodes.NodeCoo[node1], Nodes.NodeCoo[node2]);
-    length[1] = ut_space_dist (Nodes.NodeCoo[node2], Nodes.NodeCoo[node3]);
-    length[2] = ut_space_dist (Nodes.NodeCoo[node3], Nodes.NodeCoo[node4]);
-    length[3] = ut_space_dist (Nodes.NodeCoo[node4], Nodes.NodeCoo[node1]);
-
-    (*pavlength) = ut_array_1d_mean (length, 4);
-  }
-  else
-    ut_print_neperbug ();
-
-  ut_free_1d (&length);
+  (*pavlength) = ut_array_1d_mean (lengths, qty);
 
   return;
 }
@@ -1074,31 +1063,55 @@ neut_mesh_elset_Osize (struct NODES Nodes, struct MESH Mesh, int elset,
 }
 
 int
-neut_mesh_Osize (struct NODES Nodes, struct MESH Mesh, double cl,
-                 double *pOsize)
+neut_mesh_Osize_eltcl (struct NODES Nodes, struct MESH Mesh, double *eltcl,
+                       double *pOsize)
 {
   int i;
   double *meanlength = ut_alloc_1d (Mesh.EltQty);
 
   if (Mesh.EltQty == 0)
   {
-    printf ("neut_mesh_Osize: Mesh.EltQty == 0\n");
+    printf ("neut_mesh_Osize_eltcl: Mesh.EltQty == 0\n");
     abort ();
   }
 
   for (i = 1; i <= Mesh.EltQty; i++)
+  {
     neut_mesh_elt_length (Nodes, Mesh, i, &(meanlength[i - 1]));
+    meanlength[i - 1] /= eltcl[i];
+    if (meanlength[i - 1] > 1)
+      meanlength[i - 1] = 1 / meanlength[i - 1];
+  }
 
-  ut_array_1d_scale (meanlength, Mesh.EltQty, 1 / cl);
-
-  for (i = 0; i < Mesh.EltQty; i++)
-    if (meanlength[i] > 1)
-      meanlength[i] = 1 / meanlength[i];
-  (*pOsize) = ut_array_1d_mean (meanlength, Mesh.EltQty);
-
-  (*pOsize) = pow (*pOsize, 3);
+  (*pOsize) = pow (ut_array_1d_mean (meanlength, Mesh.EltQty), 3);
 
   ut_free_1d (&meanlength);
+
+  return 0;
+}
+
+// Osize value of a mesh, for the elt characteristic lengths given by the
+// mesh size map of the boundary nodes BNodes (the characteristic lengths of
+// the boundary nodes increased by clgrad times the distance, up to cl, see
+// neut_nodes_point_clgrad), at the elt centres
+int
+neut_mesh_Osize_sizemap (struct NODES Nodes, struct MESH Mesh, struct NODES BNodes,
+                         double cl, double clgrad, double *pOsize)
+{
+  int i;
+  double *centre = ut_alloc_1d (3);
+  double *eltcl = ut_alloc_1d (Mesh.EltQty + 1);
+
+  for (i = 1; i <= Mesh.EltQty; i++)
+  {
+    neut_mesh_elt_centre (Nodes, Mesh, i, centre);
+    eltcl[i] = neut_nodes_point_clgrad (BNodes, centre, cl, clgrad);
+  }
+
+  neut_mesh_Osize_eltcl (Nodes, Mesh, eltcl, pOsize);
+
+  ut_free_1d (&centre);
+  ut_free_1d (&eltcl);
 
   return 0;
 }

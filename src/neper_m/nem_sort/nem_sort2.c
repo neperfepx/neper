@@ -5,7 +5,8 @@
 #include"nem_sort_.h"
 
 void
-nem_sort_nodes (struct IN_M In, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh)
+nem_sort_nodes (struct IN_M In, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh,
+                struct NSET *NSet)
 {
   int i, max, dim = neut_mesh_array_dim (Mesh);
   double *val = ut_alloc_1d ((*pNodes).NodeQty + 1);
@@ -27,6 +28,19 @@ nem_sort_nodes (struct IN_M In, struct TESS *pTess, struct NODES *pNodes, struct
     neut_mesh_nodes_switch (Mesh + i, invid);
     neut_mesh_init_nodeelts (Mesh + i, (*pNodes).NodeQty);
   }
+
+  // cohesive elts and fasets (if any)
+  for (i = 4; i <= 5; i++)
+    if (Mesh[i].EltQty > 0)
+    {
+      neut_mesh_nodes_switch (Mesh + i, invid);
+      if (Mesh[i].NodeElts)
+        neut_mesh_init_nodeelts (Mesh + i, (*pNodes).NodeQty);
+    }
+
+  // nsets (if any)
+  if (NSet)
+    neut_nset_renumber (NSet, invid);
 
   ut_free_1d (&val);
   ut_free_1d_int (&id);

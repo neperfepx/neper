@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2011,2016 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2011,2016,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -60,6 +60,8 @@
 /**                                 to   : 27 aug 2004     **/
 /**                # Version 6.0  : from : 23 feb 2011     **/
 /**                                 to   : 27 aug 2016     **/
+/**                # Version 7.0  : from : 17 jan 2023     **/
+/**                                 to   : 17 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -91,7 +93,7 @@ typedef struct BgraphBipartFmParam_ {
   BgraphBipartFmType        typeval;              /*+ Whether considered vertices are boundary or all      +*/
 } BgraphBipartFmParam;
 
-#ifdef BGRAPH_BIPART_FM                           /* Private part of the module */
+#ifdef SCOTCH_BGRAPH_BIPART_FM                    /* Private part of the module */
 
 /*+ The hash vertex structure. For trick
     reasons, the gain table data structure
@@ -140,7 +142,7 @@ static int                  bgraphBipartFmResize (BgraphBipartFmVertex * restric
 static int                  bgraphBipartFmCheck (const Bgraph * restrict const, const BgraphBipartFmVertex * restrict const, const Gnum, const int, const Gnum, const Gnum, const Gnum);
 #endif /* SCOTCH_DEBUG_BGRAPH3 */
 
-#endif /* BGRAPH_BIPART_FM */
+#endif /* SCOTCH_BGRAPH_BIPART_FM */
 
 int                         bgraphBipartFm      (Bgraph * restrict const, const BgraphBipartFmParam * const);
 

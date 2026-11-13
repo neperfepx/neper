@@ -24,6 +24,21 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
      }
    */
 
+  // split elts (see nem_split): the characteristic lengths are those of the
+  // split elts, so that the elts are meshed with larger characteristic
+  // lengths (and the original ones are restored at the end).  In 2D, the
+  // edges are split before meshing the faces, which are meshed directly into
+  // quad elts, by recombining tri elts of twice the (split) size, then
+  // splitting all elts (see nem_meshing_2d_face_mesh_gmsh).
+  int recombine = (*pMeshPara).eltsplit && (*pTess).Dim == 2 && (*pMeshPara).dim >= 2;
+  double splitfact = 1;
+
+  if ((*pMeshPara).eltsplit)
+  {
+    splitfact = recombine ? 0.5 : nem_split_sizefact ((*pMeshPara).dim);
+    neut_meshpara_cl_scale (pMeshPara, *pTess, 1 / splitfact);
+  }
+
   if ((*pMeshPara).dim >= 0)
   {
     if (!neut_mesh_isvoid (Mesh[0]))
@@ -38,6 +53,14 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
       ut_print_message (0, 2, "1D meshing... skipped\n");
     else
       nem_meshing_1d (In, pMeshPara, pTess, RNodes, RMesh, pNodes, Mesh);
+
+    if (recombine)
+    {
+      nem_split_mesh1d (In, *pTess, pNodes, Mesh);
+      ut_array_1d_scale ((*pNodes).NodeCl + 1, (*pNodes).NodeQty, splitfact);
+      neut_meshpara_cl_scale (pMeshPara, *pTess, splitfact);
+      splitfact = 1;
+    }
   }
 
   if ((*pMeshPara).dim >= 2)
@@ -69,6 +92,12 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
     }
 
   nem_meshing_post (*pTess, pNodes, Mesh);
+
+  if (splitfact != 1)
+  {
+    neut_meshpara_cl_scale (pMeshPara, *pTess, splitfact);
+    ut_array_1d_scale ((*pNodes).NodeCl + 1, (*pNodes).NodeQty, splitfact);
+  }
 
   return EXIT_SUCCESS;
 }

@@ -19,6 +19,7 @@ extern void neut_data_mesh2slice_nodes (struct DATA NodeData, struct NODES SNode
                                         struct DATA *pSNodeData);
 
 extern void neut_datainput_set_default (struct DATAINPUT *pDataInput);
+extern void neut_datainput_free (struct DATAINPUT *pDataInput);
 
 extern void neut_data_symboldata_symbol (struct DATA *pData);
 

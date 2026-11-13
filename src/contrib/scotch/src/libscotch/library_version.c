@@ -1,4 +1,4 @@
-/* Copyright 2010 ENSEIRB, INRIA & CNRS
+/* Copyright 2010,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -42,14 +42,14 @@
 /**                                                        **/
 /**   DATES      : # Version 5.1  : from : 16 nov 2010     **/
 /**                                 to   : 16 nov 2010     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 21 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -62,13 +62,13 @@
 /*                                  */
 /************************************/
 
-/*+ This routine returns the version,
-*** release and patchlevel numbers of
-*** the library being used (useful for
-*** dynamic libraries).
-*** It returns:
-*** - void  : in all cases.
-+*/
+/* This routine returns the version,
+** release and patchlevel numbers of
+** the library being used (useful for
+** dynamic libraries).
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_version (
@@ -76,7 +76,7 @@ int * const                 versptr,
 int * const                 relaptr,
 int * const                 patcptr)
 {
-  *versptr = 6;
-  *relaptr = 1;
-  *patcptr = 0;
+  *versptr = SCOTCH_VERSION_NUM;
+  *relaptr = SCOTCH_RELEASE_NUM;
+  *patcptr = SCOTCH_PATCHLEVEL_NUM;
 }

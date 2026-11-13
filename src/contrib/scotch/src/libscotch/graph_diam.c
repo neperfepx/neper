@@ -1,4 +1,4 @@
-/* Copyright 2017,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2017,2018,2019,2021,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,14 +41,16 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 17 jan 2017     **/
 /**                                 to   : 22 feb 2018     **/
+/**                # Version 6.1  : from : 31 mar 2021     **/
+/**                                 to   : 31 mar 2021     **/
+/**                # Version 7.0  : from : 12 sep 2019     **/
+/**                                 to   : 09 aug 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define GRAPH
 
 #include "module.h"
 #include "common.h"
@@ -93,7 +95,8 @@ const FiboNode *            nod1ptr)
 
 Gnum
 graphDiamPV (
-const Graph * const         grafptr)
+const Graph * const         grafptr,
+Context * restrict const    contptr)
 {
   FiboHeap                    fibodat;
   GraphDiamVertex * restrict  vexxtax;            /* Extended vertex array */
@@ -108,6 +111,9 @@ const Graph * const         grafptr)
   const Gnum * restrict const edgetax = grafptr->edgetax;
   const Gnum * restrict const edlotax = grafptr->edlotax;
 
+  if (grafptr->vertnbr <= 0)                      /* Diameter of empty graphs is zero */
+    return (0);
+
   if ((vexxtax = (GraphDiamVertex *) memAlloc (grafptr->vertnbr * sizeof (GraphDiamVertex))) == NULL) {
     errorPrint ("graphWdiam: out of memory");
     return     (-1);
@@ -119,7 +125,7 @@ const Graph * const         grafptr)
   }
   vexxtax -= grafptr->baseval;
 
-  rootnum = intRandVal (grafptr->vertnbr) + grafptr->baseval;
+  rootnum = contextIntRandVal (contptr, grafptr->vertnbr) + grafptr->baseval;
   diammax = 0;                                    /* Ensure at least one pass */
 
   do {
@@ -147,7 +153,7 @@ const Graph * const         grafptr)
       distval = vexxptr->distval;                 /* Keep current distance value      */
       vexxptr->distval = -1;                      /* Flag vertex as already processed */
 
-      vertnum = vexxptr - vexxtax;
+      vertnum = (Gnum) (vexxptr - vexxtax);
       if (diammax < distval) {
         diammax = distval;
         rootnum = vertnum;
@@ -178,13 +184,13 @@ const Graph * const         grafptr)
 
     if (vertnbr != grafptr->vertnbr) {            /* If graph is not connected */
       diambst = GNUMMAX;
-      goto abort;
+      goto fail;
     }
   } while (diambst < diammax);
 
   diambst = diammax;
 
-abort:
+fail:
   fiboHeapExit (&fibodat);
   memFree (vexxtax + grafptr->baseval);
 

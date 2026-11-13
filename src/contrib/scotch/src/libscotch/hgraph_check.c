@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,14 +44,14 @@
 /**                                 to   : 19 dec 2006     **/
 /**                # Version 6.0  : from : 23 may 2018     **/
 /**                                 to   : 23 may 2018     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HGRAPH
 
 #include "module.h"
 #include "common.h"
@@ -81,7 +81,7 @@ const Hgraph * restrict const grafptr)
 
   if (graphCheck (&grafptr->s) != 0) {
     errorPrint ("hgraphCheck: invalid graph structure in halo graph");
-    return     (1);
+    return (1);
   }
 
   if ((grafptr->vnohnbr < 0)                                        ||
@@ -91,7 +91,7 @@ const Hgraph * restrict const grafptr)
       (grafptr->enohnbr > grafptr->s.edgenbr)                       ||
       (grafptr->enlosum < grafptr->enohnbr)) {
     errorPrint ("hgraphCheck: invalid halo graph parameters");
-    return     (1);
+    return (1);
   }
 
   enlosum = (grafptr->s.edlotax == NULL) ? grafptr->enohnbr : 0;
@@ -99,7 +99,7 @@ const Hgraph * restrict const grafptr)
     if ((grafptr->vnhdtax[vertnum] < grafptr->s.verttax[vertnum]) ||
         (grafptr->vnhdtax[vertnum] > grafptr->s.vendtax[vertnum])) {
       errorPrint ("hgraphCheck: invalid non-halo end vertex array");
-      return     (1);
+      return (1);
     }
 
     if (grafptr->s.edlotax != NULL) {
@@ -112,14 +112,14 @@ const Hgraph * restrict const grafptr)
 
   if (grafptr->enlosum != enlosum) {
     errorPrint ("hgraphCheck: invalid non-halo edge load sum");
-    return     (1);
+    return (1);
   }
 
   for ( ; vertnum < grafptr->s.vertnnd; vertnum ++) { /* For all halo vertices */
     for (edgenum = grafptr->s.verttax[vertnum]; edgenum < grafptr->s.vendtax[vertnum]; edgenum ++) {
       if (grafptr->s.edgetax[edgenum] >= grafptr->vnohnnd) { /* If two halo vertices connected together */
         errorPrint ("hgraphCheck: halo vertices should not be connected together");
-        return     (1);
+        return (1);
       }
     }
   }

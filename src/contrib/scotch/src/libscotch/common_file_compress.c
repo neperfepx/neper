@@ -1,4 +1,4 @@
-/* Copyright 2008,2010,2015,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2008,2010,2015,2018,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,6 +44,8 @@
 /**                                 to   : 27 jun 2010     **/
 /**                # Version 6.0  : from : 27 apr 2015     **/
 /**                                 to   : 14 jul 2018     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 25 sep 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -51,12 +53,9 @@
 **  The defines and includes.
 */
 
-#define COMMON_FILE
-#define COMMON_FILE_COMPRESS
+#define SCOTCH_COMMON_FILE_COMPRESS
 
-#ifndef COMMON_NOMODULE
 #include "module.h"
-#endif /* COMMON_NOMODULE */
 #include "common.h"
 #include "common_file.h"
 #include "common_file_compress.h"
@@ -104,7 +103,7 @@ static FileCompressTab      filetab[] = {
 ** of the de/compressing task associated with
 ** the given file.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -115,7 +114,7 @@ File * const                fileptr)
     return;
 
 #ifdef COMMON_PTHREAD_FILE
-  pthread_join (fileptr->compptr->thrdval, NULL); /* Wait for (un)compression thread to terminate */
+  pthread_join (fileptr->compptr->thrdval, NULL); /* Wait for (de)compression thread to terminate */
 #else /* COMMON_PTHREAD_FILE */
   waitpid (fileptr->compptr->procval, NULL, 0);
 #endif /* COMMON_PTHREAD_FILE */
@@ -136,12 +135,12 @@ int
 fileCompressType (
 const char * const          nameptr)              /*+ Name string +*/
 {
-  int                 namelen;
+  size_t              namelen;
   int                 i;
 
   namelen = strlen (nameptr);
   for (i = 0; filetab[i].name != NULL; i ++) {
-    int                 extnlen;                  /* Name of extension string */
+    size_t              extnlen;                  /* Name of extension string */
 
     extnlen = strlen (filetab[i].name);
     if ((namelen >= extnlen) && (strncmp (filetab[i].name, nameptr + (namelen - extnlen), extnlen) == 0))
@@ -200,7 +199,7 @@ FileCompress * const        compptr)
 int
 fileCompress (
 File * const                fileptr,              /*+ Uncompressed stream   +*/
-const int                   typeval)              /*+ Compression algorithm +*/
+const FileCompressType      typeval)              /*+ Compression algorithm +*/
 {
   int                 filetab[2];
   FILE *              writptr;
@@ -379,7 +378,11 @@ FileCompress * const        compptr)
   encodat.avail_out = FILECOMPRESSDATASIZE;
   do {
     if ((encodat.avail_in == 0) && (enacval == LZMA_RUN)) {
+#ifdef COMMON_OS_WINDOWS
+      int                 bytenbr;                /* According to MSDN, _read returns int */
+#else
       ssize_t             bytenbr;
+#endif
 
       bytenbr = read (compptr->infdnum, compptr->bufftab, FILECOMPRESSDATASIZE); /* Read from pipe */
       if (bytenbr < 0) {

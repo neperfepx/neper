@@ -15,53 +15,68 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   nem_input_options_set (pIn, fargc, fargv);
   nem_input_options_set (pIn, argc, argv);
 
-  // Checking out the elttype value
-  if (!strcmp ((*pIn).elttype, "tet"))
-    ut_string_string ("tri", &(*pIn).elttype);
-  else if (!strcmp ((*pIn).elttype, "hex"))
-    ut_string_string ("quad", &(*pIn).elttype);
+  // Checking out the elttype value: internally, tri for free meshing (tri
+  // elts, or quad elts obtained by splitting tri elts) and quad or quad9 for
+  // grid meshing
+  if (!strcmp ((*pIn).elttype, "quad9"))
+  {
+    ut_print_message (1, 2,
+                      "Elt type `quad9' is deprecated and may vanish in future versions; use `quad9grid' instead.\n");
+    ut_string_string ("quad9grid", &(*pIn).elttype);
+  }
 
-  if (strcmp ((*pIn).elttype, "tri") != 0
-      && strncmp ((*pIn).elttype, "quad", 4) != 0)
+  if (!strcmp ((*pIn).elttype, "tri") || !strcmp ((*pIn).elttype, "tet"))
+    ut_string_string ("tri", &(*pIn).elttype);
+  else if (!strcmp ((*pIn).elttype, "hexgrid")
+           || !strcmp ((*pIn).elttype, "quadgrid"))
+    ut_string_string ("quad", &(*pIn).elttype);
+  else if (!strcmp ((*pIn).elttype, "quad9grid"))
+  {
+    ut_string_string ("quad9", &(*pIn).elttype);
+
+    if ((*pIn).order == 1)
+      ut_print_message (2, 0, "Elt type `quad9grid' needs `-order 2`.\n");
+  }
+  // free meshing into tri elts, which are then split
+  else if (!strcmp ((*pIn).elttype, "hex") || !strcmp ((*pIn).elttype, "quad"))
+  {
+    ut_string_string ("tri", &(*pIn).elttype);
+    (*pIn).eltsplit = 1;
+
+    if (strcmp ((*pIn).interface, "continuous"))
+      ut_print_message (2, 0, "Option `-interface' is not available for elt type `hex' or `quad'.\n");
+  }
+  else
   {
     ut_print_message (2, 0, "Unknown elt type `%s'.\n", (*pIn).elttype);
     abort ();
   }
 
-  if (!strcmp ((*pIn).elttype, "quad9") && (*pIn).order == 1)
-    ut_print_message (2, 0, "Elt type `%s' needs `-order 2`.\n",
-                      (*pIn).elttype);
+  // Checking out the format values
+  {
+    int i, j, formatqty;
+    char **formats = NULL;
+    const char *valid[] = { "msh", "msh:ascii", "msh:binary", "sim", "vtk", "inp", "abq",
+                            "geof", "ori", "phase", "bcs", "per", "tess", "etree", "ntree" };
+    int validqty = sizeof (valid) / sizeof (valid[0]);
+
+    ut_list_break ((*pIn).format, NEUT_SEP_NODEP, &formats, &formatqty);
+
+    for (i = 0; i < formatqty; i++)
+    {
+      for (j = 0; j < validqty; j++)
+        if (!strcmp (formats[i], valid[j]))
+          break;
+
+      if (j == validqty)
+        ut_print_message (2, 0, "Unknown format `%s'.\n", formats[i]);
+    }
+
+    ut_free_2d_char (&formats, formatqty);
+  }
 
   if (!strcmp ((*pIn).faset, "all"))
     ut_string_string ("faces", &(*pIn).faset);
-
-  char *tmp = ut_alloc_1d_char (1000);
-  char *filename = ut_alloc_1d_char (100);
-  sprintf (filename, "%s/tempfileXXXXXX", (*pIn).tmp);
-
-  if (!mkstemp (filename))
-    abort ();
-
-  sprintf (tmp, "%s --version > %s 2> %s", (*pIn).gmsh, filename, filename);
-  if (system (tmp) == -1)
-    abort ();
-
-  FILE *file = ut_file_open (filename, "R");
-  if (fscanf (file, "%s", tmp) != 1)
-    ut_print_message (2, 3,
-                      "Option `-gmsh' does not provide a valid path to the gmsh binary.\n");
-  else if (strstr (tmp, "git"))
-    ut_print_message (1, 3, "Using a development Gmsh version (%s)...\n",
-                      tmp);
-  else if (!strcmp (tmp, "2.5.1") || !strcmp (tmp, "2.14.1"))
-    ut_print_message (2, 3,
-                      "Gmsh %s is known to produce error.  Please update.\n",
-                      tmp);
-
-  ut_file_close (file, filename, "R");
-  remove (filename);
-  ut_free_1d_char (&tmp);
-  ut_free_1d_char (&filename);
 
   if ((*pIn).partstring)
   {
@@ -144,7 +159,6 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   {
     (*pIn).geof = ut_string_addextension ((*pIn).body, ".geof");
     (*pIn).msh = ut_string_addextension ((*pIn).body, ".msh");
-    (*pIn).msh4 = ut_string_addextension ((*pIn).body, ".msh4");
     (*pIn).per = ut_string_addextension ((*pIn).body, ".per");
     (*pIn).abq = ut_string_addextension ((*pIn).body, ".inp");
     (*pIn).ori = ut_string_addextension ((*pIn).body, ".ori");

@@ -19,12 +19,11 @@ nem_meshing_1d (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
   char *message = ut_alloc_1d_char (8);
   int **N_global_id = ut_alloc_1d_pint ((*pTess).EdgeQty + 1);
 
-  // This array records the cls of the 0D nodes.  Due to a tolerancy on
-  // the element size in nem_meshing_1d_edge, elements a little larger than the
-  // cl at the 0D nodes can be generated.  This requires to update the
-  // 0D nodes to at least the size of the 1d elements they belong to.
-  // Node0DCl records what should become the 0D node cls; they are updated
-  // at the end.
+  // This array records the cls of the 0D nodes.  As the number of elements
+  // of an edge is rounded to the nearest integer, the mesh size at a 0D node
+  // can be a little higher than its cl, in which case its cl is increased to
+  // the mesh size (see nem_meshing_1d_edge_algo_mesh).  Node0DCl records
+  // what should become the 0D node cls; they are updated at the end.
 
   for (i = 1; i <= (*pTess).EdgeQty; i++)
   {
@@ -37,11 +36,19 @@ nem_meshing_1d (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
   ut_print_message (0, 2, "1D meshing... ");
 
   // edges to mesh; default is 'all'
-  neut_tess_expr_edges (pTess, In.meshedge, &edges, &edgeqty);
+  if (In.meshedgelist)
+  {
+    edgeqty = In.meshedgelist[0];
+    edges = ut_alloc_1d_int (edgeqty);
+    ut_array_1d_int_memcpy (In.meshedgelist + 1, edgeqty, edges);
+  }
+  else
+    neut_tess_expr_edges (pTess, In.meshedge, &edges, &edgeqty);
 
   ut_print_progress (stdout, 0, (*pTess).EdgeQty, "%3.0f%%", message);
 
-  nem_meshing_1d_pre (pMeshPara, (*pTess), RNodes, RMesh, *pNodes, &Node0DCl);
+  Node0DCl = ut_alloc_1d ((*pNodes).NodeQty + 1);
+  ut_array_1d_memcpy ((*pNodes).NodeCl + 1, (*pNodes).NodeQty, Node0DCl + 1);
 
   // meshing edges
   for (i = 0; i < edgeqty; i++)
@@ -50,7 +57,7 @@ nem_meshing_1d (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
 
     if (strcmp ((*pTess).Type, "periodic") || !(*pTess).PerEdgeMaster[edge])
       nem_meshing_1d_edge (*pMeshPara, (*pTess), RNodes, RMesh, edge,
-                           (*pMeshPara).edge_cl[edge], (*pMeshPara).pl, *pNodes,
+                           (*pMeshPara).edge_cl[edge], (*pMeshPara).edge_pl[edge], *pNodes,
                            Node0DCl, N + edge, M + edge);
 
     ut_print_progress (stdout, edge, (*pTess).EdgeQty, "%3.0f%%", message);

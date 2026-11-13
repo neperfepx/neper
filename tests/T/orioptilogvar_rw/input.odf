@@ -1,0 +1,15 @@
+***odf
+ **format
+   1.0
+ **space
+  rodrigues
+  *crysym
+   cubic
+  *fr
+   fr20
+  *theta
+   5
+ **eltdata
+   ascii
+   *file input.dat
+***end

@@ -3,6 +3,32 @@
 /* see the COPYING file in the top-level directory.*/
 #include "ol_spread.h"
 
+// returns the number of orientations rejected by a filter (defined in
+// set1, undefined in *pset2), or -1 if all orientations were rejected
+// (in which case *pset2 is reset to set1)
+static int
+ol_set_filter_status (struct OL_SET set1, struct OL_SET *pset2)
+{
+  unsigned int i;
+  int rejqty = 0, defqty = 0;
+
+  for (i = 0; i < set1.size; i++)
+  {
+    if (set1.id[i] == 1 && (*pset2).id[i] == 0)
+      rejqty++;
+    if ((*pset2).id[i] == 1)
+      defqty++;
+  }
+
+  if (defqty == 0)
+  {
+    ol_set_memcpy (set1, pset2);
+    return -1;
+  }
+
+  return rejqty;
+}
+
 void
 ol_set_disori (struct OL_SET set, double *qmean, double *pdisori)
 {
@@ -29,7 +55,7 @@ ol_set_disoriset (struct OL_SET set1, struct OL_SET *psetd)
   unsigned int i;
   double *qm = ol_q_alloc ();
 
-  ol_set_mean_iter (set1, qm);
+  ol_set_mean (set1, 100, qm);
 
   (*psetd).size = set1.size;
   for (i = 0; i < set1.size; i++)
@@ -39,7 +65,7 @@ ol_set_disoriset (struct OL_SET set1, struct OL_SET *psetd)
     (*psetd).id[i] = set1.id[i];
   }
 
-  ol_q_free (qm);
+  ol_q_free (&qm);
 
   return;
 }
@@ -50,7 +76,7 @@ ol_set_disoriset_cur (struct OL_SET set1, struct OL_SET *psetd)
   unsigned int i;
   double *qm = ol_q_alloc ();
 
-  ol_set_mean_iter (set1, qm);
+  ol_set_mean (set1, 100, qm);
 
   (*psetd).size = set1.size;
   for (i = 0; i < set1.size; i++)
@@ -60,7 +86,7 @@ ol_set_disoriset_cur (struct OL_SET set1, struct OL_SET *psetd)
     (*psetd).id[i] = set1.id[i];
   }
 
-  ol_q_free (qm);
+  ol_q_free (&qm);
 
   return;
 }
@@ -75,6 +101,7 @@ ol_set_mean_disoriset (struct OL_SET set1, double *qm, struct OL_SET *psetd)
   {
     ol_q_q_qdisori (qm, set1.q[i], set1.crysym, (*psetd).q[i]);
     (*psetd).weight[i] = set1.weight[i];
+    (*psetd).id[i] = set1.id[i];
   }
 
   return;
@@ -91,6 +118,7 @@ ol_set_mean_disoriset_cur (struct OL_SET set1, double *qm,
   {
     ol_q_q_qdisori_cur (qm, set1.q[i], set1.crysym, (*psetd).q[i]);
     (*psetd).weight[i] = set1.weight[i];
+    (*psetd).id[i] = set1.id[i];
   }
 
   return;
@@ -100,7 +128,7 @@ int
 ol_set_filter (struct OL_SET set1, double rel, struct OL_SET *pset2,
                double *qmean, double *pdis)
 {
-  unsigned int i;
+  unsigned int i, qty, rejqty;
   double *qm = ol_q_alloc ();
   double mdis;
   double *dis = ut_alloc_1d (set1.size);
@@ -116,51 +144,61 @@ ol_set_filter (struct OL_SET set1, double rel, struct OL_SET *pset2,
     return 0;
   }
 
-  ol_set_mean (set1, qm);
+  ol_set_mean (set1, 1, qm);
 
+  // average disorientation of the defined orientations
   mdis = 0;
+  qty = 0;
   for (i = 0; i < set1.size; i++)
-  {
-    ol_q_q_disori (qm, set1.q[i], set1.crysym, &dis[i]);
-    mdis += dis[i];
-  }
-  mdis *= (rel / set1.size);
+    if (set1.id[i] == 1)
+    {
+      ol_q_q_disori (qm, set1.q[i], set1.crysym, &dis[i]);
+      mdis += dis[i];
+      qty++;
+    }
+  mdis *= (qty > 0) ? rel / qty : 0;
 
   ol_set_memcpy (set1, pset2);
+  rejqty = 0;
   for (i = 0; i < set1.size; i++)
-    if (!(dis[i] < mdis + OL_EPS_DEG))
+    if (set1.id[i] == 1 && !(dis[i] < mdis + OL_EPS_DEG))
+    {
       (*pset2).id[i] = 0;
-
-  ol_q_free (qm);
-  ut_free_1d (&dis);
+      rejqty++;
+    }
 
   if (pdis != NULL)
     (*pdis) = mdis;
   if (qmean != NULL)
     ol_q_memcpy (qm, qmean);
 
-  if ((*pset2).size == 0)
-  {
-    ol_set_memcpy (set1, pset2);
-    return -1;
-  }
-  else
-    return set1.size - (*pset2).size;
+  ol_q_free (&qm);
+  ut_free_1d (&dis);
+
+  return (rejqty < qty) ? (int) rejqty : -1;
 }
 
 int
 ol_set_filter_iter (struct OL_SET set1, double rel, struct OL_SET *pset2,
                     double *qmean, double *pdis)
 {
-  ol_set_filter (set1, rel, pset2, qmean, pdis);
+  int status, rejqty;
+  struct OL_SET Set;
 
-  while (ol_set_filter (*pset2, rel, pset2, qmean, pdis) > 0)
-    continue;
+  ol_set_zero (&Set);
 
-  if ((*pset2).size == 0)
-    return -1;
-  else
-    return set1.size - (*pset2).size;
+  rejqty = 0;
+  status = ol_set_filter (set1, rel, pset2, qmean, pdis);
+  while (status > 0)
+  {
+    rejqty += status;
+    ol_set_memcpy (*pset2, &Set);
+    status = ol_set_filter (Set, rel, pset2, qmean, pdis);
+  }
+
+  ol_set_free (&Set);
+
+  return (status == -1) ? -1 : rejqty;
 }
 
 int
@@ -193,19 +231,13 @@ ol_set_anifilter (struct OL_SET set1, double rel, struct OL_SET *pset2)
       (*pset2).id[i] = 0;
   }
 
-  ol_q_free (qm);
+  ol_q_free (&qm);
   ut_free_2d (&v, 3);
   ut_free_1d (&mdis);
   ut_free_1d (&dis);
   ol_set_free (&setd);
 
-  if ((*pset2).size == 0)
-  {
-    ol_set_memcpy (set1, pset2);
-    return -1;
-  }
-  else
-    return set1.size - (*pset2).size;
+  return ol_set_filter_status (set1, pset2);
 }
 
 int
@@ -250,13 +282,7 @@ ol_set_mean_anifilter (struct OL_SET set1, double *qm, double rel,
   ut_free_1d (&dis);
   ol_set_free (&setd);
 
-  if (ut_array_1d_int_eltpos ((*pset2).id, (*pset2).size, 1) == -1)
-  {
-    ol_set_memcpy (set1, pset2);
-    return -1;
-  }
-  else
-    return set1.size - (*pset2).size;
+  return ol_set_filter_status (set1, pset2);
 }
 
 
@@ -297,13 +323,7 @@ ol_set_mean_aniso_anifilter (struct OL_SET set1, double *qm, double **v,
   ut_free_1d (&dis);
   ol_set_free (&setd);
 
-  if ((*pset2).size == 0)
-  {
-    ol_set_memcpy (set1, pset2);
-    return -1;
-  }
-  else
-    return set1.size - (*pset2).size;
+  return ol_set_filter_status (set1, pset2);
 }
 
 int
@@ -349,7 +369,7 @@ ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double *qmean0,
   int i;
   double *q = ol_q_alloc ();
   double *qmean = ol_q_alloc ();
-  double *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
   double theta;
   double **gshake = ol_g_alloc ();
   double *mdis_cur = ut_alloc_1d (3);
@@ -376,12 +396,12 @@ ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double *qmean0,
       if (qmean0)
         ol_q_memcpy (qmean0, qmean);
       else
-        ol_set_mean_iter (*pset2, qmean);
+        ol_set_mean (*pset2, 100, qmean);
     }
     // if not first increment, computing mean using the previous one as
     // reference orientation.
     else
-      ol_set_mean_iter_ref (*pset2, qmean, qmean);
+      ol_set_mean_ref (*pset2, qmean, 100, qmean);
 
     // mean orientation is now recorded in qmean.
 
@@ -394,7 +414,7 @@ ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double *qmean0,
     if (i == 1 && v0 && mdis0)
     {
       ol_g_memcpy (v0, v_cur);
-      ol_e_memcpy (mdis, mdis_cur);
+      ol_e_memcpy (mdis0, mdis_cur);
     }
     else
       ol_set_aniso (Setd, v_cur, mdis_cur);
@@ -412,8 +432,8 @@ ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double *qmean0,
     {
       // moving sligthly the average orientation
       ol_nb_max_rtheta (drand48 (), drand48 (), drand48 (),
-                        2 * 50 / i * mdis_cur[2], r, &theta);
-      ol_rtheta_q (r, theta, q);
+                        2 * 50 / i * mdis_cur[2], rtheta);
+      ol_rtheta_q (rtheta, q);
       ol_q_q_q (qmean, q, qmean);
 
       // filtering
@@ -426,8 +446,8 @@ ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double *qmean0,
       while (actualsize == 0)
       {
         ol_nb_max_rtheta (drand48 (), drand48 (), drand48 (),
-                          2 * 50 / i * mdis_cur[2], r, &theta);
-        ol_rtheta_g (r, theta, gshake);
+                          2 * 50 / i * mdis_cur[2], rtheta);
+        ol_rtheta_g (rtheta, gshake);
         ol_g_g_g (v_cur, gshake, v_cur);
         ol_set_mean_aniso_anifilter (set1cpy, qmean, v_cur, mdis_cur,
                                      rel, pset2);
@@ -512,8 +532,8 @@ ol_set_aniso_modes (struct OL_SET Set, double *qmean,
   }
 
   ol_set_free (&Setd);
-  ol_g_free (v);
-  ol_r_free (theta);
+  ol_g_free (&v);
+  ol_r_free (&theta);
 
   return;
 }
@@ -587,7 +607,7 @@ ol_set_aniso_v_thetatr_modes_id (struct OL_SET Set, double *qmean,
   }
 
   ol_set_free (&Setd);
-  ol_r_free (theta);
+  ol_r_free (&theta);
 
   return;
 }

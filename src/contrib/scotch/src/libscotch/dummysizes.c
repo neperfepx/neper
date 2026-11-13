@@ -1,4 +1,4 @@
-/* Copyright 2004,2007-2010,2012,2014,2018,2019 Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007-2010,2012,2014,2018,2019,2021,2023-2025 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -53,14 +53,16 @@
 /**                                 to   : 15 aug 2010     **/
 /**                # Version 6.0  : from : 01 dec 2012     **/
 /**                                 to   : 26 oct 2019     **/
+/**                # Version 6.1  : from : 09 feb 2021     **/
+/**                                 to   : 22 jun 2021     **/
+/**                # Version 7.0  : from : 25 aug 2019     **/
+/**                                 to   : 13 aug 2025     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define DUMMYSIZES
 
 #define CHARMAX                     2048          /* Maximum line size */
 
@@ -101,6 +103,7 @@
 #include "dgraph.h"
 #include "dgraph_halo.h"
 #include "dmapping.h"
+#include "dmesh.h"
 #include "dorder.h"
 #include "library_dmapping.h"
 #endif /* SCOTCH_PTSCOTCH */
@@ -130,6 +133,18 @@ int                         subsval)
 
   subsptr = malloc (16 * sizeof (char));
   sprintf (subsptr, "%d", (int) ((subsval + sizeof (double) - 1) / sizeof (double)));
+
+  return (subsptr);
+}
+
+char *
+subsSizeByte (
+int                         subsval)
+{
+  char *              subsptr;
+
+  subsptr = malloc (16 * sizeof (char));
+  sprintf (subsptr, "%d", (int) subsval);
 
   return (subsptr);
 }
@@ -185,7 +200,7 @@ char *                      argv[])
         C_fileTab[C_fileNum ++].nameptr = argv[i];
       else {
         fprintf (stderr, "dummysizes: ERROR: main: too many file names given");
-        exit    (1);
+        exit    (EXIT_FAILURE);
       }
     }
     else {                                        /* If found an option name */
@@ -193,19 +208,19 @@ char *                      argv[])
         case 'H' :                                /* Give the usage message */
         case 'h' :
           printf ("Usage is:\ndummysizes [<input pattern header file> [<output header file>]]\n");
-          exit       (0);
+          exit   (EXIT_SUCCESS);
         case 'S' :
         case 's' :
           suffptr = &argv[i][2];
           break;
         case 'V' :
           fprintf (stderr, "dummysizes, version " SCOTCH_VERSION_STRING "\n");
-          fprintf (stderr, "Copyright 2004,2007-2010,2018 IPB, Universite de Bordeaux, INRIA & CNRS, France\n");
+          fprintf (stderr, SCOTCH_COPYRIGHT_STRING "\n");
           fprintf (stderr, "This software is libre/free software under CeCILL-C -- see the user's manual for more information\n");
           return  (0);
         default :
           fprintf (stderr, "dummysizes: ERROR: main: unprocessed option (\"%s\")", argv[i]);
-          exit    (1);
+          exit    (EXIT_FAILURE);
       }
     }
   }
@@ -215,7 +230,7 @@ char *                      argv[])
         (C_fileTab[i].nameptr[1] != '\0')) {
       if ((C_fileTab[i].fileptr = fopen (C_fileTab[i].nameptr, ((C_fileTab[i].flagval & FILEMODE) == FILEMODER) ? "r" : "w")) == NULL) { /* Open the file */
           fprintf (stderr, "dummysizes: ERROR: main: cannot open file (%d)", i);
-          exit    (1);
+          exit    (EXIT_FAILURE);
       }
     }
   }
@@ -225,6 +240,7 @@ char *                      argv[])
   subsFill ("library_pt.h", "ptscotch.h  ");
   subsFill ("library_pt_f.h", "ptscotchf.h   ");
   subsSuffix ("PTSCOTCH_H");
+  subsFill ("DUMMYINTMPI", EXPAND (COMM_INT));
 #else /* SCOTCH_PTSCOTCH */
   subsFill ("library.h", "scotch.h ");
   subsFill ("library_f.h", "scotchf.h  ");
@@ -237,9 +253,12 @@ char *                      argv[])
   subsFill ("DUMMYVERSION", EXPAND (SCOTCH_VERSION_NUM));
   subsFill ("DUMMYRELEASE", EXPAND (SCOTCH_RELEASE_NUM));
   subsFill ("DUMMYPATCHLEVEL", EXPAND (SCOTCH_PATCHLEVEL_NUM));
+  subsFill ("DUMMYSIZEBYTEIDX", subsSizeByte (sizeof (IDX)));
+  subsFill ("DUMMYSIZEBYTENUM", subsSizeByte (sizeof (INT)));
   subsFill ("DUMMYSIZEARCHDOM", subsSize (sizeof (ArchDom)));
   subsFill ("DUMMYSIZEARCH", subsSize (sizeof (Arch)));
   subsFill ("DUMMYSIZEGEOM", subsSize (sizeof (Geom)));
+  subsFill ("DUMMYSIZECONTEXT", subsSize (sizeof (Context)));
   subsFill ("DUMMYSIZEGRAPH", subsSize (sizeof (Graph)));
   subsFill ("DUMMYSIZEMESH",  subsSize (sizeof (Mesh)));
   subsFill ("DUMMYSIZEMAP", subsSize (sizeof (LibMapping)));
@@ -249,23 +268,25 @@ char *                      argv[])
   subsFill ("DUMMYSIZEDGRAPHHALOREQ", subsSize (sizeof (DgraphHaloRequest))); /* TRICK: before DUMMYSIZEDGRAPH */
   subsFill ("DUMMYSIZEDGRAPH", subsSize (sizeof (Dgraph)));
   subsFill ("DUMMYSIZEDMAP", subsSize (sizeof (LibDmapping)));
+  subsFill ("DUMMYSIZEDMESH", subsSize (sizeof (Dmesh)));
   subsFill ("DUMMYSIZEDORDER", subsSize (sizeof (Dorder)));
 #else /* SCOTCH_PTSCOTCH */
   subsFill ("DUMMYSIZEDGRAPHHALOREQ", "1");       /* TRICK: before DUMMYSIZEDGRAPH */
   subsFill ("DUMMYSIZEDGRAPH", "1");
   subsFill ("DUMMYSIZEDMAP", "1");
+  subsFill ("DUMMYSIZEDMESH", "1");
   subsFill ("DUMMYSIZEDORDER", "1");
 #endif /* SCOTCH_PTSCOTCH */
   subsFill ("##SCOTCH_NAME_SUFFIX", suffptr);
   if (suffptr[0] != '\0') {                       /* If suffix provided */
 #ifdef SCOTCH_RENAME_ALL
-    subsSuffix ("SCOTCH_VERSION");
-    subsSuffix ("SCOTCH_RELEASE");
-    subsSuffix ("SCOTCH_PATCHLEVEL");
     subsSuffix ("SCOTCH_COARSENNONE");
     subsSuffix ("SCOTCH_COARSENFOLD");
     subsSuffix ("SCOTCH_COARSENFOLDDUP");
     subsSuffix ("SCOTCH_COARSENNOMERGE");
+    subsSuffix ("SCOTCH_OPTIONNUMDETERMINISTIC");
+    subsSuffix ("SCOTCH_OPTIONNUMRANDOMFIXEDSEED");
+    subsSuffix ("SCOTCH_OPTIONNUMNBR");
     subsSuffix ("SCOTCH_STRATDEFAULT");
     subsSuffix ("SCOTCH_STRATQUALITY");
     subsSuffix ("SCOTCH_STRATSPEED");
@@ -278,16 +299,53 @@ char *                      argv[])
     subsSuffix ("SCOTCH_STRATLEVELMIN");
     subsSuffix ("SCOTCH_STRATLEAFSIMPLE");
     subsSuffix ("SCOTCH_STRATSEPASIMPLE");
-#endif /* SCOTCH_RENAME_ALL */
+    subsSuffix ("SCOTCH_STRATDISCONNECTED");
 #ifdef SCOTCH_PTSCOTCH
+    subsSuffix ("SCOTCH_DGRAPHBUILDGRID3DGRID");
+    subsSuffix ("SCOTCH_DGRAPHBUILDGRID3DTORUS");
+    subsSuffix ("SCOTCH_DGRAPHBUILDGRID3DNGB6");
+    subsSuffix ("SCOTCH_DGRAPHBUILDGRID3DNGB26");
+    subsSuffix ("SCOTCH_DGRAPHBUILDGRID3DVERTLOAD");
+    subsSuffix ("SCOTCH_DGRAPHBUILDGRID3DEDGELOAD");
+#else /* SCOTCH_PTSCOTCH */
+#endif /* SCOTCH_PTSCOTCH */
+#endif /* SCOTCH_RENAME_ALL */
+    subsSuffix ("SCOTCH_VERSION");
+    subsSuffix ("SCOTCH_RELEASE");
+    subsSuffix ("SCOTCH_PATCHLEVEL");
+    subsSuffix ("SCOTCH_IDXSIZE");                /* Centralized Fortran types also needed in "ptscotchf.h" */
+    subsSuffix ("SCOTCH_NUMSIZE");
+    subsSuffix ("SCOTCH_ARCHDIM");
+    subsSuffix ("SCOTCH_ARCHDOMDIM");
+    subsSuffix ("SCOTCH_CONTEXTDIM");
+    subsSuffix ("SCOTCH_GEOMDIM");
+    subsSuffix ("SCOTCH_GRAPHDIM");
+    subsSuffix ("SCOTCH_MAPDIM");
+    subsSuffix ("SCOTCH_MESHDIM");
+    subsSuffix ("SCOTCH_ORDERDIM");
+    subsSuffix ("SCOTCH_STRATDIM");
+#ifdef SCOTCH_PTSCOTCH
+    subsSuffix ("SCOTCH_NUM_MPI");
+    subsSuffix ("SCOTCH_Dgraph");
+    subsSuffix ("SCOTCH_DgraphHaloReq");
+    subsSuffix ("SCOTCH_Dmapping");
+    subsSuffix ("SCOTCH_Dmesh");
+    subsSuffix ("SCOTCH_Dordering");
+    subsSuffix ("SCOTCH_DGRAPHDIM");
+    subsSuffix ("SCOTCH_DGRAPHHALOREQDIM");
+    subsSuffix ("SCOTCH_DMAPDIM");
+    subsSuffix ("SCOTCH_DORDERDIM");
 #else /* SCOTCH_PTSCOTCH */
     subsSuffix ("SCOTCH_Idx");
     subsSuffix ("SCOTCH_Num");
     subsSuffix ("SCOTCH_NUMMAX");
     subsSuffix ("SCOTCH_NUMSTRING");
     subsSuffix ("SCOTCH_Arch");
+    subsSuffix ("SCOTCH_ArchDom");
+    subsSuffix ("SCOTCH_Context");
     subsSuffix ("SCOTCH_Geom");
     subsSuffix ("SCOTCH_Graph");
+    subsSuffix ("SCOTCH_GraphPart2");
     subsSuffix ("SCOTCH_Mesh");
     subsSuffix ("SCOTCH_Mapping");
     subsSuffix ("SCOTCH_Ordering");
@@ -296,19 +354,18 @@ char *                      argv[])
 #ifdef SCOTCH_NAME_SUFFIX
     if (regcomp (&regedat, " SCOTCH_[a-z][0-9a-zA-Z_]*", 0) != 0) {
       fprintf (stderr, "dummysizes: ERROR: cannot compile regular expression\n");
-      exit    (1);
+      exit    (EXIT_FAILURE);
     }
 #endif /* SCOTCH_NAME_SUFFIX */
   }
 
   while (fgets (chartab, CHARMAX, C_filepntrhedinp) != NULL) { /* Loop on file lines */
-    int                 charnbr;
     int                 subsnum;
 
-    if (((charnbr = strlen (chartab)) >= (CHARMAX - 1)) && /* If line read is at least as long as maximum size     */
+    if ((strlen (chartab)) >= (CHARMAX - 1) &&    /* If line read is at least as long as maximum size              */
         (chartab[CHARMAX - 1] != '\n')) {         /* And last character is not a newline, that is, some is missing */
       fprintf (stderr, "dummysizes: ERROR: line too long\n");
-      exit    (1);
+      exit    (EXIT_FAILURE);
     }
 
     for (subsnum = 0; subsnum < subsnbr; subsnum ++) { /* Perform substitutions */
@@ -316,7 +373,7 @@ char *                      argv[])
 
       charptr = chartab;                          /* Start from beginning of string                      */
       while ((charptr = strstr (charptr, substab[subsnum][0])) != NULL) { /* As long as a matching found */
-        int                 subslen;
+        size_t              subslen;
 
         subslen = strlen (substab[subsnum][0]);
         if (isalnum (charptr[subslen]) || (charptr[subslen] == '_')) { /* If next character is part of a longer identifier */
@@ -355,5 +412,5 @@ char *                      argv[])
   }
 #endif /* SCOTCH_DEBUG_MAIN1 */
 
-  exit (0);
+  exit (EXIT_SUCCESS);
 }

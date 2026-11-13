@@ -86,7 +86,7 @@ ut_num_tenlen_int (int num)
   if (num == 0)
     length = 1;
   else
-    length = 1 + log (fabs (num + 1e-6)) / log (10);
+    length = 1 + (num < 0) + log10 (fabs ((double) num) + 1e-6);
 
   return length;
 }
@@ -150,7 +150,7 @@ ut_num_requal (double n1, double n2, double eps)
 double
 ut_num_readwcomma (char *string)
 {
-  double num;
+  double num = 0;
   char *string2 = NULL;
 
   ut_string_string (string, &string2);
@@ -166,19 +166,13 @@ ut_num_readwcomma (char *string)
 int
 ut_num_even (int num)
 {
-  if (num / 2 == (num + 1) / 2)
-    return 1;
-  else
-    return 0;
+  return num % 2 == 0;
 }
 
 int
 ut_num_odd (int num)
 {
-  if (num / 2 != (num + 1) / 2)
-    return 1;
-  else
-    return 0;
+  return num % 2 != 0;
 }
 
 void
@@ -231,13 +225,10 @@ ut_num_ispowerof (int num, int n, int *pnum2)
     return 0;
 
   num2 = 0;
-  printf ("res = %d\n", num % n);
   while (num % n == 0)
   {
-    printf ("dfd\n");
     num2++;
     num /= n;
-    printf ("res = %d\n", num % n);
   }
 
   if (pnum2)
@@ -250,8 +241,12 @@ int ut_num_isequaltopowerof (int num, int n, int *pbase)
 {
   int i, tmp, tmp2;
 
-  if (num <= 0 || n < 0)
+  if (num <= 0 || n <= 0)
+  {
+    if (pbase)
+      *pbase = -1;
     return 0;
+  }
 
   tmp = ut_num_d2ri (pow (num, 1. / n));
 

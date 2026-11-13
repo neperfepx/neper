@@ -15,11 +15,6 @@ extern "C"
 #ifndef NEUT_GMSH_H
 #define NEUT_GMSH_H
 
-/// \brief Rename Gmsh's default configuration file
-/// \param action action to apply: "bak" to create a backup, "unbak" to
-/// revert a backup
-  extern void neut_gmsh_rc (char *action);
-
 /// \brief Get the Gmsh number of a type of element
 /// \param type type of element: "tri" for triangle / tetrahedron, "quad"
 /// for quadrangle / hexahedron

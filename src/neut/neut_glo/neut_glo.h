@@ -17,6 +17,7 @@ extern "C"
 #define NEUT_DEFAULT_ORIDES "rodrigues"
 #define NEUT_DEFAULT_ORIDESFULL "rodrigues:passive"
 #define NEUT_DEFAULT_COLSCHEME_REAL "viridis"
+#define NEUT_DEFAULT_SCALE_REAL "2%:98%"
 
 #include "../../neper_config.h"
 

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2012,2016 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2012,2016,2021,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -48,14 +48,16 @@
 /**                                 to   : 09 nov 2008     **/
 /**                # Version 6.0  : from : 10 feb 2011     **/
 /**                                 to   : 15 aug 2016     **/
+/**                # Version 6.1  : from : 27 nov 2021     **/
+/**                                 to   : 27 nov 2021     **/
+/**                # Version 7.0  : from : 16 jan 2023     **/
+/**                                 to   : 16 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define VGRAPH_SEPARATE_GP
 
 #include "module.h"
 #include "common.h"
@@ -96,6 +98,8 @@ const VgraphSeparateGpParam * const paraptr)      /*+ Method parameters +*/
   const Gnum * restrict const edgetax = grafptr->s.edgetax;
   GraphPart * restrict const  parttax = grafptr->parttax;
   Gnum * restrict const       frontab = grafptr->frontab;
+  const Gnum                  dwg0val = grafptr->dwgttab[0]; /* Part weights */
+  const Gnum                  dwg1val = grafptr->dwgttab[1];
 
   if (grafptr->compsize[0] != grafptr->s.vertnbr) /* If not all vertices already in part 0 */
     vgraphZero (grafptr);                         /* Move all graph vertices to part 0     */
@@ -104,13 +108,13 @@ const VgraphSeparateGpParam * const paraptr)      /*+ Method parameters +*/
                      &queudat.queutab, (size_t) (grafptr->s.vertnbr * sizeof (Gnum)),
                      &vexxtax,         (size_t) (grafptr->s.vertnbr * sizeof (VgraphSeparateGpVertex)), NULL) == NULL) {
     errorPrint ("vgraphSeparateGp: out of memory");
-    return     (1);
+    return (1);
   }
   memSet (vexxtax, 0, grafptr->s.vertnbr * sizeof (VgraphSeparateGpVertex)); /* Initialize pass numbers */
   vexxtax -= grafptr->s.baseval;
 
   compload2   = 0;                                /* All vertices to part 0 */
-  comploaddlt = grafptr->s.velosum;
+  comploaddlt = grafptr->s.velosum * dwg1val;
   for (rootnum = grafptr->s.baseval;              /* Loop on connected components */
        (rootnum < grafptr->s.vertnnd) && (comploaddlt > 0); rootnum ++) {
     Gnum                passnum;                  /* Pass number                                        */
@@ -167,7 +171,7 @@ const VgraphSeparateGpParam * const paraptr)      /*+ Method parameters +*/
     vexxtax[diamnum].distval = 0;
     veloval = (velotax != NULL) ? velotax[diamnum] : 1;
     parttax[diamnum] = 2;                         /* Move diameter vertex to separator */
-    comploaddlt -= veloval;
+    comploaddlt -= veloval * dwg1val;
     compload2   += veloval;
 
     do {                                          /* Loop on vertices in queue */
@@ -180,7 +184,7 @@ const VgraphSeparateGpParam * const paraptr)      /*+ Method parameters +*/
       veloval = (velotax != NULL) ? velotax[vertnum] : 1;
       distval = vexxtax[vertnum].distval + 1;
       parttax[vertnum] = 1;                       /* Move selected vertex from separator to part 1 */
-      comploaddlt -= veloval;
+      comploaddlt -= veloval * dwg0val;
       compload2   -= veloval;
 
       for (edgenum = verttax[vertnum]; edgenum < vendtax[vertnum]; edgenum ++) {
@@ -194,13 +198,13 @@ const VgraphSeparateGpParam * const paraptr)      /*+ Method parameters +*/
           vexxtax[vertend].passnum = passnum;
           vexxtax[vertend].distval = distval;
           parttax[vertend] = 2;                   /* Move neighbor vertex to separator */
-          comploaddlt -= veloval;
+          comploaddlt -= veloval * dwg1val;
           compload2   += veloval;
         }
       }
     } while ((comploaddlt > 0) && (! vgraphSeparateGpQueueEmpty (&queudat))); /* As long as balance not achieved and queue is not empty */
   }
-  grafptr->compload[0] = (grafptr->s.velosum + comploaddlt - compload2) / 2;
+  grafptr->compload[0] = (comploaddlt + (grafptr->s.velosum - compload2) * dwg0val) / (dwg0val + dwg1val);
   grafptr->compload[1] = grafptr->s.velosum - compload2 - grafptr->compload[0];
   grafptr->compload[2] = compload2;
   grafptr->comploaddlt = comploaddlt;
@@ -226,7 +230,7 @@ const VgraphSeparateGpParam * const paraptr)      /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_VGRAPH2
   if (vgraphCheck (grafptr) != 0) {
     errorPrint ("vgraphSeparateGp: inconsistent graph data");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VGRAPH2 */
 

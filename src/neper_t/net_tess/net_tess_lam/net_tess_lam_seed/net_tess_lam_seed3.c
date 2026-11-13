@@ -119,9 +119,9 @@ net_tess_lam_seed_readargs_pos (char *value, struct MTESS MTess,
 int
 net_tess_lam_seed_set_init (struct SEEDSET *pSSet)
 {
+  // LamEq is grown line by line, starting from line 0; LamWidth and
+  // LamWidthId are grown from NULL (LamWidthId is used only with several widths)
   (*pSSet).LamEq = ut_alloc_2d (1, 4);
-  (*pSSet).LamWidthId = ut_alloc_1d_int (1);
-  (*pSSet).LamWidth = ut_alloc_1d (1);
 
   return 0;
 }
@@ -197,7 +197,7 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
     ol_g_inverse (g, g);
     ol_g_vect_vect (g, n, n);
     ut_array_1d_normalize (n, 3);
-    ol_g_free (g);
+    ol_g_free (&g);
   }
 
   else
@@ -245,6 +245,8 @@ net_tess_lam_seed_set_finalize (struct SEEDSET *pSSet)
   (*pSSet).SeedCoo = ut_alloc_2d ((*pSSet).N + 1, 3);
   (*pSSet).SeedCoo0 = ut_alloc_2d ((*pSSet).N + 1, 3);
   (*pSSet).SeedWeight = ut_alloc_1d ((*pSSet).N + 1);
+  // FIXME: this resets the bounding box set in net_tess_lam_seed_set
+  ut_free_2d (&(*pSSet).Size, 3);
   (*pSSet).Size = ut_alloc_2d (3, 2);
 
   return 0;

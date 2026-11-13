@@ -38,8 +38,8 @@ neut_data_ori_color_axis (double **data, int size, char *scheme, int **Col)
     ol_q_r (q, r);
     for (j = 0; j < 3; j++)
       Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (r[j] + 1)), 0, 255);
-    ol_q_free (q);
-    ol_r_free (r);
+    ol_q_free (&q);
+    ol_r_free (&r);
   }
 
   return;
@@ -70,7 +70,7 @@ neut_data_ori_color_angle (double **data, int size, char *scheme, int **Col)
     Col[i][0] = ut_num_d2ri (255 * col.r());
     Col[i][1] = ut_num_d2ri (255 * col.g());
     Col[i][2] = ut_num_d2ri (255 * col.b());
-    ol_q_free (q);
+    ol_q_free (&q);
   }
 
   ut_free_1d_char (&fct);
@@ -103,20 +103,20 @@ neut_data_ori_color_axisangle (double **data, int size, char *scheme, int **Col)
 #pragma omp parallel for private(i,j)
   for (i = 1; i <= size; i++)
   {
-    double theta, *q = ol_q_alloc (), *r = ol_r_alloc ();
+    double *q = ol_q_alloc (), *rtheta = ol_rtheta_alloc ();
     ol_q_qcrysym (data[i], (char *) "cubic", q);
-    ol_q_rtheta_rad (q, r, &theta);
+    ol_q_rtheta_rad (q, rtheta);
     for (j = 0; j < 3; j++)
     {
       Col[i][j] = absolute?
-        ut_num_d2ri (255 * fabs (r[j] * theta) / length)
-      : ut_num_d2ri (127.5 * (r[j] * theta + length) / length);
+        ut_num_d2ri (255 * fabs (rtheta[j] * rtheta[3]) / length)
+      : ut_num_d2ri (127.5 * (rtheta[j] * rtheta[3] + length) / length);
 
       Col[i][j] = ut_num_bound (Col[i][j], 0, 255);
     }
 
-    ol_q_free (q);
-    ol_r_free (r);
+    ol_q_free (&q);
+    ol_rtheta_free (&rtheta);
   }
 
   ut_free_1d_char (&fct);
@@ -181,9 +181,56 @@ neut_data_ori_color_ipf (double **data, int size, char *crysym, char *scheme, in
   ut_free_1d (&v);
   ut_free_1d (&Vs);
   ut_free_1d (&p);
-  ol_g_free (g);
-  ol_q_free (q);
+  ol_g_free (&g);
+  ol_q_free (&q);
   ut_free_1d (&weight);
 
   return;
+}
+
+// Returns 1 if the bound is relative to the data (min, max or percentile),
+// and 0 if it is an absolute value.
+int
+neut_data_scale_bound (char *expr, double *vals, int valqty, double *pval)
+{
+  int i, datarel = 1;
+  double p, pos;
+  char *tmp = NULL;
+
+  if (!strcmp (expr, "min"))
+    (*pval) = valqty > 0 ? vals[0] : 0;
+
+  else if (!strcmp (expr, "max"))
+    (*pval) = valqty > 0 ? vals[valqty - 1] : 0;
+
+  else if (expr[strlen (expr) - 1] == '%')
+  {
+    ut_string_string (expr, &tmp);
+    tmp[strlen (tmp) - 1] = '\0';
+    ut_string_real (tmp, &p);
+
+    if (p < 0 || p > 100)
+      ut_print_message (2, 2, "Scale percentile `%s' out of [0%%,100%%].\n", expr);
+
+    if (valqty == 0)
+      (*pval) = 0;
+    else if (valqty == 1)
+      (*pval) = vals[0];
+    else
+    {
+      pos = p / 100 * (valqty - 1);
+      i = ut_num_min_int ((int) floor (pos), valqty - 2);
+      (*pval) = vals[i] + (pos - i) * (vals[i + 1] - vals[i]);
+    }
+  }
+
+  else
+  {
+    ut_string_real (expr, pval);
+    datarel = 0;
+  }
+
+  ut_free_1d_char (&tmp);
+
+  return datarel;
 }

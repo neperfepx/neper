@@ -22,7 +22,6 @@ extern "C"
 
 #include "neut.h"
 #include "neut_odf.h"
-#include "gsl/gsl_sf_erf.h"
 
 #include "neut_odf_fscanf/neut_odf_fscanf.h"
 

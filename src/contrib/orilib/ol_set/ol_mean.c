@@ -3,17 +3,10 @@
 /* see the COPYING file in the top-level directory.*/
 #include "ol_mean.h"
 
-void
-ol_set_mean (struct OL_SET set, double *qm)
-{
-  if (set.size > 0)
-    ol_set_mean_ref (set, set.q[0], qm);
-
-  return;
-}
-
-void
-ol_set_mean_ref (struct OL_SET set, double *qref, double *qm)
+// single pass: mean orientation of set, with quaternions expressed with
+// respect to qref
+static void
+ol_set_mean_ref_pass (struct OL_SET set, double *qref, double *qm)
 {
   unsigned int i, j;
   double qnorm;
@@ -22,7 +15,7 @@ ol_set_mean_ref (struct OL_SET set, double *qref, double *qm)
   ut_array_1d_zero (qm, 4);
 
   for (i = 0; i < set.size; i++)
-    if (set.id[i] == 1)
+    if (!set.id || set.id[i] == 1)
     {
       ol_q_q_qdisori_cur (qref, set.q[i], set.crysym, qb);
 
@@ -35,61 +28,57 @@ ol_set_mean_ref (struct OL_SET set, double *qref, double *qm)
 
   ol_q_q_q (qref, qm, qm);
 
-  ol_q_free (qb);
+  ol_q_free (&qb);
 
   return;
 }
 
 int
-ol_set_mean_iter (struct OL_SET set, double *qm)
+ol_set_mean_ref (struct OL_SET set, double *qref, int itermax, double *qm)
 {
-  double *qb = ol_q_alloc ();
+  int it;
   double theta;
-  int it, res = 0;
+  double *qb = ol_q_alloc ();
 
-  it = 0;
-  ol_q_memcpy (set.q[0], qb);
+  ol_q_memcpy (qref, qb);
 
-  do
+  for (it = 1; ; it++)
   {
-    ol_set_mean_ref (set, qb, qm);
+    ol_set_mean_ref_pass (set, qb, qm);
+
+    if (itermax == 1)
+      break;
+
+    // convergence: the mean orientation no longer changes
     ol_q_q_disori (qb, qm, set.crysym, &theta);
     ol_q_memcpy (qm, qb);
-    it++;
+
+    if (theta <= 1e-1)
+      break;
+    else if (it == itermax)
+    {
+      it = -1;
+      break;
+    }
   }
-  while (theta > 1e-1 && it <= 100);
 
-  if (it > 100)
-    res = -1;
+  ol_q_free (&qb);
 
-  ol_q_free (qb);
-
-  return res;
+  return it;
 }
 
 int
-ol_set_mean_iter_ref (struct OL_SET set, double *qref, double *qm)
+ol_set_mean (struct OL_SET set, int itermax, double *qm)
 {
-  double *qb = ol_q_alloc ();
-  double theta;
-  int it, res = 0;
+  size_t i;
 
-  it = 0;
-  ol_q_memcpy (qref, qb);
+  /* reference: first defined orientation */
+  for (i = 0; i < set.size; i++)
+    if (!set.id || set.id[i] == 1)
+      break;
 
-  do
-  {
-    ol_set_mean_ref (set, qb, qm);
-    ol_q_q_disori (qb, qm, set.crysym, &theta);
-    ol_q_memcpy (qm, qb);
-    it++;
-  }
-  while (theta > 1e-1 && it <= 100);
+  if (set.size == 0)
+    return 0;
 
-  if (it > 100)
-    res = -1;
-
-  ol_q_free (qb);
-
-  return res;
+  return ol_set_mean_ref (set, set.q[i < set.size ? i : 0], itermax, qm);
 }

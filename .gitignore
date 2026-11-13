@@ -11,6 +11,7 @@ src/.idea
 
 # src directory
 build
+build-dbg
 config
 
 # Ignore meld backups
@@ -27,3 +28,6 @@ docs
 
 # Sphinx files
 __pycache__
+
+# Archives of the tutorials' simulation directories (written by doc/sim_archives.py)
+doc/tutorials/**/*.sim.tgz

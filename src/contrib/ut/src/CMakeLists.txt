@@ -19,7 +19,6 @@ set(UT_VERSION_PATCH 0)
 option(HAVE_GSL      "Use the GNU Scientific Library(GSL)" ON)
 option(HAVE_MUPARSER "Use muparser"                         OFF)
 option(HAVE_OPENGJK  "Use openGJK"                          OFF)
-option(HAVE_NLOPT    "Use NLopt"                            OFF)
 option(HAVE_OPENMP   "Use OpenMP"                           ON)
 option(HAVE_PNG      "Use the libpng library"               ON)
 set(REAL_PRINT_FORMAT \"%.12f\" CACHE STRING "Printing format of real numbers")
@@ -35,19 +34,12 @@ configure_file(
 
 include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
 
+# muparser is provided by the parent project (Neper: src/contrib/muparser)
 if(HAVE_MUPARSER)
   if(DEFINED MUPARSER_INCLUDE_DIR AND DEFINED MUPARSER_BINARY_DIR)
     include_directories(${MUPARSER_INCLUDE_DIR} ${MUPARSER_BINARY_DIR})
-  elseif(EXISTS ${PROJECT_SOURCE_DIR}/contrib/muparser)
-      include_directories(${PROJECT_SOURCE_DIR}/contrib/muparser
-                          ${PROJECT_BINARY_DIR}/contrib/muparser)
-      set(MUPARSER_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser")
-      set(MUPARSER_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/muparser")
-      set(MUPARSER_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser/include")
-      add_subdirectory(contrib/muparser)
-    include_directories(${MUPARSER_INCLUDE_DIR} ${MUPARSER_BINARY_DIR})
   else()
-    message(FATAL_ERROR "Failed to find muparser")
+    message(FATAL_ERROR "Failed to find muparser (MUPARSER_INCLUDE_DIR and MUPARSER_BINARY_DIR must be set by the parent project)")
   endif()
 endif()
 
@@ -88,7 +80,6 @@ add_library(ut
   ut_time/ut_time.c
   ut_vector/ut_vector.c
   ut_png/ut_png.c
-  ut_nlopt/ut_nlopt.c
 )
 
 ## Link libraries
@@ -101,7 +92,9 @@ if(MATHLIB)
 endif(MATHLIB)
 
 if(HAVE_GSL)
-  find_package(GSL REQUIRED)
+  if (NOT DEFINED GSL_LIBRARIES)
+    find_package(GSL REQUIRED)
+  endif()
   set(EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
   include_directories(${GSL_INCLUDE_DIRS})
 endif(HAVE_GSL)
@@ -154,7 +147,6 @@ set(INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_sys.h)
 set(INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_tensor.h)
 set(INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_time.h)
 set(INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_vector.h)
-set(INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_nlopt.h)
 set(INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut.h)
 set(INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_BINARY_DIR}/ut_config.h)
 

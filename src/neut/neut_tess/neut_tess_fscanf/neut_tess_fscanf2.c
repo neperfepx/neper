@@ -17,7 +17,8 @@ neut_tess_fscanf_head (FILE *file, struct TESS *pTess, char **pversion)
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
 
   if (strcmp (*pversion, "2.0") && strcmp (*pversion, "3.3")
-      && strcmp (*pversion, "3.4") && strcmp (*pversion, "3.5"))
+      && strcmp (*pversion, "3.4") && strcmp (*pversion, "3.5")
+      && strcmp (*pversion, "3.6"))
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
 
   if (!ut_file_string_scanandtest (file, "**general"))
@@ -122,6 +123,18 @@ neut_tess_fscanf_cell (FILE *file, struct TESS *pTess, char *version)
 
         if (status != 1)
           abort ();
+      }
+
+      // versions <= 3.5 record the square roots of the Laguerre weights
+      int major, minor;
+      ut_string_version (version, &major, &minor, NULL);
+
+      if (major <= 3 && minor <= 5
+          && ut_array_1d_absmax ((*pTess).SeedWeight + 1, (*pTess).CellQty) > 0)
+      {
+        ut_print_message (1, 3, "File version <= 3.5.  Fixing seed weights...\n");
+        for (i = 1; i <= (*pTess).CellQty; i++)
+          (*pTess).SeedWeight[i] *= (*pTess).SeedWeight[i];
       }
     }
 
@@ -256,6 +269,7 @@ neut_tess_fscanf_face (FILE *file, struct TESS *pTess)
   (*pTess).FaceEq = ut_alloc_2d ((*pTess).FaceQty + 1, 4);
   (*pTess).FaceVerQty = ut_alloc_1d_int ((*pTess).FaceQty + 1);
   (*pTess).FaceVerNb = ut_alloc_1d_pint ((*pTess).FaceQty + 1);
+  (*pTess).FaceEdgeQty = ut_alloc_1d_int ((*pTess).FaceQty + 1);
   (*pTess).FaceEdgeNb = ut_alloc_1d_pint ((*pTess).FaceQty + 1);
   (*pTess).FaceEdgeOri = ut_alloc_1d_pint ((*pTess).FaceQty + 1);
   (*pTess).FaceState = ut_alloc_1d_int ((*pTess).FaceQty + 1);
@@ -272,21 +286,19 @@ neut_tess_fscanf_face (FILE *file, struct TESS *pTess)
 
     (*pTess).FaceVerNb[face] =
       ut_alloc_1d_int ((*pTess).FaceVerQty[face] + 1);
-    (*pTess).FaceEdgeNb[face] =
-      ut_alloc_1d_int ((*pTess).FaceVerQty[face] + 1);
-    (*pTess).FaceEdgeOri[face] =
-      ut_alloc_1d_int ((*pTess).FaceVerQty[face] + 1);
 
     ut_array_1d_int_fscanf (file, (*pTess).FaceVerNb[face] + 1,
                             (*pTess).FaceVerQty[face]);
 
-    if (fscanf (file, "%d", &tmp) != 1)
+    if (fscanf (file, "%d", &((*pTess).FaceEdgeQty[face])) != 1)
       abort ();
 
-    if (tmp != (*pTess).FaceVerQty[face])
-      abort ();
+    (*pTess).FaceEdgeNb[face] =
+      ut_alloc_1d_int ((*pTess).FaceEdgeQty[face] + 1);
+    (*pTess).FaceEdgeOri[face] =
+      ut_alloc_1d_int ((*pTess).FaceEdgeQty[face] + 1);
 
-    for (j = 1; j <= (*pTess).FaceVerQty[face]; j++)
+    for (j = 1; j <= (*pTess).FaceEdgeQty[face]; j++)
     {
       if (fscanf (file, "%d", &tmp) != 1)
         abort ();
@@ -372,7 +384,7 @@ neut_tess_fscanf_domain (FILE *file, struct TESS *pTess, char *version)
     neut_tess_fscanf_domain_edges_v2p0 (file, pTess);
   else if (!strcmp (version, "3.3") || !strcmp (version, "3.4"))
     neut_tess_fscanf_domain_edges_v3p3 (file, pTess);
-  else if (!strcmp (version, "3.5"))
+  else if (!strcmp (version, "3.5") || !strcmp (version, "3.6"))
     neut_tess_fscanf_domain_edges_v3p5 (file, pTess);
 
   if (major <= 3 && minor <= 4)

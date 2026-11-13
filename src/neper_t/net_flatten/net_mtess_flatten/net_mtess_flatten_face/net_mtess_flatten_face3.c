@@ -27,7 +27,7 @@ net_mtess_flatten_face_domface_dom (struct MTESS MTess, struct TESS *Tess,
     neut_flatten_addface (pFlatten, dom);
 
     neut_tess_face_addeq (pFTess, newface, Tess[tessface[0]].FaceEq[face]);
-    for (j = 1; j <= Tess[tessface[0]].FaceVerQty[face]; j++)
+    for (j = 1; j <= Tess[tessface[0]].FaceEdgeQty[face]; j++)
     {
       edge = Tess[tessface[0]].FaceEdgeNb[face][j];
       ori = Tess[tessface[0]].FaceEdgeOri[face][j];

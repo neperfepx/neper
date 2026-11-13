@@ -25,9 +25,10 @@ ol_gnd_map_nye_region_method (struct OL_MAP Map, struct OL_CRYS Crys,
 
   if (!
       ((Map.xsize == 2 && Map.ysize == 2)
-       || (Map.xsize == 3 && Map.xsize == 3)))
+       || (Map.xsize == 3 && Map.ysize == 3)))
   {
-    printf ("xsize = %d ysize = %d != 3\n", (int) Map.xsize, (int) Map.ysize);
+    printf ("xsize = %d ysize = %d (should be 2 2 or 3 3)\n", (int) Map.xsize,
+            (int) Map.ysize);
     abort ();
   }
 
@@ -114,10 +115,10 @@ ol_gnd_map_nye_region_method (struct OL_MAP Map, struct OL_CRYS Crys,
     }
     // else, zero
 
-    ol_q_free (qdx);
-    ol_q_free (qdy);
-    ol_g_free (gdx);
-    ol_g_free (gdy);
+    ol_q_free (&qdx);
+    ol_q_free (&qdy);
+    ol_g_free (&gdx);
+    ol_g_free (&gdy);
   }
 
   else if (!strcmp (method, "demir2009"))
@@ -153,11 +154,11 @@ ol_gnd_map_nye_region_method (struct OL_MAP Map, struct OL_CRYS Crys,
       ut_array_2d_sub (gy2, gy1, 3, 3, wy);
     // else, zero
 
-    ol_g_free (gx1);
-    ol_g_free (gx2);
-    ol_g_free (gy1);
-    ol_g_free (gy2);
-    ol_q_free (qtmp);
+    ol_g_free (&gx1);
+    ol_g_free (&gx2);
+    ol_g_free (&gy1);
+    ol_g_free (&gy2);
+    ol_q_free (&qtmp);
   }
 
   else
@@ -190,8 +191,8 @@ ol_gnd_map_nye_region_method (struct OL_MAP Map, struct OL_CRYS Crys,
     ol_g_csys (nye, gmapinv, nye);
     ol_g_csys (nye, gref, nye);
 
-    ol_g_free (gmapinv);
-    ol_g_free (gref);
+    ol_g_free (&gmapinv);
+    ol_g_free (&gref);
   }
 
   ut_free_2d (&wx, 3);
@@ -213,13 +214,13 @@ ol_gnd_map_nye_method (struct OL_MAP Map, struct OL_CRYS Crys,
   for (i = 0; i < Map.xsize - 1; i++)
     for (j = 0; j < Map.ysize - 1; j++)
     {
-      ol_map_submap_center (Map, i, j, 2, 2, &Map2);
+      ol_map_submap (Map, i, j, 2, 2, &Map2);
       ol_gnd_map_nye_region_method (Map2, Crys, thetamin, thetamax,
                                     (*pGnd).nye[i][j], &((*pGnd).id[i][j]),
                                     method);
     }
 
-  ol_map_free (Map2);
+  ol_map_free (&Map2);
 
   return;
 }

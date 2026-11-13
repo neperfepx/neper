@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,14 +41,14 @@
 /**                                                        **/
 /**   DATES      : # Version 4.0  : from : 10 sep 2002     **/
 /**                                 to   : 10 sep 2002     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define VMESH_STORE
 
 #include "module.h"
 #include "common.h"
@@ -80,7 +80,7 @@ VmeshStore * const          storptr)
 
   if ((storptr->datatab = (byte *) memAlloc (savsize)) == NULL) { /* Allocate save structure */
     errorPrint ("vmeshStoreInit: out of memory");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -89,7 +89,7 @@ VmeshStore * const          storptr)
 /* This routine frees a mesh node
 ** separation save structure.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -106,7 +106,7 @@ VmeshStore * const          storptr)
 ** given node separation mesh to the given
 ** save structure.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -137,7 +137,7 @@ VmeshStore * const          storptr)
 /* This routine updates partition data of the
 ** given active graph, using the given save graph.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void

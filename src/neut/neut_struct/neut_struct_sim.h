@@ -24,7 +24,6 @@ struct SIM
   int NodeQty;          // number of nodes
   int EltQty;           // number of elements
   int ElsetQty;         // number of elsets
-  int PartQty;          // number of partitions
 
   int EntityQty;        // number of entities
   char **Entities;      // entities [0...]
@@ -43,6 +42,7 @@ struct SIM
   int *EntityResQty;    // for an entity, number of results [0...]
   char ***EntityRes;    // for an entity, results
   char ***EntityResExpr;// for an entity, result expressions (if any)
+  char ***EntityResType;// for an entity, result types (if any, see neut_sim_simres_type_colqty)
 
   char *OriDes;         // orientation descriptor
 
@@ -50,8 +50,6 @@ struct SIM
   int *StepState;       // 1 if step written, 0 otherwise
 
   struct OSPACE Sp;
-  char* OriSpaceTess;   // orientation space tess
-  char* OriSpaceMesh;   // orientation space mesh
 
   int step;             // current step
 

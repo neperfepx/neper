@@ -51,7 +51,7 @@ ol_q_des (double *q, char *des, double *vect)
     ol_e_ek (vect, vect);
   }
   else if (!strcmp (des, "rtheta") || !strcmp (des, "axis-angle"))
-    ol_q_rthetav (q, vect);
+    ol_q_rtheta (q, vect);
   else if (!strcmp (des, "R") || !strcmp (des, "rodrigues"))
     ol_q_R (q, vect);
   else if (!strcmp (des, "q") || !strcmp (des, "quaternion"))

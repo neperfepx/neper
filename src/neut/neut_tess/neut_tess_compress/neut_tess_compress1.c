@@ -14,9 +14,14 @@ neut_tess_compress (struct TESS *pTess)
   neut_tess_compress_edges (pTess);
   neut_tess_compress_vers (pTess);
 
-  neut_tess_compress_domfaces (pTess);
-  neut_tess_compress_domedges (pTess);
-  neut_tess_compress_domvers (pTess);
+  // in a periodic tessellation, the periodic domain entities include no
+  // tessellation entities, and must be kept
+  if (!(*pTess).Type || strcmp ((*pTess).Type, "periodic"))
+  {
+    neut_tess_compress_domfaces (pTess);
+    neut_tess_compress_domedges (pTess);
+    neut_tess_compress_domvers (pTess);
+  }
 
   return;
 }

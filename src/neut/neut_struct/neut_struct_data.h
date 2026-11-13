@@ -80,6 +80,7 @@ extern "C"
     char *ScaleTitle;		// Scale title
     char *ScaleMin;
     char *ScaleMax;
+    int ScaleDataRel[2];        // 1 if the scale min/max was resolved from the data
 
     // needed by: point
     double *Axes;

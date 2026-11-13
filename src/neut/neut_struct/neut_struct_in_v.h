@@ -45,7 +45,6 @@ struct IN_V
   char *lightreflection;
 
   // scene
-  char *colormode;
   char *scenebackground;
 
   // pf and ipf
@@ -69,6 +68,7 @@ struct IN_V
   double oriedgetrs;
   char *orimode;
   char *orilayout;
+  char *orisym;
   char *orifield;
 
   // image
@@ -76,10 +76,8 @@ struct IN_V
   char *imageformat;
 
   // povray
-  int povrayantialiasing;
 
   // output
-  char *outdir;
 
   // print
 

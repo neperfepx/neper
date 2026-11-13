@@ -41,7 +41,7 @@ extern "C"
 
     double **SeedCoo;		// SeedCoo[i][j] (j=0...2) are the 3 coordinates
     // of the center.
-    double *SeedWeight;		// SeedWeight[i] is the Laguerre weight
+    double *SeedWeight;		// SeedWeight[i] is the Laguerre weight (power distance: d^2 - w)
 
     // DATA --------------------------------------------------------------
 

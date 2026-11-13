@@ -21,6 +21,7 @@ nem_meshing_para_param (struct IN_M In, struct TESS Tess, struct TESR *pTesr,
   (*pMeshPara).clmin = In.clmin;
   ut_string_string (In.cltype, &(*pMeshPara).cltype);
   ut_string_string (In.elttype, &(*pMeshPara).elttype); // needed by quad9
+  (*pMeshPara).eltsplit = In.eltsplit;
 
   // Testing type of input: tess or tesr or mesh
   if (In.mesh && !neut_mesh_isvoid (RMesh[Tess.Dim]))

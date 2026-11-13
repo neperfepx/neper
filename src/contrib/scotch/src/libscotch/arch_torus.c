@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2011,2013 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2011,2013,2023,2025,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -63,14 +63,14 @@
 /**                                 to   : 11 aug 2010     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 27 mar 2015     **/
+/**                # Version 7.0  : from : 17 jan 2023     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define ARCH_TORUS
 
 #include "module.h"
 #include "common.h"
@@ -99,11 +99,11 @@ const ArchTorus2Dom * const dom1ptr)
   Anum               dc0, dc1;
   Anum               ds0, ds1;
 
-  dc0 = abs (dom0ptr->c[0][0] + dom0ptr->c[0][1] -
+  dc0 = ABS (dom0ptr->c[0][0] + dom0ptr->c[0][1] -
              dom1ptr->c[0][0] - dom1ptr->c[0][1]);
   ds0 = (dc0 > archptr->c[0]) ? (2 * archptr->c[0] - dc0) : dc0;
 
-  dc1 = abs (dom0ptr->c[1][0] + dom0ptr->c[1][1] -
+  dc1 = ABS (dom0ptr->c[1][0] + dom0ptr->c[1][1] -
              dom1ptr->c[1][0] - dom1ptr->c[1][1]);
   ds1 = (dc1 > archptr->c[1]) ? (2 * archptr->c[1] - dc1) : dc1;
 
@@ -130,15 +130,15 @@ const ArchTorus3Dom * const dom1ptr)
   Anum               dc0, dc1, dc2;
   Anum               ds0, ds1, ds2;
 
-  dc0 = abs (dom0ptr->c[0][0] + dom0ptr->c[0][1] -
+  dc0 = ABS (dom0ptr->c[0][0] + dom0ptr->c[0][1] -
              dom1ptr->c[0][0] - dom1ptr->c[0][1]);
   ds0 = (dc0 > archptr->c[0]) ? (2 * archptr->c[0] - dc0) : dc0;
 
-  dc1 = abs (dom0ptr->c[1][0] + dom0ptr->c[1][1] -
+  dc1 = ABS (dom0ptr->c[1][0] + dom0ptr->c[1][1] -
              dom1ptr->c[1][0] - dom1ptr->c[1][1]);
   ds1 = (dc1 > archptr->c[1]) ? (2 * archptr->c[1] - dc1) : dc1;
 
-  dc2 = abs (dom0ptr->c[2][0] + dom0ptr->c[2][1] -
+  dc2 = ABS (dom0ptr->c[2][0] + dom0ptr->c[2][1] -
              dom1ptr->c[2][0] - dom1ptr->c[2][1]);
   ds2 = (dc2 > archptr->c[2]) ? (2 * archptr->c[2] - dc2) : dc2;
 
@@ -169,29 +169,10 @@ const ArchTorusXDom * const dom1ptr)
   for (dimnnum = 0, distval = 0; dimnnum < archptr->dimnnbr; dimnnum ++) {
     Anum                disttmp;
 
-    disttmp = abs (dom0ptr->c[dimnnum][0] + dom0ptr->c[dimnnum][1] -
+    disttmp = ABS (dom0ptr->c[dimnnum][0] + dom0ptr->c[dimnnum][1] -
                    dom1ptr->c[dimnnum][0] - dom1ptr->c[dimnnum][1]);
     distval += (disttmp > archptr->c[dimnnum]) ? (2 * archptr->c[dimnnum] - disttmp) : disttmp;
   }
 
   return (distval >> 1);
 }
-
-/* This function creates the MPI_Datatype for
-** xD torus domains.
-** It returns:
-** - 0  : if type could be created.
-** - 1  : on error.
-*/
-
-#ifdef SCOTCH_PTSCOTCH
-int
-archTorusXDomMpiType (
-const ArchTorusX * const      archptr,
-MPI_Datatype * const          typeptr)
-{
-  MPI_Type_contiguous (2 * archptr->dimmax, ANUM_MPI, typeptr);
-
-  return (0);
-}
-#endif /* SCOTCH_PTSCOTCH */

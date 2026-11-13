@@ -32,6 +32,8 @@ extern "C"
 
     int CustomElsetQty;		// total number of custom elsets
 
+    int *EltId;		// if != NULL, actual ids of the elts, useful only for fasets
+                    //
     int *ElsetId;		// if != NULL, actual ids of the elsets
 
     int **Elsets;		// for each elset:

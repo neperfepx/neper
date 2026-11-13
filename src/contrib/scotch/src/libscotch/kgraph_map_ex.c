@@ -1,4 +1,4 @@
-/* Copyright 2011,2013,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2011,2013,2014,2018,2021,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,8 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 27 may 2011     **/
 /**                                 to   : 06 jun 2018     **/
+/**                # Version 7.0  : from : 11 jul 2021     **/
+/**                                 to   : 28 jul 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -48,7 +50,7 @@
 **  The defines and includes.
 */
 
-#define KGRAPH_MAP_EX
+#define SCOTCH_KGRAPH_MAP_EX
 
 #include "module.h"
 #include "common.h"
@@ -83,9 +85,7 @@ const KgraphMapExParam * const  paraptr)          /*+ Method parameters +*/
   Anum * restrict             parttax;
   Anum                        treemax;            /* Maximum number of nodes in tree structure */
   Anum                        treenbr;            /* Number of nodes in tree structure         */
-  const Arch * restrict       archptr;
   ArchDom                     domndat;            /* Root domain                               */
-  Anum                        domnnbr;
   Anum                        domnnum;
   Gnum                        sortnbr;            /* Number of non-fixed vertices              */
   Gnum                        sortnum;
@@ -98,14 +98,14 @@ const KgraphMapExParam * const  paraptr)          /*+ Method parameters +*/
   int                         flagval;            /* Flag unset if load imbalance to fix       */
 
   const Gnum * restrict const velotax = grafptr->s.velotax;
+  const Arch * restrict const archptr = grafptr->m.archptr;
+  const Anum                  domnnbr = grafptr->m.domnnbr;
   const Anum * restrict const pfixtax = grafptr->pfixtax;
 
-  archptr = grafptr->m.archptr;
   archDomFrst (archptr, &domndat);
 
   grafptr->kbalval = paraptr->kbalval;            /* Store last k-way imbalance ratio */
-  domnnbr = grafptr->m.domnnbr;
-  sortnbr = grafptr->s.vertnbr - grafptr->vfixnbr; /* Only sort non-fixed vertices */
+  sortnbr = grafptr->s.vertnbr - grafptr->vfixnbr; /* Only sort non-fixed vertices    */
   treemax = 2 * ((archVar (archptr)) ? domnnbr : archDomSize (archptr, &domndat)); /* At most twice the number of terminals in last rank */
   if (memAllocGroup ((void **) (void *)
                      &doextab, (size_t) (domnnbr * sizeof (KgraphMapExDom)),
@@ -113,7 +113,7 @@ const KgraphMapExParam * const  paraptr)          /*+ Method parameters +*/
                      &termtab, (size_t) (domnnbr * sizeof (KgraphMapExTerm)),
                      &treetab, (size_t) (treemax * sizeof (KgraphMapExTree)), NULL) == NULL) {
     errorPrint ("kgraphMapEx: out of memory");
-    return     (1);
+    return (1);
   }
 
   wghtsum = (double) archDomWght (archptr, &domndat);
@@ -129,7 +129,7 @@ const KgraphMapExParam * const  paraptr)          /*+ Method parameters +*/
       wghttmp                     +=              /* Accumulate subdomain loads in case of variable-sized architectures */
       doextab[domnnum].domnwght    = archDomWght (archptr, domnptr);
       doextab[domnnum].compload    = 0;
-      doextab[domnnum].comploadmax = ((double) doextab[domnnum].domnwght * velosum * (1.0 + paraptr->kbalval)) / wghtsum;
+      doextab[domnnum].comploadmax = (Gnum) (((double) doextab[domnnum].domnwght * velosum * (1.0 + paraptr->kbalval)) / wghtsum);
 
       termnum = archDomNum (archptr, domnptr);
       termtab[termnbr].termnum = termnum;         /* Record domain in terminal domain array */
@@ -149,7 +149,7 @@ const KgraphMapExParam * const  paraptr)          /*+ Method parameters +*/
       Anum                domnnum;
 
       domnnum = termtab[termnum].domnnum;
-      doextab[domnnum].comploadmax = ((double) doextab[domnnum].domnwght * velosum * (1.0 + paraptr->kbalval)) / wghtsum;
+      doextab[domnnum].comploadmax = (Gnum) (((double) doextab[domnnum].domnwght * velosum * (1.0 + paraptr->kbalval)) / wghtsum);
      
       if ((grafptr->comploadavg[domnnum] + grafptr->comploaddlt[domnnum]) > doextab[domnnum].comploadmax)
         flagval = 0;                              /* Set flag if at least one domain is imbalanced */
@@ -168,7 +168,7 @@ const KgraphMapExParam * const  paraptr)          /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_KGRAPH2
   if (treenbr >= treemax) {
     errorPrint ("kgraphMapEx: internal error (1)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
 
@@ -189,7 +189,7 @@ const KgraphMapExParam * const  paraptr)          /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_KGRAPH2
   if (sortnbr != (grafptr->s.vertnbr - grafptr->vfixnbr)) {
     errorPrint ("kgraphMapEx: internal error (2)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
   if (velotax != NULL)                            /* If vertices are weighted, sort them in ascending order */
@@ -224,7 +224,7 @@ const KgraphMapExParam * const  paraptr)          /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_KGRAPH2
   if (kgraphCheck (grafptr) != 0) {
     errorPrint ("kgraphMapEx: inconsistent graph data");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
 
@@ -263,7 +263,7 @@ const ArchDom * restrict const          domnptr)  /*+ Pointer to subdomain to co
 #ifdef SCOTCH_DEBUG_KGRAPH2
     if (o != 0) {
       errorPrint ("kgraphMapExTree: internal error");
-      return     (-1);
+      return (-1);
     }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
     sonstab[0] = kgraphMapExTree (archptr, termtab, termnbr, doextab, treetab, treeptr, &domntab[0]);
@@ -296,7 +296,7 @@ const ArchDom * restrict const          domnptr)  /*+ Pointer to subdomain to co
 #ifdef SCOTCH_DEBUG_KGRAPH2
     if (archVar (archptr)) {
       errorPrint ("kgraphMapExTree: not implemented");
-      return     (-1);
+      return (-1);
     }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
 
@@ -343,7 +343,8 @@ const Gnum                              veloval)  /*+ Weight of vertex to map  +
   KgraphMapExFind     bestdat;
   Anum                treenum;
 
-  bestdat.comploaddlt = (doextab[domnnum].compload + veloval - doextab[domnnum].comploadmax) / doextab[domnnum].domnwght; /* Compute weighted imbalance */
+  bestdat.comploaddlt = doextab[domnnum].compload + veloval - doextab[domnnum].comploadmax; /* Compute imbalance */
+  bestdat.domnwght    = doextab[domnnum].domnwght;
   bestdat.domnnum     = domnnum;
 
   treenum = doextab[domnnum].treenum;             /* Start from leaf of subdomain tree */
@@ -407,13 +408,17 @@ const Gnum                              veloval)
   }
   else {                                          /* If current node is terminal */
     Anum                domnnum;
+    Anum                domnwght;
     Gnum                comploaddlt;
 
     domnnum = son1num;                            /* Second son records domain number */
-    comploaddlt = (doextab[domnnum].compload + veloval - doextab[domnnum].comploadmax) / doextab[domnnum].domnwght; /* Compute weighted imbalance */
+    comploaddlt = doextab[domnnum].compload + veloval - doextab[domnnum].comploadmax; /* Compute imbalance */
+    domnwght    = doextab[domnnum].domnwght;
 
-    if (comploaddlt < bestptr->comploaddlt) {     /* If found vertex that potentially improves balance */
+    if (((double) comploaddlt * (double) bestptr->domnwght) < /* Compare weighted imbalances by cross-multiplication */
+        ((double) bestptr->comploaddlt * (double) domnwght)) {
       bestptr->comploaddlt = comploaddlt;
+      bestptr->domnwght    = domnwght;
       bestptr->domnnum     = domnnum;
     }
 

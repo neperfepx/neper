@@ -79,7 +79,7 @@ neut_tess_extrude_face (struct TESS Tess, double d, struct TESS *pT)
     ut_array_1d_memcpy ((*pT).FaceEq[i], 4, (*pT).FaceEq[face]);
     (*pT).FaceEq[face][0] += d;
 
-    for (j = 1; j <= (*pT).FaceVerQty[i]; j++)
+    for (j = 1; j <= (*pT).FaceEdgeQty[i]; j++)
     {
       neut_tess_face_addedge (pT, face, (*pT).FaceEdgeNb[i][j] + Tess.EdgeQty,
                               (*pT).FaceEdgeOri[i][j]);
@@ -121,7 +121,7 @@ neut_tess_extrude_poly (struct TESS Tess, struct TESS *pT)
     neut_tess_poly_addface (pT, poly, i, -ut_num_sgn ((*pT).FaceEq[i][3]));
     neut_tess_poly_addface (pT, poly, Tess.FaceQty + i,
                             -ut_num_sgn ((*pT).FaceEq[Tess.FaceQty + i][3]));
-    for (j = 1; j <= (*pT).FaceVerQty[i]; j++)
+    for (j = 1; j <= (*pT).FaceEdgeQty[i]; j++)
     {
       ef = Tess.FaceQty * 2 + Tess.FaceEdgeNb[i][j];
       efori = Tess.FaceEdgeOri[i][j];

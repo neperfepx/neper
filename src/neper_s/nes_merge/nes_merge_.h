@@ -16,4 +16,4 @@
 extern void nes_merge_input (struct SIM Sim, char *sim2);
 extern void nes_merge_entity_res (struct SIM Sim, char *entity, int cstep, char *sim2);
 extern void nes_merge_restart (struct SIM Sim, char *sim1, char *sim2);
-extern void nes_merge_post (struct IN_S In, char *sim, int stepqty, struct SIM LastSim, struct SIM *pFullSim);
+extern void nes_merge_post (struct IN_S In, char *sim, struct SIM *pFullSim);

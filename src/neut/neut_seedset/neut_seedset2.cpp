@@ -17,6 +17,7 @@ neut_seedset_memcpy_general (struct SEEDSET SSetA, struct SEEDSET *pSSetB)
   if (SSetA.Size)
     ut_array_2d_memcpy (SSetA.Size, 3, 2, (*pSSetB).Size);
 
+  ut_free_1d_int (&(*pSSetB).Periodic);
   (*pSSetB).Periodic = ut_alloc_1d_int (3);
   if (SSetA.Periodic)
     ut_array_1d_int_memcpy (SSetA.Periodic, 3, (*pSSetB).Periodic);
@@ -114,12 +115,14 @@ neut_seedset_memcpy_periodic (struct SEEDSET SSetA, struct SEEDSET *pSSetB)
 
   if (SSetA.Periodic)
   {
+    ut_free_1d_int (&(*pSSetB).Periodic);
     (*pSSetB).Periodic = ut_alloc_1d_int (3);
     ut_array_1d_int_memcpy (SSetA.Periodic, 3, (*pSSetB).Periodic);
   }
 
   if (SSetA.PeriodicDist)
   {
+    ut_free_1d (&(*pSSetB).PeriodicDist);
     (*pSSetB).PeriodicDist = ut_alloc_1d (3);
     ut_array_1d_memcpy (SSetA.PeriodicDist, 3, (*pSSetB).PeriodicDist);
   }
@@ -199,7 +202,7 @@ neut_seedset_kdtree_update_seed (struct SEEDSET SSet, int seed,
   int newpt, oldpt;
 
   oldpt = (*pseedid_ptid)[seed];
-  (*pnf_tree)->removePoint (oldpt);
+  (**pnf_tree).removePoint (oldpt);
 
   (*pnf_cloud).pts.resize ((*pnf_cloud).pts.size () + 1);
   // to my understanding, this should not be necessary, but it turns out that
@@ -209,7 +212,7 @@ neut_seedset_kdtree_update_seed (struct SEEDSET SSet, int seed,
 
   newpt = (*pnf_cloud).pts.size () - 1;
   ut_array_1d_memcpy (SSet.SeedCoo[seed], 3, (*pnf_cloud).pts[newpt].p);
-  (*pnf_tree)->addPoints (newpt, newpt);
+  (**pnf_tree).addPoints (newpt, newpt);
 
   (*pptid_seedid) =
     ut_realloc_1d_int (*pptid_seedid, (*pnf_cloud).pts.size ());

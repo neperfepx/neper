@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2018-2021,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -46,6 +46,8 @@
 /**                                 to   : 09 nov 2008     **/
 /**                # Version 6.0  : from : 15 may 2018     **/
 /**                                 to   : 15 may 2018     **/
+/**                # Version 7.0  : from : 12 sep 2019     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -53,7 +55,7 @@
 **  The defines and includes.
 */
 
-#define HMESH_ORDER_ND
+#define SCOTCH_HMESH_ORDER_ND
 
 #include "module.h"
 #include "common.h"
@@ -66,6 +68,48 @@
 #include "hmesh_order_st.h"
 #include "vmesh.h"
 #include "vmesh_separate_st.h"
+
+/***************************/
+/*                         */
+/* Multi-threaded routine. */
+/*                         */
+/***************************/
+
+static
+void
+hmeshOrderNd2 (
+Context * restrict const        contptr,          /*+ (Sub-)context                          +*/
+const int                       spltnum,          /*+ Rank of sub-context in initial context +*/
+const HmeshOrderNdSplit * const spltptr)
+{
+  Hmesh               orgmeshdat;
+  Hmesh               indmeshdat;
+  int                 o;
+
+  orgmeshdat = *spltptr->meshptr;                 /* Assign new context to work mesh */
+  orgmeshdat.contptr = contptr;
+
+  o = 0;
+  if ((hmeshInducePart (&orgmeshdat, spltptr->parttax, spltnum, spltptr->splttab[spltnum].velmnbr,
+                        spltptr->splttab[spltnum].vnodnbr, spltptr->vnspnbr, &indmeshdat)) != 0) {
+    errorPrint ("hmeshOrderNd2: cannot build induced submesh");
+    o = 1;
+  }
+  if (o == 0) {
+    o = hmeshOrderNd (&indmeshdat, spltptr->ordeptr, spltptr->splttab[spltnum].ordenum, spltptr->splttab[spltnum].cblkptr, spltptr->paraptr);
+
+    hmeshExit (&indmeshdat);
+  }
+  if (o != 0) {                                   /* Report any error */
+#ifdef SCOTCH_PTHREAD
+    pthread_mutex_lock (&spltptr->ordeptr->mutedat); /* Use ordering lock to avoid race condition */
+#endif /* SCOTCH_PTHREAD */
+    *spltptr->revaptr = 1;
+#ifdef SCOTCH_PTHREAD
+    pthread_mutex_unlock (&spltptr->ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
+  }
+}
 
 /*****************************/
 /*                           */
@@ -81,20 +125,19 @@
 
 int
 hmeshOrderNd (
-const Hmesh * restrict const      meshptr,
+Hmesh * restrict const            meshptr,
 Order * restrict const            ordeptr,
 const Gnum                        ordenum,
 OrderCblk * restrict const        cblkptr,
 const HmeshOrderNdParam * const   paraptr)
 {
-  Hmesh                     indmeshdat;           /* Induced halo mesh data */
-  Vmesh                     nspmeshdat;           /* Node separation mesh   */
+  Vmesh                     nspmeshdat;           /* Node separation mesh */
   Gnum                      vertnbr;
   int                       o;
 
   if (hmeshMesh (meshptr, &nspmeshdat.m) != 0) {
     errorPrint ("hmeshOrderNd: cannot create node separation mesh");
-    return     (1);
+    return (1);
   }
   nspmeshdat.ecmpsize[0] = nspmeshdat.m.velmnbr;
   nspmeshdat.ecmpsize[1] = 0;
@@ -106,20 +149,21 @@ const HmeshOrderNdParam * const   paraptr)
   nspmeshdat.ncmpsize[1] = 0;
   nspmeshdat.fronnbr     = 0;
   nspmeshdat.levlnum     = meshptr->levlnum;
+  nspmeshdat.contptr     = meshptr->contptr;
 
   vertnbr = nspmeshdat.m.velmnbr + nspmeshdat.m.vnodnbr;
   if (memAllocGroup ((void **) (void *)
                       &nspmeshdat.parttax, (size_t) (vertnbr * sizeof (GraphPart)),
                       &nspmeshdat.frontab, (size_t) (vertnbr * sizeof (Gnum)), NULL) == NULL) {
     errorPrint ("hmeshOrderNd: out of memory (1)");
-    return     (1);
+    return (1);
   }
   memSet (nspmeshdat.parttax, 0, vertnbr * sizeof (GraphPart)); /* Set all vertices to part 0 */
   nspmeshdat.parttax -= nspmeshdat.m.baseval;
 
   if (vmeshSeparateSt (&nspmeshdat, paraptr->sepstrat) != 0) { /* Separate mesh */
     vmeshExit (&nspmeshdat);
-    return    (1);
+    return (1);
   }
 
   if ((nspmeshdat.ncmpsize[0] == 0) ||            /* If could not separate more */
@@ -133,13 +177,13 @@ const HmeshOrderNdParam * const   paraptr)
   if ((cblkptr->cblktab = (OrderCblk *) memAlloc (3 * sizeof (OrderCblk))) == NULL) {
     errorPrint ("hmeshOrderNd: out of memory (2)");
     vmeshExit  (&nspmeshdat);
-    return     (1);
+    return (1);
   }
-  cblkptr->cblktab[0].typeval = ORDERCBLKOTHR;    /* Build column blocks */
+  cblkptr->cblktab[0].typeval = ORDERCBLKLEAF;    /* Build column blocks */
   cblkptr->cblktab[0].vnodnbr = nspmeshdat.ncmpsize[0];
   cblkptr->cblktab[0].cblknbr = 0;
   cblkptr->cblktab[0].cblktab = NULL;
-  cblkptr->cblktab[1].typeval = ORDERCBLKOTHR;
+  cblkptr->cblktab[1].typeval = ORDERCBLKLEAF;
   cblkptr->cblktab[1].vnodnbr = nspmeshdat.ncmpsize[1];
   cblkptr->cblktab[1].cblknbr = 0;
   cblkptr->cblktab[1].cblktab = NULL;
@@ -147,12 +191,21 @@ const HmeshOrderNdParam * const   paraptr)
   cblkptr->cblktab[2].cblknbr = 0;
   cblkptr->cblktab[2].cblktab = NULL;
 
-  if (nspmeshdat.fronnbr != 0) {                  /* If separator not empty         */
-    cblkptr->cblknbr  = 3;                        /* It is a three-cell tree node   */
+  cblkptr->typeval = ORDERCBLKNEDI;               /* Node becomes a nested dissection node */
+  if (nspmeshdat.fronnbr != 0) {                  /* If separator not empty                */
+    Hmesh               indmeshdat;
+
+    cblkptr->cblknbr = 3;                         /* It is a three-cell tree node */
+#ifdef SCOTCH_PTHREAD
+    pthread_mutex_lock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
     ordeptr->cblknbr += 2;                        /* Two more column blocks created */
     ordeptr->treenbr += 3;                        /* Three more tree nodes created  */
+#ifdef SCOTCH_PTHREAD
+    pthread_mutex_unlock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
 
-    cblkptr->cblktab[2].typeval = ORDERCBLKOTHR;
+    cblkptr->cblktab[2].typeval = ORDERCBLKLEAF;
     cblkptr->cblktab[2].vnodnbr = nspmeshdat.fronnbr;
     cblkptr->cblktab[2].cblknbr = 0;
     cblkptr->cblktab[2].cblktab = NULL;
@@ -160,7 +213,7 @@ const HmeshOrderNdParam * const   paraptr)
     if (meshInduceSepa (&nspmeshdat.m, nspmeshdat.parttax, nspmeshdat.fronnbr, nspmeshdat.frontab, &indmeshdat.m) != 0) {
       errorPrint ("hmeshOrderNd: cannot build induced subgraph (1)");
       memFree    (nspmeshdat.frontab);            /* Free remaining space */
-      return     (1);
+      return (1);
     }
     indmeshdat.vnohnbr = indmeshdat.m.vnodnbr;    /* Fill halo mesh structure of non-halo mesh */
     indmeshdat.vnohnnd = indmeshdat.m.vnodnnd;
@@ -168,36 +221,50 @@ const HmeshOrderNdParam * const   paraptr)
     indmeshdat.vnhlsum = indmeshdat.m.vnlosum;
     indmeshdat.enohnbr = indmeshdat.m.edgenbr;
     indmeshdat.levlnum = meshptr->levlnum;        /* Separator mesh is at level of original mesh */
+    indmeshdat.contptr = meshptr->contptr;
 
     o = hmeshOrderSt (&indmeshdat, ordeptr, ordenum + nspmeshdat.ncmpsize[0] + nspmeshdat.ncmpsize[1],
                       cblkptr->cblktab + 2, paraptr->ordstratsep);
     hmeshExit (&indmeshdat);
   }
-  else {                                          /* Separator is empty             */
-    cblkptr->cblknbr = 2;                         /* It is a two-cell tree node     */
-    ordeptr->cblknbr ++;                          /* One more column block created  */
-    ordeptr->treenbr += 2;                        /* Two more tree nodes created    */
+  else {                                          /* Separator is empty         */
+    cblkptr->cblknbr = 2;                         /* It is a two-cell tree node */
+#ifdef SCOTCH_PTHREAD
+    pthread_mutex_lock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
+    ordeptr->cblknbr ++;                          /* One more column block created */
+    ordeptr->treenbr += 2;                        /* Two more tree nodes created   */
+#ifdef SCOTCH_PTHREAD
+    pthread_mutex_unlock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
     o = 0;                                        /* No separator ordering computed */
   }
   if (o == 0) {
-    if (hmeshInducePart (meshptr, nspmeshdat.parttax, 0, nspmeshdat.ecmpsize[0],
-                         nspmeshdat.ncmpsize[0], nspmeshdat.fronnbr, &indmeshdat) != 0) {
-      errorPrint ("hmeshOrderNd: cannot build induced subgraph (2)");
-      memFree    (nspmeshdat.frontab);            /* Free remaining space */
-      return     (1);
+    HmeshOrderNdSplit   spltdat;                  /* Parameters for context splitting */
+
+    spltdat.splttab[0].velmnbr = nspmeshdat.ecmpsize[0];
+    spltdat.splttab[0].vnodnbr = nspmeshdat.ncmpsize[0];
+    spltdat.splttab[0].ordenum = ordenum;
+    spltdat.splttab[0].cblkptr = cblkptr->cblktab;
+    spltdat.splttab[1].velmnbr = nspmeshdat.ecmpsize[1];
+    spltdat.splttab[1].vnodnbr = nspmeshdat.ncmpsize[1];
+    spltdat.splttab[1].ordenum = ordenum + nspmeshdat.ncmpsize[0];
+    spltdat.splttab[1].cblkptr = cblkptr->cblktab + 1;
+    spltdat.meshptr = meshptr;
+    spltdat.vnspnbr = nspmeshdat.fronnbr;
+    spltdat.parttax = nspmeshdat.parttax;
+    spltdat.ordeptr = ordeptr;
+    spltdat.paraptr = paraptr;
+    spltdat.revaptr = &o;
+
+#ifndef HMESHORDERNDNOTHREAD
+    if (contextThreadLaunchSplit (meshptr->contptr, (ContextSplitFunc) hmeshOrderNd2, &spltdat) != 0) /* If counld not split context to run concurrently */
+#endif /* HMESHORDERNDNOTHREAD */
+    {
+      hmeshOrderNd2 (meshptr->contptr, 0, &spltdat); /* Run tasks in sequence */
+      if (o == 0)
+        hmeshOrderNd2 (meshptr->contptr, 1, &spltdat);
     }
-    o = hmeshOrderNd (&indmeshdat, ordeptr, ordenum, cblkptr->cblktab, paraptr);
-    hmeshExit (&indmeshdat);
-  }
-  if (o == 0) {
-    if (hmeshInducePart (meshptr, nspmeshdat.parttax, 1, nspmeshdat.ecmpsize[1],
-                         nspmeshdat.ncmpsize[1], nspmeshdat.fronnbr, &indmeshdat) != 0) {
-      errorPrint ("hmeshOrderNd: cannot build induced subgraph (3)");
-      memFree    (nspmeshdat.frontab);            /* Free remaining space */
-      return     (1);
-    }
-    o = hmeshOrderNd (&indmeshdat, ordeptr, ordenum + nspmeshdat.ncmpsize[0], cblkptr->cblktab + 1, paraptr);
-    hmeshExit (&indmeshdat);
   }
 
   vmeshExit (&nspmeshdat);

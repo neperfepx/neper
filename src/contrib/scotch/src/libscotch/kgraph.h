@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010-2012,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010-2012,2014,2018,2021,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -53,6 +53,10 @@
 /**                                 to   : 31 aug 2011     **/
 /**                # Version 6.0  : from : 03 mar 2011     **/
 /**                                 to   : 07 jun 2018     **/
+/**                # Version 6.1  : from : 18 jul 2021     **/
+/**                                 to   : 18 jul 2021     **/
+/**                # Version 7.0  : from : 03 aug 2018     **/
+/**                                 to   : 16 aug 2025     **/
 /**                                                        **/
 /**   NOTES      : # The comploadavg and comploaddlt       **/
 /**                  should always be allocated together,  **/
@@ -83,7 +87,7 @@
 /**                                                        **/
 /************************************************************/
 
-#define KGRAPH_H
+#define SCOTCH_KGRAPH_H
 
 /*
 **  The defines.
@@ -105,7 +109,7 @@
 
 typedef struct Kgraph_ {
   Graph                     s;                    /*+ Current graph                                     +*/
-  Arch                      a;                    /*+ Current architecture                              +*/
+  ArchDom                   domnorg;              /*+ Initial mapping (sub)domain                       +*/
   Mapping                   m;                    /*+ Current mapping of graph vertices                 +*/
   struct {                                        /*+ Remapping structure                               +*/
     Mapping                 m;                    /*+ Old mapping                                       +*/
@@ -120,32 +124,32 @@ typedef struct Kgraph_ {
   Gnum *                    comploadavg;          /*+ Array of target average loads                     +*/
   Gnum *                    comploaddlt;          /*+ Array of target imbalances                        +*/
   double                    comploadrat;          /*+ Ideal load balance per weight unit                +*/
-  double                    kbalval;              /*+ Last k-way imbalance ratio                        +*/
   Gnum                      commload;             /*+ Communication load                                +*/
+  double                    kbalval;              /*+ Last k-way imbalance ratio                        +*/
   INT                       levlnum;              /*+ Graph coarsening level                            +*/
+  Context *                 contptr;              /*+ Execution context                                 +*/
 } Kgraph;
 
 /*+ The save graph structure. +*/
 
 typedef struct KgraphStore_ {
-  Gnum                      partnbr;              /*+ Number of parts                  +*/
-  int                       mflaval;              /*+ Mapping properties               +*/
   Anum *                    parttab;              /*+ Mapping array [vertnbr]          +*/
   ArchDom *                 domntab;              /*+ Array of domains [termmax]       +*/
+  Gnum                      domnmax;              /*+ Maximum number of parts to save  +*/
   Anum                      domnnbr;              /*+ Current number of domains        +*/
   Gnum                      fronnbr;              /*+ Number of frontier vertices      +*/
   Gnum *                    frontab;              /*+ Array of frontier vertex numbers +*/
   Gnum *                    comploadavg;          /*+ Array of target average loads    +*/
   Gnum *                    comploaddlt;          /*+ Array of target imbalances       +*/
-  double                    kbalval;              /*+ Last k-way imbalance ratio       +*/
   Gnum                      commload;             /*+ Communication load               +*/
+  double                    kbalval;              /*+ Last k-way imbalance ratio       +*/
 } KgraphStore;
 
 /*
 **  The function prototypes.
 */
 
-int                         kgraphInit          (Kgraph * restrict const, const Graph * restrict const, const Arch * restrict const, const ArchDom * restrict const, const Gnum, const Anum * restrict const, const Anum * restrict const, const Gnum, const Gnum, const Gnum * restrict const);
+int                         kgraphInit          (Kgraph * const, const Graph * const, Arch * restrict const, const ArchDom * restrict, const Gnum, const Anum * restrict const, const Gnum, const Gnum, const Gnum * restrict const);
 void                        kgraphExit          (Kgraph * const);
 void                        kgraphFrst          (Kgraph * const);
 int                         kgraphCheck         (const Kgraph * const);

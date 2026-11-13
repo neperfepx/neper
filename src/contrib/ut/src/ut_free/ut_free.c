@@ -205,6 +205,27 @@ ut_free_3d_char (char ****parray, unsigned int line, unsigned int column)
 }
 
 void
+ut_free_3d_float (float ****parray, unsigned int line, unsigned int column)
+{
+  int i, j;
+
+  if (!*parray)
+    return;
+
+  for (i = line - 1; i >= 0; i--)
+    for (j = column - 1; j >= 0; j--)
+      free ((*parray)[i][j]);
+
+  for (i = line - 1; i >= 0; i--)
+    free ((*parray)[i]);
+
+  free ((*parray));
+  (*parray) = NULL;
+
+  return;
+}
+
+void
 ut_free_3d (double ****parray, unsigned int line, unsigned int column)
 {
   int i, j;

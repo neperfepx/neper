@@ -25,7 +25,7 @@ net_mtess_flatten_face_body (struct MTESS MTess, struct TESS *Tess,
         neut_flatten_addface (pFlatten, dom);
 
         neut_tess_face_addeq (pFTess, face, Tess[id].FaceEq[j]);
-        for (k = 1; k <= Tess[id].FaceVerQty[j]; k++)
+        for (k = 1; k <= Tess[id].FaceEdgeQty[j]; k++)
         {
           edge = Tess[id].FaceEdgeNb[j][k];
           ori = Tess[id].FaceEdgeOri[j][k];
@@ -44,6 +44,13 @@ net_mtess_flatten_face_body (struct MTESS MTess, struct TESS *Tess,
         neut_tesse_face_addface (&((*pTessE)[id]), j, face, 1);
       }
   }
+
+  // the edge faces are recomputed from scratch (line 0 is undefined)
+  if ((*pFTess).EdgeFaceNb)
+    for (i = 1; i <= (*pFTess).EdgeQty; i++)
+      ut_free_1d_int ((*pFTess).EdgeFaceNb + i);
+  ut_free_1d_pint (&(*pFTess).EdgeFaceNb);
+  ut_free_1d_int (&(*pFTess).EdgeFaceQty);
 
   neut_tess_init_edgeface (pFTess);
 

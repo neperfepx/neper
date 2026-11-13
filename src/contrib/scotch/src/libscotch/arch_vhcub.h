@@ -36,7 +36,7 @@
 /**   AUTHOR     : Francois PELLEGRINI                     **/
 /**                Sebastien FOURESTIER (v6.0)             **/
 /**                                                        **/
-/**   FUNCTION   : These lines are the data declaration    **/
+/**   FUNCTION   : These lines are the data declarations   **/
 /**                for the variable-sized hypercube        **/
 /**                target architecture functions.          **/
 /**                                                        **/
@@ -48,6 +48,8 @@
 /**                                 to   : 21 jan 2008     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 28 may 2018     **/
+/**                # Version 7.0  : from : 19 feb 2018     **/
+/**                                 to   : 19 feb 2018     **/
 /**                                                        **/
 /************************************************************/
 
@@ -97,9 +99,6 @@ int                         archVhcubDomLoad    (const ArchVhcub * const, ArchVh
 int                         archVhcubDomSave    (const ArchVhcub * const, const ArchVhcubDom * const, FILE * const);
 int                         archVhcubDomBipart  (const ArchVhcub * const, const ArchVhcubDom * const, ArchVhcubDom * restrict const, ArchVhcubDom * restrict const);
 int                         archVhcubDomIncl    (const ArchVhcub * const, const ArchVhcubDom * const, const ArchVhcubDom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archVhcubDomMpiType (const ArchVhcub * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 #endif /* ARCH_VHCUB_H_PROTO */
 #endif /* ARCH_NOPROTO       */

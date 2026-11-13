@@ -8,6 +8,66 @@
 #include <omp.h>
 #endif
 
+#include <signal.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+// directory of the result being computed, and its parent directory
+static char *nes_pproc_entity_failure_resdir = NULL;
+static char *nes_pproc_entity_failure_dir = NULL;
+
+// an error ends in abort (): removing the directory of the unfinished result
+// (no memory allocation here, as the abort may come from the allocator)
+static void
+nes_pproc_entity_failure (int sig)
+{
+  pid_t pid;
+
+  (void) sig;
+
+  if (!nes_pproc_entity_failure_resdir)
+    return;
+
+  pid = fork ();
+
+  if (!pid)
+  {
+    execlp ("rm", "rm", "-rf", "--", nes_pproc_entity_failure_resdir, (char *) NULL);
+    _exit (1);
+  }
+
+  if (pid > 0)
+    waitpid (pid, NULL, 0);
+
+  // only removes an empty directory
+  if (rmdir (nes_pproc_entity_failure_dir))
+    return;
+
+  return;
+}
+
+void
+nes_pproc_entity_failure_set (char *resdir, char *dir)
+{
+  ut_string_string (resdir, &nes_pproc_entity_failure_resdir);
+  ut_string_string (dir, &nes_pproc_entity_failure_dir);
+
+  signal (SIGABRT, nes_pproc_entity_failure);
+
+  return;
+}
+
+void
+nes_pproc_entity_failure_unset (void)
+{
+  signal (SIGABRT, SIG_DFL);
+
+  ut_free_1d_char (&nes_pproc_entity_failure_resdir);
+  ut_free_1d_char (&nes_pproc_entity_failure_dir);
+
+  return;
+}
+
 void
 nes_pproc_entity_pre (struct SIM *pSim, char *entity,
                       char *entityresexpr, int *pmemberqty, char **pdir,
@@ -58,10 +118,43 @@ nes_pproc_entity_pre (struct SIM *pSim, char *entity,
   return;
 }
 
+// testing that an ODF-based result is available
+void
+nes_pproc_entity_odf_test (struct TESS Tess, struct TESR Tesr, struct MESH *Mesh,
+                           char *entity, char *expr)
+{
+  int i, isodf = 0;
+  char *crysym = NULL;
+  char *names[6] = { "odf", "odfn", "odfindex", "odfnindex", "orifield", "orifieldn" };
+  int length = strcspn (expr, "(");
+
+  for (i = 0; i < 6; i++)
+    if (length == (int) strlen (names[i]) && !strncmp (expr, names[i], length))
+      isodf = 1;
+
+  if (!isodf)
+    return;
+
+  // same crystal symmetry as used for computing the result
+  if (!strcmp (entity, "tess") || !strcmp (entity, "tesr") || !strcmp (entity, "cell"))
+    crysym = Tess.CellCrySym ? Tess.CellCrySym : Tesr.CellCrySym;
+  else
+    crysym = Mesh[3].ElsetCrySym;
+
+  if (!crysym)
+    ut_print_message (2, 2, "`%s' needs a crystal symmetry, which is undefined.\n", expr);
+
+  if (!strcmp (crysym, "triclinic"))
+    ut_print_message (2, 2, "`%s' is not available for triclinic crystal symmetry.\n", expr);
+
+  return;
+}
+
 void
 nes_pproc_entity_remove (struct SIM *pSim, char *entity, char *result)
 {
-  int i, j;
+  int i, j, fileqty = 0;
+  char **files = NULL, *file = NULL;
   struct SIMRES SimRes;
 
   neut_simres_set_zero (&SimRes);
@@ -78,19 +171,26 @@ nes_pproc_entity_remove (struct SIM *pSim, char *entity, char *result)
 
   else
   {
-    for (i = 0; i <= (*pSim).StepQty; i++)
+    // removing all files, including the auxiliary (hidden) ones
+    if (ut_sys_isdir ("%s", SimRes.dir))
     {
-      neut_simres_setstep (&SimRes, i);
-      remove (SimRes.file);
+      ut_dir_allfiles (SimRes.dir, &files, &fileqty);
+      for (i = 0; i < fileqty; i++)
+      {
+        ut_string_sprintf (&file, "%s/%s", SimRes.dir, files[i]);
+        remove (file);
+      }
     }
     remove (SimRes.dir);
 
     neut_sim_rmres (pSim, entity, result);
-    neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
+    neut_sim_fprintf (*pSim, "W");
 
     printf ("100%%\n");
   }
 
+  ut_free_2d_char (&files, fileqty);
+  ut_free_1d_char (&file);
   neut_simres_free (&SimRes);
 
   return;
@@ -99,30 +199,85 @@ nes_pproc_entity_remove (struct SIM *pSim, char *entity, char *result)
 void
 nes_pproc_entity_file (struct SIM *pSim, char *entity, char *dir, char *res, char *expr)
 {
-  int step;
-  char *simfile = ut_alloc_1d_char (1000);
-  char *stepsimfile = ut_alloc_1d_char (1000);
-  char *filename = ut_alloc_1d_char (1000);
+  int i, pos, step, varqty = 0, colqty = 0, filecolqty, maxstep = -1;
+  int *printed = NULL;
+  char *fct = NULL, **vars = NULL, **vals = NULL;
+  char *simfile = NULL, *type = NULL, *srcfile = NULL;
+  char *stepsimfile = NULL;
+  char *filename = NULL;
   char *prev = ut_alloc_1d_char (1000);
+
+  ut_string_function (expr, &fct, &vars, &vals, &varqty);
+
+  ut_string_string (varqty ? vals[0] : "", &simfile);
+
+  for (i = 1; i < varqty; i++)
+    if (!ut_string_strcmp (vars[i], "type"))
+      ut_string_string (vals[i], &type);
+    else
+      ut_print_message (2, 5, "\nFailed to process expression `%s' (unknown argument).\n", expr);
+
+  // the steps are those of the simulation directory, if it has results, and those of
+  // the files otherwise
+  nes_pproc_entity_file_steps (simfile, &printed, &maxstep);
+
+  if (maxstep >= 0)
+    nes_pproc_entity_file_setsteps (pSim, simfile, printed, maxstep);
+
+  if (type && neut_sim_simres_type_colqty (type, &colqty))
+    ut_print_message (2, 5, "\nInvalid result type `%s' (expected int, real, vector, skewtensor, symtensor, tensor or ori).\n", type);
+
+  neut_sim_entity_pos (*pSim, entity, &pos);
+
+  // testing the files to load, against the entity and the declared type
+  for (step = 0; step <= (*pSim).StepQty; step++)
+  {
+    if (neut_sim_setstep (pSim, step))
+      continue;
+
+    ut_string_sprintf (&stepsimfile, "%s.step%d", simfile, step);
+    ut_string_string (ut_file_exist (stepsimfile) ? stepsimfile : simfile, &srcfile);
+
+    if (!ut_file_exist (srcfile))
+      ut_print_message (2, 5, "\nFile `%s' not found.\n", srcfile);
+
+    if (pos != -1 && ut_file_nblines (srcfile) != (*pSim).EntityMemberQty[pos])
+      ut_print_message (2, 5, "\nFile `%s' has %d line(s), while entity `%s' has %d member(s).\n",
+                        srcfile, ut_file_nblines (srcfile), entity, (*pSim).EntityMemberQty[pos]);
+
+    filecolqty = ut_file_nbcolumns (srcfile);
+
+    if (colqty && filecolqty > 0 && filecolqty != colqty)
+      ut_print_message (2, 5, "\nFile `%s' has %d column(s), while type `%s' implies %d.\n",
+                        srcfile, filecolqty, type, colqty);
+  }
 
   ut_print_progress (stdout, 0, (*pSim).StepQty + 1, "%3.0f%%", prev);
 
-  ut_string_string (expr + 5, &simfile);
-  simfile[strlen (simfile) - 1] = '\0';
-
   for (step = 0; step <= (*pSim).StepQty; step++)
   {
-    sprintf (stepsimfile, "%s.step%d", simfile, step);
-    sprintf (filename, "%s/%s/%s.step%d", dir, res, res, step);
+    // skipping the steps without result files
+    if (neut_sim_setstep (pSim, step))
+      continue;
+
+    ut_string_sprintf (&stepsimfile, "%s.step%d", simfile, step);
+    ut_string_sprintf (&filename, "%s/%s/%s.step%d", dir, res, res, step);
     ut_file_cp (ut_file_exist (stepsimfile) ? stepsimfile : simfile, filename);
 
     ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, "%3.0f%%", prev);
   }
 
-  neut_sim_addres (pSim, entity, res, NULL);
-  neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
+  neut_sim_setstep (pSim, 0);
+  neut_sim_addres (pSim, entity, res, NULL, type);
+  neut_sim_fprintf (*pSim, "W");
 
+  ut_free_1d_int (&printed);
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_2d_char (&vals, varqty);
   ut_free_1d_char (&simfile);
+  ut_free_1d_char (&type);
+  ut_free_1d_char (&srcfile);
   ut_free_1d_char (&stepsimfile);
   ut_free_1d_char (&filename);
   ut_free_1d_char (&prev);
@@ -149,7 +304,10 @@ nes_pproc_entity_subres (struct SIM *pSim, char *entity,
 
   for (step = 0; step <= (*pSim).StepQty; step++)
   {
-    neut_sim_setstep (pSim, step);
+    // skipping the steps without result files
+    if (neut_sim_setstep (pSim, step))
+      continue;
+
     neut_simres_setstep (pSimRes, step);
 
     if (!ut_file_exist ((*pSimRes).parentfile))
@@ -167,8 +325,8 @@ nes_pproc_entity_subres (struct SIM *pSim, char *entity,
   }
 
   neut_sim_setstep (pSim, 0);
-  neut_sim_addres (pSim, entity, (*pSimRes).res, NULL);
-  neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
+  neut_sim_addres (pSim, entity, (*pSimRes).res, NULL, (char *) "real");
+  neut_sim_fprintf (*pSim, "W");
 
   ut_free_1d (&tmp);
   ut_free_1d_char (&prev);
@@ -212,7 +370,10 @@ nes_pproc_entity_expr (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
 
   for (step = 0; step <= (*pSim).StepQty; step++)
   {
-    neut_sim_setstep (pSim, step);
+    // skipping the steps without result files
+    if (neut_sim_setstep (pSim, step))
+      continue;
+
     neut_simres_setstep (pSimRes, step);
     neut_sim_simres (*pSim, "node", "coo", &SimRes0);
     neut_simres_setstep (&SimRes0, step);
@@ -352,8 +513,9 @@ nes_pproc_entity_expr (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
 
   if (!status)
   {
-    neut_sim_addres (pSim, entity, (*pSimRes).res, (*pSimRes).expr);
-    neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
+    neut_sim_addres (pSim, entity, (*pSimRes).res, (*pSimRes).expr,
+                     (char *) (ut_math_eval_exprislogical ((*pSimRes).expr) ? "int" : "real"));
+    neut_sim_fprintf (*pSim, "W");
   }
   else
     printf ("\b\b\b\b");

@@ -11,7 +11,7 @@ extern "C"
 #define STRUCTTDYN_H
 
 /// \brief Tessellation dynamics structure
-/// The structure gathers information required by net_polycomp for
+/// The structure gathers information required by net_tess3d_polycomp for
 /// tessellation dynamics computation (fast tessellation update)
   struct TDYN
   {
@@ -40,6 +40,7 @@ extern "C"
     int *seedmoved;		// current moved seeds
     int cellchangedqty;		// current number of changed cells
     int *cellchanged;		// current changed cells
+    int *cellchangedflag;	// 1 if a cell is in cellchanged, 0 otherwise
 
     int domcellqty;		// current number of domain cells (0 or 1)
     int *domcells;		// current domain cells
@@ -66,6 +67,7 @@ extern "C"
     // INDIVIDUAL POLY COMPUTATION INFORMATION -------------------------
     int *changedneighs;
     int changedneighqty;
+    int *changedneighflag;	// 1 if a cell is in changedneighs, 0 otherwise
 
     // TIME INFORMATION ------------------------------------------------
 

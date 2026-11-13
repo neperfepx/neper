@@ -90,7 +90,7 @@ neut_data_string_entity_attribute (char *string, char *entity, char **inputs, in
   entity[0] = '\0';
 
   // setting entity: must be one of:
-  // for the mesh: node, elt, elset, elt1d, eltedge
+  // for the mesh: node, elt, elset, elt1d, eltco, eltedge
   // for the tess: edge, poly
   if (!strncmp (stringcpy, "node", 4))
     strcpy (entity, "node");
@@ -106,6 +106,12 @@ neut_data_string_entity_attribute (char *string, char *entity, char **inputs, in
     strcpy (entity, "elt1d");
   else if (!strncmp (stringcpy, "elt0d", 5))
     strcpy (entity, "elt0d");
+  else if (!strncmp (stringcpy, "eltcoedge", 9))
+    strcpy (entity, "eltcoedge");
+  // (eltcol... and eltcoo... are elt + col... and coo)
+  else if (!strncmp (stringcpy, "eltco", 5) && strncmp (stringcpy, "eltcol", 6)
+           && strncmp (stringcpy, "eltcoo", 6))
+    strcpy (entity, "eltco");
   else if (!strncmp (stringcpy, "elt", 3))
     strcpy (entity, "elt");
   else if (!strncmp (stringcpy, "elset3dedge", 11))
@@ -120,6 +126,9 @@ neut_data_string_entity_attribute (char *string, char *entity, char **inputs, in
     strcpy (entity, "elset1d");
   else if (!strncmp (stringcpy, "elset0d", 7))
     strcpy (entity, "elset0d");
+  else if (!strncmp (stringcpy, "elsetco", 7) && strncmp (stringcpy, "elsetcol", 8)
+           && strncmp (stringcpy, "elsetcoo", 8))
+    strcpy (entity, "elsetco");
   else if (!strncmp (stringcpy, "elset", 5))
     strcpy (entity, "elset");
   else if (!strncmp (stringcpy, "ver", 3))
@@ -144,6 +153,8 @@ neut_data_string_entity_attribute (char *string, char *entity, char **inputs, in
     strcpy (entity, "voidvox");
   else if (!strncmp (stringcpy, "csys", 4))
     strcpy (entity, "csys");
+  else if (!strncmp (stringcpy, "domain", 6))
+    strcpy (entity, "domain");
   else if (!strncmp (stringcpy, "pointedge", 9))
     strcpy (entity, "pointedge");
   else if (!strncmp (stringcpy, "point", 5))
@@ -297,9 +308,9 @@ neut_data_ori_color (double **data, int size, char *crysym, char *scheme, int **
 void
 neut_data_init_color_real (struct DATA *pData)
 {
-  int i, qty, valqty;
+  int i, qty, valqty, datavalqty, begdatarel, enddatarel;
   double ScaleBeg, ScaleEnd, alpha;
-  double datamin, datamax;
+  double datamin, datamax, val, *datavals = NULL;
   char **parts = NULL;
   char *min = NULL, *max = NULL;
   char *scheme = NULL, *transform = NULL, *fct = NULL, **vals = NULL;
@@ -314,52 +325,38 @@ neut_data_init_color_real (struct DATA *pData)
     ut_string_string (parts[1], &transform);
   }
 
-  qty = 0;
-  if ((*pData).Scale)
-    ut_list_break ((*pData).Scale, NEUT_SEP_DEP, &parts, &qty);
+  ut_free_2d_char (&parts, qty);
+  ut_list_break ((*pData).Scale ? (*pData).Scale : (char *) NEUT_DEFAULT_SCALE_REAL, NEUT_SEP_DEP,
+                 &parts, &qty);
 
-  if (qty >= 2)
-  {
-    ut_string_string (parts[0], &min);
-    ut_string_string (parts[qty - 1], &max);
-  }
+  ut_string_string (qty >= 2 && strlen (parts[0]) > 0 ? parts[0] : (char *) "min", &min);
+  ut_string_string (qty >= 2 && strlen (parts[qty - 1]) > 0 ? parts[qty - 1] : (char *) "max", &max);
 
-  if (!(*pData).ColDataDef)
-  {
-    datamin = ut_array_2d_col_min ((*pData).ColData + 1, 0, (*pData).Qty);
-    datamax = ut_array_2d_col_max ((*pData).ColData + 1, 0, (*pData).Qty);
-  }
-  else
-  {
-    datamin = DBL_MAX;
-    datamax = -DBL_MAX;
+  // sorted defined data values
+  datavals = ut_alloc_1d ((*pData).Qty);
+  datavalqty = 0;
+  for (i = 1; i <= (*pData).Qty; i++)
+    if (!(*pData).ColDataDef || (*pData).ColDataDef[i])
+      datavals[datavalqty++] = (*pData).ColData[i][0];
+  ut_array_1d_sort (datavals, datavalqty);
 
-    for (i = 1; i <= (*pData).Qty; i++)
-      if ((*pData).ColDataDef[i])
-      {
-        datamin = ut_num_min (datamin, (*pData).ColData[i][0]);
-        datamax = ut_num_max (datamax, (*pData).ColData[i][0]);
-      }
-  }
+  datamin = datavalqty > 0 ? datavals[0] : 0;
+  datamax = datavalqty > 0 ? datavals[datavalqty - 1] : 0;
 
-  if (min == NULL || strlen (min) == 0 || !strcmp (min, "min"))
-    ScaleBeg = datamin;
-  else
-    ut_string_real (min, &ScaleBeg);
+  // a scale resolved from the data (e.g. inherited by mesh slices) counts as data-relative
+  begdatarel = neut_data_scale_bound (min, datavals, datavalqty, &ScaleBeg)
+               || (*pData).ScaleDataRel[0];
+  enddatarel = neut_data_scale_bound (max, datavals, datavalqty, &ScaleEnd)
+               || (*pData).ScaleDataRel[1];
 
-  if (max == NULL || strlen (max) == 0 || !strcmp (max, "max"))
-    ScaleEnd = datamax;
-  else
-    ut_string_real (max, &ScaleEnd);
-
-  if (ut_num_min (ScaleBeg, ScaleEnd) > datamin)
+  if (!begdatarel && ut_num_min (ScaleBeg, ScaleEnd) > datamin)
   {
     ut_print_message (1, 2,
                       "Scale minimum (%f) larger than data minimum (%f)\n",
                       ut_num_min (ScaleBeg, ScaleEnd), datamin);
   }
 
-  if (ut_num_max (ScaleBeg, ScaleEnd) < datamax)
+  if (!enddatarel && ut_num_max (ScaleBeg, ScaleEnd) < datamax)
   {
     ut_print_message (1, 2,
                       "Scale maximum (%f) smaller than data maximum (%f)\n",
@@ -415,26 +412,44 @@ neut_data_init_color_real (struct DATA *pData)
     for (i = 1; i <= (*pData).Qty; i++)
       ut_color_bar_val_color (scheme, ScaleBeg, ScaleEnd, (*pData).ColData[i][0], (*pData).Col[i]);
 
-  (*pData).Scale = ut_alloc_1d_char (1000);
-  if (qty >= 2)
+  // data-relative bounds are replaced by their values
+  (*pData).ScaleDataRel[0] = begdatarel;
+  (*pData).ScaleDataRel[1] = enddatarel;
+
+  if (begdatarel || qty < 2)
   {
-    strcpy ((*pData).Scale, parts[0]);
-    for (i = 1; i < qty - 1; i++)
-    {
-      (*pData).Scale = strcat ((*pData).Scale, NEUT_SEP_DEP);
-      (*pData).Scale = strcat ((*pData).Scale, parts[i]);
-    }
-    (*pData).Scale = strcat ((*pData).Scale, NEUT_SEP_DEP);
-    (*pData).Scale = strcat ((*pData).Scale, parts[qty - 1]);
+    ut_free_1d_char (&min);
+    min = ut_alloc_1d_char (100);
+    sprintf (min, "%f", ScaleBeg);
   }
-  else
-    sprintf ((*pData).Scale, "%f%s%f", ScaleBeg, NEUT_SEP_DEP, ScaleEnd);
+
+  if (enddatarel || qty < 2)
+  {
+    ut_free_1d_char (&max);
+    max = ut_alloc_1d_char (100);
+    sprintf (max, "%f", ScaleEnd);
+  }
+
+  ut_free_1d_char (&(*pData).Scale);
+  (*pData).Scale = ut_alloc_1d_char (1000);
+  strcpy ((*pData).Scale, min);
+  for (i = 1; i < qty - 1; i++)
+  {
+    (*pData).Scale = strcat ((*pData).Scale, NEUT_SEP_DEP);
+    if (neut_data_scale_bound (parts[i], datavals, datavalqty, &val))
+      sprintf ((*pData).Scale + strlen ((*pData).Scale), "%f", val);
+    else
+      (*pData).Scale = strcat ((*pData).Scale, parts[i]);
+  }
+  (*pData).Scale = strcat ((*pData).Scale, NEUT_SEP_DEP);
+  (*pData).Scale = strcat ((*pData).Scale, max);
 
   (*pData).Scale = ut_realloc_1d_char ((*pData).Scale, strlen ((*pData).Scale) + 1);
 
   ut_free_2d_char (&parts, qty);
   ut_free_1d_char (&min);
   ut_free_1d_char (&max);
+  ut_free_1d (&datavals);
   ut_free_1d_char (&scheme);
   ut_free_1d_char (&transform);
   ut_free_1d_char (&fct);
@@ -530,10 +545,26 @@ neut_data_datastring_type_value (char *entity, char *attribute,
       }
     }
 
-    else if (argqty == 2)
+    // <type>:<value>, where <value> can contain separators (e.g. a ternary
+    // expression); without an identifier type, the whole string is the value
+    else if (argqty >= 2)
     {
-      ut_string_string (args[0], pdatatype);
-      ut_string_string (args[1], pdatavalue);
+      int i, istype = isalpha (args[0][0]);
+
+      for (i = 0; istype && args[0][i] != '\0'; i++)
+        if (!isalnum (args[0][i]) && args[0][i] != '_')
+          istype = 0;
+
+      if (istype)
+      {
+        ut_string_string (args[0], pdatatype);
+        ut_string_string (datastring + strlen (args[0]) + 1, pdatavalue);
+      }
+      else
+      {
+        ut_string_string ("none", pdatatype);
+        ut_string_string (datastring, pdatavalue);
+      }
     }
 
     ut_free_2d_char (&args, argqty);
@@ -626,6 +657,7 @@ neut_data_colscheme_asygradient (char *colscheme, int stepqty, char **pasygradie
   neut_data_set_default (&Data);
 
   ut_string_string (colscheme, &(Data.ColScheme));
+  ut_string_string ("min:max", &(Data.Scale));
   Data.Qty = stepqty;
   Data.ColData = ut_alloc_2d (Data.Qty + 1, 1);
   Data.Col = ut_alloc_2d_int (Data.Qty + 1, 3);

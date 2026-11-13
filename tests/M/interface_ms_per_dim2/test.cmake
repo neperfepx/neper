@@ -1,0 +1,6 @@
+# This file is part of the Neper software package.
+# Copyright (C) 2003-2026, Romain Quey, CNRS.
+# See the COPYING file in the top-level directory.
+
+set (test_command -M n4-3-id1-dim2.tess -interface cohesive::continuous -order 1 -format msh,per -o test)
+include(../../test.cmake)

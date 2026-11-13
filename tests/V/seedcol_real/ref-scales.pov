@@ -3022,8 +3022,8 @@ mesh2 {
     texture{pigment{rgb<0.129411764706,0.564705882353,0.552941176471>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
     texture{pigment{rgb<0.129411764706,0.564705882353,0.552941176471>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
     texture{pigment{rgb<0.129411764706,0.564705882353,0.552941176471>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
-    texture{pigment{rgb<0.129411764706,0.568627450980,0.549019607843>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
-    texture{pigment{rgb<0.129411764706,0.568627450980,0.549019607843>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
+    texture{pigment{rgb<0.129411764706,0.564705882353,0.552941176471>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
+    texture{pigment{rgb<0.129411764706,0.564705882353,0.552941176471>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
     texture{pigment{rgb<0.129411764706,0.568627450980,0.549019607843>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
     texture{pigment{rgb<0.129411764706,0.568627450980,0.549019607843>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
     texture{pigment{rgb<0.129411764706,0.568627450980,0.549019607843>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
@@ -3822,8 +3822,8 @@ mesh2 {
     texture{pigment{rgb<0.729411764706,0.870588235294,0.156862745098>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
     texture{pigment{rgb<0.729411764706,0.870588235294,0.156862745098>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
     texture{pigment{rgb<0.729411764706,0.870588235294,0.156862745098>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
-    texture{pigment{rgb<0.729411764706,0.870588235294,0.156862745098>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
-    texture{pigment{rgb<0.729411764706,0.870588235294,0.156862745098>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
+    texture{pigment{rgb<0.741176470588,0.874509803922,0.149019607843>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
+    texture{pigment{rgb<0.741176470588,0.874509803922,0.149019607843>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
     texture{pigment{rgb<0.741176470588,0.874509803922,0.149019607843>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
     texture{pigment{rgb<0.741176470588,0.874509803922,0.149019607843>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
     texture{pigment{rgb<0.741176470588,0.874509803922,0.149019607843>} finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}}
@@ -6037,7 +6037,7 @@ cylinder {<-0.1,0,0>,<0,0,0>,0.0025 texture {pigment{rgb<0,0,0>}}}
 cylinder {<-0.1,0,1>,<0,0,1>,0.0025 texture {pigment{rgb<0,0,0>}}}
 union {
 cylinder {<-0.1,0,0.000000>,<0,0,0.000000>,0.0025 texture {pigment{rgb<0,0,0>}}}
-text {ttf "timrom.ttf" "0.159392" 0.1, 0
+text {ttf "timrom.ttf" "0.166240" 0.1, 0
 texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
@@ -6045,7 +6045,7 @@ translate <0,0,0.000000>
 translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.100000>,<0,0,0.100000>,0.0025 texture {pigment{rgb<0,0,0>}}}
-text {ttf "timrom.ttf" "0.193634" 0.1, 0
+text {ttf "timrom.ttf" "0.199113" 0.1, 0
 texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
@@ -6053,7 +6053,7 @@ translate <0,0,0.100000>
 translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.200000>,<0,0,0.200000>,0.0025 texture {pigment{rgb<0,0,0>}}}
-text {ttf "timrom.ttf" "0.227877" 0.1, 0
+text {ttf "timrom.ttf" "0.231985" 0.1, 0
 texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
@@ -6061,7 +6061,7 @@ translate <0,0,0.200000>
 translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.300000>,<0,0,0.300000>,0.0025 texture {pigment{rgb<0,0,0>}}}
-text {ttf "timrom.ttf" "0.262119" 0.1, 0
+text {ttf "timrom.ttf" "0.264858" 0.1, 0
 texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
@@ -6069,7 +6069,7 @@ translate <0,0,0.300000>
 translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.400000>,<0,0,0.400000>,0.0025 texture {pigment{rgb<0,0,0>}}}
-text {ttf "timrom.ttf" "0.296361" 0.1, 0
+text {ttf "timrom.ttf" "0.297730" 0.1, 0
 texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
@@ -6077,7 +6077,7 @@ translate <0,0,0.400000>
 translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.500000>,<0,0,0.500000>,0.0025 texture {pigment{rgb<0,0,0>}}}
-text {ttf "timrom.ttf" "0.330604" 0.1, 0
+text {ttf "timrom.ttf" "0.330603" 0.1, 0
 texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
@@ -6085,7 +6085,7 @@ translate <0,0,0.500000>
 translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.600000>,<0,0,0.600000>,0.0025 texture {pigment{rgb<0,0,0>}}}
-text {ttf "timrom.ttf" "0.364846" 0.1, 0
+text {ttf "timrom.ttf" "0.363476" 0.1, 0
 texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
@@ -6093,7 +6093,7 @@ translate <0,0,0.600000>
 translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.700000>,<0,0,0.700000>,0.0025 texture {pigment{rgb<0,0,0>}}}
-text {ttf "timrom.ttf" "0.399088" 0.1, 0
+text {ttf "timrom.ttf" "0.396348" 0.1, 0
 texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
@@ -6101,7 +6101,7 @@ translate <0,0,0.700000>
 translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.800000>,<0,0,0.800000>,0.0025 texture {pigment{rgb<0,0,0>}}}
-text {ttf "timrom.ttf" "0.433330" 0.1, 0
+text {ttf "timrom.ttf" "0.429221" 0.1, 0
 texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
@@ -6109,7 +6109,7 @@ translate <0,0,0.800000>
 translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.900000>,<0,0,0.900000>,0.0025 texture {pigment{rgb<0,0,0>}}}
-text {ttf "timrom.ttf" "0.467573" 0.1, 0
+text {ttf "timrom.ttf" "0.462093" 0.1, 0
 texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
@@ -6117,13 +6117,41 @@ translate <0,0,0.900000>
 translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,1.000000>,<0,0,1.000000>,0.0025 texture {pigment{rgb<0,0,0>}}}
-text {ttf "timrom.ttf" "0.501815" 0.1, 0
+text {ttf "timrom.ttf" "0.494966" 0.1, 0
 texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,1.000000>
 translate <0.02,0,-0.02>
 }
+#declare MinString =
+text {ttf "timrom.ttf" "min" 0.1, 0
+pigment { rgbt <0,0,0,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}
+scale 0.06
+rotate <90,0,0>
+translate <-0.1,0,-0.170000>
+}
+text {ttf "timrom.ttf" "0.159392" 0.1, 0
+pigment { rgbt <0,0,0,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}
+scale 0.06
+rotate <90,0,0>
+translate <0.02,0,-0.170000>
+}
+object {MinString}
+#declare MaxString =
+text {ttf "timrom.ttf" "max" 0.1, 0
+pigment { rgbt <0,0,0,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}
+scale 0.06
+rotate <90,0,0>
+translate <-0.1,0,-0.250000>
+}
+text {ttf "timrom.ttf" "0.501815" 0.1, 0
+pigment { rgbt <0,0,0,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}
+scale 0.06
+rotate <90,0,0>
+translate <0.02,0,-0.250000>
+}
+object {MaxString}
 }
 rotate<-90, 0, 0>
 scale<1,1,-1>}

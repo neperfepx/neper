@@ -8,20 +8,24 @@ void
 neut_mtess_argument_process (struct MTESS MTess, struct TESS *Tess, int dtess, int dcell,
                              char *input, char **poutput)
 {
-  char *mid = NULL;
+  char *mid = NULL, *expr = NULL;
 
-  if (ut_string_isfilename (input)
-      && !ut_file_testformat (input, "tess"))
+  if (neut_tess_expr_string (Tess + dtess, "cell", dcell, input, &expr))
+    ut_print_message (2, 3, "Failed to process expression `%s'.\n", input);
+
+  if (ut_string_isfilename (expr)
+      && !ut_file_testformat (expr, "tess"))
   {
     neut_mtess_tess_poly_mid (MTess, Tess[dtess], dcell, &mid);
 
     *poutput = ut_alloc_1d_char (1000);
-    net_multiscale_arg_0d_char_fscanf (input, mid, *poutput);
+    net_multiscale_arg_0d_char_fscanf (expr, mid, *poutput);
   }
   else
-    ut_string_string (input, poutput);
+    ut_string_string (expr, poutput);
 
   ut_free_1d_char (&mid);
+  ut_free_1d_char (&expr);
 
   return;
 }

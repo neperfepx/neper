@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2018,2021,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -47,14 +47,16 @@
 /**                                 to   : 17 nov 2010     **/
 /**                # Version 6.0  : from : 25 apr 2018     **/
 /**                                 to   : 25 apr 2018     **/
+/**                # Version 6.1  : from : 15 mar 2021     **/
+/**                                 to   : 15 mar 2021     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 06 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -69,27 +71,39 @@
 /*                                      */
 /****************************************/
 
-/*+ This routine reserves a memory area
-*** of a size sufficient to store a
-*** geometry structure.
-*** It returns:
-*** - !NULL  : if the initialization succeeded.
-*** - NULL   : on error.
-+*/
+/* This routine reserves a memory area
+** of a size sufficient to store a
+** SCOTCH_Geom structure.
+** It returns:
+** - !NULL  : if the allocation succeeded.
+** - NULL   : on error.
+*/
 
 SCOTCH_Geom *
-SCOTCH_geomAlloc ()
+SCOTCH_geomAlloc (void)
 {
   return ((SCOTCH_Geom *) memAlloc (sizeof (SCOTCH_Geom)));
 }
 
-/*+ This routine initializes the opaque
-*** geom structure used to handle graph
-*** geometry in the Scotch library.
-*** It returns:
-*** - 0   : if the initialization succeeded.
-*** - !0  : on error.
-+*/
+/* This routine returns the size, in bytes,
+** of a SCOTCH_Geom structure.
+** It returns:
+** - > 0  : in all cases.
+*/
+
+int
+SCOTCH_geomSizeof (void)
+{
+  return (sizeof (SCOTCH_Geom));
+}
+
+/* This routine initializes the opaque
+** geom structure used to handle graph
+** geometry in the Scotch library.
+** It returns:
+** - 0   : if the initialization succeeded.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_geomInit (
@@ -107,11 +121,11 @@ SCOTCH_Geom * const         geomptr)
   return (geomInit ((Geom *) geomptr));
 }
 
-/*+ This routine frees the contents of the
-*** given opaque geometry structure.
-*** It returns:
-*** - VOID  : in all cases.
-+*/
+/* This routine frees the contents of the
+** given opaque geometry structure.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_geomExit (
@@ -120,13 +134,13 @@ SCOTCH_Geom * const         geomptr)
   geomExit ((Geom *) geomptr);
 }
 
-/*+ This routine accesses all of the geometry data.
-*** NULL pointers on input indicate unwanted
-*** data. NULL pointers on output indicate
-*** unexisting arrays.
-*** It returns:
-*** - VOID  : in all cases.
-+*/
+/* This routine accesses all of the geometry data.
+** NULL pointers on input indicate unwanted
+** data. NULL pointers on output indicate
+** unexisting arrays.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_geomData (

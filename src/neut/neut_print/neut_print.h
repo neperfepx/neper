@@ -17,7 +17,6 @@ extern "C"
 
   extern void neut_print_set_default (struct PRINT *);
   extern void neut_print_free (struct PRINT *);
-  extern void neut_print_outdir (char *outdir, struct SIM Sim, char *format, char **pdir);
   extern void neut_print_imagesize (char *imagesize, int *pwidth, int *pheight);
   extern int neut_print_cell_show (struct PRINT Print, struct TESS Tess, int cell);
   extern void neut_print_init_ipfborder (char *, struct PRINT *pPrint);
@@ -26,7 +25,7 @@ extern "C"
   extern void neut_print_povfoot (char *includepov, char *imageformat, FILE * file);
 
   extern void neut_print_pov2png (char *povray, char *filename, int imagewidth,
-                                  int imageheight, int antialiasing, int messagetag);
+                                  int imageheight, int messagetag);
 
 #endif				/* NEUT_PRINT_H */
 

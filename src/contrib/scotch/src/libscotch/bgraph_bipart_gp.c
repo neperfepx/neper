@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2011,2014,2016 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2011,2014,2016,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -55,14 +55,14 @@
 /**                                 to   : 22 feb 2011     **/
 /**                # Version 6.0  : from : 08 aug 2014     **/
 /**                                 to   : 14 aug 2016     **/
+/**                # Version 7.0  : from : 17 jan 2023     **/
+/**                                 to   : 17 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define BGRAPH_BIPART_GP
 
 #include "module.h"
 #include "common.h"
@@ -160,7 +160,7 @@ const BgraphBipartGpParam * const paraptr)        /*+ Method parameters +*/
           Gnum                vertend;            /* End vertex number */
 
           vertend = edgetax[edgenum];
-          if (vexxtax[vertend].passnum < passnum) { /* If vertex not yet queued      */
+          if (vexxtax[vertend].passnum < passnum) { /* If vertex not yet queued    */
             bgraphBipartGpQueuePut (&queudat, vertend); /* Enqueue neighbor vertex */
             vexxtax[vertend].passnum = passnum;
             vexxtax[vertend].distval = distval;

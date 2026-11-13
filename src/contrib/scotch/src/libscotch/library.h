@@ -1,4 +1,4 @@
-/* Copyright 2004,2007-2012,2014-2016,2018-2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007-2012,2014-2016,2018-2021,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -55,11 +55,15 @@
 /**                                 to   : 07 aug 2011     **/
 /**                # Version 6.0  : from : 12 sep 2008     **/
 /**                                 to   : 20 jan 2020     **/
+/**                # Version 6.1  : from : 05 sep 2020     **/
+/**                                 to   : 01 apr 2021     **/
+/**                # Version 7.0  : from : 25 aug 2019     **/
+/**                                 to   : 11 jul 2026     **/
 /**                                                        **/
 /************************************************************/
 
-#ifndef SCOTCH_H
-#define SCOTCH_H
+#ifndef LIB_SCOTCH_H
+#define LIB_SCOTCH_H
 
 /*
 **  The type and structure definitions.
@@ -76,19 +80,27 @@ typedef DUMMYINT SCOTCH_Num;
 
 /*+ Version flags. +*/
 
-#if ((! defined SCOTCH_H_UNIQUE) && (! defined SCOTCH_RENAME_ALL))
+#if ((! defined LIB_SCOTCH_H_UNIQUE) && (! defined SCOTCH_RENAME_ALL))
 #define SCOTCH_VERSION DUMMYVERSION
 #define SCOTCH_RELEASE DUMMYRELEASE
 #define SCOTCH_PATCHLEVEL DUMMYPATCHLEVEL
-#else /* ((! defined SCOTCH_H_UNIQUE) && (! defined SCOTCH_RENAME_ALL)) */
+#else /* ((! defined LIB_SCOTCH_H_UNIQUE) && (! defined SCOTCH_RENAME_ALL)) */
 #if ((SCOTCH_VERSION != DUMMYVERSION) || (SCOTCH_RELEASE != DUMMYRELEASE) || (SCOTCH_PATCHLEVEL != DUMMYPATCHLEVEL))
 #ifndef SCOTCH_WARNING_RENAME_UNSAFE
 #define SCOTCH_WARNING_RENAME_UNSAFE
 #endif /* SCOTCH_WARNING_RENAME_UNSAFE */
 #endif /* ((SCOTCH_VERSION != DUMMYVERSION) || (SCOTCH_RELEASE != DUMMYRELEASE) || (SCOTCH_PATCHLEVEL != DUMMYPATCHLEVEL)) */
-#endif /* SCOTCH_H_UNIQUE */
+#endif /* LIB_SCOTCH_H_UNIQUE */
 
-/*+ Coarsening flags +*/
+/*+ Option numbers. +*/
+
+#ifndef SCOTCH_OPTIONNUMNBR
+#define SCOTCH_OPTIONNUMDETERMINISTIC 0
+#define SCOTCH_OPTIONNUMRANDOMFIXEDSEED 1
+#define SCOTCH_OPTIONNUMNBR         2
+#endif /* SCOTCH_OPTIONNUMNBR */
+
+/*+ Coarsening flags. +*/
 
 #ifndef SCOTCH_COARSENNONE
 #define SCOTCH_COARSENNONE          0x0000
@@ -97,7 +109,7 @@ typedef DUMMYINT SCOTCH_Num;
 #define SCOTCH_COARSENNOMERGE       0x4000
 #endif /* SCOTCH_COARSENNONE */
 
-/*+ Strategy string parametrization values +*/
+/*+ Strategy string parametrization values. +*/
 
 #ifndef SCOTCH_STRATDEFAULT
 #define SCOTCH_STRATDEFAULT         0x00000
@@ -118,11 +130,11 @@ typedef DUMMYINT SCOTCH_Num;
 /*+ Opaque objects. The dummy sizes of these
 objects, computed at compile-time by program
 "dummysizes", are given as double values for
-proper padding                               +*/
+proper padding.                              +*/
 
-#ifndef SCOTCH_H_UNIQUE
+#ifndef LIB_SCOTCH_H_UNIQUE
 typedef unsigned char       SCOTCH_GraphPart2;
-#endif /* SCOTCH_H_UNIQUE */
+#endif /* LIB_SCOTCH_H_UNIQUE */
 
 typedef struct {
   double                    dummy[DUMMYSIZEARCH];
@@ -131,6 +143,10 @@ typedef struct {
 typedef struct {
   double                    dummy[DUMMYSIZEARCHDOM];
 } SCOTCH_ArchDom;
+
+typedef struct {
+  double                    dummy[DUMMYSIZECONTEXT];
+} SCOTCH_Context;
 
 typedef struct {
   double                    dummy[DUMMYSIZEGEOM];
@@ -165,6 +181,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 SCOTCH_Arch *               SCOTCH_archAlloc    (void);
+int                         SCOTCH_archSizeof   (void);
 int                         SCOTCH_archInit     (SCOTCH_Arch * const);
 void                        SCOTCH_archExit     (SCOTCH_Arch * const);
 int                         SCOTCH_archLoad     (SCOTCH_Arch * const, FILE * const);
@@ -177,6 +194,7 @@ SCOTCH_Num                  SCOTCH_archSize     (const SCOTCH_Arch * const);
 int                         SCOTCH_archVar      (const SCOTCH_Arch * const);
 int                         SCOTCH_archCmplt    (SCOTCH_Arch * const, const SCOTCH_Num);
 int                         SCOTCH_archCmpltw   (SCOTCH_Arch * const, const SCOTCH_Num, const SCOTCH_Num * const);
+int                         SCOTCH_archCmpltws  (SCOTCH_Arch * const, const SCOTCH_Num, const SCOTCH_Num * const);
 int                         SCOTCH_archHcub     (SCOTCH_Arch * const, const SCOTCH_Num);
 int                         SCOTCH_archMesh2    (SCOTCH_Arch * const, const SCOTCH_Num, const SCOTCH_Num);
 int                         SCOTCH_archMesh3    (SCOTCH_Arch * const, const SCOTCH_Num, const SCOTCH_Num, const SCOTCH_Num);
@@ -190,6 +208,8 @@ int                         SCOTCH_archTorusX   (SCOTCH_Arch * const, const SCOT
 int                         SCOTCH_archVcmplt   (SCOTCH_Arch * const);
 int                         SCOTCH_archVhcub    (SCOTCH_Arch * const);
 
+SCOTCH_ArchDom *            SCOTCH_archDomAlloc (void);
+int                         SCOTCH_archDomSizeof (void);
 SCOTCH_Num                  SCOTCH_archDomNum   (SCOTCH_Arch * const, const SCOTCH_ArchDom * const);
 int                         SCOTCH_archDomTerm  (SCOTCH_Arch * const, SCOTCH_ArchDom * const, const SCOTCH_Num);
 SCOTCH_Num                  SCOTCH_archDomSize  (SCOTCH_Arch * const, const SCOTCH_ArchDom * const);
@@ -198,16 +218,34 @@ SCOTCH_Num                  SCOTCH_archDomDist  (SCOTCH_Arch * const, const SCOT
 int                         SCOTCH_archDomFrst  (SCOTCH_Arch * const, SCOTCH_ArchDom * const);
 int                         SCOTCH_archDomBipart (SCOTCH_Arch * const, const SCOTCH_ArchDom * const, SCOTCH_ArchDom * const, SCOTCH_ArchDom * const);
 
+SCOTCH_Context *            SCOTCH_contextAlloc (void);
+int                         SCOTCH_contextSizeof (void);
+int                         SCOTCH_contextInit  (SCOTCH_Context * const);
+void                        SCOTCH_contextExit  (SCOTCH_Context * const);
+int                         SCOTCH_contextOptionGetNum (SCOTCH_Context * const, const int, SCOTCH_Num * const);
+int                         SCOTCH_contextOptionSetNum (SCOTCH_Context * const, const int, const SCOTCH_Num);
+int                         SCOTCH_contextOptionParse (SCOTCH_Context * const, const char *);
+int                         SCOTCH_contextRandomClone (SCOTCH_Context * const);
+void                        SCOTCH_contextRandomReset (SCOTCH_Context * const);
+void                        SCOTCH_contextRandomSeed (SCOTCH_Context * const, const SCOTCH_Num);
+int                         SCOTCH_contextThreadImport1 (SCOTCH_Context * const, const int);
+int                         SCOTCH_contextThreadImport2 (SCOTCH_Context * const, const int);
+int                         SCOTCH_contextThreadSpawn (SCOTCH_Context * const, const int, const int * const);
+int                         SCOTCH_contextBindGraph (SCOTCH_Context * const, const SCOTCH_Graph * const, SCOTCH_Graph * const);
+int                         SCOTCH_contextBindMesh (SCOTCH_Context * const, const SCOTCH_Mesh * const, SCOTCH_Mesh * const);
+
 void                        SCOTCH_errorProg    (const char * const);
 void                        SCOTCH_errorPrint   (const char * const, ...);
 void                        SCOTCH_errorPrintW  (const char * const, ...);
 
 SCOTCH_Geom *               SCOTCH_geomAlloc    (void);
+int                         SCOTCH_geomSizeof   (void);
 int                         SCOTCH_geomInit     (SCOTCH_Geom * const);
 void                        SCOTCH_geomExit     (SCOTCH_Geom * const);
 void                        SCOTCH_geomData     (const SCOTCH_Geom * const, SCOTCH_Num * const, double ** const);
 
 SCOTCH_Graph *              SCOTCH_graphAlloc   (void);
+int                         SCOTCH_graphSizeof  (void);
 int                         SCOTCH_graphInit    (SCOTCH_Graph * const);
 void                        SCOTCH_graphExit    (SCOTCH_Graph * const);
 void                        SCOTCH_graphFree    (SCOTCH_Graph * const);
@@ -258,7 +296,7 @@ int                         SCOTCH_graphRepart  (SCOTCH_Graph * const, const SCO
 int                         SCOTCH_graphRepartFixed (SCOTCH_Graph * const, const SCOTCH_Num, SCOTCH_Num * const, const double, const SCOTCH_Num *, SCOTCH_Strat * const, SCOTCH_Num * const);
 int                         SCOTCH_graphTabLoad (const SCOTCH_Graph * const, SCOTCH_Num * const, FILE * const);
 int                         SCOTCH_graphTabSave (const SCOTCH_Graph * const, const SCOTCH_Num * const, FILE * const);
- 
+
 int                         SCOTCH_graphOrderInit (const SCOTCH_Graph * const, SCOTCH_Ordering * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const);
 void                        SCOTCH_graphOrderExit (const SCOTCH_Graph * const, SCOTCH_Ordering * const);
 int                         SCOTCH_graphOrderLoad (const SCOTCH_Graph * const, SCOTCH_Ordering * const, FILE * const);
@@ -267,29 +305,31 @@ int                         SCOTCH_graphOrderSaveMap (const SCOTCH_Graph * const
 int                         SCOTCH_graphOrderSaveTree (const SCOTCH_Graph * const, const SCOTCH_Ordering * const, FILE * const);
 int                         SCOTCH_graphOrderCompute (SCOTCH_Graph * const, SCOTCH_Ordering * const, SCOTCH_Strat * const);
 int                         SCOTCH_graphOrderComputeList (SCOTCH_Graph * const, SCOTCH_Ordering * const, const SCOTCH_Num, const SCOTCH_Num * const, SCOTCH_Strat * const);
-int                         SCOTCH_graphOrderFactor (const SCOTCH_Graph * const, const SCOTCH_Ordering * const, SCOTCH_Graph * const);
-int                         SCOTCH_graphOrderView (const SCOTCH_Graph * const, const SCOTCH_Ordering * const, FILE * const);
 int                         SCOTCH_graphOrder   (SCOTCH_Graph * const, SCOTCH_Strat * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const);
 int                         SCOTCH_graphOrderList (SCOTCH_Graph * const, const SCOTCH_Num, const SCOTCH_Num * const, SCOTCH_Strat * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const);
 int                         SCOTCH_graphOrderCheck (const SCOTCH_Graph * const, const SCOTCH_Ordering * const);
 
 SCOTCH_Mapping *            SCOTCH_mapAlloc     (void);
+int                         SCOTCH_mapSizeof    (void);
 
 void                        SCOTCH_memFree      (void * const);
 SCOTCH_Idx                  SCOTCH_memCur       (void);
 SCOTCH_Idx                  SCOTCH_memMax       (void);
 
 SCOTCH_Mesh *               SCOTCH_meshAlloc    (void);
+int                         SCOTCH_meshSizeof   (void);
 int                         SCOTCH_meshInit     (SCOTCH_Mesh * const);
 void                        SCOTCH_meshExit     (SCOTCH_Mesh * const);
 int                         SCOTCH_meshLoad     (SCOTCH_Mesh * const, FILE * const, const SCOTCH_Num);
 int                         SCOTCH_meshSave     (const SCOTCH_Mesh * const, FILE * const);
 int                         SCOTCH_meshBuild    (SCOTCH_Mesh * const, const SCOTCH_Num, const SCOTCH_Num, const SCOTCH_Num, const SCOTCH_Num, const SCOTCH_Num * const, const SCOTCH_Num * const, const SCOTCH_Num * const, const SCOTCH_Num * const, const SCOTCH_Num * const, const SCOTCH_Num, const SCOTCH_Num * const);
+int                         SCOTCH_meshBuildElem (SCOTCH_Mesh * const, const SCOTCH_Num, const SCOTCH_Num, const SCOTCH_Num, const SCOTCH_Num, const SCOTCH_Num * const, const SCOTCH_Num * const, const SCOTCH_Num * const, const SCOTCH_Num * const, const SCOTCH_Num * const, const SCOTCH_Num, const SCOTCH_Num * const);
 int                         SCOTCH_meshCheck    (const SCOTCH_Mesh * const);
 void                        SCOTCH_meshSize     (const SCOTCH_Mesh * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const);
 void                        SCOTCH_meshData     (const SCOTCH_Mesh * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num ** const, SCOTCH_Num ** const, SCOTCH_Num ** const, SCOTCH_Num ** const, SCOTCH_Num ** const, SCOTCH_Num * const, SCOTCH_Num ** const, SCOTCH_Num * const);
 void                        SCOTCH_meshStat     (const SCOTCH_Mesh * const, SCOTCH_Num * const, SCOTCH_Num * const, SCOTCH_Num * const, double * const, double * const, SCOTCH_Num * const, SCOTCH_Num * const, double * const, double * const, SCOTCH_Num * const, SCOTCH_Num * const, double * const, double * const);
 int                         SCOTCH_meshGraph    (const SCOTCH_Mesh * const, SCOTCH_Graph * const);
+int                         SCOTCH_meshGraphDual (const SCOTCH_Mesh * const, SCOTCH_Graph * const, const SCOTCH_Num);
 int                         SCOTCH_meshGeomLoadHabo (SCOTCH_Mesh * const, SCOTCH_Geom * const, FILE * const, FILE * const, const char * const);
 int                         SCOTCH_meshGeomLoadScot (SCOTCH_Mesh * const, SCOTCH_Geom * const, FILE * const, FILE * const, const char * const);
 int                         SCOTCH_meshGeomSaveScot (const SCOTCH_Mesh * const, const SCOTCH_Geom * const, FILE * const, FILE * const, const char * const);
@@ -308,14 +348,17 @@ int                         SCOTCH_meshOrderCheck (const SCOTCH_Mesh * const, co
 int                         SCOTCH_numSizeof    (void);
 
 SCOTCH_Ordering *           SCOTCH_orderAlloc   (void);
+int                         SCOTCH_orderSizeof  (void);
 
 int                         SCOTCH_randomLoad   (FILE *);
 int                         SCOTCH_randomSave   (FILE *);
 void                        SCOTCH_randomProc   (int);
 void                        SCOTCH_randomReset  (void);
 void                        SCOTCH_randomSeed   (SCOTCH_Num);
+SCOTCH_Num                  SCOTCH_randomVal    (SCOTCH_Num);
 
 SCOTCH_Strat *              SCOTCH_stratAlloc   (void);
+int                         SCOTCH_stratSizeof  (void);
 int                         SCOTCH_stratInit    (SCOTCH_Strat * const);
 void                        SCOTCH_stratExit    (SCOTCH_Strat * const);
 void                        SCOTCH_stratFree    (SCOTCH_Strat * const);
@@ -337,5 +380,5 @@ void                        SCOTCH_version      (int * const, int * const, int *
 }
 #endif /* __cplusplus */
 
-#define SCOTCH_H_UNIQUE                           /* For symbols that need only be defined once */
-#endif /* SCOTCH_H */
+#define LIB_SCOTCH_H_UNIQUE                       /* For symbols that need only be defined once */
+#endif /* LIB_SCOTCH_H */

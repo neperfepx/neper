@@ -18,13 +18,13 @@ neut_tess_tess_gen (struct TESS TessA, struct TESS *pTessB)
 
   if (TessA.Periodic)
   {
-    (*pTessB).Periodic = ut_alloc_1d_int (3);
+    (*pTessB).Periodic = ut_realloc_1d_int ((*pTessB).Periodic, 3);
     ut_array_1d_int_memcpy (TessA.Periodic, 3, (*pTessB).Periodic);
   }
 
   if (TessA.PeriodicDist)
   {
-    (*pTessB).PeriodicDist = ut_alloc_1d (3);
+    (*pTessB).PeriodicDist = ut_realloc_1d ((*pTessB).PeriodicDist, 3);
     ut_array_1d_memcpy (TessA.PeriodicDist, 3, (*pTessB).PeriodicDist);
   }
 

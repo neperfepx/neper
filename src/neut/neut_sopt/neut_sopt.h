@@ -5,9 +5,7 @@
 #ifndef NEUT_SOPT_H
 #define NEUT_SOPT_H
 
-#ifdef HAVE_NLOPT
 extern void neut_sopt_set_zero (struct SOPT *pTOpt);
 extern void neut_sopt_free (struct SOPT *pTOpt);
-#endif
 
 #endif /* NEUT_SOPT_H */

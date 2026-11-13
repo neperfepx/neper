@@ -5,23 +5,48 @@
 #include"neut_sim_simres_.h"
 
 void
-neut_sim_simres_parentres (char *res, struct SIMRES *pSimRes)
+neut_sim_simres_parentres (struct SIM Sim, char *entity, char *res, struct SIMRES *pSimRes)
 {
+  int filecolqty, istensor;
   char *digits = NULL;
 
   ut_string_removetrailingdigits (res, &(*pSimRes).parentres);
   ut_string_trailingdigits (res, &digits);
 
-  neut_sim_simres_type ((*pSimRes).parentres, pSimRes);
+  neut_sim_simres_type (Sim, entity, (*pSimRes).parentres, pSimRes);
 
   if (strlen (digits))
   {
-    if (!strcmp ((*pSimRes).type, "tensor") && strlen (digits) != 2)
+    if (!strlen ((*pSimRes).type))
+      ut_print_message (2, 4, "%s: the type of `%s' is undefined (no type in `%s.def').\n",
+                        res, (*pSimRes).parentres, (*pSimRes).parentres);
+
+    istensor = strstr ((*pSimRes).type, "tensor") != NULL;
+
+    if (strcmp ((*pSimRes).type, "vector") && !istensor)
+      ut_print_message (2, 4, "%s: `%s' is not a vector or a tensor (type: %s).\n",
+                        res, (*pSimRes).parentres, (*pSimRes).type);
+
+    filecolqty = ut_file_nbcolumns ((*pSimRes).file);
+
+    // the file may be missing for a given step
+    if (filecolqty > 0 && (*pSimRes).colqty != filecolqty)
+      ut_print_message (2, 4, "%s: `%s' has %d column(s), while its type (%s) implies %d.\n",
+                        res, (*pSimRes).parentres, filecolqty, (*pSimRes).type, (*pSimRes).colqty);
+
+    if (istensor && strlen (digits) != 2)
       ut_print_exprbug (res);
 
     if (!strcmp ((*pSimRes).type, "vector"))
+    {
       (*pSimRes).parentcol = atoi (digits);
-    else if (!strcmp ((*pSimRes).type, "tensor"))
+
+      if ((*pSimRes).parentcol < 1
+          || ((*pSimRes).colqty > 0 && (*pSimRes).parentcol > (*pSimRes).colqty))
+        ut_print_message (2, 4, "%s: `%s' is a vector of %d component(s).\n",
+                          res, (*pSimRes).parentres, (*pSimRes).colqty);
+    }
+    else if (istensor)
     {
       if ((*pSimRes).colqty == 3)
       {
@@ -96,80 +121,34 @@ neut_sim_simres_parentres (char *res, struct SIMRES *pSimRes)
   return;
 }
 
+// the type is that of the definition file, if any, and that of the name otherwise.  It is undefined
+// ("") in other cases, in which case the number of columns is still set, from the file.
 int
-neut_sim_simres_type (char *res, struct SIMRES *pSimRes)
+neut_sim_simres_type (struct SIM Sim, char *entity, char *res, struct SIMRES *pSimRes)
 {
+  char *type = NULL;
+
   ut_string_string ("", &(*pSimRes).type);
   (*pSimRes).colqty = 0;
 
   if (strlen (res) == 0)
     return -1;
 
-  if (!strcmp (res, "coo")
-   || !strcmp (res, "disp")
-   || !strcmp (res, "vel"))
+  neut_sim_simres_type_read (Sim, entity, res, &type);
+
+  if (!type)
+    neut_sim_simres_knowntype (res, &type);
+
+  if (type)
   {
-    ut_string_string ("vector", &(*pSimRes).type);
-    (*pSimRes).colqty = 3;
+    ut_string_string (type, &(*pSimRes).type);
+    neut_sim_simres_type_colqty (type, &(*pSimRes).colqty);
   }
 
-  else if (!strcmp (res, "spinrate"))
-  {
-    ut_string_string ("tensor", &(*pSimRes).type);
-    (*pSimRes).colqty = 3;
-  }
-
-  else if (!strcmp (res, "velgrad"))
-  {
-    ut_string_string ("tensor", &(*pSimRes).type);
-    (*pSimRes).colqty = 9;
-  }
-
-  else if (!strcmp (res, "strain")
-        || !strcmp (res, "strain_el")
-        || !strcmp (res, "strain_pl")
-        || !strcmp (res, "stress"))
-  {
-    ut_string_string ("tensor", &(*pSimRes).type);
-    (*pSimRes).colqty = 6;
-  }
-
-  else if (!strcmp (res, "ori"))
-  {
-    ut_string_string ("ori", &(*pSimRes).type);
-    (*pSimRes).colqty = 0;
-  }
-
-  else if (!strncmp (res, "work", 4)
-        || strstr (res, "energy")
-        || isdigit (res[strlen (res) - 1])
-        || strstr (res, "-eq"))
-  {
-    ut_string_string ("real", &(*pSimRes).type);
-    (*pSimRes).colqty = 1;
-  }
-
-  else
-  {
-    char *tmp = ut_alloc_1d_char (1000);
-    FILE *fp = NULL;
-
+  if (!strcmp ((*pSimRes).type, "") || !strcmp ((*pSimRes).type, "vector"))
     (*pSimRes).colqty = ut_file_nbcolumns ((*pSimRes).file);
 
-    if ((*pSimRes).colqty == 1)
-    {
-      fp = ut_file_open ((*pSimRes).file, "R");
-      ut_file_nextstring (fp, tmp);
-      ut_string_string (strstr (tmp, ".") ? "real" : "int", &(*pSimRes).type);
-      ut_file_close (fp, (*pSimRes).file, "R");
-    }
-    else if ((*pSimRes).colqty == 6 || (*pSimRes).colqty == 9)
-      ut_string_string ("tensor", &(*pSimRes).type);
-    else
-      ut_string_string ("vector", &(*pSimRes).type);
-
-    ut_free_1d_char (&tmp);
-  }
+  ut_free_1d_char (&type);
 
   return strlen ((*pSimRes).type) > 0 ? 0 : -1;
 }

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2018,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -48,6 +48,8 @@
 /**                                 to   : 13 jan 2007     **/
 /**                # Version 6.0  : from : 05 apr 2018     **/
 /**                                 to   : 05 apr 2018     **/
+/**                # Version 7.0  : from : 08 mar 2023     **/
+/**                                 to   : 07 nov 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -55,19 +57,24 @@
 **  The type definitions.
 */
 
-/** Method types. **/
+/*+ Method types. +*/
 
 typedef enum BgraphBipartStMethodType_ {
   BGRAPHBIPARTSTMETHBD = 0,                       /*+ Band                   +*/
   BGRAPHBIPARTSTMETHDF,                           /*+ Diffusion              +*/
   BGRAPHBIPARTSTMETHEX,                           /*+ Exactifying            +*/
   BGRAPHBIPARTSTMETHFM,                           /*+ Fiduccia-Mattheyses    +*/
+  BGRAPHBIPARTSTMETHGA,                           /*+ Genetic Algorithm      +*/
   BGRAPHBIPARTSTMETHGG,                           /*+ Greedy Graph Growing   +*/
   BGRAPHBIPARTSTMETHGP,                           /*+ Gibbs-Poole-Stockmeyer +*/
   BGRAPHBIPARTSTMETHML,                           /*+ Multi-level (strategy) +*/
   BGRAPHBIPARTSTMETHZR,                           /*+ Move all to part zero  +*/
   BGRAPHBIPARTSTMETHNBR                           /*+ Number of methods      +*/
 } BgraphBipartStMethodType;
+
+/*+ Method function pointer type. +*/
+
+typedef int (* BgraphBipartFunc) (Bgraph * restrict const, const void * const);
 
 /*
 **  The external declarations.

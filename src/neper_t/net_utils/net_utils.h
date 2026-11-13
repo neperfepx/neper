@@ -11,10 +11,8 @@ extern "C"
   extern void net_in_free (struct IN_T *pIn);
 
   extern int net_poly_clip (struct POLY *pPoly, double *eq, int id);
-  extern void CreateTesl (struct SEEDSET SSet, double **Size, struct
-			  TESL *pTesl);
+  extern int net_poly_clip_prim (struct POLY *pPoly, struct PRIM Prim, int id);
   extern void net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly);
-  extern void net_poly_tesl (struct POLY Poly, double *, struct TESL *pTess);
   extern void net_poly_tess (struct POLY Poly, double *coo,
 			     struct TESS *pTess);
 
@@ -60,7 +58,6 @@ extern "C"
               char **pstop);
 
 #include "net_tess/net_tess3d/net_tess3d.h"
-#include "net_polymod_poly/net_polymod_poly.h"
 #include "net_legacy/net_legacy.h"
 
 #ifdef __cplusplus

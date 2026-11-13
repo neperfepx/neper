@@ -5,7 +5,7 @@
 ** Consequently, this file is distributed according to the terms of
 ** the BSD3 licence, see copyright notice below.
 */
-/* Copyright 2004,2007,2010,2012,2018-2020 IPB, Universite de Bordeaux, INRIA & CNRS & others
+/* Copyright 2004,2007,2010,2012,2018-2020,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS & others
 */
 /************************************************************/
 /**                                                        **/
@@ -30,6 +30,8 @@
 /**                                 to   : 30 apr 2018     **/
 /**                # Version 6.1  : from : 29 oct 2019     **/
 /**                                 to   : 10 feb 2020     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 06 aug 2024     **/
 /**                                                        **/
 /**   NOTES      : # This module contains pieces of code   **/
 /**                  that belong to other people; see      **/
@@ -40,8 +42,6 @@
 /*
 **  The defines and includes.
 */
-
-#define HALL_ORDER_HF
 
 #if 1                                             /* Take simplest version; do not care for exact halfway case specification */
 #define anint(x)                    floor ((x) + 0.5)
@@ -603,24 +603,24 @@
 
 void
 hallOrderHfR3Hamdf4 (
-const Gnum          norig,                        /* Uncompressed matrix order                */
-const Gnum          n,                            /* Current matrix order                     */
-const Gnum          nbelts,                       /* Number of elements                       */
-const Gnum          nbbuck,                       /* Number of buckets                        */
-const Gnum          iwlen,                        /* Length of array iw                       */
-Gnum * restrict     pe /* [n] */,                 /* Array of indexes in iw of start of row i */
-Gnum                pfree,                        /* Useful size in iw                        */
-Gnum * restrict     len /* [n] */,                /* Array of lengths of adjacency lists      */
-Gnum * restrict     iw /* [iwlen] */,             /* Adjacency list array                     */
-Gnum * restrict     nv /* [n] */,                 /* Array of element degrees (weights)       */
-Gnum * restrict     elen /* [n] */,               /* Array that holds the inverse permutation */
-Gnum * restrict     last /* [n] */,               /* Array that holds the permutation         */
-Gnum * restrict     ncmpaptr,                     /* Number of times array iw was compressed  */
-Gnum * restrict     degree /* [n] */,             /* Array that holds degree data             */
-Gnum * restrict     wf /* [n] */,                 /* Flag array                               */
-Gnum * restrict     next /* [n] */,               /* Linked list structure                    */
-Gnum * restrict     w /* [n] */,                  /* Flag array                               */
-Gnum * restrict     head /* [0:nbbuck+1] */)      /* Linked list structure                    */
+const Gnum          norig,                        /* Uncompressed matrix order                       */
+const Gnum          n,                            /* Current matrix order                            */
+const Gnum          nbelts,                       /* Number of elements                              */
+const Gnum          nbbuck,                       /* Number of buckets                               */
+const Gnum          iwlen,                        /* Length of array iw                              */
+Gnum * restrict     pe /* [n] */,                 /* Array of indexes in iw of start of row i        */
+Gnum                pfree,                        /* Useful size in iw                               */
+Gnum * restrict     len /* [n] */,                /* Array of lengths of adjacency lists             */
+Gnum * restrict     iw /* [iwlen] */,             /* Adjacency list array                            */
+Gnum *              nv /* [n] */,                 /* Array of element degrees (weights) [norestrict] */
+Gnum * restrict     elen /* [n] */,               /* Array that holds the inverse permutation        */
+Gnum * restrict     last /* [n] */,               /* Array that holds the permutation                */
+Gnum * restrict     ncmpaptr,                     /* Number of times array iw was compressed         */
+Gnum * restrict     degree /* [n] */,             /* Array that holds degree data                    */
+Gnum * restrict     wf /* [n] */,                 /* Flag array                                      */
+Gnum * restrict     next /* [n] */,               /* Linked list structure                           */
+Gnum * restrict     w /* [n] */,                  /* Flag array                                      */
+Gnum * restrict     head /* [0:nbbuck+1] */)      /* Linked list structure                           */
 {
   Gnum                deg, degme, dext, dmax, e, elenme, eln, i,
                       ilast, inext, j, jlast, jnext, k, knt1, knt2, knt3,

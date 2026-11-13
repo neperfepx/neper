@@ -6,6 +6,9 @@
 #include "neut/neut_oset/neut_oset.hpp"
 #include "neut_struct_qcloud.hpp"
 
+extern void neut_odf_comp_neigh_tree (struct ODF *pOdf, char *entity, char *data,
+                                      QCLOUD *pqcloud, my_kd_tree_t **pqtree);
+
 void
 neut_odf_elt_ori (struct ODF *pOdf, int elt, double *q)
 {
@@ -111,7 +114,7 @@ neut_odf_comp_exact (struct OL_SET *pOSet, char *entity, struct ODF *pOdf, int v
   (*pOdf).odfmean = 1;
 
   ut_free_1d (&oriodf);
-  ol_q_free (qs);
+  ol_q_free (&qs);
   ut_free_1d_char (&prev);
 
   return;
@@ -184,22 +187,7 @@ neut_odf_comp_neigh (struct OL_SET *pOSet, char *entity, char *neigh, struct ODF
 
     neut_oset_kdtree_cloud (&Grid, pqcloud);
 
-    char *filename = ut_alloc_1d_char (1000);
-    if (!strncmp (entity, "elt", 3))
-      sprintf (filename, "%s/orispace/%s/%s.etree", data, (*pOdf).Sp.crysym, (*pOdf).Sp.fr);
-    else
-      sprintf (filename, "%s/orispace/%s/%s.ntree", data, (*pOdf).Sp.crysym, (*pOdf).Sp.fr);
-
-    if (ut_file_exist (filename))
-    {
-      FILE *fp = ut_file_open (filename, "RB");
-      (*pqtree) = new my_kd_tree_t (4, *pqcloud);
-      // KDTreeSingleIndexAdaptorParams (10 /* max leaf */ ));
-      (*pqtree)->loadIndex (fp);
-      ut_file_close (fp, filename, "RB");
-    }
-    else
-      neut_oset_kdtree_build (pqcloud, pqtree);
+    neut_odf_comp_neigh_tree (pOdf, entity, data, pqcloud, pqtree);
     ol_set_free (&Grid);
   }
 
@@ -249,7 +237,7 @@ neut_odf_comp_neigh (struct OL_SET *pOSet, char *entity, char *neigh, struct ODF
 
         nanoflann::SearchParams params;
         std::vector < std::pair < size_t, double > >ret_matches;
-        neighqty = (*pqtree)->radiusSearch ((*pOSet).q[i], cut_dist, ret_matches, params);
+        neighqty = (**pqtree).radiusSearch ((*pOSet).q[i], cut_dist, ret_matches, params);
 
         ut_array_1d_zero (oriodf, odfqty);
         // smooth distribution
@@ -300,8 +288,8 @@ neut_odf_comp_neigh (struct OL_SET *pOSet, char *entity, char *neigh, struct ODF
       ut_free_1d (&sigma_theta3_2);
       ut_free_1d (&theta3);
       ut_free_1d (&thetamis_2);
-      ol_q_free (q);
-      ol_r_free (r);
+      ol_q_free (&q);
+      ol_r_free (&r);
     }
 
   ut_array_1d_scale (*podf, odfqty, 1. / ut_array_1d_wmean (*podf, *pweight + 1, odfqty));
@@ -314,6 +302,10 @@ neut_odf_comp_neigh (struct OL_SET *pOSet, char *entity, char *neigh, struct ODF
 
   if (verbosity)
     printf ("\n");
+
+  // the local kd-tree (not a prerecorded one)
+  if (pqtree == &qtree)
+    delete qtree;
 
   ut_free_1d_char (&prev);
   ut_free_1d_char (&data);

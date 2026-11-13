@@ -46,17 +46,17 @@ struct OL_GNDMAP
 };
 typedef struct OL_GNDMAP OL_GNDMAP;
 
-extern struct OL_CRYS ol_crys_alloc ();
-extern void ol_crys_free (struct OL_CRYS);
+extern struct OL_CRYS ol_crys_alloc (void);
+extern void ol_crys_free (struct OL_CRYS *);
 
 extern void ol_crys_set_this (struct OL_CRYS*, char*, double, double, char*);
 extern int  ol_crys_set_mat (struct OL_CRYS*, char*);
 
 extern struct OL_GNDMAP ol_gndmap_alloc (struct OL_MAP, struct OL_CRYS);
-extern void ol_gndmap_free (struct OL_GNDMAP);
+extern void ol_gndmap_free (struct OL_GNDMAP *);
 
 extern double** ol_nye_alloc (void);
-extern void ol_nye_free (double**);
+extern void ol_nye_free (double***);
 
 extern int ol_gnd_map_nye_region_method (struct OL_MAP Map, struct
     OL_CRYS Crys, double thetamin, double thetamax, double** nye,

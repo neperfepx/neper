@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018-2020,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,6 +43,8 @@
 /**                                 to   : 04 feb 2004     **/
 /**                # Version 6.0  : from : 06 jun 2018     **/
 /**                                 to   : 06 jun 2018     **/
+/**                # Version 7.0  : from : 12 sep 2019     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -62,11 +64,11 @@
 **  The type and structure definitions.
 */
 
-/*+ Here are the edge matching function types for coarsening. +*/
+/*+ The edge matching function types for coarsening. +*/
 
 typedef enum MeshCoarsenType_ {
-  MESHCOARSENNGB,                                 /*+ Most neighbors matching   +*/
-  MESHCOARSENNBR                                  /*+ Number of matching types  +*/
+  MESHCOARSENNGB,                                 /*+ Most neighbors matching  +*/
+  MESHCOARSENNBR                                  /*+ Number of matching types +*/
 } MeshCoarsenType;
 
 /*+ A table made of such elements is used during
@@ -76,6 +78,10 @@ typedef enum MeshCoarsenType_ {
 typedef struct MeshCoarsenMult_ {
   Gnum                      finevelmnum[2];
 } MeshCoarsenMult;
+
+/*+ The prototype of the mesh matching routine. +*/
+
+typedef void (* MeshCoarsenFunc) (const Mesh * const, MeshCoarsenMult * const, Gnum * const, Gnum * const, Gnum * const, Gnum * const, Context * const);
 
 /*+ A table made of such cells is used during
     coarsening to build the edge array of the
@@ -112,8 +118,8 @@ typedef struct MeshCoarsenNgHash_ {
 **  The function prototypes.
 */
 
-#ifdef MESH_COARSEN
-static void                 meshCoarsenMatchNg  (const Mesh * restrict const, MeshCoarsenMult * restrict const, Gnum * restrict const, Gnum * restrict const, Gnum * restrict const, Gnum * restrict const);
-#endif /* MESH_COARSEN */
+#ifdef SCOTCH_MESH_COARSEN
+static void                 meshCoarsenMatchNg  (const Mesh * restrict const, MeshCoarsenMult * restrict const, Gnum * restrict const, Gnum * restrict const, Gnum * restrict const, Gnum * restrict const, Context * restrict const);
+#endif /* SCOTCH_MESH_COARSEN */
 
-int                         meshCoarsen         (const Mesh * restrict const, Mesh * restrict const, Gnum * restrict * const, const Gnum, const double, const MeshCoarsenType);
+int                         meshCoarsen         (const Mesh * restrict const, Mesh * restrict const, Gnum * restrict * const, const Gnum, const double, const MeshCoarsenType, Context * restrict const);

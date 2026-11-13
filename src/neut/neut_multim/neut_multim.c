@@ -53,8 +53,9 @@ neut_multim_init (int dim, char *list, int cellqty, struct MULTIM *pMultim)
   char *deflist = ut_alloc_1d_char (100);
 
   if (dim == 3)
-    sprintf (deflist, "netg%sgmsh%snetg%snetg%snetg%sgmne", NEUT_SEP_DEP,
-             NEUT_SEP_NODEP, NEUT_SEP_DEP, NEUT_SEP_NODEP, NEUT_SEP_DEP);
+    sprintf (deflist, "dela%sgmsh%sdela%sgmne%sdela%snetg",
+             NEUT_SEP_DEP, NEUT_SEP_NODEP, NEUT_SEP_DEP, NEUT_SEP_NODEP,
+             NEUT_SEP_DEP);
   else if (dim == 2)
     sprintf (deflist, "mead%sdela%sfron", NEUT_SEP_NODEP, NEUT_SEP_NODEP);
   else

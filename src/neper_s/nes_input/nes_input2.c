@@ -15,20 +15,9 @@ nes_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   nes_input_options_set (pIn, argc, argv);
 
   /* input */
-  if (!(*pIn).fepxdir && !(*pIn).mergedir && !(*pIn).simdir)
+  if (!(*pIn).mergedir && !(*pIn).simdir)
     ut_print_message (2, 2,
 		      "Missing input data.\n");
-
-  /* fepxdir */
-  if ((*pIn).fepxdir)
-    if (ut_sys_isdir ((*pIn).fepxdir))
-      if (!strcmp ((*pIn).fepxdir, "."))
-        (*pIn).fepxdir = ut_sys_realpath ((*pIn).fepxdir);
-
-  // removing trailing '/'
-  if ((*pIn).fepxdir)
-    while ((*pIn).fepxdir[strlen ((*pIn).fepxdir) - 1] == '/')
-      (*pIn).fepxdir[strlen ((*pIn).fepxdir) - 1] = '\0';
 
  if ((*pIn).mergedir)
  {
@@ -41,14 +30,22 @@ nes_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     while ((*pIn).simdir[strlen ((*pIn).simdir) - 1] == '/')
       (*pIn).simdir[strlen ((*pIn).simdir) - 1] = '\0';
 
-  if (!(*pIn).simdir)
+  // merging: output directory <directory_1>-<directory_2>-... by default
+  // (without the .sim extensions), with the .sim extension added if missing
+  if ((*pIn).mergedir)
   {
-    if ((*pIn).fepxdir)
-      (*pIn).simdir = ut_string_addextension ((*pIn).fepxdir, ".sim");
-    else if ((*pIn).mergedir)
+    if (!(*pIn).simdir)
     {
       ut_string_string ((*pIn).mergedir, &(*pIn).simdir);
+      ut_string_fnrs ((*pIn).simdir, ".sim" NEUT_SEP_NODEP, NEUT_SEP_NODEP, INT_MAX);
       ut_string_fnrs ((*pIn).simdir, NEUT_SEP_NODEP, "-", INT_MAX);
+    }
+
+    if (ut_string_strcmp (strrchr ((*pIn).simdir, '.'), ".sim"))
+    {
+      char *tmp = ut_string_addextension ((*pIn).simdir, ".sim");
+      ut_string_string (tmp, &(*pIn).simdir);
+      ut_free_1d_char (&tmp);
     }
   }
 

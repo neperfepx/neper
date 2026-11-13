@@ -4,7 +4,7 @@
 #include "ol_q.h"
 
 double *
-ol_q_alloc ()
+ol_q_alloc (void)
 {
   double *q = ut_alloc_1d (4);
 
@@ -14,12 +14,9 @@ ol_q_alloc ()
 }
 
 void
-ol_q_free (double *q)
+ol_q_free (double **pq)
 {
-  if (!q)
-    return;
-  else
-    free (q);
+  ut_free_1d (pq);
 
   return;
 }
@@ -134,71 +131,63 @@ ol_q_gv (double *q, double *g)
   g[7] = gm[2][1];
   g[8] = gm[2][2];
 
-  ol_g_free (gm);
+  ol_g_free (&gm);
 
   return;
 }
 
 void
-ol_rtheta_q (double *r, double theta, double *q)
-{
-  ol_rtheta_q_rad (r, theta * OL_PI / 180, q);
-
-  return;
-}
-
-void
-ol_rtheta_q_rad (double *r, double theta, double *q)
+ol_rtheta_q (double *rtheta, double *q)
 {
   int i;
 
-  q[0] = cos (theta / 2);
+  q[0] = cos (rtheta[3] * OL_PI / 360);
 
   for (i = 0; i <= 2; i++)
-    q[i + 1] = r[i] * sin (theta / 2);
+    q[i + 1] = rtheta[i] * sin (rtheta[3] * OL_PI / 360);
 
   return;
 }
 
 void
-ol_q_rthetav (double *q, double *rtheta)
-{
-  double theta, *r = ol_r_alloc ();
-
-  ol_q_rtheta (q, r, &theta);
-  ut_array_1d_memcpy (r, 3, rtheta);
-  rtheta[3] = theta;
-
-  ol_r_free (r);
-
-  return;
-}
-
-void
-ol_q_rtheta (double *q, double *r, double *ptheta)
-{
-  ol_q_rtheta_rad (q, r, ptheta);
-  ol_theta_rad2deg (*ptheta, ptheta);
-
-  return;
-}
-
-void
-ol_q_rtheta_rad (double *q, double *r, double *ptheta)
+ol_rtheta_q_rad (double *rtheta, double *q)
 {
   int i;
 
-  (*ptheta) = 2 * ut_num_acos (q[0]);
+  q[0] = cos (rtheta[3] / 2);
 
-  if ((*ptheta) < OL_EPS_DEG)
+  for (i = 0; i <= 2; i++)
+    q[i + 1] = rtheta[i] * sin (rtheta[3] / 2);
+
+  return;
+}
+
+void
+ol_q_rtheta (double *q, double *rtheta)
+{
+  ol_q_rtheta_rad (q, rtheta);
+  ol_theta_rad2deg (rtheta[3], rtheta + 3);
+
+  return;
+}
+
+void
+ol_q_rtheta_rad (double *q, double *rtheta)
+{
+  int i;
+  double sgn = (q[0] >= 0) ? 1 : -1;   /* q and -q describe the same rotation */
+
+  rtheta[3] = 2 * ut_num_acos (sgn * q[0]);
+
+  if (rtheta[3] < OL_EPS_RAD)
   {
-    r[0] = 1;
-    r[1] = 0;
-    r[2] = 0;
+    rtheta[0] = 1;
+    rtheta[1] = 0;
+    rtheta[2] = 0;
   }
   else
     for (i = 0; i <= 2; i++)
-      r[i] = q[i + 1] / sin ((*ptheta) / 2);
+      rtheta[i] = sgn * q[i + 1] / sin (rtheta[3] / 2);
 
   return;
 }
@@ -206,21 +195,21 @@ ol_q_rtheta_rad (double *q, double *r, double *ptheta)
 void
 ol_q_r (double *q, double *r)
 {
-  double theta;
+  double rtheta[4];
 
-  ol_q_rtheta_rad (q, r, &theta);
+  ol_q_rtheta_rad (q, rtheta);
+  ol_r_memcpy (rtheta, r);
 }
 
 void
 ol_q_R (double *q, double *R)
 {
-  double *r = ol_r_alloc ();
-  double theta;
+  double *rtheta = ol_rtheta_alloc ();
 
-  ol_q_rtheta_rad (q, r, &theta);
-  ol_rtheta_R_rad (r, theta, R);
+  ol_q_rtheta_rad (q, rtheta);
+  ol_rtheta_R_rad (rtheta, R);
 
-  ol_r_free (r);
+  ol_rtheta_free (&rtheta);
 
   return;
 }
@@ -228,13 +217,12 @@ ol_q_R (double *q, double *R)
 void
 ol_R_q (double *R, double *q)
 {
-  double *r = ol_r_alloc ();
-  double theta;
+  double *rtheta = ol_rtheta_alloc ();
 
-  ol_R_rtheta_rad (R, r, &theta);
-  ol_rtheta_q_rad (r, theta, q);
+  ol_R_rtheta_rad (R, rtheta);
+  ol_rtheta_q_rad (rtheta, q);
 
-  ol_r_free (r);
+  ol_rtheta_free (&rtheta);
 
   return;
 }
@@ -242,7 +230,7 @@ ol_R_q (double *R, double *q)
 void
 ol_q_theta_rad (double *q, double *ptheta)
 {
-  (*ptheta) = 2 * ut_num_acos (q[0]);
+  (*ptheta) = 2 * ut_num_acos (fabs (q[0]));   /* q and -q describe the same rotation */
 
   return;
 }
@@ -266,7 +254,7 @@ ol_e_q (double *e, double *q)
 
   ol_e_q_rad (e2, q);
 
-  ol_e_free (e2);
+  ol_e_free (&e2);
 
   return;
 }
@@ -295,6 +283,8 @@ ol_q_e (double *q, double *e)
 void
 ol_q_e_rad (double *q, double *e)
 {
+  /* note: the tolerance on phi (in rad) is OL_EPS_DEG, as phi is obtained
+     from an arccosine, which is ill-conditioned near 0 and pi */
   e[1] = 2 * atan2 (sqrt (q[1] * q[1] + q[2] * q[2]),
                     sqrt (q[0] * q[0] + q[3] * q[3]));
 
@@ -313,6 +303,8 @@ ol_q_e_rad (double *q, double *e)
     e[0] = 2 * atan2 (q[2], q[1]);
     e[2] = 0;
   }
+
+  ol_e_e_rad (e, e);
 
   return;
 }

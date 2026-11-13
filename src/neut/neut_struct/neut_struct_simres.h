@@ -24,7 +24,7 @@ struct SIMRES
   // expression (if any)
   char *expr;
 
-  // real, vector or tensor
+  // int, real, vector, skewtensor, symtensor, tensor or ori ("" if undefined)
   char *type;
 
   // access file; for a subresult, of the form parenfile,col=...

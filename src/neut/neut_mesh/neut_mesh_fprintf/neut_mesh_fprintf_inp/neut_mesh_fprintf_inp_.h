@@ -12,6 +12,12 @@
 
 #include "neut_mesh_fprintf_inp.h"
 
+extern void neut_mesh_fprintf_inp_shift (char *dim, struct MESH Mesh0D,
+                                         struct MESH Mesh1D, struct MESH Mesh2D,
+                                         struct MESH Mesh3D, struct MESH MeshCo,
+                                         int *shift);
+extern void neut_mesh_fprintf_inp_mesh0d (FILE *file,
+					  struct MESH Mesh0D, int);
 extern void neut_mesh_fprintf_inp_mesh1d (FILE *file,
 					  struct MESH Mesh2D, int, int);
 extern void neut_mesh_fprintf_inp_mesh2d (FILE *file,
@@ -26,8 +32,9 @@ extern void neut_mesh_fprintf_inp_nsets (FILE *, struct NSET, struct NSET,
 extern void neut_mesh_fprintf_inp_fasets (FILE *, struct TESS Tess, struct MESH
 					  Mesh2D, struct MESH Mesh3D,
 					  struct NODES Nodes, char
-					  *surf);
+					  *surf, int shift);
 
 extern void neut_mesh_fprintf_inp_nset (FILE *, char *, int, int *, char*);
 
-extern void neut_mesh_fprintf_inp_boundary (FILE* file, struct BOUNDARY Bound);
+extern void neut_mesh_fprintf_inp_boundary (FILE* file, struct BOUNDARY Bound,
+                                            int shift);

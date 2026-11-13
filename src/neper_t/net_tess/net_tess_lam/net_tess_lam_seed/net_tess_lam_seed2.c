@@ -101,9 +101,9 @@ net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS MTess,
 
   (void) level;
 
-  net_tess_lam_seed_set_init (pSSet);
-
   neut_seedset_set_zero (pSSet);
+
+  net_tess_lam_seed_set_init (pSSet);
 
   ut_string_string ("standard", &(*pSSet).Type);
 

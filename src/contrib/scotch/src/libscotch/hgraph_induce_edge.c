@@ -125,7 +125,7 @@ Hgraph * restrict const       indgrafptr)         /* Pointer to induced halo gra
         indedgetax[indedhdnum] = indvertend;
         HGRAPHINDUCE2EDLOINIT (indedhdnum);
       }
-      else {                                      /* If heighbor is non-halo vertex              */
+      else {                                      /* If neighbor is non-halo vertex              */
         indedgetax[indedgenum] = indvertend;      /* Add neighbor at beginning of edge sub-array */
         HGRAPHINDUCE2EDLOINIT (indedgenum);
         HGRAPHINDUCE2ENOHINIT;

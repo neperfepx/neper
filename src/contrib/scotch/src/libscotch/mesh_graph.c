@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2009,2016,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2009,2016,2018,2020,2021,2023,2025 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -34,6 +34,7 @@
 /**   NAME       : mesh_graph.c                            **/
 /**                                                        **/
 /**   AUTHOR     : Francois PELLEGRINI                     **/
+/**                Marc FUENTES (v6.1)                     **/
 /**                                                        **/
 /**   FUNCTION   : This module contains the source mesh    **/
 /**                to graph conversion function.           **/
@@ -44,6 +45,10 @@
 /**                                 to   : 19 nov 2009     **/
 /**                # Version 6.0  : from : 15 aug 2016     **/
 /**                                 to   : 13 feb 2018     **/
+/**                # Version 6.1  : from : 20 nov 2020     **/
+/**                                 to   : 07 jun 2021     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 30 aug 2025     **/
 /**                                                        **/
 /**   NOTES      : # From a given mesh is created a graph, **/
 /**                  such that all vertices of the graph   **/
@@ -64,41 +69,40 @@
 **  The defines and includes.
 */
 
-#define MESH_GRAPH
-
 #include "module.h"
 #include "common.h"
 #include "graph.h"
 #include "mesh.h"
 #include "mesh_graph.h"
 
-/*******************************/
-/*                             */
-/* The graph building routine. */
-/*                             */
-/*******************************/
+/********************************/
+/*                              */
+/* The graph building routines. */
+/*                              */
+/********************************/
 
-/* This routine builds a graph from the
-** given mesh.
-** It returns:
-** - 0  : if the graph has been successfully built.
-** - 1  : on error.
+/* This routine builds an opaque nodal graph structure
+** from an opaque mesh structure. The nodal graph
+** adjacency is defined such that two nodes are adjacent
+** if both share at least one element.
+** - 0   : if building has succeeded.
+** - !0  : on error.
 */
 
 int
-meshGraph (
+meshGraphNodal (
 const Mesh * restrict const   meshptr,            /*+ Original mesh  +*/
 Graph * restrict const        grafptr)            /*+ Graph to build +*/
 {
-  Gnum                        hashnbr;            /* Number of vertices in hash table       */
-  Gnum                        hashsiz;            /* Size of hash table                     */
-  Gnum                        hashmsk;            /* Mask for access to hash table          */
-  MeshGraphHash * restrict    hashtab;            /* Table of edges to other node vertices  */
-  Gnum                        edgemax;            /* Upper bound of number of edges in mesh */
-  Gnum                        edgennd;            /* Based upper bound on number of edges   */
-  Gnum                        edgenum;            /* Number of current graph edge           */
-  Gnum                        vertnum;            /* Number of current graph vertex         */
-  Gnum                        degrmax;
+  Gnum                      hashnbr;              /* Number of vertices in hash table       */
+  Gnum                      hashsiz;              /* Size of hash table                     */
+  Gnum                      hashmsk;              /* Mask for access to hash table          */
+  MeshGraphHash * restrict  hashtab;              /* Table of edges to other node vertices  */
+  Gnum                      edgemax;              /* Upper bound of number of edges in mesh */
+  Gnum                      edgennd;              /* Based upper bound on number of edges   */
+  Gnum                      edgenum;              /* Number of current graph edge           */
+  Gnum                      vertnum;              /* Number of current graph vertex         */
+  Gnum                      degrmax;
 
   grafptr->flagval = GRAPHFREETABS | GRAPHVERTGROUP | GRAPHEDGEGROUP;
   grafptr->baseval = meshptr->baseval;
@@ -111,7 +115,7 @@ Graph * restrict const        grafptr)            /*+ Graph to build +*/
 
   if (((grafptr->verttax = memAlloc ((meshptr->vnodnbr + 1) * sizeof (Gnum)))          == NULL) ||
       ((hashtab          = memAlloc (hashsiz                * sizeof (MeshGraphHash))) == NULL)) {
-    errorPrint ("meshGraph: out of memory (1)");
+    errorPrint ("meshGraphNodal: out of memory (1)");
     if (grafptr->verttax != NULL)
       memFree (grafptr->verttax);
     return (1);
@@ -124,6 +128,8 @@ Graph * restrict const        grafptr)            /*+ Graph to build +*/
                      : NULL;
 
   grafptr->velosum = meshptr->vnlosum;
+  grafptr->vnumtax =
+  grafptr->vlbltax = NULL;
 
   edgemax = 2 * meshptr->edgenbr;                 /* Compute lower bound on number of edges in graph */
 #ifdef SCOTCH_DEBUG_MESH2
@@ -131,19 +137,20 @@ Graph * restrict const        grafptr)            /*+ Graph to build +*/
 #endif /* SCOTCH_DEBUG_MESH2 */
 
   if ((grafptr->edgetax = memAlloc (edgemax * sizeof (Gnum))) == NULL) {
-    errorPrint ("meshGraph: out of memory (2)");
+    errorPrint ("meshGraphNodal: out of memory (2)");
     graphFree  (grafptr);
-    return     (1);
+    return (1);
   }
   grafptr->edgetax -= grafptr->baseval;
+  grafptr->edlotax  = NULL;
 
   memSet (hashtab, ~0, hashsiz * sizeof (MeshGraphHash)); /* Initialize hash table */
 
   for (vertnum = edgenum = grafptr->baseval, edgennd = edgemax + grafptr->baseval, degrmax = 0; /* Build graph edges */
        vertnum < grafptr->vertnnd; vertnum ++) {
-    Gnum                        vnodnum;
-    Gnum                        hnodnum;
-    Gnum                        enodnum;
+    Gnum                vnodnum;
+    Gnum                hnodnum;
+    Gnum                enodnum;
 
     grafptr->verttax[vertnum] = edgenum;
 
@@ -153,31 +160,31 @@ Graph * restrict const        grafptr)            /*+ Graph to build +*/
     hashtab[hnodnum].vertend = vnodnum;
 
     for (enodnum = meshptr->verttax[vnodnum]; enodnum < meshptr->vendtax[vnodnum]; enodnum ++) {
-      Gnum                        velmnum;
-      Gnum                        eelmnum;
+      Gnum                velmnum;
+      Gnum                eelmnum;
 
       velmnum = meshptr->edgetax[enodnum];
 
       for (eelmnum = meshptr->verttax[velmnum]; eelmnum < meshptr->vendtax[velmnum]; eelmnum ++) {
-        Gnum                        vnodend;
-        Gnum                        hnodend;
+        Gnum                vnodend;
+        Gnum                hnodend;
 
         vnodend = meshptr->edgetax[eelmnum];
 
         for (hnodend = (vnodend * MESHGRAPHHASHPRIME) & hashmsk; ; hnodend = (hnodend + 1) & hashmsk) {
           if (hashtab[hnodend].vertnum != vnodnum) { /* If edge not yet created */
             if (edgenum == edgennd) {             /* If edge array already full */
-              Gnum                        edgemax;
-              Gnum * restrict             edgetmp;
+              Gnum                edgemax;
+              Gnum * restrict     edgetmp;
 
               edgemax = edgennd - grafptr->baseval; /* Increase size by 25 % */
               edgemax = edgemax + (edgemax >> 2);
 
               if ((edgetmp = memRealloc (grafptr->edgetax + grafptr->baseval, edgemax * sizeof (Gnum))) == NULL) {
-                errorPrint ("meshGraph: out of memory (3)");
+                errorPrint ("meshGraphNodal: out of memory (3)");
                 graphFree  (grafptr);
                 memFree    (hashtab);
-                return     (1);
+                return (1);
               }
 
               grafptr->edgetax = edgetmp - grafptr->baseval;
@@ -208,8 +215,159 @@ Graph * restrict const        grafptr)            /*+ Graph to build +*/
 
 #ifdef SCOTCH_DEBUG_MESH2
   if (graphCheck (grafptr) != 0) {
-    errorPrint ("meshGraph: internal error");
-    return     (1);
+    errorPrint ("meshGraphNodal: internal error");
+    return (1);
+  }
+#endif /* SCOTCH_DEBUG_MESH2 */
+
+  return (0);
+}
+
+/* This routine builds a dual graph (that is, an
+** element graph) from the given mesh. An edge is
+** built between two element vertices if these two
+** elements e1 and e2 have at least min (noconbr,
+** degr (e1) - 1, degr (e2) - 1) nodes in common.
+** It returns:
+** - 0  : if the graph has been successfully built.
+** - 1  : on error.
+*/
+
+int
+meshGraphDual (
+const Mesh * restrict const meshptr,              /*+ Original mesh                                           +*/
+Graph * restrict const      grafptr,              /*+ Graph to build                                          +*/
+const Gnum                  noconbr)              /*+ number of common points to define adjacency of elements +*/
+{
+  Gnum                          hashnbr;          /* Number of vertices in hash table       */
+  Gnum                          hashsiz;          /* Size of hash table                     */
+  Gnum                          hashmsk;          /* Mask for access to hash table          */
+  MeshGraphDualHash * restrict  hashtab;          /* Table of edges to other node vertices  */
+  Gnum                          edgemax;          /* Upper bound of number of edges in mesh */
+  Gnum                          edgennd;          /* Based upper bound on number of edges   */
+  Gnum                          edgenum;          /* Number of current graph edge           */
+  Gnum                          vertnum;          /* Number of current graph vertex         */
+  Gnum                          degrmax;
+
+  grafptr->flagval = GRAPHFREETABS | GRAPHVERTGROUP | GRAPHEDGEGROUP;
+  grafptr->baseval = meshptr->baseval;
+  grafptr->vertnbr = meshptr->velmnbr;
+  grafptr->vertnnd = meshptr->velmnbr + meshptr->baseval;
+
+  for (hashsiz = 32, hashnbr = meshptr->degrmax * meshptr->degrmax * 2; /* Compute size of hash table */
+       hashsiz < hashnbr; hashsiz <<= 1) ;
+  hashmsk = hashsiz - 1;
+
+  if (((grafptr->verttax = memAlloc ((meshptr->velmnbr + 1) * sizeof (Gnum)))              == NULL) ||
+      ((hashtab          = memAlloc (hashsiz                * sizeof (MeshGraphDualHash))) == NULL)) {
+    errorPrint ("meshGraphDual: out of memory (1)");
+    if (grafptr->verttax != NULL)
+      memFree (grafptr->verttax);
+    return (1);
+  }
+  grafptr->verttax -= grafptr->baseval;
+  grafptr->vendtax  = grafptr->verttax + 1;
+  grafptr->velotax  = NULL;                       /* TODO: not implemented */
+  grafptr->velosum  = meshptr->velosum;
+  grafptr->vnumtax  =
+  grafptr->vlbltax  = NULL;
+
+  edgemax = 2 * meshptr->edgenbr;                 /* Compute lower bound on number of edges in graph */
+
+  if ((grafptr->edgetax = memAlloc (edgemax * sizeof (Gnum))) == NULL) {
+    errorPrint ("meshGraphDual: out of memory (2)");
+    graphFree  (grafptr);
+    return (1);
+  }
+  grafptr->edgetax -= grafptr->baseval;
+  grafptr->edlotax  = NULL;
+
+  memSet (hashtab, ~0, hashsiz * sizeof (MeshGraphDualHash)); /* Initialize hash table */
+
+  for (vertnum = edgenum = grafptr->baseval, edgennd = edgemax + grafptr->baseval, degrmax = 0; /* Build graph edges */
+       vertnum < grafptr->vertnnd; vertnum ++) {
+    Gnum                veconbr;                  /* Partial minimum of noconbr and element vertex degree */
+    Gnum                velmnum;
+    Gnum                helmnum;
+    Gnum                eelmnum;
+
+    grafptr->verttax[vertnum] = edgenum;
+
+    velmnum = vertnum + (meshptr->velmbas - meshptr->baseval);
+    helmnum = (velmnum * MESHGRAPHHASHPRIME) & hashmsk; /* Prevent adding loop edge */
+    hashtab[helmnum].vertnum = velmnum;
+    hashtab[helmnum].vertend = velmnum;
+    hashtab[helmnum].nghbnbr = 0;                 /* Loop edge never created as boundary already crossed */
+    veconbr = MIN (noconbr, (meshptr->vendtax[velmnum] - meshptr->verttax[velmnum] - 1));
+
+    for (eelmnum = meshptr->verttax[velmnum]; eelmnum < meshptr->vendtax[velmnum]; eelmnum ++) {
+      Gnum                vnodnum;
+      Gnum                enodnum;
+
+      vnodnum = meshptr->edgetax[eelmnum];
+
+      for (enodnum = meshptr->verttax[vnodnum]; enodnum < meshptr->vendtax[vnodnum]; enodnum ++) {
+        Gnum                velmend;
+        Gnum                helmend;
+
+        velmend = meshptr->edgetax[enodnum];
+
+        for (helmend = (velmend * MESHGRAPHHASHPRIME) & hashmsk; ; helmend = (helmend + 1) & hashmsk) {
+          Gnum                nghbnbr;
+
+          if (hashtab[helmend].vertnum != velmnum) { /* If edge not yet created */
+            hashtab[helmend].vertnum = velmnum;   /* Record new edge            */
+            hashtab[helmend].vertend = velmend;
+            hashtab[helmend].nghbnbr =            /* One instance recorded to date */
+            nghbnbr = MIN (veconbr, (meshptr->vendtax[velmend] - meshptr->verttax[velmend] - 1)) - 1;
+            goto test;                            /* Check if one instance is enough to create edge */
+          }
+          if (hashtab[helmend].vertend == velmend) { /* If hash slot found                        */
+            nghbnbr = hashtab[helmend].nghbnbr;   /* Get number of times neighbor element met yet */
+            if (nghbnbr > 0) {                    /* If edge not already created                  */
+              hashtab[helmend].nghbnbr = -- nghbnbr; /* One more instance of neighbor element met */
+test:         if (nghbnbr <= 0) {                 /* If new instance allows us to reach threshold */
+                if (edgenum == edgennd) {         /* If edge array already full                   */
+                  Gnum                edgemax;
+                  Gnum * restrict     edgetmp;
+
+                  edgemax = edgennd - grafptr->baseval; /* Increase size by 25 % */
+                  edgemax = edgemax + (edgemax >> 2);
+
+                  if ((edgetmp = memRealloc (grafptr->edgetax + grafptr->baseval, edgemax * sizeof (Gnum))) == NULL) {
+                    errorPrint ("meshGraphDual: out of memory (3)");
+                    graphFree  (grafptr);
+                    memFree    (hashtab);
+                    return (1);
+                  }
+
+                  grafptr->edgetax = edgetmp - grafptr->baseval;
+                  edgennd          = edgemax + grafptr->baseval;
+                }
+
+                grafptr->edgetax[edgenum ++] = velmend - (meshptr->velmbas - grafptr->baseval); /* Create edge */
+              }
+            }
+            break;
+          }
+        }
+      }
+    }
+    if ((edgenum - grafptr->verttax[vertnum]) > degrmax) /* Compute maximum degree */
+      degrmax = (edgenum - grafptr->verttax[vertnum]);
+  }
+  grafptr->verttax[vertnum] = edgenum;            /* Set end of vertex array */
+
+  grafptr->edlosum =
+  grafptr->edgenbr = edgenum - grafptr->baseval;
+  grafptr->degrmax = degrmax;
+
+  memFree (hashtab);
+
+#ifdef SCOTCH_DEBUG_MESH2
+  if (graphCheck (grafptr) != 0) {
+    errorPrint ("meshGraphDual: internal error");
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_MESH2 */
 

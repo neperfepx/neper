@@ -2,5 +2,5 @@
 # Copyright (C) 2003-2026, Romain Quey, CNRS.
 # See the COPYING file in the top-level directory.
 
-set (test_command -T -n 100 -transform "cut(cube(-0.3,0.7,-0.3,0.7,0.3,0.7,0.001))" -o test)
+set (test_command -T -n 100 -transform "cut(cube(-0.3,0.7,-0.3,0.7,0.3,0.7,0.1))" -o test)
 include(../../test.cmake)

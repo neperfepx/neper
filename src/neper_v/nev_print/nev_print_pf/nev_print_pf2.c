@@ -177,13 +177,13 @@ nev_print_pf_background (struct PF Pf, FILE *file, struct PRINT Print)
     {
       if (!strcmp (Pf.shape, "full"))
       {
-        fprintf (file, "draw (shift(O)*scale(scale)*(-X--X), %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
-        fprintf (file, "draw (shift(O)*scale(scale)*(-Y--Y), %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
+        fprintf (file, "draw (shift(O)*scale(scale)*(-X--X), %s);\n", "black");
+        fprintf (file, "draw (shift(O)*scale(scale)*(-Y--Y), %s);\n", "black");
       }
       else if (!strcmp (Pf.shape, "quarter"))
       {
-        fprintf (file, "draw (shift(O)*scale(scale)*(O--X), %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
-        fprintf (file, "draw (shift(O)*scale(scale)*(O--(-Y)), %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
+        fprintf (file, "draw (shift(O)*scale(scale)*(O--X), %s);\n", "black");
+        fprintf (file, "draw (shift(O)*scale(scale)*(O--(-Y)), %s);\n", "black");
       }
     }
   }
@@ -192,14 +192,14 @@ nev_print_pf_background (struct PF Pf, FILE *file, struct PRINT Print)
 }
 
 void
-nev_print_pf_border (FILE *file, struct PRINT Print, struct PF *pPf)
+nev_print_pf_border (FILE *file, struct PF *pPf)
 {
   if (!strcmp ((*pPf).space, "pf"))
   {
     if (!strcmp ((*pPf).shape, "full"))
-      fprintf (file, "draw (shift(O)*scale(scale)*unitcircle, %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
+      fprintf (file, "draw (shift(O)*scale(scale)*unitcircle, %s);\n", "black");
     else if (!strcmp ((*pPf).shape, "quarter"))
-      fprintf (file, "draw (shift(O)*scale(scale)*arc(O,-Y,X), %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
+      fprintf (file, "draw (shift(O)*scale(scale)*arc(O,-Y,X), %s);\n", "black");
     else
       abort ();
   }
@@ -217,7 +217,7 @@ nev_print_pf_border (FILE *file, struct PRINT Print, struct PF *pPf)
 
     fprintf (file, "draw (shift(O)*scale(scale/%f)*border,%s);\n",
              (!strcmp ((*pPf).space, "ipf") && !strcmp ((*pPf).crysym, "cubic")) ? (*pPf).ipfpts[1][0] : 1.,
-             !strcmp (Print.colormode, "bright") ? "black" : "white");
+             "black");
   }
 
   else
@@ -469,7 +469,7 @@ nev_print_pf_pre_clustering (struct PF Pf, int cellqty, int *pclustering)
 }
 
 void
-nev_print_pf_pole_proj (struct PRINT Print, struct PF Pf, FILE *file, char *pole_string)
+nev_print_pf_pole_proj (struct PF Pf, FILE *file, char *pole_string)
 {
   double xmin = 0, y, xshift;
 
@@ -491,11 +491,11 @@ nev_print_pf_pole_proj (struct PRINT Print, struct PF Pf, FILE *file, char *pole
       abort ();
 
     fprintf (file, "label(\"%s\", scale(scale)*(%.3f, %.3f), NE, %s);\n", pole_string, xmin, y,
-             !strcmp (Print.colormode, "bright") ? "black" : "white");
+             "black");
 
     fprintf (file, "label(\"%s\", scale(scale)*(%.3f, %.3f), SE, %s+fontsize(8));\n",
              Pf.pfprojlabel, xmin + xshift, y,
-             !strcmp (Print.colormode, "bright") ? "black" : "white");
+             "black");
   }
 
   else if (!strcmp (Pf.space, "ipf"))
@@ -520,7 +520,7 @@ nev_print_pf_pole_proj (struct PRINT Print, struct PF Pf, FILE *file, char *pole
 }
 
 void
-nev_print_pf_csys (struct PRINT Print, struct PF Pf, FILE *file, struct DATA CsysData)
+nev_print_pf_csys (struct PF Pf, FILE *file, struct DATA CsysData)
 {
   int id;
   double* v = ol_r_alloc ();
@@ -547,12 +547,12 @@ nev_print_pf_csys (struct PRINT Print, struct PF Pf, FILE *file, struct DATA Csy
       fprintf (file, "label(\"%s\", scale(scale)*(%d,0), %s, %s);\n",
                CsysData.Label[id],
                ut_num_sgn (Pf.pfdir[0][id]), Pf.pfdir[0][id] > 0 ? "E" : "W",
-               !strcmp (Print.colormode, "bright") ? "black" : "white");
+               "black");
       id = ut_array_1d_absmax_index (Pf.pfdir[1], 3);
       fprintf (file, "label(\"%s\", scale(scale)*(0,%d), %s, %s);\n",
                CsysData.Label[id],
                ut_num_sgn (Pf.pfdir[1][id]), Pf.pfdir[1][id] > 0 ? "N" : "S",
-               !strcmp (Print.colormode, "bright") ? "black" : "white");
+               "black");
       // fprintf (file, "label(\"$%s$\", scale(scale)*( 0,0), NE);\n", " ");
 
     }
@@ -591,8 +591,9 @@ nev_print_pf_csys (struct PRINT Print, struct PF Pf, FILE *file, struct DATA Csy
   else
     abort ();
 
-  ol_r_free (v);
-  ol_p_free (p111);
+  ol_r_free (&v);
+  ol_p_free (&p110);
+  ol_p_free (&p111);
 
   return;
 }

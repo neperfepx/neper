@@ -8,7 +8,7 @@ int
 neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
                       struct MESH *pMesh1D, struct MESH *pMesh2D,
                       struct MESH *pMesh3D, struct MESH *pMeshCo,
-                      int *ptopology)
+                      struct MESH *pMeshFasets, struct NSET *pNSet, int *ptopology)
 {
   int status;
   int *node_nbs = NULL;
@@ -57,10 +57,11 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
       neut_mesh_fscanf_msh_groups (file, pMesh);
 
     else if (ut_file_nextstring_test (file, "$NSets"))
-      neut_mesh_fscanf_msh_nsets (file);
+      neut_mesh_fscanf_msh_nsets (file, node_nbs, pNSet);
 
     else if (ut_file_nextstring_test (file, "$Fasets"))
-      neut_mesh_fscanf_msh_fasets (file, pMesh);
+      neut_mesh_fscanf_msh_fasets (file, version, node_nbs, pMesh, pMesh3D,
+                                   pMeshFasets);
 
     else if (ut_file_nextstring_test (file, "$NodePartitions"))
       neut_mesh_fscanf_msh_nodeparts (file, pNodes);
@@ -72,6 +73,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
       ut_print_message (2, 2, "Failed to read msh file\n");
   }
 
+  ut_free_1d_int (&node_nbs);
   ut_free_1d_char (&mode);
   ut_free_1d_char (&version);
 
@@ -82,7 +84,8 @@ void
 neut_mesh_fnscanf_msh (char *name, struct NODES *pNodes, struct MESH *pMesh0D,
                        struct MESH *pMesh1D, struct MESH *pMesh2D,
                        struct MESH *pMesh3D, struct MESH *pMeshCo,
-                       int *ptopology, char *mode)
+                       struct MESH *pMeshFasets, struct NSET *pNSet, int *ptopology,
+                       char *mode)
 {
   FILE *file = NULL;
   char **list = NULL;
@@ -93,7 +96,7 @@ neut_mesh_fnscanf_msh (char *name, struct NODES *pNodes, struct MESH *pMesh0D,
   file = ut_file_open (list[0], mode ? mode : "r");
 
   neut_mesh_fscanf_msh (file, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D,
-                        pMeshCo, ptopology);
+                        pMeshCo, pMeshFasets, pNSet, ptopology);
 
   ut_file_close (file, list[0], mode ? mode : "r");
 

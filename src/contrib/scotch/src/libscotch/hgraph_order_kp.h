@@ -1,4 +1,4 @@
-/* Copyright 2012,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2012,2018,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,8 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 17 oct 2012     **/
 /**                                 to   : 07 jun 2018     **/
+/**                # Version 7.0  : from : 11 sep 2024     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -59,4 +61,4 @@ typedef struct HgraphOrderKpParam_ {
 **  The function prototypes.
 */
 
-int                         hgraphOrderKp       (const Hgraph * const, Order * const, const Gnum, OrderCblk * const, const HgraphOrderKpParam * const);
+int                         hgraphOrderKp       (Hgraph * const, Order * const, const Gnum, OrderCblk * const, const HgraphOrderKpParam * const);

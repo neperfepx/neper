@@ -13,16 +13,15 @@
 #include<signal.h>
 #include<string.h>
 #include<float.h>
-#include<spawn.h>
-#include<fcntl.h>
 #include"ut.h"
 
-extern char **environ;
-
-struct timeval ctrlc_t;
+static struct timeval ctrlc_t;
+static struct sigaction ctrlc_oldact;
 
 // Thanks to T. Auger for his contribution
-void
+// On a first Ctrl+C, the subprocesses (which receive it too) end; on a
+// second Ctrl+C within 2 seconds, execution ends.
+static void
 sighandler (int signal)
 {
   if (signal == SIGCHLD)
@@ -45,15 +44,18 @@ sighandler (int signal)
 
     if (t > 2)
     {
-      printf
-        ("\nSubprocess killed. Press Ctrl-C again in the next 2 seconds to quit.\n");
+      // write, as printf is not async-signal-safe
+      const char msg[] =
+        "\nSubprocess killed. Press Ctrl-C again in the next 2 seconds to quit.\n";
+      if (write (STDOUT_FILENO, msg, sizeof (msg) - 1) < 0)
+      {
+      }
       gettimeofday (&ctrlc_t, NULL);
-      kill (1, 9);
     }
     else
     {
       gettimeofday (&ctrlc_t, NULL);
-      kill (0, 9);
+      kill (0, SIGKILL);
     }
   }
 
@@ -69,7 +71,7 @@ ut_sys_ctrlc_begin (struct timeval *pctrlc_t)
 
   memset (&act, 0, sizeof (struct sigaction));
   act.sa_handler = sighandler;
-  sigaction (SIGINT, &act, 0);
+  sigaction (SIGINT, &act, &ctrlc_oldact);
 
   return;
 }
@@ -79,101 +81,35 @@ ut_sys_ctrlc_end (struct timeval *pctrlc_t)
 {
   (*pctrlc_t) = ctrlc_t;
 
+  sigaction (SIGINT, &ctrlc_oldact, 0);
+
   return;
-}
-
-int
-ut_sys_runwtime (char *exec, char *command, double tmax,
-                 struct timeval *pctrlc_t)
-{
-  int status;
-  pid_t pid, res;
-  struct sigaction act;
-  struct timeval beg_t, now_t;
-  char **list = NULL;
-  int qty;
-  posix_spawn_file_actions_t actions;
-
-  ctrlc_t = (*pctrlc_t);
-
-  memset (&act, 0, sizeof (struct sigaction));
-  act.sa_handler = sighandler;
-
-  // only SIGINT is caught: the function can be called from several
-  // (OpenMP) threads at once, so the process-wide SIGCHLD / SIGALRM
-  // (setitimer) cannot be used to wait for a given child
-  sigaction (SIGINT, &act, 0);
-
-  ut_list_break (command, " ", &list, &qty);
-  list = ut_realloc_1d_pchar_null (list, qty + 1, 1);
-  // the standard output and error are discarded (the command is not run
-  // through a shell, so it cannot include redirections)
-  posix_spawn_file_actions_init (&actions);
-  posix_spawn_file_actions_addopen (&actions, STDOUT_FILENO, "/dev/null",
-                                    O_WRONLY, 0);
-  posix_spawn_file_actions_addopen (&actions, STDERR_FILENO, "/dev/null",
-                                    O_WRONLY, 0);
-  // posix_spawnp is used instead of fork + exec, as fork copies the page
-  // tables of the (possibly large) calling process, which is slow.
-  status = posix_spawnp (&pid, exec, &actions, NULL, list, environ);
-  posix_spawn_file_actions_destroy (&actions);
-  if (status != 0)
-    /* The spawn failed. Report failure. */
-    status = -1;
-  else
-  {
-    // polling the child, and killing it once tmax is reached (tmax <= 0
-    // means no time limit)
-    gettimeofday (&beg_t, NULL);
-    while (1)
-    {
-      res = waitpid (pid, &status, WNOHANG);
-
-      if (res == pid)
-        break;
-
-      if (res == -1 && errno != EINTR)
-      {
-        status = -1;
-        break;
-      }
-
-      gettimeofday (&now_t, NULL);
-      if (tmax > 0 && ut_time_subtract (&beg_t, &now_t) > tmax)
-      {
-        kill (pid, 9);
-        waitpid (pid, NULL, 0);
-        status = -1;
-        break;
-      }
-
-      usleep (1000);
-    }
-  }
-
-  (*pctrlc_t) = ctrlc_t;
-
-  ut_free_2d_char (&list, qty + 1);
-
-  return status;
 }
 
 void
 ut_sys_mkdir (const char *dir, ...)
 {
   int status;
-  char tmp[1000];
+  char *tmp = NULL;
   char *p = NULL;
   size_t len;
 
-  va_list args;
+  va_list args, args2;
 
   va_start (args, dir);
-  vsnprintf (tmp, sizeof (tmp), dir, args);
+  va_copy (args2, args);
+  tmp = ut_alloc_1d_char (vsnprintf (NULL, 0, dir, args) + 1);
   va_end (args);
+  vsprintf (tmp, dir, args2);
+  va_end (args2);
 
   len = strlen (tmp);
-  if (tmp[len - 1] == '/')
+  if (len == 0)
+  {
+    ut_free_1d_char (&tmp);
+    return;
+  }
+  if (len > 1 && tmp[len - 1] == '/')
     tmp[len - 1] = 0;
   for (p = tmp + 1; *p; p++)
     if (*p == '/')
@@ -186,10 +122,9 @@ ut_sys_mkdir (const char *dir, ...)
   status = mkdir (tmp, S_IRWXU | S_IRGRP | S_IXGRP);
 
   if (status && errno != EEXIST)
-  {
-    ut_print_message (2, 2, "%s cannot be created.\n", dir);
-    abort ();
-  }
+    ut_print_message (2, 2, "%s cannot be created.\n", tmp);
+
+  ut_free_1d_char (&tmp);
 
   return;
 }
@@ -197,16 +132,23 @@ ut_sys_mkdir (const char *dir, ...)
 int
 ut_sys_isdir (const char *path, ...)
 {
+  int status;
   struct stat sb;
-
-  char tmp[1000];
-  va_list args;
+  char *tmp = NULL;
+  va_list args, args2;
 
   va_start (args, path);
-  vsnprintf (tmp, sizeof (tmp), path, args);
+  va_copy (args2, args);
+  tmp = ut_alloc_1d_char (vsnprintf (NULL, 0, path, args) + 1);
   va_end (args);
+  vsprintf (tmp, path, args2);
+  va_end (args2);
 
-  return (stat (tmp, &sb) == 0 && S_ISDIR (sb.st_mode));
+  status = (stat (tmp, &sb) == 0 && S_ISDIR (sb.st_mode));
+
+  ut_free_1d_char (&tmp);
+
+  return status;
 }
 
 char *
@@ -232,9 +174,15 @@ ut_sys_currentbin_path (char **ppath)
 
   (*ppath) = ut_alloc_1d_char (bufsize);
 
-  r = readlink ("/proc/self/exe", *ppath, bufsize);
+  // readlink does not null-terminate, and truncates silently
+  r = readlink ("/proc/self/exe", *ppath, bufsize - 1);
 
-  return (r == -1) ? -1 : 0;
+  if (r == -1 || r == bufsize - 1)
+    return -1;
+
+  (*ppath)[r] = '\0';
+
+  return 0;
 }
 
 // 0 is little, 1 is big
@@ -248,4 +196,36 @@ ut_sys_endian (void)
     return 0;
   else
     return 1;
+}
+
+void
+ut_sys_shellquote (const char *string, char **pquoted)
+{
+  int i, pos = 0, tilde = !strncmp (string, "~/", 2);
+  char *quoted = ut_alloc_1d_char (4 * strlen (string) + 5);
+
+  if (tilde)
+  {
+    strcpy (quoted, "~/");
+    pos = 2;
+  }
+
+  quoted[pos++] = '\'';
+
+  for (i = tilde ? 2 : 0; string[i]; i++)
+    if (string[i] == '\'')
+    {
+      strcpy (quoted + pos, "'\\''");
+      pos += 4;
+    }
+    else
+      quoted[pos++] = string[i];
+
+  quoted[pos++] = '\'';
+  quoted[pos] = '\0';
+
+  ut_free_1d_char (pquoted);
+  (*pquoted) = quoted;
+
+  return;
 }

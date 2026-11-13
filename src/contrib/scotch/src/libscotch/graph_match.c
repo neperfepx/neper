@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2009,2011,2012,2015,2018,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2009,2011,2012,2015,2018-2021,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,8 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 05 oct 2012     **/
 /**                                 to   : 30 aug 2020     **/
+/**                # Version 7.0  : from : 28 jul 2018     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -48,10 +50,11 @@
 **  The defines and includes.
 */
 
-#define GRAPH_MATCH
+#define SCOTCH_GRAPH_MATCH
 
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "arch.h"
 #include "graph.h"
 #include "graph_coarsen.h"
@@ -61,25 +64,19 @@
 **  The static variables.
 */
 
-static void              (* graphmatchfuncseqtab[]) (GraphCoarsenThread *) = { /* Array of sequential matching routines */
-                              GRAPHMATCHFUNCBLOCK (Seq)
+/* Array of matching routines */
+
+static void              (* graphmatchfunctab[]) (GraphCoarsenData * restrict const, GraphCoarsenThread * restrict const) = {
+                              GRAPHMATCHFUNCBLOCK (Seq),
+#ifndef GRAPHMATCHNOTHREAD
+                              GRAPHMATCHFUNCBLOCK (Thr)
+#else /* GRAPHMATCHNOTHREAD */
+                              NULL,               /* Raise error if functions are called */
+                              NULL,
+                              NULL,
+                              NULL
+#endif /* GRAPHMATCHNOTHREAD */
                             };
-
-#ifdef GRAPHMATCHTHREAD
-
-static void              (* graphmatchfuncthrbegtab[]) (GraphCoarsenThread *) = { /* Array of threaded matching start routines */
-                              GRAPHMATCHFUNCBLOCK (ThrBeg)
-                            };
-
-static void              (* graphmatchfuncthrmidtab[]) (GraphCoarsenThread *) = { /* Array of threaded matching intermediate routines */
-                              GRAPHMATCHFUNCBLOCK (ThrMid)
-                            };
-
-static void              (* graphmatchfuncthrendtab[]) (GraphCoarsenThread *) = { /* Array of threaded matching end routines */
-                              GRAPHMATCHFUNCBLOCK (ThrEnd)
-                            };
-
-#endif /* GRAPHMATCHTHREAD */
 
 /***************************/
 /*                         */
@@ -88,244 +85,103 @@ static void              (* graphmatchfuncthrendtab[]) (GraphCoarsenThread *) = 
 /*                         */
 /***************************/
 
-#define GRAPHMATCHSCANP1INPERT                    /* Perturbation scan for first pass  */
-#define GRAPHMATCHSCANP2INPERT                    /* Perturbation scan for second pass */
+#define GRAPHMATCHSCANSEQ
 
-#define GRAPHMATCHSCANNAME          graphMatchSeqNfNvNe
+#define GRAPHMATCHSCANNAME          graphMatchSeqNfNe
 #include "graph_match_scan.c"
 #undef GRAPHMATCHSCANNAME
 
 #define GRAPHMATCHSCANEDLOTAB
-#define GRAPHMATCHSCANNAME          graphMatchSeqNfNvEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANVELOTAB
-#define GRAPHMATCHSCANNAME          graphMatchSeqNfVlEl
+#define GRAPHMATCHSCANNAME          graphMatchSeqNfEl
 #include "graph_match_scan.c"
 #undef GRAPHMATCHSCANNAME
 #undef GRAPHMATCHSCANEDLOTAB
-
-#define GRAPHMATCHSCANNAME          graphMatchSeqNfVlNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANVELOTAB
 
 #define GRAPHMATCHSCANPFIXTAB
-#define GRAPHMATCHSCANNAME          graphMatchSeqFxNvNe
+#define GRAPHMATCHSCANNAME          graphMatchSeqFxNe
 #include "graph_match_scan.c"
 #undef GRAPHMATCHSCANNAME
 
 #define GRAPHMATCHSCANEDLOTAB
-#define GRAPHMATCHSCANNAME          graphMatchSeqFxNvEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANVELOTAB
-#define GRAPHMATCHSCANNAME          graphMatchSeqFxVlEl
+#define GRAPHMATCHSCANNAME          graphMatchSeqFxEl
 #include "graph_match_scan.c"
 #undef GRAPHMATCHSCANNAME
 #undef GRAPHMATCHSCANEDLOTAB
-
-#define GRAPHMATCHSCANNAME          graphMatchSeqFxVlNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANVELOTAB
 #undef GRAPHMATCHSCANPFIXTAB
 
-#undef GRAPHMATCHSCANP1INPERT
-#undef GRAPHMATCHSCANP2INPERT
+#undef GRAPHMATCHSCANSEQ
 
 /*************************/
 /*                       */
 /* The threaded matching */
-/* start subroutines.    */
+/* subroutines.          */
 /*                       */
 /*************************/
 
-#ifdef GRAPHMATCHTHREAD
+#ifndef GRAPHMATCHNOTHREAD
 
-/* Start subroutines
-*/
-
-#define GRAPHMATCHSCANP1INPERT                    /* Perturbation scan for first pass  */
-#define GRAPHMATCHSCANP2INPERT                    /* Perturbation scan for second pass */
-#define GRAPHMATCHSCANP2OUTQUEUE                  /* Queue storage for second pass     */
-
-#define GRAPHMATCHSCANNAME          graphMatchThrBegNfNvNe
+#define GRAPHMATCHSCANNAME          graphMatchThrNfNe
 #include "graph_match_scan.c"
 #undef GRAPHMATCHSCANNAME
 
 #define GRAPHMATCHSCANEDLOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrBegNfNvEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANVELOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrBegNfVlEl
+#define GRAPHMATCHSCANNAME          graphMatchThrNfEl
 #include "graph_match_scan.c"
 #undef GRAPHMATCHSCANNAME
 #undef GRAPHMATCHSCANEDLOTAB
-
-#define GRAPHMATCHSCANNAME          graphMatchThrBegNfVlNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANVELOTAB
 
 #define GRAPHMATCHSCANPFIXTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrBegFxNvNe
+#define GRAPHMATCHSCANNAME          graphMatchThrFxNe
 #include "graph_match_scan.c"
 #undef GRAPHMATCHSCANNAME
 
 #define GRAPHMATCHSCANEDLOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrBegFxNvEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANVELOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrBegFxVlEl
+#define GRAPHMATCHSCANNAME          graphMatchThrFxEl
 #include "graph_match_scan.c"
 #undef GRAPHMATCHSCANNAME
 #undef GRAPHMATCHSCANEDLOTAB
-
-#define GRAPHMATCHSCANNAME          graphMatchThrBegFxVlNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANVELOTAB
 #undef GRAPHMATCHSCANPFIXTAB
 
-#undef GRAPHMATCHSCANP1INPERT
-#undef GRAPHMATCHSCANP2INPERT
-#undef GRAPHMATCHSCANP2OUTQUEUE
+#endif /* GRAPHMATCHNOTHREAD */
 
-/* Intermediate subroutines
-*/
+/**********************/
+/*                    */
+/* The matching queue */
+/* handling routines. */
+/*                    */
+/**********************/
 
-#define GRAPHMATCHSCANP2INQUEUE                   /* Read queue for second (only) pass */
-#define GRAPHMATCHSCANP2OUTQUEUE                  /* Queue storage for second pass     */
-
-#define GRAPHMATCHSCANNAME          graphMatchThrMidNfNvNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANEDLOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrMidNfNvEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANVELOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrMidNfVlEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANEDLOTAB
-
-#define GRAPHMATCHSCANNAME          graphMatchThrMidNfVlNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANVELOTAB
-
-#define GRAPHMATCHSCANPFIXTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrMidFxNvNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANEDLOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrMidFxNvEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANVELOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrMidFxVlEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANEDLOTAB
-
-#define GRAPHMATCHSCANNAME          graphMatchThrMidFxVlNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANVELOTAB
-#undef GRAPHMATCHSCANPFIXTAB
-
-#undef GRAPHMATCHSCANP2INQUEUE
-#undef GRAPHMATCHSCANP2OUTQUEUE
-
-/* End subroutines
-*/
-
-#define GRAPHMATCHSCANP2INQUEUE                   /* Read queue for second (only) pass */
-
-#define GRAPHMATCHSCANNAME          graphMatchThrEndNfNvNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANEDLOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrEndNfNvEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANVELOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrEndNfVlEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANEDLOTAB
-
-#define GRAPHMATCHSCANNAME          graphMatchThrEndNfVlNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANVELOTAB
-
-#define GRAPHMATCHSCANPFIXTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrEndFxNvNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANEDLOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrEndFxNvEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-
-#define GRAPHMATCHSCANVELOTAB
-#define GRAPHMATCHSCANNAME          graphMatchThrEndFxVlEl
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANEDLOTAB
-
-#define GRAPHMATCHSCANNAME          graphMatchThrEndFxVlNe
-#include "graph_match_scan.c"
-#undef GRAPHMATCHSCANNAME
-#undef GRAPHMATCHSCANVELOTAB
-#undef GRAPHMATCHSCANPFIXTAB
-
-#undef GRAPHMATCHSCANP2INQUEUE
-
-#endif /* GRAPHMATCHTHREAD */
-
-/*************************/
-/*                       */
-/* The matching routine. */
-/*                       */
-/*************************/
-
-/* This routine performs the sequential
-** initialization of the global mating
-** data structures, so as to indicate
-** that no mating will be performed.
-** It returns:
-** - 0  : in all cases.
-*/
-
+static
 void
-graphMatchNone (
-GraphCoarsenData * restrict coarptr)
+graphMatchQueueSort (
+GraphCoarsenData * restrict const   coarptr,
+GraphCoarsenThread * restrict const thrdptr,
+Gnum                                finevertbas,
+Gnum                                finevertnnd)
 {
-#ifdef SCOTCH_PTHREAD
-  coarptr->finelocktax = NULL;
-  coarptr->finequeutax = NULL;
-  coarptr->fendptr     = (void (*) (void *)) NULL;
-  coarptr->fmidptr     = (void (*) (void *)) NULL;
-#endif /* SCOTCH_PTHREAD */
-  coarptr->fbegptr     = (void (*) (void *)) NULL;
+  Gnum * restrict     finequeuptr;
+  Gnum                finequeunbr;
+  Gnum                finevertnum;
+
+  const Gnum * restrict const fineverttax = coarptr->finegrafptr->verttax;
+  const Gnum * restrict const finevendtax = coarptr->finegrafptr->vendtax;
+
+  for (finevertnum = finevertbas, finequeuptr = thrdptr->finequeutab;
+       finevertnum < finevertnnd; finevertnum ++) {
+    *(finequeuptr ++) = finevendtax[finevertnum] - fineverttax[finevertnum];
+    *(finequeuptr ++) = finevertnum;
+  }
+  thrdptr->finequeunbr =
+  finequeunbr          = finevertnnd - finevertbas;
+
+  intPsort2asc1 (thrdptr->finequeutab, finequeunbr, 3);
 }
+
+/***********************************/
+/*                                 */
+/* The matching handling routines. */
+/*                                 */
+/***********************************/
 
 /* This routine performs the sequential
 ** initialization of the global mating
@@ -338,50 +194,37 @@ GraphCoarsenData * restrict coarptr)
 
 int
 graphMatchInit (
-GraphCoarsenData * restrict coarptr)
+GraphCoarsenData * restrict coarptr,
+const int                   thrdnbr)
 {
-  int                 flagval;
+  int                 fumaval;                    /* Matching routine index in function array */
+  Gnum                deteval;                    /* Flag set if deterministic behavior       */
 
   const Graph * restrict const  finegrafptr = coarptr->finegrafptr;
-#if ((defined GRAPHMATCHTHREAD) && ! (defined SCOTCH_DETERMINISTIC))
-  const Gnum                    finevertnbr = finegrafptr->vertnbr;
-  const Gnum                    baseval     = finegrafptr->baseval;
-  const int                     thrdnbr     = coarptr->thrddat.thrdnbr;
-#endif /* ((defined GRAPHMATCHTHREAD) && ! (defined SCOTCH_DETERMINISTIC)) */
 
-  flagval = (finegrafptr->edlotax != NULL) ? 1 : 0;
-  if (finegrafptr->velotax != NULL)
-    flagval |= 2;
+  contextValuesGetInt (coarptr->contptr, CONTEXTOPTIONNUMDETERMINISTIC, &deteval);
+
+  fumaval = (finegrafptr->edlotax != NULL) ? 1 : 0;
   if ((coarptr->finevfixnbr > 0) || (coarptr->fineparotax != NULL))
-    flagval |= 4;
+    fumaval |= 2;
 
-#if ((defined GRAPHMATCHTHREAD) && ! (defined SCOTCH_DETERMINISTIC))
-  if (thrdnbr > 1) {
-    if (memAllocGroup ((void **) (void *)
-                       &coarptr->finequeutax, (size_t) (finevertnbr * sizeof (Gnum)),
-                       &coarptr->finelocktax, (size_t) (finevertnbr * sizeof (int)), NULL) == NULL) {
+#ifndef GRAPHMATCHNOTHREAD
+  if ((deteval == 0) && (thrdnbr > 1)) {          /* If non-deterministic behavior accepted and several threads available */
+    if ((coarptr->finelocktax = memAlloc (finegrafptr->vertnbr * sizeof (int))) == NULL) {
       errorPrint ("graphMatchInit: out of memory");
-      return     (1);
+      return (1);
     }
-    coarptr->finequeutax -= baseval;
-    coarptr->finelocktax -= baseval;
+    coarptr->finelocktax -= finegrafptr->baseval;
 
-    coarptr->fbegptr = (void (*) (void *)) graphmatchfuncthrbegtab[flagval];
-    coarptr->fmidptr = (void (*) (void *)) graphmatchfuncthrmidtab[flagval];
-    coarptr->fendptr = (void (*) (void *)) graphmatchfuncthrendtab[flagval];
+    fumaval |= 4;                                 /* Run threaded routines */
   }
-  else  {
-    coarptr->finequeutax = NULL;
-    coarptr->finelocktax = NULL;                  /* If deterministic behavior wanted, no threaded mating */
-    coarptr->fbegptr = (void (*) (void *)) graphmatchfuncseqtab[flagval];
-#ifdef SCOTCH_DEBUG_GRAPH2
-    coarptr->fmidptr = (void (*) (void *)) NULL;
-    coarptr->fendptr = (void (*) (void *)) NULL;
-#endif /* SCOTCH_DEBUG_GRAPH2 */
+  else
+#endif /* GRAPHMATCHNOTHREAD */
+  {
+    coarptr->finelocktax = NULL;                  /* A NULL finelocktax means sequential (deterministic) process wanted */
   }
-#else /* ((defined GRAPHMATCHTHREAD) && ! (defined SCOTCH_DETERMINISTIC)) */
-  coarptr->fbegptr = (void (*) (void *)) graphmatchfuncseqtab[flagval];
-#endif /* ((defined GRAPHMATCHTHREAD) && ! (defined SCOTCH_DETERMINISTIC)) */
+
+  coarptr->fumaval = fumaval;
 
   return (0);
 }
@@ -391,109 +234,144 @@ GraphCoarsenData * restrict coarptr)
 ** if necessary.
 */
 
-#ifdef GRAPHMATCHTHREAD
+#if 0 /* Recursive reduction routine that merges queues; a bit of an overkill to date */
 static
 void
 graphMatchReduce (
-GraphCoarsenThread * restrict const tlocptr,      /* Pointer to local thread */
-void * restrict const               vlocptr,      /* Pointer to local value  */
-void * restrict const               vremptr)      /* Pointer to remote value */
+GraphCoarsenThread * restrict const tlocptr,      /* Pointer to local block  */
+GraphCoarsenThread * restrict const tremptr)      /* Pointer to remote block */
 {
-  GraphCoarsenData * restrict const   coarptr = (GraphCoarsenData *) (tlocptr->thrddat.grouptr);
-  GraphCoarsenThread * restrict const tremptr = (GraphCoarsenThread *) vremptr;
-  const int                           thrdnbr = coarptr->thrddat.thrdnbr;
-  const int                           thrdnum = tlocptr->thrddat.thrdnum;
-  Gnum                                qremnbr;
+  Gnum                qremnbr;
 
   qremnbr = tremptr->finequeunnd - tremptr->finequeubas; /* Number of enqueued fine vertices in second thread */
 
-  memMov (coarptr->finequeutax + tlocptr->finequeunnd, /* Merge queues */
-          coarptr->finequeutax + tremptr->finequeubas,
-          qremnbr * sizeof (Gnum));
-  tlocptr->finequeunnd += qremnbr;
-  tlocptr->coarvertnbr += tremptr->coarvertnbr;
+  memMov (tlocptr->finequeutab + tlocptr->finequeunbr, /* Merge queues */
+          tremptr->finequeutab, qremnbr * sizeof (Gnum));
+  tlocptr->finequeunbr += qremnbr;
 
-  if ((thrdnum == 0) && (((tremptr - tlocptr) << 1) >= thrdnbr)) /* If last join */
-    coarptr->fendptr (tlocptr);                   /* Call end match routine      */
+  if ((tlocptr->thrdnum == 0) && (((tremptr - tlocptr) << 1) >= tlocptr->thrdnbr)) /* If last join         */
+    graphmatchfunctab[coarptr->funcval & ~4] (tlocptr->coarptr, tlocptr); /* Call sequential match routine */
   else
-    coarptr->fmidptr (tlocptr);                   /* Call intermediate match routine */
+    graphmatchfunctab[coarptr->funcval] (tlocptr->coarptr, tlocptr); /* Call threaded, intermediate match routine */
 }
-#endif /* GRAPHMATCHTHREAD */
+#endif /* 0 */
 
 /* This routine matches the vertices of the given
 ** graph, according to various constraints. The
 ** matching can be either single-threaded or
 ** multi-threaded.
 ** It returns:
-** - 0  : if matching could be performed.
-** - 1  : on error.
+** - void  : in all cases.
 */
 
 void
 graphMatch (
-GraphCoarsenThread * restrict thrdptr)            /*+ Pointer to incomplete match data array +*/
+ThreadDescriptor * restrict const descptr,
+GraphCoarsenData * const          coarptr)        /* [norestrict] because of retuval in threaded contexts */
 {
-  Gnum                finevertsiz;
+  Gnum                finevertbas;
+  Gnum                finevertnnd;
+  Gnum                finevertsiz;                /* Fine vertex local (or global) range */
 #ifdef SCOTCH_DEBUG_GRAPH2
   Gnum                finevertnum;
 #endif /* SCOTCH_DEBUG_GRAPH2 */
 
-  GraphCoarsenData * restrict const coarptr     = (GraphCoarsenData *) (thrdptr->thrddat.grouptr);
-  const Graph * restrict const      finegrafptr = coarptr->finegrafptr;
-  const Gnum                        finevertbas = thrdptr->finevertbas; /* Get fine vertex range */
-  const Gnum                        finevertnnd = thrdptr->finevertnnd;
-  Gnum * restrict const             finematetax = coarptr->finematetax;
+#ifdef SCOTCH_PTHREAD
+  const int                   thrdnbr = threadNbr (descptr);
+  const int                   thrdnum = threadNum (descptr);
+  GraphCoarsenThread * const  thrdptr = &coarptr->thrdtab[thrdnum];
+#else /* SCOTCH_PTHREAD */
+  GraphCoarsenThread * const  thrdptr = &coarptr->thrdtab[0];
+#endif /* SCOTCH_PTHREAD */
 
-  thrdptr->finequeubas = finevertbas;             /* Assume matching range is fine vertex processing range */
-  thrdptr->finequeunnd = finevertnnd;
+  if (coarptr->finelocktax == NULL) {             /* If sequential, deterministic processing wanted */
+#ifdef SCOTCH_PTHREAD
+    if (thrdnum != 0) {                           /* Only thread 0 will perform the work    */
+      threadBarrier (descptr);                    /* End-of-routine synchronization barrier */
+      return;
+    }
+#endif /* SCOTCH_PTHREAD */
+
+    finevertbas = coarptr->finegrafptr->baseval;  /* Work on all graph fine vertices */
+    finevertnnd = coarptr->finegrafptr->vertnnd;
+  }
+  else {
+    finevertbas = thrdptr->finevertbas;           /* Work on slice of fine graph */
+    finevertnnd = thrdptr->finevertnnd;
+  }
+  finevertsiz = finevertnnd - finevertbas;
+
+  thrdptr->finequeudlt = 2;                       /* For sort queue */
+  if ((thrdptr->finequeutab = memAlloc (finevertsiz * thrdptr->finequeudlt * sizeof (Gnum))) == NULL) { /* Allocate (local or global) processing queue */
+    errorPrint ("graphMatch: out of memory");
+    coarptr->retuval = 2;
+    if (coarptr->finelocktax == NULL) {           /* If only thread 0 is working */
+#ifdef SCOTCH_PTHREAD
+      threadBarrier (descptr);                    /* End-of-routine synchronization barrier */
+#endif /* SCOTCH_PTHREAD */
+      return;                                     /* Thread 0 returns */
+    }
+  }
+
+  memSet (coarptr->finematetax + finevertbas, ~0, finevertsiz * sizeof (Gnum)); /* Initialize (local part of) mate array */
+  if (coarptr->finelocktax != NULL) {
+    memSet (coarptr->finelocktax + finevertbas, 0, finevertsiz * sizeof (int)); /* Initialize local part of lock array for concurrent acces */
+
+    threadBarrier (descptr);                      /* Synchronization for mating arrays and retuval */
+
+    if (coarptr->retuval != 0) {
+      if (thrdptr->finequeutab != NULL)           /* If someone else's allocation failed */
+        memFree (thrdptr->finequeutab);           /* Free our own queue                  */
+      return;
+    }
+  }
+
+  graphMatchQueueSort (coarptr, thrdptr, finevertbas, finevertnnd);
+
   thrdptr->coarvertnbr = 0;                       /* No coarse vertices created yet */
 
-  finevertsiz = finevertnnd - finevertbas;        /* Compute fine vertex range */
-  memSet (finematetax + finevertbas, ~0, finevertsiz * sizeof (Gnum));
-#if ((defined GRAPHMATCHTHREAD) && ! (defined SCOTCH_DETERMINISTIC))
-  if (coarptr->thrddat.thrdnbr > 1) {
-    memSet (coarptr->finelocktax + finevertbas, 0, finevertsiz * sizeof (int)); /* Initialize local part of lock array for concurrent accesses */
-    threadBarrier (thrdptr);                      /* finematetax and finelocktax must have been globally initialized before we can go on       */
+#ifdef SCOTCH_PTHREAD
+  if (coarptr->finelocktax != NULL) {
+    graphmatchfunctab[coarptr->fumaval] (coarptr, thrdptr); /* Call parallel matching routine */
 
-    coarptr->fbegptr (thrdptr);                   /* Perform bulk on local part                                   */
-    threadReduce (thrdptr, thrdptr, (ThreadReduceFunc) graphMatchReduce, 0); /* Reduce work on remaining vertices */
+    threadBarrier (descptr);                      /* Barrier before pseudo-reduction */
 
-    if (thrdptr->thrddat.thrdnum == 0) {
-      coarptr->coarvertnbr = thrdptr->coarvertnbr;  /* Global number of coarse vertices is reduced number */
-      memFree (coarptr->finequeutax + finegrafptr->baseval); /* Free group leader of matching data        */
+    if (thrdnum == 0) {
+      Gnum                coarvertnbr;
+      int                 thrdtmp;
+
+      for (thrdtmp = 0, coarvertnbr = 0;          /* Sequential pseudo-reduction on remaining vertices */
+           thrdtmp < thrdnbr; thrdtmp ++) {
+        graphmatchfunctab[coarptr->fumaval & ~4] (coarptr, &coarptr->thrdtab[thrdtmp]); /* Call sequential matching routine */
+        coarvertnbr += coarptr->thrdtab[thrdtmp].coarvertnbr;
+      }
+      coarptr->coarvertnbr = coarvertnbr;         /* Global number of coarse vertices is reduced number */
+
+      memFree (coarptr->finelocktax + coarptr->finegrafptr->baseval); /* Free now useless lock array */
     }
 
-    threadBarrier (thrdptr);                      /* coarptr->coarvertnbr must be known to all */
+    threadBarrier (descptr);                      /* coarptr->coarvertnbr must be known to all */
   }
   else
-#else /* (defined GRAPHMATCHTHREAD) && ! (defined SCOTCH_DETERMINISTIC) */
-#ifdef GRAPHCOARSENTHREAD                         /* If matching was called from a threaded environment */
-  if (coarptr->thrddat.thrdnbr > 1) {
-    threadBarrier (thrdptr);                      /* finematetax must have been fully initialized before we go on */
-
-    thrdptr->finequeubas = finegrafptr->baseval;  /* Thread 0 will handle all of fine graph vertices */
-    thrdptr->finequeunnd = finegrafptr->vertnnd;
-    if (thrdptr->thrddat.thrdnum == 0) {          /* Only thread 0 will do the job sequentially                                  */
-      coarptr->fbegptr (thrdptr);                 /* Call sequential mating routine                                              */
-      coarptr->coarvertnbr = thrdptr->coarvertnbr; /* Global number of coarse vertices is that computed by (sequential) thread 0 */
-    }
-
-    threadBarrier (thrdptr);                      /* coarptr->coarvertnbr must be known to all */
-  }
-  else
-#endif /* GRAPHCOARSENTHREAD */
-#endif /* (defined GRAPHMATCHTHREAD) && ! (defined SCOTCH_DETERMINISTIC) */
+#endif /* SCOTCH_PTHREAD */
   {
-    coarptr->fbegptr (thrdptr);                   /* Call sequential mating routine                                             */
+    graphmatchfunctab[coarptr->fumaval & ~4] (coarptr, thrdptr); /* Call sequential matching routine                            */
     coarptr->coarvertnbr = thrdptr->coarvertnbr;  /* Global number of coarse vertices is that computed by (sequential) thread 0 */
   }
 
+  memFree (thrdptr->finequeutab);
+
 #ifdef SCOTCH_DEBUG_GRAPH2
   for (finevertnum = finevertbas; finevertnum < finevertnnd; finevertnum ++) {
-    if (finematetax[finevertnum] == ~0) {         /* If matching not aborted, this should not happen */
+    if (coarptr->finematetax[finevertnum] == ~0) { /* If matching not aborted, this should not happen */
       errorPrint ("graphMatch: internal error");
       coarptr->coarvertnbr = coarptr->coarvertmax;
     }
   }
 #endif /* SCOTCH_DEBUG_GRAPH2 */
+
+#ifdef SCOTCH_PTHREAD
+  if (coarptr->finelocktax == NULL)               /* If only thread 0 is working                         */
+    threadBarrier (descptr);                      /* End-of-routine synchronization barrier for thread 0 */
+#endif /* SCOTCH_PTHREAD */
 }

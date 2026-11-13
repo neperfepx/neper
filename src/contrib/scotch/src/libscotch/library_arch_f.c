@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2011,2015,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2011,2015,2018,2021,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -47,14 +47,16 @@
 /**                                 to   : 13 feb 2011     **/
 /**                # Version 6.0  : from : 16 apr 2015     **/
 /**                                 to   : 31 may 2018     **/
+/**                # Version 6.1  : from : 15 mar 2021     **/
+/**                                 to   : 15 mar 2021     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 11 jul 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -91,6 +93,30 @@ SCOTCH_Arch * const         archptr), \
 (archptr))
 {
   SCOTCH_archExit (archptr);
+}
+
+/*
+**
+*/
+
+SCOTCH_FORTRAN (                      \
+ARCHSIZEOF, archsizeof, (             \
+int * const                 sizeptr), \
+(sizeptr))
+{
+  *sizeptr = SCOTCH_archSizeof ();
+}
+
+/*
+**
+*/
+
+SCOTCH_FORTRAN (                      \
+ARCHDOMSIZEOF, archdomsizeof, (       \
+int * const                 sizeptr), \
+(sizeptr))
+{
+  *sizeptr = SCOTCH_archDomSizeof ();
 }
 
 /* When an input stream is built from the given
@@ -237,6 +263,21 @@ int * const                 revaptr), \
 (archptr, vertnbr, velotab, revaptr))
 {
   *revaptr = SCOTCH_archCmpltw (archptr, *vertnbr, velotab);
+}
+
+/*
+**
+*/
+
+SCOTCH_FORTRAN (                      \
+ARCHCMPLTWS, archcmpltws, (           \
+SCOTCH_Arch * const         archptr,  \
+const SCOTCH_Num * const    vertnbr,  \
+const SCOTCH_Num * const    velotab,  \
+int * const                 revaptr), \
+(archptr, vertnbr, velotab, revaptr))
+{
+  *revaptr = SCOTCH_archCmpltws (archptr, *vertnbr, velotab);
 }
 
 /*

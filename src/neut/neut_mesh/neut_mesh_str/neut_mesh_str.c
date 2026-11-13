@@ -6,11 +6,11 @@
 
 void
 neut_mesh_str (int dim, int *size, int *periodic, struct NODES *pNodes, struct
-    MESH *pMesh, struct NSET *pNSet)
+    MESH *pMesh, struct MESH *pMeshFasets, struct NSET *pNSet)
 
 {
   if (dim == 3)
-    neut_mesh_str_3d (size, periodic, pNodes, pMesh, pNSet);
+    neut_mesh_str_3d (size, periodic, pNodes, pMesh, pMeshFasets, pNSet);
   else if (dim == 2)
     neut_mesh_str_2d (size, periodic, pNodes, pMesh, pNSet);
   else if (dim == 1)
@@ -23,9 +23,9 @@ neut_mesh_str (int dim, int *size, int *periodic, struct NODES *pNodes, struct
 
 void
 neut_mesh_str_3d (int *size, int *periodic, struct NODES *pNodes, struct MESH *pMesh,
-                  struct NSET *pNSet2D)
+                  struct MESH *pMeshFasets, struct NSET *pNSet2D)
 {
-  int i, x, y, z, nid, eid, nodesperelt;
+  int i, x, y, z, nid, eid, feid, elsetid, nodesperelt;
   double nx, ny, nz;
 
   /* General ------------------------------------------------------- */
@@ -78,7 +78,9 @@ neut_mesh_str_3d (int *size, int *periodic, struct NODES *pNodes, struct MESH *p
 
   if (periodic && ut_array_1d_int_sum (periodic, 3) > 0)
   {
+    ut_free_1d_int (&(*pNodes).Periodic);
     (*pNodes).Periodic = ut_alloc_1d_int (3);
+    ut_free_1d (&(*pNodes).PeriodicDist);
     (*pNodes).PeriodicDist = ut_alloc_1d (3);
     (*pNodes).PerNodeMaster = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
     (*pNodes).PerNodeShift = ut_alloc_2d_int ((*pNodes).NodeQty + 1, 3);
@@ -151,7 +153,39 @@ neut_mesh_str_3d (int *size, int *periodic, struct NODES *pNodes, struct MESH *p
 
   (*pMesh).EltNodes = ut_alloc_2d_int ((*pMesh).EltQty + 1, nodesperelt);
 
+  if (pMeshFasets)
+  {
+    (*pMeshFasets).Dimension = 2;
+    (*pMeshFasets).EltOrder = 1;
+    ut_string_string ("quad", &(*pMeshFasets).EltType);
+
+    (*pMeshFasets).EltQty = 2 * size[0] * size[1]
+                          + 2 * size[1] * size[2]
+                          + 2 * size[2] * size[0];
+
+    (*pMeshFasets).ElsetQty = 6;
+    (*pMeshFasets).ElsetLabels = ut_alloc_1d_pchar ((*pMeshFasets).ElsetQty + 1);
+    ut_string_string ("x0", (*pMeshFasets).ElsetLabels + 1);
+    ut_string_string ("x1", (*pMeshFasets).ElsetLabels + 2);
+    ut_string_string ("y0", (*pMeshFasets).ElsetLabels + 3);
+    ut_string_string ("y1", (*pMeshFasets).ElsetLabels + 4);
+    ut_string_string ("z0", (*pMeshFasets).ElsetLabels + 5);
+    ut_string_string ("z1", (*pMeshFasets).ElsetLabels + 6);
+
+    (*pMeshFasets).EltNodes = ut_alloc_2d_int ((*pMeshFasets).EltQty + 1, 4);
+    (*pMeshFasets).EltId = ut_alloc_1d_int ((*pMeshFasets).EltQty + 1);
+
+    (*pMeshFasets).Elsets = ut_alloc_1d_pint ((*pMeshFasets).ElsetQty + 1);
+    (*pMeshFasets).Elsets[1] = ut_alloc_1d_int (size[1] * size[2] + 1);
+    (*pMeshFasets).Elsets[2] = ut_alloc_1d_int (size[1] * size[2] + 1);
+    (*pMeshFasets).Elsets[3] = ut_alloc_1d_int (size[2] * size[0] + 1);
+    (*pMeshFasets).Elsets[4] = ut_alloc_1d_int (size[2] * size[0] + 1);
+    (*pMeshFasets).Elsets[5] = ut_alloc_1d_int (size[0] * size[1] + 1);
+    (*pMeshFasets).Elsets[6] = ut_alloc_1d_int (size[0] * size[1] + 1);
+  }
+
   eid = 0;
+  feid = 0;
 
   for (z = 1; z <= size[2]; z++)
     for (y = 1; y <= size[1]; y++)
@@ -167,6 +201,81 @@ neut_mesh_str_3d (int *size, int *periodic, struct NODES *pNodes, struct MESH *p
         (*pMesh).EltNodes[eid][5] = NMap[x + 1][y][z + 1];
         (*pMesh).EltNodes[eid][6] = NMap[x + 1][y + 1][z + 1];
         (*pMesh).EltNodes[eid][7] = NMap[x][y + 1][z + 1];
+
+        if (pMeshFasets)
+        {
+          if (x == 1)
+          {
+            elsetid = 1;
+
+            feid++;
+            ut_array_1d_int_set_4 ((*pMeshFasets).EltNodes[feid],
+                                    NMap[x][y][z], NMap[x][y][z + 1], NMap[x][y + 1][z + 1], NMap[x][y + 1][z]);
+            (*pMeshFasets).EltId[feid] = eid;
+
+            (*pMeshFasets).Elsets[elsetid][++(*pMeshFasets).Elsets[elsetid][0]] = feid;
+          }
+
+          if (x == size[0])
+          {
+            elsetid = 2;
+
+            feid++;
+            ut_array_1d_int_set_4 ((*pMeshFasets).EltNodes[feid],
+                                    NMap[x + 1][y][z], NMap[x + 1][y + 1][z], NMap[x + 1][y + 1][z + 1], NMap[x + 1][y][z + 1]);
+            (*pMeshFasets).EltId[feid] = eid;
+
+            (*pMeshFasets).Elsets[elsetid][++(*pMeshFasets).Elsets[elsetid][0]] = feid;
+          }
+
+          if (y == 1)
+          {
+            elsetid = 3;
+
+            feid++;
+            ut_array_1d_int_set_4 ((*pMeshFasets).EltNodes[feid],
+                                    NMap[x][y][z], NMap[x + 1][y][z], NMap[x + 1][y][z + 1], NMap[x][y][z + 1]);
+            (*pMeshFasets).EltId[feid] = eid;
+
+            (*pMeshFasets).Elsets[elsetid][++(*pMeshFasets).Elsets[elsetid][0]] = feid;
+          }
+
+          if (y == size[1])
+          {
+            elsetid = 4;
+
+            feid++;
+            ut_array_1d_int_set_4 ((*pMeshFasets).EltNodes[feid],
+                                    NMap[x][y + 1][z], NMap[x][y + 1][z + 1], NMap[x + 1][y + 1][z + 1], NMap[x + 1][y + 1][z]);
+            (*pMeshFasets).EltId[feid] = eid;
+
+            (*pMeshFasets).Elsets[elsetid][++(*pMeshFasets).Elsets[elsetid][0]] = feid;
+          }
+
+          if (z == 1)
+          {
+            elsetid = 5;
+
+            feid++;
+            ut_array_1d_int_set_4 ((*pMeshFasets).EltNodes[feid],
+                                    NMap[x][y][z], NMap[x][y + 1][z], NMap[x + 1][y + 1][z], NMap[x + 1][y][z]);
+            (*pMeshFasets).EltId[feid] = eid;
+
+            (*pMeshFasets).Elsets[elsetid][++(*pMeshFasets).Elsets[elsetid][0]] = feid;
+          }
+
+          if (z == size[2])
+          {
+            elsetid = 6;
+
+            feid++;
+            ut_array_1d_int_set_4 ((*pMeshFasets).EltNodes[feid],
+                                    NMap[x][y][z + 1], NMap[x + 1][y][z + 1], NMap[x + 1][y + 1][z + 1], NMap[x][y + 1][z + 1]);
+            (*pMeshFasets).EltId[feid] = eid;
+
+            (*pMeshFasets).Elsets[elsetid][++(*pMeshFasets).Elsets[elsetid][0]] = feid;
+          }
+        }
       }
 
   (*pMesh).EltElset = ut_alloc_1d_int ((*pMesh).EltQty + 1);
@@ -279,7 +388,9 @@ neut_mesh_str_2d (int *size, int *periodic, struct NODES *pNodes, struct MESH *p
 
   if (periodic && ut_array_1d_int_sum (periodic, 2) > 0)
   {
+    ut_free_1d_int (&(*pNodes).Periodic);
     (*pNodes).Periodic = ut_alloc_1d_int (3);
+    ut_free_1d (&(*pNodes).PeriodicDist);
     (*pNodes).PeriodicDist = ut_alloc_1d (3);
     (*pNodes).PerNodeMaster = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
     (*pNodes).PerNodeShift = ut_alloc_2d_int ((*pNodes).NodeQty + 1, 3);

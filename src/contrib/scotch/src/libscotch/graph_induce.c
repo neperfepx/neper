@@ -1,4 +1,4 @@
-/* Copyright 2004,2007-2009,2011,2013-2016,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007-2009,2011,2013-2016,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -59,6 +59,8 @@
 /**                                 to   : 01 jan 2009     **/
 /**                # Version 6.0  : from : 29 mar 2011     **/
 /**                                 to   : 05 apr 2018     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /**   NOTES      : # Several algorithms, such as the       **/
 /**                  active graph building routine of      **/
@@ -73,8 +75,7 @@
 **  The defines and includes.
 */
 
-#define GRAPH
-#define GRAPH_INDUCE
+#define SCOTCH_GRAPH_INDUCE
 
 #include "module.h"
 #include "common.h"

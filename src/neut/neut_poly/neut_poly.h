@@ -15,7 +15,6 @@ extern "C"
 #ifndef NEUT_POLY_H
 #define NEUT_POLY_H
 
-#include "neut_poly_polymod/neut_poly_polymod.h"
 #include "neut_poly_fprintf/neut_poly_fprintf.h"
 #include "neut_poly_geom/neut_poly_geom.h"
 #include "neut_poly_topo/neut_poly_topo.h"

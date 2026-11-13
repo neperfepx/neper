@@ -15,6 +15,8 @@ net_in_set_zero (struct IN_T *pIn)
 
   (*pIn).morphostring = NULL;
   (*pIn).morpho = NULL;
+  (*pIn).optiqty = 0;
+  (*pIn).optitype = NULL;
   (*pIn).optiinistring = NULL;
   (*pIn).optineighstring = NULL;
 
@@ -25,8 +27,6 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).optiini = NULL;
   (*pIn).optineigh = NULL;
 
-  (*pIn).optialgomaxiterstring = NULL;
-  (*pIn).optialgomaxiter = NULL;
   (*pIn).optiobjectivestring = NULL;
   (*pIn).optiobjective = NULL;
   (*pIn).optigridstring = NULL;
@@ -65,6 +65,7 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).fmax = 0;
   (*pIn).selstring = NULL;
   (*pIn).mloop = 0;
+  (*pIn).delcell = 0;
   (*pIn).seltype = NULL;
 
   (*pIn).levelqty = 0;
@@ -114,6 +115,8 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).sts = NULL;
   (*pIn).dec = NULL;
   (*pIn).obj = NULL;
+  (*pIn).ovm = NULL;
+  (*pIn).fe = NULL;
   (*pIn).svg = NULL;
   (*pIn).orif = NULL;
   (*pIn).sim = NULL;
@@ -131,28 +134,46 @@ void
 net_in_free (struct IN_T *pIn)
 {
   ut_free_1d_char (&(*pIn).domain);
+  ut_free_1d_char (&(*pIn).periodicstring);
+  ut_free_1d_char (&(*pIn).tesrsizestring);
+  ut_free_1d_char (&(*pIn).nstring);
+  ut_free_1d_char (&(*pIn).idstring);
+  ut_free_1d_char (&(*pIn).morphostring);
+  ut_free_1d_char (&(*pIn).optiobjectivestring);
+  ut_free_1d_char (&(*pIn).optigridstring);
+  ut_free_1d_char (&(*pIn).optismoothstring);
+  ut_free_1d_char (&(*pIn).optilogtimestring);
+  ut_free_1d_char (&(*pIn).optilogdisstring);
+  ut_free_1d_char (&(*pIn).optilogtesrstring);
+  ut_free_1d_char (&(*pIn).optimultiseedstring);
+  ut_free_1d_char (&(*pIn).oristring);
+  ut_free_1d_char (&(*pIn).morphosamplingstring);
+  ut_free_1d_char (&(*pIn).orisamplingstring);
+  ut_free_1d_char (&(*pIn).orispreadstring);
+  ut_free_1d_char (&(*pIn).crysymstring);
+  ut_free_1d_char (&(*pIn).seltype);
+  ut_free_1d_char (&(*pIn).selstring);
+  ut_free_1d_char (&(*pIn).sortstring);
   ut_free_1d_char (&(*pIn).transform);
   ut_free_1d_char (&(*pIn).group);
+  ut_free_1d_char (&(*pIn).mode);
+  ut_free_1d_char (&(*pIn).input);
+  ut_free_1d_char (&(*pIn).loadpoint);
+  ut_free_1d_char (&(*pIn).load);
   ut_free_1d_char (&(*pIn).format);
   ut_free_1d_char (&(*pIn).tesrformat);
-  ut_free_1d_char (&(*pIn).oristring);
-  ut_free_2d_char (&(*pIn).ori, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).orispreadstring);
-  ut_free_2d_char (&(*pIn).orispread, (*pIn).levelqty + 1);
   ut_free_1d_char (&(*pIn).orides);
   ut_free_1d_char (&(*pIn).oriformat);
   ut_free_1d_char (&(*pIn).body);
-  ut_free_1d_char (&(*pIn).load);
-  ut_free_1d_char (&(*pIn).loadpoint);
   ut_free_1d_char (&(*pIn).tess);
-  ut_free_1d_char (&(*pIn).mtess);
   ut_free_1d_char (&(*pIn).tesr);
   ut_free_1d_char (&(*pIn).vtk);
   ut_free_1d_char (&(*pIn).raw);
   ut_free_1d_char (&(*pIn).geo);
-  ut_free_1d_char (&(*pIn).mgeo);
   ut_free_1d_char (&(*pIn).ply);
   ut_free_1d_char (&(*pIn).stl);
+  ut_free_1d_char (&(*pIn).dec);
+  ut_free_1d_char (&(*pIn).fe);
   ut_free_1d_char (&(*pIn).sttess);
   ut_free_1d_char (&(*pIn).sttesr);
   ut_free_1d_char (&(*pIn).stc);
@@ -161,57 +182,61 @@ net_in_free (struct IN_T *pIn)
   ut_free_1d_char (&(*pIn).stf);
   ut_free_1d_char (&(*pIn).stp);
   ut_free_1d_char (&(*pIn).sts);
-  ut_free_1d_char (&(*pIn).dec);
+  ut_free_1d_char (&(*pIn).stpt);
+  ut_free_1d_char (&(*pIn).stvox);
+  ut_free_1d_char (&(*pIn).stgroup);
   ut_free_1d_char (&(*pIn).obj);
+  ut_free_1d_char (&(*pIn).ovm);
+  ut_free_1d_char (&(*pIn).svg);
   ut_free_1d_char (&(*pIn).orif);
   ut_free_1d_char (&(*pIn).sim);
   ut_free_1d_char (&(*pIn).debug);
-  ut_free_1d_char (&(*pIn).sortstring);
-  ut_free_1d_char (&(*pIn).stpt);
-  ut_free_1d_char (&(*pIn).tesrsizestring);
+  ut_free_1d_char (&(*pIn).mtess);
+  ut_free_1d_char (&(*pIn).mgeo);
 
-  ut_free_1d_char (&(*pIn).input);
-  ut_free_1d_char (&(*pIn).periodicstring);
   ut_free_1d_int (&(*pIn).periodic);
-  ut_free_1d_char (&(*pIn).seltype);
-  ut_free_1d_char (&(*pIn).selstring);
-  ut_free_1d_char (&(*pIn).nstring);
+
   ut_free_2d_char (&(*pIn).n, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).idstring);
   ut_free_2d_char (&(*pIn).id, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).mode);
-
-  ut_free_1d_char (&(*pIn).morphostring);
   ut_free_2d_char (&(*pIn).morpho, (*pIn).levelqty + 1);
-
-  // new -----------------
-  ut_free_2d_char (&(*pIn).optialgostring, (*pIn).optiqty);
-  // ut_free_3d_char (&(*pIn).optialgo, (*pIn).optiqty, (*pIn).levelqty + 1);
-  ut_free_2d_char (&(*pIn).optidofstring, (*pIn).optiqty);
-  // ut_free_3d_char (&(*pIn).optidof, (*pIn).optiqty, (*pIn).levelqty + 1);
-  ut_free_2d_char (&(*pIn).optistopstring, (*pIn).optiqty);
-  // ut_free_3d_char (&(*pIn).optistop, (*pIn).optiqty, (*pIn).levelqty + 1);
-  ut_free_2d_char (&(*pIn).optideltamaxstring, (*pIn).optiqty);
-  ut_free_2d_char (&(*pIn).optiboundlstring, (*pIn).optiqty);
-  ut_free_2d_char (&(*pIn).optiboundustring, (*pIn).optiqty);
-  // ut_free_3d_char (&(*pIn).optideltamax, (*pIn).levelqty + 1);
-  // ut_free_3d_char (&(*pIn).optiboundl, (*pIn).levelqty + 1);
-  // ut_free_3d_char (&(*pIn).optiboundu, (*pIn).levelqty + 1);
-  ut_free_2d_char (&(*pIn).optiinistepstring, (*pIn).optiqty);
-  // ut_free_3d_char (&(*pIn).optilogvar, (*pIn).levelqty + 1);
-  // ut_free_3d_char (&(*pIn).optiinistep, (*pIn).levelqty + 1);
-  ut_free_2d_char (&(*pIn).optilogvarstring, (*pIn).optiqty);
-  // end new -------------
-  ut_free_1d_char (&(*pIn).optiobjectivestring);
   ut_free_2d_char (&(*pIn).optiobjective, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).optismoothstring);
+  ut_free_2d_char (&(*pIn).optigrid, (*pIn).levelqty + 1);
   ut_free_2d_char (&(*pIn).optismooth, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).crysymstring);
-  ut_free_2d_char (&(*pIn).crysym, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).optilogtimestring);
   ut_free_2d_char (&(*pIn).optilogtime, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).optimultiseedstring);
+  ut_free_2d_char (&(*pIn).optilogdis, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optilogtesr, (*pIn).levelqty + 1);
   ut_free_2d_char (&(*pIn).optimultiseed, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).ori, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).morphosampling, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).orisampling, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).orispread, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).crysym, (*pIn).levelqty + 1);
+
+  ut_free_2d_char (&(*pIn).optitype, (*pIn).optiqty);
+  ut_free_2d_char (&(*pIn).optialgostring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optialgo, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optidofstring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optidof, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optiinistring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optiini, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optineighstring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optineigh, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optifixstring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optifix, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optistopstring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optistop, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optideltamaxstring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optideltamax, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optiboundlstring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optiboundl, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optiboundustring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optiboundu, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optiinistepstring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optiinistep, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optilogvarstring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optilogvar, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optilogvalstring, (*pIn).optiqty);
+  ut_free_3d_char (&(*pIn).optilogval, (*pIn).optiqty, (*pIn).levelqty + 1);
 
   net_in_set_zero (pIn);
 
@@ -221,31 +246,24 @@ net_in_free (struct IN_T *pIn)
 int
 net_poly_clip (struct POLY *pPoly, double *eq, int id)
 {
-  struct POLYMOD Polymod;
+  struct PRIM Prim;
 
-  neut_polymod_set_zero (&Polymod);
-
-  neut_poly_polymod (*pPoly, &Polymod);
-  NewPolyhedron_plane (id, -1, eq, &Polymod);
-  net_polymod_poly (Polymod, pPoly);
+  neut_prim_set_zero (&Prim);
+  neut_prim_set_hspace ((char *) "hspacei", eq, &Prim);
+  net_poly_clip_prim (pPoly, Prim, id);
+  neut_prim_free (&Prim);
 
   return 0;
 }
 
-/*
-void
-CreateTesl (struct SEEDSET SSet, double **Size, struct TESL *pTesl)
+int
+net_poly_clip_prim (struct POLY *pPoly, struct PRIM Prim, int id)
 {
-  struct POLY Domain;
-  struct POLY *Poly = NULL;
+  net_tess3d_polycomp_poly_cut (id, NULL, &Prim, pPoly);
+  neut_poly_fixverorder (pPoly);
 
-  net_domain_cube (Size, &Domain);
-  net_polycomp (Domain, SSet, &Poly, NULL, 0);
-  net_tesl (SSet, Poly, pTesl);
-
-  return;
+  return 0;
 }
-*/
 
 void
 net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly)
@@ -260,6 +278,9 @@ net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly)
   int faces_invqty;
 
   neut_poly_free (pPoly);
+
+  if (Tess.PolyFaceQty[poly] == 0)
+    return;
 
   neut_tess_poly_vers (Tess, poly, &vers, &verqty);
   (*pPoly).VerQty = verqty;
@@ -365,38 +386,11 @@ net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly)
 }
 
 void
-net_poly_tesl (struct POLY Poly, double *coo, struct TESL *pTesl)
-{
-  struct SEEDSET SSet;
-  struct POLY *PolyArray = (struct POLY *) calloc (2, sizeof (struct POLY));
-  PolyArray[1] = Poly;
-
-  neut_tesl_set_zero (pTesl);
-
-  neut_seedset_set_zero (&SSet);
-
-  SSet.N = 1;
-  SSet.Nall = 1;
-  SSet.Id = 1;
-
-  SSet.SeedCoo = ut_alloc_2d (2, 3);
-  ut_array_1d_memcpy (coo, 3, SSet.SeedCoo[1]);
-
-  net_tesl (SSet, PolyArray, pTesl);
-
-  free (PolyArray);
-
-  neut_seedset_free (&SSet);
-
-  return;
-}
-
-void
 net_poly_tess (struct POLY Poly, double *coo, struct TESS *pTess)
 {
-  struct TESL Tesl;
   struct SEEDSET SSet;
   double *coob = NULL;
+  struct POLY *PolyArray = NULL;
 
   if (Poly.VerQty == 0)
   {
@@ -407,7 +401,6 @@ net_poly_tess (struct POLY Poly, double *coo, struct TESS *pTess)
 
   coob = ut_alloc_1d (3);
 
-  neut_tesl_set_zero (&Tesl);
   neut_seedset_set_zero (&SSet);
   ut_string_string ("standard", &(SSet.Type));
 
@@ -418,13 +411,14 @@ net_poly_tess (struct POLY Poly, double *coo, struct TESS *pTess)
 
   neut_seedset_addseed (&SSet, coob, 0);
 
-  net_poly_tesl (Poly, coob, &Tesl);
-  neut_tesl_tess (Tesl, SSet, 0, 0, pTess);
+  PolyArray = (struct POLY *) calloc (2, sizeof (struct POLY));
+  PolyArray[1] = Poly;
+  net_tess3d_tess (0, SSet, 0, PolyArray, pTess);
+  free (PolyArray);
   neut_tess_poly_centroid (*pTess, 1, (*pTess).SeedCoo[1]);
   (*pTess).PseudoDim = Poly.PseudoDim;
   (*pTess).PseudoSize = Poly.PseudoSize;
 
-  neut_tesl_free (&Tesl);
   neut_seedset_free (&SSet);
   ut_free_1d (&coob);
 
@@ -494,6 +488,7 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
 
   if (Tess.Periodic)
   {
+    ut_free_1d_int (&(*pTesr).Periodic);
     (*pTesr).Periodic = ut_alloc_1d_int (3);
     ut_array_1d_int_memcpy (Tess.Periodic, 3, (*pTesr).Periodic);
   }
@@ -582,9 +577,7 @@ net_tess_clip (struct TESS *pTess, double *eq)
 {
   int i, side, level, tessid, domface, status;
   struct POLY *Poly = calloc ((*pTess).CellQty + 1, sizeof (struct POLY));
-  struct POLYMOD Polymod;
   int *BadVer = ut_alloc_1d_int (1000);
-  struct TESL Tesl;
   struct TESS TessCpy;
   int plane_id;
   struct SEEDSET SSet;
@@ -598,11 +591,8 @@ net_tess_clip (struct TESS *pTess, double *eq)
   plane_id =
     ut_array_2d_int_min ((*pTess).FacePoly + 1, (*pTess).FaceQty, 2) - 1;
 
-  neut_tesl_set_zero (&Tesl);
   neut_tess_set_zero (&TessCpy);
   neut_tess_tess (*pTess, &TessCpy);
-
-  neut_polymod_set_zero (&Polymod);
 
   for (i = 1; i <= (*pTess).CellQty; i++)
   {
@@ -619,11 +609,9 @@ net_tess_clip (struct TESS *pTess, double *eq)
       neut_poly_set_zero (Poly + i);
   }
 
-  net_tesl (SSet, Poly, &Tesl);
-  neut_tesl_tess (Tesl, SSet, level, tessid, pTess);
+  net_tess3d_tess (level, SSet, tessid, Poly, pTess);
 
   ut_free_1d_int (&BadVer);
-  neut_tesl_free (&Tesl);
 
   int j;
   int domfaceqty = 0;
@@ -750,23 +738,27 @@ net_multiscale_mtess_arg_0d_char_fscanf (int level, struct MTESS MTess,
                                          int dompoly, char *string,
                                          char **pval)
 {
-  char *mid = NULL;
+  char *mid = NULL, *expr = NULL;
 
-  if (level == 1 && strncmp (string, "msfile(", 7))
-    ut_string_string (string, pval);
+  if (neut_tess_expr_string (Tess + domtess, "cell", dompoly, string, &expr))
+    ut_print_message (2, 3, "Failed to process expression `%s'.\n", string);
 
-  else if (ut_string_isfilename (string))
+  if (level == 1 && strncmp (expr, "msfile(", 7))
+    ut_string_string (expr, pval);
+
+  else if (ut_string_isfilename (expr))
   {
     (*pval) = ut_alloc_1d_char (1000);
     neut_mtess_tess_poly_mid (MTess, Tess[domtess], dompoly, &mid);
-    net_multiscale_arg_0d_char_fscanf (string, mid, *pval);
+    net_multiscale_arg_0d_char_fscanf (expr, mid, *pval);
     (*pval) = ut_realloc_1d_char (*pval, strlen (*pval) + 1);
   }
 
   else
-    ut_string_string (string, pval);
+    ut_string_string (expr, pval);
 
   ut_free_1d_char (&mid);
+  ut_free_1d_char (&expr);
 
   return 0;
 }
@@ -971,6 +963,8 @@ net_pts_convexhull (double **coos, int qty, int dim, struct NODES *pN,
 int
 net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet)
 {
+  int i, master;
+
   neut_seedset_free (pSSet);
   neut_seedset_set_zero (pSSet);
 
@@ -1002,8 +996,10 @@ net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet)
     ut_array_2d_memcpy (Tess.CellOri + 1, (*pSSet).N, 4, (*pSSet).SeedOri + 1);
   }
 
+  ut_free_1d_int (&(*pSSet).Periodic);
   (*pSSet).Periodic = ut_alloc_1d_int (3);
   ut_array_1d_int_memcpy (Tess.Periodic, 3, (*pSSet).Periodic);
+  ut_free_1d (&(*pSSet).PeriodicDist);
   (*pSSet).PeriodicDist = ut_alloc_1d (3);
   ut_array_1d_memcpy (Tess.PeriodicDist, 3, (*pSSet).PeriodicDist);
 
@@ -1015,13 +1011,15 @@ net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet)
     (*pSSet).PerSeedShift = ut_alloc_2d_int ((*pSSet).Nall + 1, 3);
     ut_array_2d_int_memcpy (Tess.PerSeedShift + 1, (*pSSet).Nall, 3,
                             (*pSSet).PerSeedShift + 1);
+    // slaves of a master, recorded 1...qty (at most 3^dim - 1)
     (*pSSet).PerSeedSlaveQty = ut_alloc_1d_int ((*pSSet).N + 1);
-    ut_array_1d_int_set ((*pSSet).PerSeedSlaveQty + 1, (*pSSet).N,
-                         pow (3, (*pSSet).Dim));
     (*pSSet).PerSeedSlaveNb =
       ut_alloc_2d_int ((*pSSet).N + 1, pow (3, (*pSSet).Dim));
-    ut_array_2d_int_memcpy (Tess.PerSeedShift + 1, (*pSSet).N,
-                            pow (3, (*pSSet).Dim), (*pSSet).PerSeedShift + 1);
+    for (i = (*pSSet).N + 1; i <= (*pSSet).Nall; i++)
+    {
+      master = (*pSSet).PerSeedMaster[i];
+      (*pSSet).PerSeedSlaveNb[master][++(*pSSet).PerSeedSlaveQty[master]] = i;
+    }
   }
 
   return 0;

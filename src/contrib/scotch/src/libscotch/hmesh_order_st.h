@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,6 +43,8 @@
 /**                                 to   : 08 feb 2004     **/
 /**                # Version 6.0  : from : 07 jun 2018     **/
 /**                                 to   : 07 jun 2018     **/
+/**                # Version 7.0  : from : 11 sep 2024     **/
+/**                                 to   : 07 nov 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -64,6 +66,10 @@ typedef enum HmeshOrderStMethodType_ {
   HMESHORDERSTMETHNBR                             /*+ Number of methods                     +*/
 } HmeshOrderStMethodType;
 
+/*+ Method function pointer type. +*/
+
+typedef int (* HmeshOrderFunc) (Hmesh * restrict const, Order * restrict const, const Gnum, OrderCblk * restrict const, const void * const);
+
 /*
 **  The external declarations.
 */
@@ -74,4 +80,4 @@ extern StratTab             hmeshorderststratab;
 **  The function prototypes.
 */
 
-int                         hmeshOrderSt       (const Hmesh * restrict const, Order * restrict const, const Gnum, OrderCblk * restrict const, const Strat * const);
+int                         hmeshOrderSt       (Hmesh * restrict const, Order * restrict const, const Gnum, OrderCblk * restrict const, const Strat * const);

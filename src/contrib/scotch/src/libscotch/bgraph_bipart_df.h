@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2011,2012,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2011,2012,2018,2019,2021,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -45,6 +45,8 @@
 /**                                 to   : 28 mar 2011     **/
 /**                # Version 6.0  : from : 08 nov 2011     **/
 /**                                 to   : 05 apr 2018     **/
+/**                # Version 7.0  : from : 08 jun 2018     **/
+/**                                 to   : 09 aug 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -78,40 +80,33 @@ typedef struct BgraphBipartDfParam_ {
   BgraphBipartDfType        typeval;              /*+ Type of balance to reach +*/
 } BgraphBipartDfParam;
 
+/*+ The thread-specific data block. +*/
+
+typedef struct BgraphBipartDfThread_ {
+  Gnum                      fronnnd[2];           /*+ After-last frontier vertex index; [2] for scan +*/
+  Gnum                      compload1[2];         /*+ State return values to aggregate               +*/
+  Gnum                      compsize1[2];
+  Gnum                      commloadextn[2];
+  Gnum                      commloadintn[2];
+  Gnum                      commgainextn[2];
+  float                     vanctab[2];           /*+ Area for (reducing) contributions to anchors   +*/
+  Gnum                      veexsum;              /*+ Area for reducing sums of external gains       +*/
+  Gnum                      veexsum1;
+} BgraphBipartDfThread;
+
 /*+ The loop routine parameter
     structure. It contains the
     thread-independent data.   +*/
 
 typedef struct BgraphBipartDfData_ {
-  ThreadGroupHeader         thrddat;
-  Bgraph *                  grafptr;              /*+ Graph to work on          +*/
-  float *                   difntax;              /*+ New diffusion value array +*/
-  float *                   difotax;              /*+ Old diffusion value array +*/
-  INT                       passnbr;              /*+ Number of passes          +*/
-  Gnum                      vanctab[2];           /*+ Anchor load arrays        +*/
-#ifdef BGRAPHBIPARTDFTHREAD
-  int                       abrtval;              /*+ Abort value               +*/
-#endif /* BGRAPHBIPARTDFTHREAD */
+  Bgraph *                  grafptr;              /*+ Graph to work on              +*/
+  float *                   difntax;              /*+ New diffusion value array     +*/
+  float *                   difotax;              /*+ Old diffusion value array     +*/
+  BgraphBipartDfThread *    thrdtab;              /*+ Array of thread-specific data +*/
+  INT                       passnbr;              /*+ Number of passes              +*/
+  float                     vanctab[2];           /*+ Anchor load arrays            +*/
+  int                       abrtval;              /*+ Abort value                   +*/
 } BgraphBipartDfData;
-
-/*+ The thread-specific data block. +*/
-
-typedef struct BgraphBipartDfThread_ {
-  ThreadHeader              thrddat;              /*+ Thread management data                       +*/
-  Gnum                      vertbas;              /*+ Minimum regular vertex index                 +*/
-  Gnum                      vertnnd;              /*+ After-last regular vertex index              +*/
-  Gnum                      fronnnd;              /*+ After-last frontier vertex index             +*/
-  Gnum                      compload1;            /*+ State return values to aggregate             +*/
-  Gnum                      compsize1;
-  Gnum                      commloadextn;
-  Gnum                      commloadintn;
-  Gnum                      commgainextn;
-  float                     vanctab[2];           /*+ Area for (reducing) contributions to anchors +*/
-#ifdef BGRAPHBIPARTDFTHREAD
-  Gnum                      veexsum;              /*+ Area for reducing sums of external gains     +*/
-  Gnum                      veexsum1;
-#endif /* BGRAPHBIPARTDFTHREAD */
-} BgraphBipartDfThread;
 
 /*
 **  The function prototypes.

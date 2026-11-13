@@ -1,4 +1,4 @@
-/* Copyright 2012,2016 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2012,2016,2021,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -42,14 +42,14 @@
 /**                                 to   : 17 oct 2012     **/
 /**                # Version 6.0  : from : 23 aug 2014     **/
 /**                                 to   : 15 aug 2016     **/
+/**                # Version 7.0  : from : 26 apr 2021     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HGRAPH_ORDER_KP
 
 #include "module.h"
 #include "common.h"
@@ -79,13 +79,14 @@
 
 int
 hgraphOrderKp (
-const Hgraph * restrict const             grafptr,
+Hgraph * restrict const                   grafptr,
 Order * restrict const                    ordeptr,
 const Gnum                                ordenum, /*+ Zero-based ordering number +*/
 OrderCblk * restrict const                cblkptr, /*+ Single column-block        +*/
 const HgraphOrderKpParam * restrict const paraptr)
 {
   Kgraph              actgrafdat;
+  Arch                archdat;
   Gnum * restrict     ordetab;
   Gnum                ordeadj;
   Anum * restrict     parttax;
@@ -102,20 +103,20 @@ const HgraphOrderKpParam * restrict const paraptr)
 
   if ((cblkptr->cblktab = (OrderCblk *) memAlloc (partnbr * sizeof (OrderCblk))) == NULL) { /* Allocate first as it will remain */
     errorPrint ("hgraphOrderKp: out of memory (1)");
-    return     (1);
+    return (1);
   }
 
-  memSet (&actgrafdat, 0, sizeof (Kgraph));       /* Allow for freeing on subsequent error      */
   hgraphUnhalo (grafptr, &actgrafdat.s);          /* Extract non-halo part of given graph       */
   actgrafdat.s.vnumtax = NULL;                    /* Do not keep numbers from nested dissection */
 
-  SCOTCH_archCmplt ((SCOTCH_Arch *) &actgrafdat.a, (SCOTCH_Num) partnbr); /* Build complete graph architecture */
+  SCOTCH_archCmplt ((SCOTCH_Arch *) &archdat, (SCOTCH_Num) partnbr); /* Build complete graph architecture */
 
-  if ((kgraphInit (&actgrafdat, &actgrafdat.s, &actgrafdat.a, NULL, 0, NULL, NULL, 1, 1, NULL) != 0) ||
+  if ((kgraphInit  (&actgrafdat, &actgrafdat.s, &archdat, NULL, 0, NULL, 1, 1, NULL) != 0) ||
       (kgraphMapSt (&actgrafdat, paraptr->strat) != 0)) {
     errorPrint ("hgraphOrderKp: cannot compute partition");
-    memFree    (cblkptr->cblktab);
     kgraphExit (&actgrafdat);
+    archExit   (&archdat);
+    memFree    (cblkptr->cblktab);
     cblkptr->cblktab = NULL;
     return (1);
   }
@@ -124,8 +125,9 @@ const HgraphOrderKpParam * restrict const paraptr)
                      &ordetab, (size_t) (partnbr          * sizeof (Gnum)),
                      &parttax, (size_t) (grafptr->vnohnbr * sizeof (Anum)), NULL) == NULL) {
     errorPrint ("hgraphOrderKp: out of memory (2)");
-    memFree    (cblkptr->cblktab);
     kgraphExit (&actgrafdat);
+    archExit   (&archdat);
+    memFree    (cblkptr->cblktab);
     cblkptr->cblktab = NULL;
     return (1);
   }
@@ -147,7 +149,7 @@ const HgraphOrderKpParam * restrict const paraptr)
     ordetab[partnum] = ordeadj;
     ordeadj += ordetmp;
     if (ordetmp != 0) {                           /* If part is not empty, one more column block */
-      cblkptr->cblktab[cblknbr].typeval = ORDERCBLKOTHR;
+      cblkptr->cblktab[cblknbr].typeval = ORDERCBLKLEAF;
       cblkptr->cblktab[cblknbr].vnodnbr = ordetmp;
       cblkptr->cblktab[cblknbr].cblknbr = 0;
       cblkptr->cblktab[cblknbr].cblktab = NULL;
@@ -155,9 +157,16 @@ const HgraphOrderKpParam * restrict const paraptr)
     }
   }
 
+  cblkptr->typeval = ORDERCBLKSEQU;               /* Node becomes a sequence of blocks */
+  cblkptr->cblknbr = cblknbr;
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_lock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
   ordeptr->treenbr += cblknbr;                    /* These more number of tree nodes    */
   ordeptr->cblknbr += cblknbr - 1;                /* These more number of column blocks */
-  cblkptr->cblknbr  = cblknbr;
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_unlock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
 
   peritab = ordeptr->peritab;
   if (grafptr->s.vnumtax == NULL) {               /* If graph is original graph */
@@ -174,6 +183,7 @@ const HgraphOrderKpParam * restrict const paraptr)
 
   memFree    (ordetab);                           /* Free group leader */
   kgraphExit (&actgrafdat);
+  archExit   (&archdat);
 
   return (0);
 }

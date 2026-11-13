@@ -50,7 +50,7 @@ nem_reconstruct_tesr_tesr (struct TESR Tesr, struct TESS *pTess,
     dsize[i] = Tesr.size[i] * Tesr.vsize[i];
 
   neut_mesh_str (Tesr.Dim, Tesr.size, NULL, pNodes, Mesh + Tesr.Dim,
-                 NSet + Tesr.Dim - 1);
+                 Mesh + 5, NSet + Tesr.Dim - 1);
   neut_nodes_scale (pNodes, dsize[0], dsize[1], dsize[2]);
 
   elt = 0;

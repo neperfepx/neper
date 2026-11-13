@@ -1,13 +1,13 @@
-.. _simple_model:
+.. _voronoi_tessellation:
 
-Generating a Voronoi Tessellation
-=================================
+Generating a Voronoi Tessellation (-T)
+======================================
 
 .. note::
 
-  This tutorial presents the :option:`-n`, :option:`-id`, :option:`-dim` and :option:`-domain` options of the :ref:`neper_t`. For details on the use of the :ref:`neper_v` in this tutorial, see :ref:`visualize_tessellation`.
+  This tutorial presents the :option:`-n`, :option:`-id`, :option:`-dim`, :option:`-format` and :option:`-tesrsize` options of the :ref:`neper_t`. For details on the use of the :ref:`neper_v` in this tutorial, see :ref:`visualize_tessellation`.
 
-  To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :option:`--rcfile`)::
+  To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :data:`--rcfile`)::
 
     neper -V -imagesize 800:400
 
@@ -76,27 +76,6 @@ Note that, because the generation is non-deterministic, you (or anyone else) won
 
 .. .. note :: :option:`-n` and :option:`-id` apply to most types of tessellations, not only Voronoi tessellations.  For regular tessellations with regular cell shapes (e.g. cubes), :option:`-id` does not affect the grain shapes, but it does change their relative locations and crystal orientations.
 
-Defining the Domain (:option:`-domain`)
----------------------------------------
-
-The domain can be defined using :option:`-domain` (the default value is :data:`"cube(1,1,1)"` in 3D and :data:`"square(1,1)"` in 2D). For example, a cylindrical domain of height 1.5 and diameter 1 can be obtained as follows:
-
-.. code-block:: console
-
-  $ neper -T -n 100 -domain "cylinder(1.5,1)"
-
-This produces a :ref:`tess_file` named :file:`n100-id1.tess`.
-
-The tessellation can be visualized as follows, with semi-transparent edges emphasizing the faceted representation of the domain:
-
-.. code-block:: console
-
-  $ neper -V n100-id1.tess -dataedgetrs "((cyl!=1)?0:0.6)" -print img2
-
-.. image:: voronoi_tessellation/img2.png
-
-.. note :: Complex domains can be generated using :option:`-domain` together with :option:`-transform` :data:`cut`.
-
 Switching to 2D (:option:`-dim`)
 --------------------------------
 
@@ -112,8 +91,25 @@ The tessellation can be visualized as before:
 
 .. code-block:: console
 
-  $ neper -V n100-id1.tess -print img3
+  $ neper -V n100-id1.tess -print img2
+
+.. image:: voronoi_tessellation/img2.png
+
+Writing a Raster Tessellation (:option:`-format`)
+-------------------------------------------------
+
+A tessellation can be written in raster format (as a :ref:`tesr_file`), i.e. as an image made of voxels, as typically used in fast Fourier transform (FFT)-based simulations, using :option:`-format` :data:`tesr`.  The number of voxels along each direction can be specified using :option:`-tesrsize` (the default value is :data:`20`).  For example, to write a tessellation in both scalar and raster formats, on a raster of :math:`64 \times 64 \times 64` voxels:
+
+.. code-block:: console
+
+  $ neper -T -n 100 -format tess,tesr -tesrsize 64
+
+This produces a :ref:`tess_file` named :file:`n100-id1.tess` and a :ref:`tesr_file` named :file:`n100-id1.tesr`.
+
+The raster tessellation can be visualized as before:
+
+.. code-block:: console
+
+  $ neper -V n100-id1.tesr -print img3
 
 .. image:: voronoi_tessellation/img3.png
-
-.. [CMAME2011] :ref:`px`.

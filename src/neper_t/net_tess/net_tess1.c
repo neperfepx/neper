@@ -27,14 +27,20 @@ net_tess (struct IN_T In, int level, struct TESS *Tess, int dtess, int dcell,
   if (neut_tess_cell_isvoid (Tess[dtess], dcell))
     return 0;
 
+  // periodicity applies to the tessellation of scale 1 only (In is a copy)
+  if (level > 1)
+    In.periodic = ut_alloc_1d_int (3);
+
   // Generating morphology -----------------------------------------------------
 
   neut_mtess_argument_process (*pMTess, Tess, dtess, dcell, In.morpho[level], &morpho);
+  if (!strcmp (morpho, "centroidal"))
+    ut_string_string ("centroid:seed", &morpho);
 
   // initializing domain (do not use net_tess_poly_tess for the
   // non-periodic case as it will loose domain information needed for
   // multiscale).
-  periodic = ut_array_1d_int_sum (In.periodic, 3) && (level == 1);
+  periodic = ut_array_1d_int_sum (In.periodic, 3);
   if (periodic)
     net_tess_perdomain (In, Tess[dtess], dcell, &Dom);
   else
@@ -109,6 +115,8 @@ net_tess (struct IN_T In, int level, struct TESS *Tess, int dtess, int dcell,
   neut_tess_free (&Dom);
   ut_free_1d_char (&morpho);
   ut_free_1d_char (&ori);
+  if (level > 1)
+    ut_free_1d_int (&In.periodic);
 
   return status;
 }

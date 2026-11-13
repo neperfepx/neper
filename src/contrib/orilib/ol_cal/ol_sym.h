@@ -14,6 +14,8 @@ extern "C"
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
+#include<limits.h>
+#include<float.h>
 #include"ut.h"
 #include"../ol_cal.h"
 

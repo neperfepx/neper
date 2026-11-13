@@ -31,7 +31,7 @@ extern void neut_sim_entity_addexpr (struct SIM *pSim, char *entity, char *expr)
 /// \param entity: result entity = node, element, etc.
 /// \param resexpr: result and expression (expression optional)
 /// \param expr: expression (expression optional)
-extern void neut_sim_addres (struct SIM *pSim, char *entity, char *resexpr, char *expr);
+extern void neut_sim_addres (struct SIM *pSim, char *entity, char *resexpr, char *expr, char *type);
 
 /// \brief Remove a result from a \c struct \c SIM
 /// \param *pSim: simulation
@@ -71,5 +71,6 @@ extern void neut_sim_reset (struct SIM *pSim);
 
 extern void neut_sim_entity_init_type (struct SIM *pSim, char *entity);
 extern void neut_sim_entity_init_memberqty (struct SIM *pSim, char *entity);
+extern void neut_sim_init_memberqty (struct SIM *pSim);
 
 #endif /* NEUT_SIM_OP_H */

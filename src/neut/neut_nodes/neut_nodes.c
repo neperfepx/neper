@@ -64,6 +64,7 @@ neut_nodes_free (struct NODES *pNodes)
   ut_free_1d_int (&(*pNodes).PerNodeMaster);
   ut_free_2d_int (&(*pNodes).PerNodeShift, (*pNodes).NodeQty + 1);
   ut_free_2d_int (&(*pNodes).PerNodeSlaveNb, (*pNodes).NodeQty + 1);
+  ut_free_1d_int (&(*pNodes).PerNodeSlaveQty);
 
   ut_free_1d_int (&(*pNodes).DupNodeNb);
   ut_free_1d_int (&(*pNodes).DupNodeMaster);
@@ -114,16 +115,16 @@ neut_nodes_rotate (struct NODES *pNodes, double r1, double r2, double r3,
 {
   int i;
   double **g = ol_g_alloc ();
-  double *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
 
-  ol_r_set_this (r, r1, r2, r3);
-  ol_rtheta_g (r, -theta, g);
+  ol_rtheta_set_this (rtheta, r1, r2, r3, -theta);
+  ol_rtheta_g (rtheta, g);
 
   for (i = 1; i <= (*pNodes).NodeQty; i++)
     ol_g_vect_vect (g, (*pNodes).NodeCoo[i], (*pNodes).NodeCoo[i]);
 
-  ol_g_free (g);
-  ol_r_free (r);
+  ol_g_free (&g);
+  ol_rtheta_free (&rtheta);
 
   return;
 }
@@ -235,6 +236,35 @@ neut_nodes_addnode (struct NODES *pNodes, double *NodeCoo, double NodeCl)
     (*pNodes).PerNodeSlaveNb[(*pNodes).NodeQty] = NULL;
   }
 
+  // duplicate nodes (the new node is not a duplicate node)
+  if ((*pNodes).DupNodeMaster)
+  {
+    (*pNodes).DupNodeMaster =
+      ut_realloc_1d_int ((*pNodes).DupNodeMaster, (*pNodes).NodeQty + 1);
+    (*pNodes).DupNodeMaster[(*pNodes).NodeQty] = 0;
+  }
+
+  if ((*pNodes).DupNodeSeed)
+  {
+    (*pNodes).DupNodeSeed =
+      ut_realloc_1d_int ((*pNodes).DupNodeSeed, (*pNodes).NodeQty + 1);
+    (*pNodes).DupNodeSeed[(*pNodes).NodeQty] = 0;
+  }
+
+  if ((*pNodes).DupNodeSlaveQty)
+  {
+    (*pNodes).DupNodeSlaveQty =
+      ut_realloc_1d_int ((*pNodes).DupNodeSlaveQty, (*pNodes).NodeQty + 1);
+    (*pNodes).DupNodeSlaveQty[(*pNodes).NodeQty] = 0;
+  }
+
+  if ((*pNodes).DupNodeSlaveNb)
+  {
+    (*pNodes).DupNodeSlaveNb =
+      ut_realloc_1d_pint ((*pNodes).DupNodeSlaveNb, (*pNodes).NodeQty + 1);
+    (*pNodes).DupNodeSlaveNb[(*pNodes).NodeQty] = NULL;
+  }
+
   return (*pNodes).NodeQty;
 }
 
@@ -263,12 +293,14 @@ neut_nodes_memcpy (struct NODES Nodes, struct NODES *pNodes2)
 
   if (Nodes.Periodic)
   {
+    ut_free_1d_int (&(*pNodes2).Periodic);
     (*pNodes2).Periodic = ut_alloc_1d_int (3);
     ut_array_1d_int_memcpy (Nodes.Periodic, 3, (*pNodes2).Periodic);
   }
 
   if (Nodes.PeriodicDist)
   {
+    ut_free_1d (&(*pNodes2).PeriodicDist);
     (*pNodes2).PeriodicDist = ut_alloc_1d (3);
     ut_array_1d_memcpy (Nodes.PeriodicDist, 3, (*pNodes2).PeriodicDist);
   }
@@ -370,10 +402,13 @@ neut_nodes_memcpy (struct NODES Nodes, struct NODES *pNodes2)
 
     if (Nodes.DupNodeSlaveNb)
     {
+      // (slave lists of the master nodes)
       (*pNodes2).DupNodeSlaveNb = ut_alloc_1d_pint ((*pNodes2).NodeQty + 1);
-      for (i = 1; i <= (*pNodes2).DupNodeQty; i++)
+      for (id = 1; id <= (*pNodes2).NodeQty; id++)
       {
-        id = (*pNodes2).DupNodeNb[i];
+        if ((*pNodes2).DupNodeSlaveQty[id] == 0)
+          continue;
+
         (*pNodes2).DupNodeSlaveNb[id] =
           ut_alloc_1d_int ((*pNodes2).DupNodeSlaveQty[id] + 1);
 
@@ -478,6 +513,20 @@ neut_nodes_point_closestnode (struct NODES Nodes, double *coo, int *pnode)
   ut_free_1d (&dist);
 
   return 0;
+}
+
+double
+neut_nodes_point_clgrad (struct NODES Nodes, double *coo, double cl,
+                         double clgrad)
+{
+  int i;
+  double val = cl;
+
+  for (i = 1; i <= Nodes.NodeQty; i++)
+    val = ut_num_min (val, Nodes.NodeCl[i]
+                           + clgrad * ut_space_dist (Nodes.NodeCoo[i], coo));
+
+  return val;
 }
 
 int
@@ -665,7 +714,9 @@ neut_nodes_renumber_switch (struct NODES *pNodes, int *node_nbs)
 
     for (i = 1; i <= (*pNodes).NodeQty; i++)
     {
-      (*pNodes).PerNodeMaster[node_nbs[i]] = node_nbs[Nodes2.PerNodeMaster[i]];
+      // (0 for a master node)
+      (*pNodes).PerNodeMaster[node_nbs[i]] = (Nodes2.PerNodeMaster[i] > 0) ?
+        node_nbs[Nodes2.PerNodeMaster[i]] : 0;
       ut_array_1d_int_memcpy (Nodes2.PerNodeShift[i], 3, (*pNodes).PerNodeShift[node_nbs[i]]);
       (*pNodes).PerNodeSlaveQty[node_nbs[i]] = Nodes2.PerNodeSlaveQty[i];
       if ((*pNodes).PerNodeSlaveQty[node_nbs[i]])
@@ -681,11 +732,16 @@ neut_nodes_renumber_switch (struct NODES *pNodes, int *node_nbs)
   if ((*pNodes).DupNodeQty > 0)
   {
     for (i = 1; i <= (*pNodes).DupNodeQty; i++)
-      (*pNodes).DupNodeNb[i] = node_nbs[i];
+      (*pNodes).DupNodeNb[i] = node_nbs[Nodes2.DupNodeNb[i]];
+
+    for (i = 1; i <= (*pNodes).NodeQty; i++)
+      ut_free_1d_int ((*pNodes).DupNodeSlaveNb + i);
 
     for (i = 1; i <= (*pNodes).NodeQty; i++)
     {
-      (*pNodes).DupNodeMaster[node_nbs[i]] = node_nbs[Nodes2.DupNodeMaster[i]];
+      // (0 for a master node)
+      (*pNodes).DupNodeMaster[node_nbs[i]] = (Nodes2.DupNodeMaster[i] > 0) ?
+        node_nbs[Nodes2.DupNodeMaster[i]] : 0;
       (*pNodes).DupNodeSeed[node_nbs[i]] = Nodes2.DupNodeSeed[i];
       (*pNodes).DupNodeSlaveQty[node_nbs[i]] = Nodes2.DupNodeSlaveQty[i];
       if ((*pNodes).DupNodeSlaveQty[node_nbs[i]])
@@ -1083,9 +1139,9 @@ neut_nodes_stdtrianglenodeori (struct NODES Nodes, int node, double *dir0, doubl
   ol_vect_vect_g (dir, v, g);
   ol_g_q (g, q);
 
-  ol_vect_free (v);
-  ol_vect_free (dir);
-  ol_g_free (g);
+  ol_vect_free (&v);
+  ol_vect_free (&dir);
+  ol_g_free (&g);
 
   return;
 }

@@ -7,16 +7,39 @@
 void
 nev_print_data_mesh (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes,
                       struct MESH **pMesh, char *entity_in, char *attribute,
-                      char *datastring, struct DATA **MeshData)
+                      char *datastring_in, char *space, struct DATA **MeshData)
 {
   int dim, entityqty;
   struct DATA *pData = NULL;
-  char *entity = NULL, *type = NULL, *value = NULL;;
+  char *entity = NULL, *type = NULL, *value = NULL, *datastring = NULL;
 
   ut_string_string (entity_in, &entity);
+  ut_string_string (datastring_in, &datastring);
 
   nev_print_data_mesh_init (*pMesh, MeshData, &entity, attribute, datastring,
                             &dim, &entityqty, &type, &value, &pData);
+
+  // radius: `default' variable
+  if (!strcmp (attribute, "rad") && value)
+  {
+    int cellqty;
+    double size, defrad = -1;
+    char *tmp = NULL;
+
+    nev_print_mesh_size_cellqty (*pNodes, *pMesh, &size, &cellqty);
+
+    if (dim <= 3 && strstr (entity, "edge"))
+      nev_print_mesh_defedgerad (size, cellqty, dim, space, &defrad);
+    else if (dim <= 3)
+      nev_print_mesh_defrad (size, cellqty, dim, &defrad);
+
+    nev_print_rad_default (value, defrad, &tmp);
+    ut_string_string (tmp, &value);
+    ut_free_1d_char (&tmp);
+    nev_print_rad_default (datastring, defrad, &tmp);
+    ut_string_string (tmp, &datastring);
+    ut_free_1d_char (&tmp);
+  }
 
   // element data: elt0d, elt1d, elt2d or elt3d
   if (strstr (entity, "elt") && !strstr (entity, "edge"))
@@ -36,6 +59,7 @@ nev_print_data_mesh (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes,
   ut_free_1d_char (&entity);
   ut_free_1d_char (&type);
   ut_free_1d_char (&value);
+  ut_free_1d_char (&datastring);
 
   return;
 }

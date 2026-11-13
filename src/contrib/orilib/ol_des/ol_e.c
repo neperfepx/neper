@@ -4,7 +4,7 @@
 #include "ol_e.h"
 
 double *
-ol_e_alloc ()
+ol_e_alloc (void)
 {
   double *e = ut_alloc_1d (3);
 
@@ -12,12 +12,9 @@ ol_e_alloc ()
 }
 
 void
-ol_e_free (double *e)
+ol_e_free (double **pe)
 {
-  if (!e)
-    return;
-  else
-    free (e);
+  ut_free_1d (pe);
 
   return;
 }
@@ -69,6 +66,8 @@ ol_g_e (double **g, double *e)
 void
 ol_g_e_rad (double **g, double *e)
 {
+  /* note: the tolerance on phi (in rad) is OL_EPS_DEG, as phi is obtained
+     from an arccosine, which is ill-conditioned near 0 and pi */
   e[1] = ut_num_acos (g[2][2]);
 
   if (fabs (e[1]) > OL_EPS_DEG && fabs (e[1] - OL_PI) > OL_EPS_DEG)
@@ -81,6 +80,8 @@ ol_g_e_rad (double **g, double *e)
     e[0] = atan2 (g[0][1], g[0][0]);
     e[2] = 0;
   }
+
+  ol_e_e_rad (e, e);
 
   return;
 }
@@ -95,7 +96,7 @@ ol_e_g (double *e, double **g)
 
   ol_e_g_rad (e2, g);
 
-  ol_e_free (e2);
+  ol_e_free (&e2);
 
   return;
 }
@@ -131,6 +132,8 @@ ol_e_e (double *e, double *e2)
 void
 ol_e_e_rad (double *e, double *e2)
 {
+  /* note: the tolerance on phi (in rad) is OL_EPS_DEG, as phi is obtained
+     from an arccosine, which is ill-conditioned near 0 and pi */
   int i;
 
   for (i = 0; i < 3; i++)
@@ -218,93 +221,6 @@ ol_e_fscanf (FILE * file, double *e)
     return 1;
   else
     return 0;
-}
-
-void
-ol_e_R (double *e, double *R)
-{
-  double *q = ol_q_alloc ();
-
-  ol_e_q (e, q);
-  ol_q_R (q, R);
-
-  ol_q_free (q);
-
-  return;
-}
-
-void
-ol_e_R_rad (double *e, double *R)
-{
-  double *q = ol_q_alloc ();
-
-  ol_e_q_rad (e, q);
-  ol_q_R (q, R);
-
-  ol_q_free (q);
-
-  return;
-}
-
-void
-ol_e_rtheta (double *e, double *r, double *ptheta)
-{
-  double *q = ol_q_alloc ();
-
-  ol_e_q (e, q);
-  ol_q_rtheta (q, r, ptheta);
-
-  ol_q_free (q);
-
-  return;
-}
-
-void
-ol_e_rtheta_rad (double *e, double *r, double *ptheta)
-{
-  double *q = ol_q_alloc ();
-
-  ol_e_q_rad (e, q);
-  ol_q_rtheta_rad (q, r, ptheta);
-
-  ol_q_free (q);
-
-  return;
-}
-
-void
-ol_e_r (double *e, double *r)
-{
-  double *q = ol_q_alloc ();
-
-  ol_e_q (e, q);
-  ol_q_r (q, r);
-
-  ol_q_free (q);
-
-  return;
-}
-
-void
-ol_e_theta_rad (double *e, double *ptheta)
-{
-  double *q = ol_q_alloc ();
-
-  ol_e_q_rad (e, q);
-  ol_q_theta_rad (q, ptheta);
-
-  ol_q_free (q);
-
-  return;
-}
-
-void
-ol_e_theta (double *e, double *ptheta)
-{
-  ol_e_theta_rad (e, ptheta);
-  ol_theta_rad2deg (*ptheta, ptheta);
-
-  return;
 }
 
 void

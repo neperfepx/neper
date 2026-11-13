@@ -517,3 +517,55 @@ nem_nsets_1dbody_str (struct NSET *NSet)
 
   return;
 }
+
+void
+nem_nsets_custom (struct IN_M In, struct TESS Tess, struct NODES Nodes,
+                  struct MESH *Mesh, struct NSET *NSet)
+{
+  int i, j, k, qty, id, null;
+  char **list = NULL, *label = NULL, *expr = NULL;
+
+  ut_list_break (In.nset, NEUT_SEP_NODEP, &list, &qty);
+
+  for (i = 0; i < qty; i++)
+  {
+    expr = strchr (list[i], ':');
+
+    if (!expr)
+      continue;
+
+    label = ut_alloc_1d_char (expr - list[i] + 1);
+    strncpy (label, list[i], expr - list[i]);
+    expr++;
+
+    if (strlen (label) == 0 || strlen (expr) == 0)
+      ut_print_message (2, 2, "Failed to process nset `%s'.\n", list[i]);
+
+    for (j = 0; j < 3; j++)
+      for (k = 1; k <= NSet[j].qty; k++)
+        if (!strcmp (NSet[j].names[k], label))
+          ut_print_message (2, 2, "Nset `%s' already exists.\n", label);
+
+    ut_print_message (0, 2, "%s...\n", label);
+
+    // indexed 1...qty; entry 0 must be nulled on first allocation
+    null = (NSet[0].qty == 0) ? 2 : 1;
+    id = ++NSet[0].qty;
+    NSet[0].names = ut_realloc_1d_pchar_null (NSet[0].names, id + 1, null);
+    NSet[0].nodes = ut_realloc_1d_pint_null (NSet[0].nodes, id + 1, null);
+    NSet[0].NodeQty = ut_realloc_1d_int (NSet[0].NodeQty, id + 1);
+
+    ut_string_string (label, NSet[0].names + id);
+    nem_nsets_custom_expr (Tess, Nodes, Mesh, expr, NSet[0].nodes + id,
+                           NSet[0].NodeQty + id);
+
+    if (NSet[0].NodeQty[id] == 0)
+      ut_print_message (1, 3, "Nset `%s' is empty.\n", label);
+
+    ut_free_1d_char (&label);
+  }
+
+  ut_free_2d_char (&list, qty);
+
+  return;
+}

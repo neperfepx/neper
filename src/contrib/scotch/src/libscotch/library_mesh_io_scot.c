@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,14 +41,14 @@
 /**                                                        **/
 /**   DATES      : # Version 4.0  : from : 19 jan 2004     **/
 /**                                 to   : 19 jan 2004     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 21 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -65,11 +65,11 @@
 /*                                   */
 /*************************************/
 
-/*+ This routine loads the given opaque mesh
-*** structure with the data of the given stream.
-*** - 0   : if loading succeeded.
-*** - !0  : on error.
-+*/
+/* This routine loads the given opaque mesh
+** structure with the data of the given stream.
+** - 0   : if loading succeeded.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshGeomLoadScot (
@@ -82,12 +82,12 @@ const char * const            dataptr)            /* No use */
   return (meshGeomLoadScot ((Mesh *) meshptr, (Geom *) geomptr, filesrcptr, filegeoptr, NULL));
 }
 
-/*+ This routine saves the contents of the given
-*** opaque mesh structure to the given stream.
-*** It returns:
-*** - 0   : if the saving succeeded.
-*** - !0  : on error.
-+*/
+/* This routine saves the contents of the given
+** opaque mesh structure to the given stream.
+** It returns:
+** - 0   : if the saving succeeded.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_meshGeomSaveScot (

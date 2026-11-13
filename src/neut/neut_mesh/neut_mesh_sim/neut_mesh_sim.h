@@ -12,7 +12,7 @@ extern "C"
 
 #endif				/* NEUT_MESH_ORI_H */
 
-extern void neut_mesh_sim (char *simdir, struct TESS Tess, struct NODES Nodes, struct MESH *Mesh, struct SIM *pSim);
+extern void neut_mesh_sim (struct NODES Nodes, struct MESH *Mesh, struct SIM *pSim);
 
 #ifdef __cplusplus
 }

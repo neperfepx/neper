@@ -36,7 +36,7 @@ neut_data_fscanf_ori (struct SIM Sim, char *entity, char *datavalue, int qty,
   else
     neut_data_fscanf_ori_file (Sim, datavalue, qty, pColData);
 
-  ol_g_free (g);
+  ol_g_free (&g);
   neut_simres_free (&SimRes);
 
   return;
@@ -266,7 +266,7 @@ neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
                 if (!status)
                   ol_q_q_qdisori (q, (*pTesr).VoxOri[i][j][k],
                                   (*pTesr).CellCrySym, ori[++id]);
-                ol_q_free (q);
+                ol_q_free (&q);
               }
 
               else

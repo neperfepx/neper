@@ -36,16 +36,12 @@ UpdateFaceState (struct TESS *pTess, int delver, int newver)
   return;
 }
 
-/* Delete ver from face; note that this routine DOES NOT modify
- * FaceVerQty (it is also the face edge quantity).
- * FaceVerQty is to be modified either in DeleteVerFromFacep
- * or in net_reg_merge_delFromFacep, if UpdateFaceVer is after UpdateFaceEdgep
- * and if vice versa, respectively.
+/* Delete ver from face (FaceVerQty is updated by DeleteVerFromFace)
  */
-void
+int
 UpdateFaceVer (struct TESS *pTess, int delver, int newver, int verbosity)
 {
-  int i, j, face, NewVerFaceQty, DelVerFaceQty;
+  int i, j, face, NewVerFaceQty, DelVerFaceQty, err = 0;
   int *NewVerFace = NULL;
   int *DelVerFace = NULL;
 
@@ -70,22 +66,22 @@ UpdateFaceVer (struct TESS *pTess, int delver, int newver, int verbosity)
     }
 
     if (ut_array_1d_int_eltpos (NewVerFace, NewVerFaceQty, face) != -1)
-      DeleteVerFromFace (pTess, face, delver, verbosity);
+      err = DeleteVerFromFace (pTess, face, delver, verbosity);
     else
-      ReplaceVerInFace (pTess, face, delver, newver);
+      err = ReplaceVerInFace (pTess, face, delver, newver);
+
+    if (err)
+      break;
   }
 
   ut_free_1d_int (&NewVerFace);
   ut_free_1d_int (&DelVerFace);
 
-  return;
+  return err;
 }
 
-/* Delete edge from face; note that this routine MODIFIES
- * FaceVerQty (it is also the face edge quantity).
- * FaceVerQty is to be modified either in DeleteVerFromFacep
- * or in net_reg_merge_delFromFacep, if UpdateFaceVer is after UpdateFaceEdgep
- * and vice versa, respectively.
+/* Delete edge from face (FaceEdgeQty is updated by
+ * net_reg_merge_delFromFace)
  */
 int
 UpdateFaceEdge (struct TESS *pTess, int edge, int verbosity)
@@ -97,6 +93,11 @@ UpdateFaceEdge (struct TESS *pTess, int edge, int verbosity)
   for (i = 0; i < (*pTess).EdgeFaceQty[edge]; i++)
   {
     face = (*pTess).EdgeFaceNb[edge][i];
+
+    // not a face (periodic seed of a 2D periodic tessellation)
+    if (face < 1 || face > (*pTess).FaceQty)
+      continue;
+
     if (verbosity >= 3)
     {
       ut_print_lineheader (-1);
@@ -104,26 +105,27 @@ UpdateFaceEdge (struct TESS *pTess, int edge, int verbosity)
               (*pTess).EdgeFaceQty[edge]);
     }
 
+    // the face to remove is already deleted (inconsistent tessellation)
     if ((*pTess).FaceState[face] == -1)
-    {
-      ut_print_lineheader (2);
-      printf ("The face to remove (%d) is already useless!\n", face);
-      abort ();
-    }
+      return -1;
 
     if (verbosity >= 3)
     {
       ut_print_lineheader (0);
       printf ("  - face %d contains %d edges: ", face,
-              (*pTess).FaceVerQty[face]);
+              (*pTess).FaceEdgeQty[face]);
     }
 
     /* if it contains almost 4 edges, the edge is removed;
      * else, the whole face is removed.                     */
-    if ((*pTess).FaceVerQty[face] >= 4)
-      net_reg_merge_delFromFace (pTess, face, edge, verbosity);
+    if ((*pTess).FaceEdgeQty[face] >= 4)
+
+      err = net_reg_merge_delFromFace (pTess, face, edge, verbosity);
     else
       err = DeleteFace (pTess, face, edge, verbosity);
+
+    if (err)
+      break;
   }
 
   return err;
@@ -364,21 +366,63 @@ UpdateVerCooBary (struct TESS *pTess, int delver, int newver, int verbosity)
   return 0;
 }
 
-// See documentation file `edgedel.tarpdf' for details on the algorithm.
+// Testing whether constraint planes (the domain faces of a vertex) are
+// compatible, that is, whether their normals are linearly independent.
+// Returns 1 if they are, 0 otherwise.
 int
-UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
+net_reg_merge_del_constraints_compatible (double **constraint, int M)
+{
+  int i, j;
+  double det;
+  double **G = NULL;
+
+  if (M > 3)
+    return 0;
+  else if (M <= 1)
+    return 1;
+
+  // Gram matrix of the (unit) normals
+  G = ut_alloc_2d (3, 3);
+  for (i = 0; i < M; i++)
+    for (j = 0; j < M; j++)
+      G[i][j] = ut_array_1d_scalprod (constraint[i] + 1, constraint[j] + 1, 3)
+              / (ut_array_1d_norm (constraint[i] + 1, 3)
+                 * ut_array_1d_norm (constraint[j] + 1, 3));
+
+  if (M == 2)
+    det = G[0][0] * G[1][1] - G[0][1] * G[1][0];
+  else
+    det = ut_mat_det_33 (G);
+
+  ut_free_2d (&G, 3);
+
+  return det > 1e-6;
+}
+
+// See documentation file `edgedel.tarpdf' for details on the algorithm.
+// faces are the faces whose flatness is optimized, each translated by
+// facetrans to the frame of newver (in a periodic tessellation, the faces
+// of all copies of newver); if NULL, the faces of newver are used.
+int
+UpdateVerCooMiniFF (struct TESS *pTess, int newver, int *faces,
+                    double **facetrans, int faceqty, int verbosity)
 {
   int status = 0;
   int i, j, k;
   double **A = NULL;
   double *B = NULL;
   double *X = NULL;
-  int faceqty;
   int *face = NULL;
   int N;                        // nb of faces
   int M;                        // nb of constrained faces
 
-  neut_tess_ver_faces (*pTess, newver, &face, &faceqty);
+  if (faces)
+  {
+    face = ut_alloc_1d_int (faceqty);
+    ut_array_1d_int_memcpy (faces, faceqty, face);
+  }
+  else
+    neut_tess_ver_faces (*pTess, newver, &face, &faceqty);
 
   if (verbosity > 0)
   {
@@ -476,6 +520,14 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
       }
     }
 
+    // the constraints must be compatible (the vertex cannot be on more
+    // than 3 domain faces, or on parallel domain faces)
+    if (!net_reg_merge_del_constraints_compatible (constraint, M))
+    {
+      status = -1;
+      break;
+    }
+
     if (verbosity > 0)
     {
       printf ("\n\n");
@@ -506,6 +558,8 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
     {
       n = (*pTess).FaceEq[face[i]] + 1;
       d = (*pTess).FaceEq[face[i]][0];
+      if (facetrans)
+        d += ut_array_1d_scalprod (n, facetrans[i], 3);
       for (j = 0; j < 3; j++)
         B[j] += d * n[j];
     }

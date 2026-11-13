@@ -5,6 +5,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<float.h>
+#include<math.h>
 
 #include"ut.h"
 #include"neut_m.h"
@@ -27,3 +29,7 @@ extern void nem_nsets_1dbody_str (struct NSET *NSet);
 
 extern void nem_nset_addduplicates (struct NSET *pNSet, struct NODES
 				    Nodes);
+
+extern void nem_nsets_custom_expr (struct TESS Tess, struct NODES Nodes,
+                                   struct MESH *Mesh, char *expr,
+                                   int **pnodes, int *pnodeqty);

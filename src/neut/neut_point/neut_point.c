@@ -29,10 +29,10 @@ neut_point_free (struct POINT *pPoint)
 
   ut_free_2d (&(*pPoint).Coo, (*pPoint).Qty + 1);
   ut_free_1d (&(*pPoint).Rad);
-
-  neut_point_set_zero (pPoint);
-
   ut_free_1d_char (&(*pPoint).crysym);
+
+  (*pPoint).Dim = 0;
+  (*pPoint).Qty = 0;
 
   return;
 }
@@ -175,7 +175,7 @@ neut_point_var_val_one (struct POINT Point, struct TESS Tess,
   status =
     neut_point_var_val (Point, id, Tess, Nodes, Mesh, var, &tmp, &qty, ptype);
 
-  if (qty == 1)
+  if (!status && qty == 1)
   {
     (*pval) = tmp[0];
     status = 0;
@@ -184,6 +184,48 @@ neut_point_var_val_one (struct POINT Point, struct TESS Tess,
     status = -1;
 
   ut_free_1d (&tmp);
+
+  return status;
+}
+
+int
+neut_point_expr_val (struct POINT Point, int id, struct TESS Tess,
+                     struct NODES Nodes, struct MESH Mesh, char *expr,
+                     double **pvals, int *pvalqty, char **ptype)
+{
+  int i, status, varqty;
+  char **vars = NULL;
+  double *vals = NULL;
+
+  status = neut_point_var_val (Point, id, Tess, Nodes, Mesh, expr, pvals,
+                               pvalqty, ptype);
+
+  if (status)
+  {
+    ut_math_vars (expr, &vars, &varqty);
+    vals = ut_alloc_1d (varqty);
+
+    status = 0;
+    for (i = 0; i < varqty && !status; i++)
+      status = neut_point_var_val_one (Point, Tess, Nodes, Mesh, id, vars[i],
+                                       vals + i, NULL);
+
+    (*pvalqty) = 1;
+    (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+    if (!status)
+      status = ut_math_eval (expr, varqty, vars, vals, *pvals);
+
+    if (ptype)
+    {
+      if (ut_math_eval_exprislogical (expr))
+        ut_string_string ("%d", ptype);
+      else
+        ut_string_string ("%f", ptype);
+    }
+
+    ut_free_2d_char (&vars, varqty);
+    ut_free_1d (&vals);
+  }
 
   return status;
 }

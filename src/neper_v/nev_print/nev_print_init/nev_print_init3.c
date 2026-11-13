@@ -4,12 +4,63 @@
 
 #include"nev_print_init_.h"
 
+// -crysym, then the value of the inputs (triclinic meaning not defined), then cubic
 void
-nev_print_init_data_csys (struct IN_V In, char *crysym, struct PRINT Print, struct DATA *pData)
+nev_print_init_crysym (struct IN_V In, struct TESS Tess, struct TESR Tesr,
+                       struct POINT *Points, int PointQty, int verbose, char **pcrysym)
+{
+  int i;
+  char *inputcrysym = NULL;
+
+  if (!neut_tess_isvoid (Tess))
+    ut_string_string (Tess.CellCrySym, &inputcrysym);
+  else if (!neut_tesr_isvoid (Tesr))
+    ut_string_string (Tesr.CellCrySym, &inputcrysym);
+  for (i = 0; i < PointQty; i++)
+    if (Points[i].crysym)
+    {
+      ut_string_string (Points[i].crysym, &inputcrysym);
+      break;
+    }
+
+  if (inputcrysym && !strcmp (inputcrysym, "triclinic"))
+    ut_free_1d_char (&inputcrysym);
+
+  if (In.crysym)
+  {
+    if (verbose && inputcrysym && strcmp (inputcrysym, In.crysym))
+      ut_print_message (1, 2, "Enforcing %s crystal symmetry over input value (%s)\n",
+                        In.crysym, inputcrysym);
+
+    ut_string_string (In.crysym, pcrysym);
+  }
+  else if (inputcrysym)
+    ut_string_string (inputcrysym, pcrysym);
+  else
+    ut_string_string ("cubic", pcrysym);
+
+  if (!strncmp (In.space, "rodrigues", 9)
+      && strcmp (*pcrysym, "cubic") && strcmp (*pcrysym, "hexagonal"))
+    ut_print_message (2, 2, "Orientation space not available for crystal symmetry `%s' (only cubic and hexagonal are).\n", *pcrysym);
+
+  ut_free_1d_char (&inputcrysym);
+
+  return;
+}
+
+void
+nev_print_init_data_csys (struct IN_V In, char *crysym, struct DATA *pData)
 {
   int i;
   double hex_ratio = 32. / 20;
   double hex_ratio2 = 1.0165;
+
+  // a single coordinate system, indexed 1 (this is called at each -print)
+  (*pData).Qty = 1;
+  ut_free_2d_int (&(*pData).Col, 2);
+  ut_free_2d (&(*pData).Coo, 2);
+  ut_free_1d (&(*pData).Rad);
+  ut_free_1d (&(*pData).Length);
 
   (*pData).Col = ut_alloc_2d_int (2, 3);
   (*pData).Coo = ut_alloc_2d (2, 3);
@@ -46,10 +97,7 @@ nev_print_init_data_csys (struct IN_V In, char *crysym, struct PRINT Print, stru
   {
   }
 
-  if (!strcmp (Print.colormode, "bright"))
-    ut_array_2d_int_set ((*pData).Col, 2, 3, 0);
-  else if (!strcmp (Print.colormode, "dark"))
-    ut_array_2d_int_set ((*pData).Col, 2, 3, 255);
+  ut_array_2d_int_set ((*pData).Col, 2, 3, 0);
 
   if ((*pData).ColData)
   {
@@ -97,11 +145,12 @@ nev_print_init_data_csys (struct IN_V In, char *crysym, struct PRINT Print, stru
 }
 
 void
-nev_print_init_data_mesh (struct IN_V In, struct PRINT Print, struct NODES Nodes, struct MESH Mesh, char *crysym,
+nev_print_init_data_mesh (struct IN_V In, struct NODES Nodes, struct MESH Mesh, char *crysym,
                           double size, int Qty, char *entity, int dim,
                           struct DATA *pData)
 {
   int i;
+  double rad;
 
   if (Qty == 0)
     ut_print_neperbug ();
@@ -116,10 +165,7 @@ nev_print_init_data_mesh (struct IN_V In, struct PRINT Print, struct NODES Nodes
 
   if (Mesh.Dimension <= 1)
   {
-    if (!strcmp (Print.colormode, "bright"))
-      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
-    else
-      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
+    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
   }
   else if (Mesh.Dimension == 2)
     ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
@@ -139,54 +185,27 @@ nev_print_init_data_mesh (struct IN_V In, struct PRINT Print, struct NODES Nodes
       if (!strstr (entity, "elset"))
         ut_array_1d_set ((*pData).Weight + 1, (*pData).Qty, 1);
       else
+      {
+#ifdef HAVE_OPENMP
+#pragma omp parallel for schedule(dynamic)
+#endif
         for (i = 1; i <= (*pData).Qty; i++)
           neut_mesh_elset_size (Nodes, Mesh, i, (*pData).Weight + i);
+      }
     }
   }
 
-  if (Mesh.Dimension == 0)
-    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty,
-                     pow (size,
-                          1. / 3) * 0.02 * sqrt (Mesh.Dimension +
-                                                 1) / pow (Qty, 0.25));
-  else if (Mesh.Dimension == 1)
-    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty,
-                     pow (size, 1. / 3) * 0.01414 / pow (Qty, 0.25));
-  else if (Mesh.Dimension == 2) // used by pf
-    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, 0.02);
-  else if (Mesh.Dimension == 3) // used by pf
-    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, 0.02);
+  // (Qty: number of cells, as for tessellations)
+  if (!nev_print_mesh_defrad (size, Qty, Mesh.Dimension, &rad))
+    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
 
   if (!(*pData).BCol)
   {
     (*pData).BCol = ut_alloc_1d_int (3);
-    if (!strcmp (In.colormode, "dark"))
-      ut_array_1d_int_set ((*pData).BCol, 3, 255);
   }
 
   if ((*pData).BRad < 0)
-  {
-    if (Mesh.Dimension == 0)
-      (*pData).BRad =
-        pow (size, 1. / 3) * 0.02 / pow (Mesh.ElsetQty, 0.25);
-    else if (Mesh.Dimension == 1)
-      (*pData).BRad =
-        pow (size, 1. / 3) * 0.01414 / pow (Mesh.ElsetQty, 0.25);
-    else if (Mesh.Dimension == 2)
-    {
-      if (!strcmp (In.space, "real"))
-        (*pData).BRad = pow (size, 1. / 3) * 0.01000 / pow (Mesh.ElsetQty, 0.25);
-      else
-        (*pData).BRad = 0.01;
-    }
-    else if (Mesh.Dimension == 3)
-    {
-      if (!strcmp (In.space, "real"))
-        (*pData).BRad = pow (size, 1. / 3) * 0.00707 / pow (Mesh.ElsetQty, 0.25);
-      else
-        (*pData).BRad = 0.01;
-    }
-  }
+    nev_print_mesh_defedgerad (size, Qty, Mesh.Dimension, In.space, &(*pData).BRad);
 
   if ((*pData).ColDataType)
   {
@@ -252,7 +271,7 @@ nev_print_init_data_mesh (struct IN_V In, struct PRINT Print, struct NODES Nodes
 }
 
 void
-nev_print_init_data_nodes (struct IN_V In, struct PRINT Print, struct NODES Nodes, char *crysym, int Qty, struct DATA *pData)
+nev_print_init_data_nodes (struct IN_V In, struct NODES Nodes, char *crysym, int Qty, struct DATA *pData)
 {
   double noderad;
 
@@ -265,13 +284,9 @@ nev_print_init_data_nodes (struct IN_V In, struct PRINT Print, struct NODES Node
   if (!(*pData).Coo)
     (*pData).Coo = ut_alloc_2d ((*pData).Qty + 1, 3);
 
-  noderad = 0.0168 / pow (Qty, 0.25);
-  ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, noderad);
+  noderad = nev_print_nodes_defrad (Qty);
 
-  if (!strcmp (Print.colormode, "bright"))
-    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0.);
-  else
-    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
+  ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0.);
   ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, noderad);
   ut_array_1d_set ((*pData).Weight + 1, (*pData).Qty, 1);
 
@@ -422,8 +437,6 @@ nev_print_init_data_points (struct IN_V In, struct POINT Point, char *crysym, st
   if (!(*pData).BCol)
   {
     (*pData).BCol = ut_alloc_1d_int (3);
-    if (!strcmp (In.colormode, "dark"))
-      ut_array_1d_int_set ((*pData).BCol, 3, 255);
   }
 
   neut_data_symboldata_symbol (pData);
@@ -614,8 +627,6 @@ nev_print_init_data_tesr (struct IN_V In, struct TESR Tesr, struct DATA *pData)
   if (!(*pData).BCol)
   {
     (*pData).BCol = ut_alloc_1d_int (3);
-    if (!strcmp (In.colormode, "dark"))
-      ut_array_1d_int_set ((*pData).BCol, 3, 255);
   }
 
   if (!(*pData).RadDataName)
@@ -632,7 +643,7 @@ nev_print_init_data_tesr (struct IN_V In, struct TESR Tesr, struct DATA *pData)
 }
 
 void
-nev_print_init_data_tess (struct IN_V In, struct PRINT Print, struct TESS Tess, struct DATA *pData)
+nev_print_init_data_tess (struct IN_V In, struct TESS Tess, struct DATA *pData)
 {
   int i, dim = (*pData).Dim;
   double size, rad;
@@ -649,52 +660,23 @@ nev_print_init_data_tess (struct IN_V In, struct PRINT Print, struct TESS Tess, 
     (*pData).Weight = ut_alloc_1d ((*pData).Qty + 1);
 
   // don't else if
-  if (dim == 0)
-  {
-    rad = pow (size, 1. / 3) * 0.02000 / pow (Tess.CellQty, 0.25);
-    if (!strcmp (Print.colormode, "bright"))
-      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
-    else
-      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
-    ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
-    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
-  }
-
-  if (dim == 1)
-  {
-    if (!strcmp (Print.colormode, "bright"))
-      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
-    else
-      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
-    ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
-    rad = pow (size, 1. / 3) * 0.01414 / pow (Tess.CellQty, 0.25);
-    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
-  }
+  if (dim == 0 || dim == 1)
+    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
 
   if (dim == 2 || dim == 3)
-  {
     ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
-    ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
-  }
 
-  if (dim == Tess.Dim)
-    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, 0.02);
-
-  if (dim == 4)
-  {
-    rad = pow (size, 1. / 3) * 0.04000 / pow (Tess.CellQty, 0.25);
+  if (dim == 4 || dim == 5)
     ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 128);
-    ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
-    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
-  }
 
-  if (dim == 5)
-  {
-    rad = pow (size, 1. / 3) * 0.04000 / pow (Tess.CellQty, 0.25);
-    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 128);
-    ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
+  ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
+
+  // (crystals: overwritten by the cell equivalent radii below)
+  if (!nev_print_tess_defrad (Tess, dim, &rad))
     ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
-  }
+  else if (dim == 5)
+    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty,
+                     nev_print_defrad (size, Tess.CellQty, NEV_DEFRAD_SEED));
 
   if ((*pData).Dim == Tess.Dim)
     for (i = 1; i <= Tess.CellQty; i++)
@@ -742,8 +724,6 @@ nev_print_init_data_tess (struct IN_V In, struct PRINT Print, struct TESS Tess, 
   if (dim == 5 && !(*pData).BCol)
   {
       (*pData).BCol = ut_alloc_1d_int (3);
-      if (!strcmp (In.colormode, "dark"))
-        ut_array_1d_int_set ((*pData).BCol, 3, 255);
   }
 
   if ((*pData).RadData)
@@ -774,8 +754,6 @@ nev_print_init_data_tess (struct IN_V In, struct PRINT Print, struct TESS Tess, 
     if (!(*pData).BCol)
     {
       (*pData).BCol = ut_alloc_1d_int (3);
-      if (!strcmp (In.colormode, "dark"))
-        ut_array_1d_int_set ((*pData).BCol, 3, 255);
     }
   }
 

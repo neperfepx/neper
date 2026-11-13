@@ -281,6 +281,8 @@ extern "C"
 
   extern void neut_mesh_init_eltweight (struct NODES Nodes, struct MESH *pMesh);
 
+  extern void neut_mesh_fasetmesh (struct TESS Tess, struct MESH Mesh2D, struct MESH Mesh3D, struct MESH *pMesh);
+
 #endif				/* NEUT_MESH_OP_H */
 
 #ifdef __cplusplus

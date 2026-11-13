@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2012,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2012,2018,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -49,14 +49,14 @@
 /**                                 to   : 31 may 2008     **/
 /**                # Version 6.0  : from : 17 oct 2012     **/
 /**                                 to   : 05 apr 2018     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 07 nov 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HGRAPH_ORDER_ST
 
 #include "module.h"
 #include "common.h"
@@ -128,21 +128,21 @@ static union {                                    /* Default parameters for nest
 } hgraphorderstdefaultnd = { { &stratdummy, &stratdummy, &stratdummy } };
 
 static StratMethodTab       hgraphorderstmethtab[] = { /* Graph ordering methods array */
-                              { HGRAPHORDERSTMETHBL, "b",  hgraphOrderBl, &hgraphorderstdefaultbl },
-                              { HGRAPHORDERSTMETHCC, "o",  hgraphOrderCc, &hgraphorderstdefaultcc },
-                              { HGRAPHORDERSTMETHCP, "c",  hgraphOrderCp, &hgraphorderstdefaultcp },
-                              { HGRAPHORDERSTMETHGP, "g",  hgraphOrderGp, &hgraphorderstdefaultgp },
-                              { HGRAPHORDERSTMETHHD, "d",  hgraphOrderHd, &hgraphorderstdefaulthd },
-                              { HGRAPHORDERSTMETHHF, "f",  hgraphOrderHf, &hgraphorderstdefaulthf },
-                              { HGRAPHORDERSTMETHKP, "k",  hgraphOrderKp, &hgraphorderstdefaultkp },
-                              { HGRAPHORDERSTMETHND, "n",  hgraphOrderNd, &hgraphorderstdefaultnd },
-                              { HGRAPHORDERSTMETHSI, "s",  hgraphOrderSi, NULL },
-                              { -1,                  NULL, NULL,          NULL } };
+                              { HGRAPHORDERSTMETHBL, "b",  (StratMethodFunc) hgraphOrderBl, &hgraphorderstdefaultbl },
+                              { HGRAPHORDERSTMETHCC, "o",  (StratMethodFunc) hgraphOrderCc, &hgraphorderstdefaultcc },
+                              { HGRAPHORDERSTMETHCP, "c",  (StratMethodFunc) hgraphOrderCp, &hgraphorderstdefaultcp },
+                              { HGRAPHORDERSTMETHGP, "g",  (StratMethodFunc) hgraphOrderGp, &hgraphorderstdefaultgp },
+                              { HGRAPHORDERSTMETHHD, "d",  (StratMethodFunc) hgraphOrderHd, &hgraphorderstdefaulthd },
+                              { HGRAPHORDERSTMETHHF, "f",  (StratMethodFunc) hgraphOrderHf, &hgraphorderstdefaulthf },
+                              { HGRAPHORDERSTMETHKP, "k",  (StratMethodFunc) hgraphOrderKp, &hgraphorderstdefaultkp },
+                              { HGRAPHORDERSTMETHND, "n",  (StratMethodFunc) hgraphOrderNd, &hgraphorderstdefaultnd },
+                              { HGRAPHORDERSTMETHSI, "s",  (StratMethodFunc) hgraphOrderSi, NULL },
+                              { -1,                  NULL, (StratMethodFunc) NULL,          NULL } };
 
 static StratParamTab        hgraphorderstparatab[] = { /* The method parameter list */
                               { HGRAPHORDERSTMETHBL,  STRATPARAMSTRAT,  "strat",
                                 (byte *) &hgraphorderstdefaultbl.param,
-                                (byte *) &hgraphorderstdefaultbl.param.strat,
+                                (byte *) &hgraphorderstdefaultbl.param.straptr,
                                 (void *) &hgraphorderststratab },
                               { HGRAPHORDERSTMETHBL,  STRATPARAMINT,    "cmin",
                                 (byte *) &hgraphorderstdefaultbl.param,
@@ -260,39 +260,39 @@ StratTab                    hgraphorderststratab = { /* Strategy tables for grap
 
 int
 hgraphOrderSt (
-const Hgraph * restrict const   grafptr,          /*+ Subgraph to order          +*/
+Hgraph * restrict const         grafptr,          /*+ Subgraph to order          +*/
 Order * restrict const          ordeptr,          /*+ Ordering to complete       +*/
 const Gnum                      ordenum,          /*+ Index to start ordering at +*/
 OrderCblk * restrict const      cblkptr,          /*+ Current column block       +*/
-const Strat * restrict const    strat)            /*+ Graph ordering strategy    +*/
+const Strat * restrict const    straptr)          /*+ Graph ordering strategy    +*/
 {
-  StratTest           val;
+  StratTest           testdat;
   int                 o;
 
   if (grafptr->vnohnbr == 0)                      /* Return immediately if nothing to do */
     return (0);
 
   o = 0;
-  switch (strat->type) {
+  switch (straptr->typeval) {
     case STRATNODECONCAT :
       errorPrint ("hgraphOrderSt: concatenation operator not available for graph ordering strategies");
-      return     (1);
+      return (1);
     case STRATNODECOND :
-      o = stratTestEval (strat->data.cond.test, &val, (void *) grafptr); /* Evaluate expression */
-      if (o == 0) {                               /* If evaluation was correct                  */
+      o = stratTestEval (straptr->data.conddat.testptr, &testdat, (void *) grafptr); /* Evaluate expression */
+      if (o == 0) {                               /* If evaluation was correct */
 #ifdef SCOTCH_DEBUG_HGRAPH2
-        if ((val.typetest != STRATTESTVAL) &&
-            (val.typenode != STRATPARAMLOG)) {
+        if ((testdat.testval != STRATTESTVAL) &&
+            (testdat.nodeval != STRATPARAMLOG)) {
           errorPrint ("hgraphOrderSt: invalid test result");
           o = 1;
           break;
         }
 #endif /* SCOTCH_DEBUG_HGRAPH2 */
-        if (val.data.val.vallog == 1)             /* If expression is true                                              */
-          o = hgraphOrderSt (grafptr, ordeptr, ordenum, cblkptr, strat->data.cond.strat[0]); /* Apply first strategy    */
-        else {                                    /* Else if expression is false                                        */
-          if (strat->data.cond.strat[1] != NULL)  /* And if there is an else statement                                  */
-            o = hgraphOrderSt (grafptr, ordeptr, ordenum, cblkptr, strat->data.cond.strat[1]); /* Apply second strategy */
+        if (testdat.data.val.vallog == 1)         /* If expression is true */
+          o = hgraphOrderSt (grafptr, ordeptr, ordenum, cblkptr, straptr->data.conddat.stratab[0]); /* Apply first strategy */
+        else {                                    /* Else if expression is false             */
+          if (straptr->data.conddat.stratab[1] != NULL) /* And if there is an else statement */
+            o = hgraphOrderSt (grafptr, ordeptr, ordenum, cblkptr, straptr->data.conddat.stratab[1]); /* Apply second strategy */
         }
       }
       break;
@@ -301,17 +301,18 @@ const Strat * restrict const    strat)            /*+ Graph ordering strategy   
       break;
     case STRATNODESELECT :
       errorPrint ("hgraphOrderSt: selection operator not available for graph ordering strategies");
-      return     (1);
+      return (1);
 #ifdef SCOTCH_DEBUG_HGRAPH2
     case STRATNODEMETHOD :
 #else /* SCOTCH_DEBUG_HGRAPH2 */
     default :
 #endif /* SCOTCH_DEBUG_HGRAPH2 */
-      return (strat->tabl->methtab[strat->data.method.meth].func (grafptr, ordeptr, ordenum, cblkptr, (void *) &strat->data.method.data));
+      return (((HgraphOrderFunc) (straptr->tablptr->methtab[straptr->data.methdat.methnum].funcptr))
+              (grafptr, ordeptr, ordenum, cblkptr, (const void * const) &straptr->data.methdat.datadat));
 #ifdef SCOTCH_DEBUG_HGRAPH2
     default :
       errorPrint ("hgraphOrderSt: invalid parameter");
-      return     (1);
+      return (1);
 #endif /* SCOTCH_DEBUG_HGRAPH2 */
   }
   return (o);

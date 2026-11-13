@@ -395,7 +395,7 @@ neut_tesr_rotate (struct TESR *pTesr, double **g)
     for (i = 1; i <= Tesr2.CellQty; i++)
       ol_q_q_q (Tesr2.CellOri[i], q, Tesr2.CellOri[i]);
 
-    ol_q_free (q);
+    ol_q_free (&q);
   }
 
   if ((*pTesr).CellBBox)
@@ -414,7 +414,7 @@ neut_tesr_rotate (struct TESR *pTesr, double **g)
   neut_tesr_free (pTesr);
   neut_tesr_memcpy (Tesr2, pTesr);
   neut_tesr_free (&Tesr2);
-  ol_g_free (ginv);
+  ol_g_free (&ginv);
 
   return;
 }
@@ -1863,7 +1863,7 @@ neut_tesr_cell_oriaverage (struct TESR *pTesr, int cell)
 
   neut_tesr_cell_olset (*pTesr, cell, &OSet);
   if (OSet.size > 0)
-    ol_set_mean_iter (OSet, (*pTesr).CellOri[cell]);
+    ol_set_mean (OSet, 100, (*pTesr).CellOri[cell]);
 
   ol_set_free (&OSet);
 
@@ -1905,12 +1905,12 @@ neut_tesr_unindex (struct TESR *pTesr)
 }
 
 void
-neut_tesr_cell_orirotate (struct TESR *pTesr, int cell, double *r, double theta, char *csys)
+neut_tesr_cell_orirotate (struct TESR *pTesr, int cell, double *rtheta, char *csys)
 {
   int i, j, k;
   double *q = ol_q_alloc ();
 
-  ol_rtheta_q (r, theta, q);
+  ol_rtheta_q (rtheta, q);
 
   if ((*pTesr).CellOri)
   {
@@ -1932,7 +1932,7 @@ neut_tesr_cell_orirotate (struct TESR *pTesr, int cell, double *r, double theta,
               ol_q_q_q_cur ((*pTesr).VoxOri[i][j][k], q, (*pTesr).VoxOri[i][j][k]);
           }
 
-  ol_q_free (q);
+  ol_q_free (&q);
 
   return;
 }

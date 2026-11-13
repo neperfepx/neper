@@ -6,10 +6,9 @@
 
 /* Tessellation exportation: head */
 void
-neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int **pvoxbounds,
-                       char **pversion, char **pdataformat, char **poridataformat, FILE *file)
+neut_tesr_fscanf_head (struct TESR *pTesr, char **pversion, char **pdataformat, char **poridataformat, FILE *file)
 {
-  int i, status;
+  int status;
   char *string = ut_alloc_1d_char (1000);
 
   (*pdataformat) = ut_alloc_1d_char (10);
@@ -33,7 +32,8 @@ neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int **pvoxbounds,
                         "Input file is not a valid raster tessellation file.\n");
     ut_string_string (*pdataformat, poridataformat);
   }
-  else if (!strcmp (*pversion, "2.1") || !strcmp (*pversion, "2.2"))
+  else if (!strcmp (*pversion, "2.1") || !strcmp (*pversion, "2.2")
+           || !strcmp (*pversion, "2.3"))
   {
   }
   else
@@ -75,27 +75,6 @@ neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int **pvoxbounds,
 
     else
       ut_print_message (2, 2, "Failed to read tesr file.\n");
-  }
-
-  if (bounds)
-  {
-    int *vox = ut_alloc_1d_int (3);
-    double *coo = ut_alloc_1d (3);
-    (*pvoxbounds) = ut_alloc_1d_int (6);
-
-    for (i = 0; i <= 1; i++)
-    {
-      ut_array_1d_set_3 (coo, bounds[i] - (*pTesr).Origin[0],
-                         bounds[i + 2] - (*pTesr).Origin[1],
-                         bounds[i + 4] - (*pTesr).Origin[2]);
-      neut_tesr_coo_pos (*pTesr, coo, i ? -1 : 1, vox);
-      (*pvoxbounds)[i] = vox[0];
-      (*pvoxbounds)[i + 2] = vox[1];
-      (*pvoxbounds)[i + 4] = vox[2];
-    }
-
-    ut_free_1d_int (&vox);
-    ut_free_1d (&coo);
   }
 
   if (status != 1)
@@ -152,6 +131,18 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, char *version, FILE * file)
 
           if (status != 1)
             abort ();
+        }
+
+        // versions <= 2.2 record the square roots of the Laguerre weights
+        int major, minor;
+        ut_string_version (version, &major, &minor, NULL);
+
+        if (major <= 2 && minor <= 2
+            && ut_array_1d_absmax ((*pTesr).SeedWeight + 1, (*pTesr).CellQty) > 0)
+        {
+          ut_print_message (1, 3, "File version <= 2.2.  Fixing seed weights...\n");
+          for (i = 1; i <= (*pTesr).CellQty; i++)
+            (*pTesr).SeedWeight[i] *= (*pTesr).SeedWeight[i];
         }
       }
 
@@ -242,26 +233,17 @@ neut_tesr_fscanf_foot (FILE * file)
 }
 
 void
-neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
-                       double *scale, char *version, char **pdataformat, FILE * file)
+neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, char *version, char **pdataformat, FILE * file)
 {
-  int i;
   FILE *file2 = NULL;
   char *filename = NULL;
   char *tmp = ut_alloc_1d_char (10);
   char *tmp2 = ut_alloc_1d_char (1000);
 
-  if (bounds && scale)
-    ut_print_neperbug ();
-
-  if (!bounds && !(*pTesr).VoxCell)
+  if (!(*pTesr).VoxCell)
     (*pTesr).VoxCell =
       ut_alloc_3d_int ((*pTesr).size[0] + 2, (*pTesr).size[1] + 2,
                        (*pTesr).size[2] + 2);
-  else if (!(*pTesr).VoxCell)
-    (*pTesr).VoxCell =
-      ut_alloc_3d_int (bounds[1] - bounds[0] + 3, bounds[3] - bounds[2] + 3,
-                       bounds[5] - bounds[4] + 3);
 
   if (fscanf (file, "%s", tmp) != 1)
     abort ();
@@ -280,12 +262,7 @@ neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
 
   ut_file_scan_file (file, dirname, &file2, &filename);
 
-  if (!scale && !bounds)
-    neut_tesr_fscanf_data_default (pTesr, *pdataformat, filename != NULL, file2, (*pTesr).VoxCell);
-  else if (bounds)
-    neut_tesr_fscanf_data_bounds (pTesr, bounds, *pdataformat, file2, (*pTesr).VoxCell);
-  else if (scale)
-    neut_tesr_fscanf_data_scale (pTesr, scale, *pdataformat, filename != NULL, file2, (*pTesr).VoxCell);
+  neut_tesr_fscanf_data_default (pTesr, *pdataformat, filename != NULL, file2, (*pTesr).VoxCell);
 
   if (!strcmp (tmp, "*file"))
   {
@@ -293,12 +270,8 @@ neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
     ut_free_1d_char (&filename);
   }
 
-  if (bounds)
-    for (i = 0; i < 3; i++)
-      (*pTesr).size[i] = bounds[2 * i + 1] - bounds[2 * i] + 1;
-
   // renumber and set (*pTesr).CellQty
-  if (!(*pTesr).CellId || bounds || scale)
+  if (!(*pTesr).CellId)
     neut_tesr_renumber_continuous (pTesr);
 
   /*
@@ -318,8 +291,7 @@ neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
 }
 
 void
-neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
-                          double *scale, char *version, char **poridataformat,
+neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, char *version, char **poridataformat,
                           FILE * file)
 {
   FILE *file2 = NULL;
@@ -327,9 +299,6 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
   char *tmp = ut_alloc_1d_char (10);
   char *tmp2 = ut_alloc_1d_char (1000);
   char *des = ut_alloc_1d_char (100);
-
-  if (bounds || scale)
-    ut_print_neperbug ();
 
   (*pTesr).VoxOri =
     ut_alloc_4d ((*pTesr).size[0] + 1, (*pTesr).size[1] + 1,
@@ -371,8 +340,7 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
 }
 
 void
-neut_tesr_fscanf_oridef (struct TESR *pTesr, char *dirname, int *bounds,
-                          double *scale, FILE * file)
+neut_tesr_fscanf_oridef (struct TESR *pTesr, char *dirname, FILE * file)
 {
   FILE *file2 = NULL;
   char *filename = NULL;
@@ -380,9 +348,6 @@ neut_tesr_fscanf_oridef (struct TESR *pTesr, char *dirname, int *bounds,
   char *tmp2 = ut_alloc_1d_char (1000);
   char *des = ut_alloc_1d_char (100);
   char *format = ut_alloc_1d_char (10);
-
-  if (bounds || scale)
-    ut_print_neperbug ();
 
   (*pTesr).VoxOriDef =
     ut_alloc_3d_int ((*pTesr).size[0] + 1, (*pTesr).size[1] + 1,
@@ -397,12 +362,7 @@ neut_tesr_fscanf_oridef (struct TESR *pTesr, char *dirname, int *bounds,
 
   ut_file_scan_file (file, dirname, &file2, &filename);
 
-  if (!scale && !bounds)
-    neut_tesr_fscanf_data_default (pTesr, format, filename != NULL, file2, (*pTesr).VoxOriDef);
-  else if (bounds)
-    neut_tesr_fscanf_data_bounds (pTesr, bounds, format, file2, (*pTesr).VoxOriDef);
-  else if (scale)
-    neut_tesr_fscanf_data_scale (pTesr, scale, format, filename != NULL, file2, (*pTesr).VoxOriDef);
+  neut_tesr_fscanf_data_default (pTesr, format, filename != NULL, file2, (*pTesr).VoxOriDef);
 
   if (!strcmp (tmp, "*file"))
   {

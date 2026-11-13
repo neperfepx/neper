@@ -5,29 +5,35 @@
 #include"nev_print_scale_.h"
 
 void
-nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM Sim,
+nev_print_scale (struct IN_V In, char *basename, struct PRINT Print,
                  struct DATA *TessData, struct DATA *pTesrData, struct DATA *pNodeData,
                  struct DATA **MeshData, int PointQty, struct DATA *PointData)
 {
   int i, imageheight;
   FILE *file = NULL;
   char *filename2 = ut_alloc_1d_char (10000);
-  char *outdir = NULL;
   char *suffix = ut_alloc_1d_char (10);
 
-  neut_print_outdir (In.outdir, Sim, "png", &outdir);
 
   neut_print_imagesize (In.imagesize, NULL, &imageheight);
 
   ut_print_message (0, 1, "Printing scale...\n");
 
-  for (i = 0; i <= 3; i++)
+  // (i = 4: cohesive elts)
+  for (i = 0; i <= 4; i++)
     if (!ut_string_strcmp (MeshData[i][0].ColDataType, "real"))
     {
-      ut_print_message (0, 2, "Printing scale for dimension %d...\n", i);
-
-      sprintf (filename2, "%s-scale%dd", basename, i);
-      ut_file_dir_basename_extension_filename (outdir, filename2, "pov", &filename2);
+      if (i < 4)
+      {
+        ut_print_message (0, 2, "Printing scale for dimension %d...\n", i);
+        sprintf (filename2, "%s-scale%dd", basename, i);
+      }
+      else
+      {
+        ut_print_message (0, 2, "Printing scale for cohesive elts...\n");
+        sprintf (filename2, "%s-scaleco", basename);
+      }
+      ut_file_dir_basename_extension_filename (".", filename2, "pov", &filename2);
 
       file = ut_file_open (filename2, "w");
       nev_print_png_scale (In, file, Print, MeshData[i][0]);
@@ -35,7 +41,7 @@ nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM 
 
       if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
         neut_print_pov2png (In.povray, filename2, 0.3 * imageheight,
-                           imageheight, In.povrayantialiasing, 3);
+                           imageheight, 3);
 
       if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")
           && !ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov:objects"))
@@ -47,7 +53,7 @@ nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM 
     ut_print_message (0, 2, "Printing scale for points...\n", i);
 
     sprintf (filename2, "%s-scalen", basename);
-    ut_file_dir_basename_extension_filename (outdir, filename2, "pov", &filename2);
+    ut_file_dir_basename_extension_filename (".", filename2, "pov", &filename2);
 
     file = ut_file_open (filename2, "w");
     nev_print_png_scale (In, file, Print, *pNodeData);
@@ -55,7 +61,7 @@ nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM 
 
     if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
       neut_print_pov2png (In.povray, filename2, 0.3 * imageheight,
-                         imageheight, In.povrayantialiasing, 3);
+                         imageheight, 3);
 
     if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")
         && !ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov:objects"))
@@ -77,7 +83,7 @@ nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM 
         abort ();
 
       sprintf (filename2, "%s-scale%s", basename, suffix);
-      ut_file_dir_basename_extension_filename (outdir, filename2, "pov", &filename2);
+      ut_file_dir_basename_extension_filename (".", filename2, "pov", &filename2);
 
       file = ut_file_open (filename2, "w");
       nev_print_png_scale (In, file, Print, TessData[i]);
@@ -85,7 +91,7 @@ nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM 
 
       if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
         neut_print_pov2png (In.povray, filename2, 0.3 * imageheight,
-                           imageheight, In.povrayantialiasing, 3);
+                           imageheight, 3);
 
       if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")
           && !ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov:objects"))
@@ -97,7 +103,7 @@ nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM 
     ut_print_message (0, 2, "Printing scale...\n");
 
     sprintf (filename2, "%s-scale", basename);
-    ut_file_dir_basename_extension_filename (outdir, filename2, "pov", &filename2);
+    ut_file_dir_basename_extension_filename (".", filename2, "pov", &filename2);
 
     file = ut_file_open (filename2, "w");
     nev_print_png_scale (In, file, Print, *pTesrData);
@@ -105,7 +111,7 @@ nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM 
 
     if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
       neut_print_pov2png (In.povray, filename2, 0.3 * imageheight,
-                         imageheight, In.povrayantialiasing, 3);
+                         imageheight, 3);
 
     if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")
         && !ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov:objects"))
@@ -118,7 +124,7 @@ nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM 
       ut_print_message (0, 2, "Printing scale for points...\n", i);
 
       sprintf (filename2, "%s-scalep", basename);
-      ut_file_dir_basename_extension_filename (outdir, filename2, "pov", &filename2);
+      ut_file_dir_basename_extension_filename (".", filename2, "pov", &filename2);
 
       file = ut_file_open (filename2, "w");
       nev_print_png_scale (In, file, Print, PointData[0]);
@@ -126,7 +132,7 @@ nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM 
 
       if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
         neut_print_pov2png (In.povray, filename2, 0.3 * imageheight,
-                           imageheight, In.povrayantialiasing, 3);
+                           imageheight, 3);
 
       if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")
           && !ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov:objects"))
@@ -134,7 +140,6 @@ nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM 
     }
 
   ut_free_1d_char (&filename2);
-  ut_free_1d_char (&outdir);
   ut_free_1d_char (&suffix);
 
   return;

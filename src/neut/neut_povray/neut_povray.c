@@ -8,17 +8,15 @@ int
 neut_povray_check (char *povray)
 {
   int status;
-  char *tmp = ut_alloc_1d_char (1000);
-  char *tmp2 = ut_alloc_1d_char (1000);
+  char *binary = NULL, *command = NULL;
 
-  sprintf (tmp, "tmp%d", getpid ());
-  sprintf (tmp2, "which %s 2> /dev/null > %s", povray, tmp);
-  status = system (tmp2);
+  ut_sys_shellquote (povray, &binary);
+  ut_string_sprintf (&command, "command -v %s > /dev/null 2>&1", binary);
 
-  remove (tmp);
+  status = system (command);
 
-  ut_free_1d_char (&tmp);
-  ut_free_1d_char (&tmp2);
+  ut_free_1d_char (&binary);
+  ut_free_1d_char (&command);
 
   return status;
 }
@@ -27,11 +25,7 @@ int
 neut_povray_check_error (char *povray)
 {
   if (neut_povray_check (povray) != 0)
-  {
-    ut_print_messagewnc (2, 72,
-                         "Povray not found! Make sure it is available at the command line then run Neper again.\n");
-    abort ();
-  }
+    ut_print_message (2, 0, "POV-Ray (command `%s') not found.  Install it or specify it using option `-povray'.\n", povray);
 
   return 0;
 }

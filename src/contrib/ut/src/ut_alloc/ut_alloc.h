@@ -56,11 +56,6 @@ extern "C"
 /// \return pointer to the array
   extern char *ut_alloc_1d_char (unsigned int size);
 
-/// \brief Allocate a 1-D array of \c size_t
-/// \param size: size of the array
-/// \return pointer to the array
-  extern size_t *ut_alloc_1d_sizet (unsigned int size);
-
 /// \brief Allocate a 1-D array of \c FILE*
 /// \param size: size of the array
 /// \return pointer to the array

@@ -16,6 +16,13 @@ if(RESVAR)
   message(FATAL_ERROR "Test failed")
 endif()
 
+# files or directories that must not exist after the run
+foreach(absent_file ${absent_files})
+  if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${absent_file})
+    message(FATAL_ERROR "Test failed - ${absent_file} exists")
+  endif()
+endforeach()
+
 if ("${test_mode}" MATCHES "Normal" AND NOT "${test_mode_force_minimal}" EQUAL 1)
 
   file(GLOB bak_files *.bak *~)

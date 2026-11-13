@@ -4,15 +4,16 @@
 
 #include"neut_tesr_sim_.h"
 
+// setting the raster tessellation data of a simulation
 void
-neut_tesr_sim (char *simdir, struct TESR Tesr, struct SIM *pSim)
+neut_tesr_sim (struct TESR Tesr, struct SIM *pSim)
 {
-  neut_sim_set_zero (pSim);
-  ut_string_string (simdir, &((*pSim).simdir));
   (*pSim).CellQty = Tesr.CellQty;
-  ut_string_string (Tesr.CellOriDes, &((*pSim).OriDes));
 
-  ut_string_string ("simulation.tesr", &(*pSim).tesr);
+  if (!(*pSim).OriDes)
+    ut_string_string (Tesr.CellOriDes, &((*pSim).OriDes));
+
+  neut_sim_init_memberqty (pSim);
 
   return;
 }

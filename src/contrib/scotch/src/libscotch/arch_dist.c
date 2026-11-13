@@ -1,4 +1,4 @@
-/* Copyright 2011,2014 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2011,2014,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -38,21 +38,23 @@
 /**                                                        **/
 /**   FUNCTION   : This module handles the distance        **/
 /**                multiplicator pseudo-architecture       **/
-/**                functions. This pseudo-architecture is  **/
-/**                used by graph repartitioning routines   **/
-/**                to handle floating-point migration      **/
-/**                costs.                                  **/
+/**                functions.                              **/
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 30 jun 2014     **/
+/**                # Version 7.0  : from : 18 feb 2018     **/
+/**                                 to   : 17 jan 2023     **/
+/**                                                        **/
+/**   NOTES      : # This pseudo-architecture is used by   **/
+/**                  graph repartitioning routines to      **/
+/**                  handle floating-point migration       **/
+/**                  costs.                                **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define ARCH_DIST
 
 #include "module.h"
 #include "common.h"
@@ -85,13 +87,13 @@ FILE * restrict const       stream)
 #ifdef SCOTCH_DEBUG_ARCH1
   if (sizeof (ArchDist) > sizeof (ArchDummy)) {
     errorPrint ("archDistArchLoad: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
   if (intLoad (stream, &archptr->crloval) != 1) {
     errorPrint ("archDistArchLoad: bad input");
-    return     (1);
+    return (1);
   }
 
   return (archLoad (archptr->archptr, stream));   /* Load sub-architecture */
@@ -112,14 +114,14 @@ FILE * restrict const       stream)
 #ifdef SCOTCH_DEBUG_ARCH1
   if (sizeof (ArchDist) > sizeof (ArchDummy)) {
     errorPrint ("archDistArchSave: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
   if (fprintf (stream, ANUMSTRING "\t",
                (Anum) archptr->crloval) == EOF) {
     errorPrint ("archDistArchSave: bad output");
-    return     (1);
+    return (1);
   }
 
   return (archSave (archptr->archptr, stream));   /* Save sub-architecture */
@@ -141,7 +143,7 @@ const Anum                  crloval)
   ArchDist *          archdataptr;
 
   archInit (archptr);                             /* Initialize architecture body */
-  archptr->class   = archClass ("dist");          /* Set architecture class       */
+  archptr->clasptr = archClass ("dist");          /* Set architecture class       */
   archptr->flagval = orgarchptr->flagval;         /* Set architecture flag        */
   archdataptr = (ArchDist *) (void *) &archptr->data;
   archdataptr->archptr = orgarchptr;
@@ -300,21 +302,3 @@ const ArchDom * const       dom1ptr)
 {
   return (archDomIncl (archptr->archptr, dom0ptr, dom1ptr)); /* Call proper routine */
 }
-
-/* This function creates the MPI_Datatype for
-** distance graph domains.
-** It returns:
-** - 0  : if type could be created.
-** - 1  : on error.
-*/
-
-#ifdef SCOTCH_PTSCOTCH
-int
-archDistDomMpiType (
-const ArchDist * const        archptr,
-MPI_Datatype * const          typeptr)
-{
-  return (archDomMpiType (archptr->archptr, typeptr)); /* Call proper routine as we don't add any parameter */
-}
-#endif /* SCOTCH_PTSCOTCH */
-

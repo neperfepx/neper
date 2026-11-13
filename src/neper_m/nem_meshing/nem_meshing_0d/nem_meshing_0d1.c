@@ -8,7 +8,7 @@ void
 nem_meshing_0d (struct TESS Tess, struct MESHPARA MeshPara,
                 struct NODES *pNodes, struct MESH *Mesh)
 {
-  int i, master;
+  int i, master, smallqty = 0;
   struct NODES N;
   struct MESH M;
   char *message = ut_alloc_1d_char (8);
@@ -32,6 +32,10 @@ nem_meshing_0d (struct TESS Tess, struct MESHPARA MeshPara,
       {
         nem_meshing_0d_ver (Tess, i, MeshPara, &N, &M);
         nem_meshing_0d_addvermesh (N, M, 0, NULL, pNodes, Mesh);
+
+        // the characteristic length was reduced because of short edges
+        if (N.NodeCl[1] < (1 - 1e-6) * MeshPara.ver_cl[i])
+          smallqty++;
       }
       else
       {
@@ -53,6 +57,12 @@ nem_meshing_0d (struct TESS Tess, struct MESHPARA MeshPara,
   }
 
   printf ("\n");
+
+  // short edges would be removed by regularization
+  if (smallqty > 0 && !neut_tess_isreg (Tess))
+    ut_print_message (1, 3,
+                      "%d of %d vertices have edges shorter than the element size, which leads to smaller elements.  To avoid this, regularize the tessellation (-T -reg 1) or increase the progression factor (-M -pl).\n",
+                      smallqty, Tess.VerQty);
 
   neut_mesh_init_nodeelts (Mesh + 0, (*pNodes).NodeQty);
   neut_mesh_init_eltelset (Mesh + 0, NULL);

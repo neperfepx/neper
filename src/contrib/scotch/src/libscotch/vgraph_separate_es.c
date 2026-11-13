@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2013 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2013,2021,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -50,6 +50,10 @@
 /**                                 to   : 12 sep 2007     **/
 /**                # Version 5.1  : from : 09 nov 2008     **/
 /**                                 to   : 09 nov 2008     **/
+/**                # Version 6.1  : from : 01 nov 2021     **/
+/**                                 to   : 01 nov 2021     **/
+/**                # Version 7.0  : from : 16 jan 2023     **/
+/**                                 to   : 16 jan 2023     **/
 /**                                                        **/
 /**   NOTES      : # This algorithm comes from:            **/
 /**                  "Computing the Block Triangular form  **/
@@ -84,7 +88,7 @@
 **  The defines and includes.
 */
 
-#define VGRAPH_SEPARATE_ES
+#define SCOTCH_VGRAPH_SEPARATE_ES
 
 #include "module.h"
 #include "common.h"
@@ -395,7 +399,7 @@ const Gnum                            vertrow)    /* Row vertex to backtrack fro
 ** large, so that the depth of the trees is small
 ** and the stack will not overflow.
 ** They return:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 static
@@ -486,7 +490,7 @@ const VgraphSeparateEsParam * const paraptr)      /*+ Method parameters +*/
   actgrafdat.veextax   = NULL;                    /* No external gains                           */
   actgrafdat.parttax   = grafptr->parttax;        /* Inherit arrays from vertex separation graph */
   actgrafdat.frontab   = grafptr->frontab;
-  bgraphInit2 (&actgrafdat, 1, 1, 1, 0, 0);       /* Complete initialization and set all vertices to part 0 */
+  bgraphInit2 (&actgrafdat, 1, grafptr->dwgttab[0], grafptr->dwgttab[1], 0, 0); /* Complete initialization and set all vertices to part 0 */
 
   if (bgraphBipartSt (&actgrafdat, paraptr->strat) != 0) { /* Bipartition active subgraph */
     errorPrint ("vgraphSeparateEs: cannot bipartition active graph");

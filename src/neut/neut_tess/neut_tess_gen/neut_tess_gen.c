@@ -21,7 +21,13 @@ void
 neut_tess_var_dim (int dim, char *entity, char *var, int *pdim)
 {
   if (!strcmp (entity, "seed"))
-    (*pdim) = 0;
+  {
+    // cell_<key> is the key of the seed's cell
+    if (!strncmp (var, "cell_", 5))
+      neut_tess_var_dim (dim, "cell", var + 5, pdim);
+    else
+      (*pdim) = 0;
+  }
   else if (!strcmp (entity, "poly") || (!strcmp (entity, "cell") && dim == 3)
            || (!strcmp (entity, "crystal") && dim == 3))
   {
@@ -155,6 +161,48 @@ neut_tess_var_val (struct TESS *pTess,
       neut_tess_centre ((*pTess), c);
       (*pvals)[0] = c[2];
     }
+    else if (!strcmp (var2, "xmin"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tess_bbox ((*pTess), bbox);
+      (*pvals)[0] = bbox[0][0];
+      ut_free_2d (&bbox, 3);
+    }
+    else if (!strcmp (var2, "xmax"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tess_bbox ((*pTess), bbox);
+      (*pvals)[0] = bbox[0][1];
+      ut_free_2d (&bbox, 3);
+    }
+    else if (!strcmp (var2, "ymin"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tess_bbox ((*pTess), bbox);
+      (*pvals)[0] = bbox[1][0];
+      ut_free_2d (&bbox, 3);
+    }
+    else if (!strcmp (var2, "ymax"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tess_bbox ((*pTess), bbox);
+      (*pvals)[0] = bbox[1][1];
+      ut_free_2d (&bbox, 3);
+    }
+    else if (!strcmp (var2, "zmin"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tess_bbox ((*pTess), bbox);
+      (*pvals)[0] = bbox[2][0];
+      ut_free_2d (&bbox, 3);
+    }
+    else if (!strcmp (var2, "zmax"))
+    {
+      double **bbox = ut_alloc_2d (3, 2);
+      neut_tess_bbox ((*pTess), bbox);
+      (*pvals)[0] = bbox[2][1];
+      ut_free_2d (&bbox, 3);
+    }
     else if (!strcmp (var2, "coo"))
     {
       neut_tess_centre ((*pTess), *pvals);
@@ -224,6 +272,10 @@ neut_tess_var_val (struct TESS *pTess,
       (*pvals)[0] = (showface) ? showface[id] : 0;
       ut_string_string ("%d", &typetmp);
     }
+    // cell_<key> is the key of the seed's cell
+    else if (!strncmp (var, "cell_", 5) && id <= (*pTess).CellQty)
+      status = neut_tess_var_val (pTess, showedge, showface, showpoly, "cell",
+                                  id, var + 5, pvals, pvalqty, &typetmp);
     else
       status = -1;
   }
@@ -763,7 +815,7 @@ neut_tess_var_val (struct TESS *pTess,
     }
     else if (!strcmp (var2, "edgenb"))
     {
-      (*pvals)[0] = (*pTess).FaceVerQty[id];
+      (*pvals)[0] = (*pTess).FaceEdgeQty[id];
       ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var2, "polynb"))
@@ -826,7 +878,7 @@ neut_tess_var_val (struct TESS *pTess,
     }
     else if (!strcmp (var2, "edges") || !strcmp (var2, "edgelist"))
     {
-      (*pvalqty) = (*pTess).FaceVerQty[id];
+      (*pvalqty) = (*pTess).FaceEdgeQty[id];
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
       ut_array_1d_memcpy_fromint ((*pTess).FaceEdgeNb[id] + 1, *pvalqty, *pvals);
       ut_string_string ("%d", &typetmp);
@@ -1783,13 +1835,16 @@ neut_tess_entity_expr_val (struct TESS *pTess, char *entity,
       {
         for (k = 0; k < varqty; k++)
         {
+          // default is the input value
           if (!strcmp (vars[k], "default"))
             vals[k] = val[j];
-
-          status = neut_tess_var_val_one (pTess, NULL, NULL, NULL, entity, j, vars[k],
-                                 vals + k, &type);
-          if (ptype && !strcmp (type, "%f"))
-            ut_string_string ("%f", ptype);
+          else
+          {
+            status = neut_tess_var_val_one (pTess, NULL, NULL, NULL, entity, j,
+                                            vars[k], vals + k, &type);
+            if (ptype && !strcmp (type, "%f"))
+              ut_string_string ("%f", ptype);
+          }
         }
 
         status = ut_math_eval (expr, varqty, vars, vals, val + j);
@@ -1986,7 +2041,7 @@ neut_tess_poly_projection (struct TESS Tess, int cell, double *eq,
   ut_free_1d_int (&ids);
   ut_free_1d (&bary);
   ut_free_1d (&z);
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return 0;
 }
@@ -2087,7 +2142,7 @@ neut_tess_cell_isvoid (struct TESS Tess, int cell)
 {
   return (Tess.Dim == 3 && Tess.PolyFaceQty[cell] == 0) || (Tess.Dim == 2
                                                             && Tess.
-                                                            FaceVerQty[cell]
+                                                            FaceEdgeQty[cell]
                                                             == 0);
 }
 
@@ -2108,6 +2163,26 @@ int
 neut_tess_isreg (struct TESS Tess)
 {
   return ut_array_1d_int_max (Tess.VerState + 1, Tess.VerQty) > 0;
+}
+
+// neut_tess_domface_isper returns 1 if a domain face of a periodic
+// tessellation is periodic, i.e. is a plane normal to a periodicity
+// direction, and 0 otherwise.  A periodic domain face includes no
+// tessellation faces.
+int
+neut_tess_domface_isper (struct TESS Tess, int domface)
+{
+  int i;
+
+  if (!Tess.Type || strcmp (Tess.Type, "periodic") || !Tess.Periodic
+      || strcmp (Tess.DomFaceType[domface], "plane"))
+    return 0;
+
+  for (i = 0; i < 3; i++)
+    if (Tess.Periodic[i] && fabs (fabs (Tess.DomFaceEq[domface][i + 1]) - 1) < 1e-6)
+      return 1;
+
+  return 0;
 }
 
 int
@@ -2248,17 +2323,18 @@ neut_tess_expr_val (struct TESS *pTess, int *showedge, int *showface, int *showp
 
   vals = ut_alloc_1d (varqty);
 
-  if (varqty == 1 && !strcmp (expr, vars[0]))
-    status = neut_tess_var_val (pTess, showedge, showface, showpoly, entity, id, expr, pvals, pvalqty, ptype);
+  status = neut_tess_var_val (pTess, showedge, showface, showpoly, entity, id, expr, pvals, pvalqty, ptype);
 
-  else
+  if (status)
   {
-    for (i = 0; i < varqty; i++)
-      neut_tess_var_val_one (pTess, showedge, showface, showpoly, entity, id, vars[i], vals + i, NULL);
+    status = 0;
+    for (i = 0; i < varqty && !status; i++)
+      status = neut_tess_var_val_one (pTess, showedge, showface, showpoly, entity, id, vars[i], vals + i, NULL);
 
     (*pvalqty) = 1;
     (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-    status = ut_math_eval (expr, varqty, vars, vals, *pvals);
+    if (!status)
+      status = ut_math_eval (expr, varqty, vars, vals, *pvals);
 
     if (ptype)
     {
@@ -2291,4 +2367,51 @@ neut_tess_expr_val_one (struct TESS *pTess, int *showedge, int *showface, int *s
   ut_free_1d (&tmp);
 
   return 0;
+}
+
+int
+neut_tess_expr_string (struct TESS *pTess, char *entity, int id, char *expr,
+                       char **pstring)
+{
+  int status = 0, qty, iter = 0, done = 0;
+  double *vals = NULL;
+  char *tmp = NULL, *cond = NULL, *strue = NULL, *sfalse = NULL;
+
+  ut_string_string (expr, &tmp);
+
+  // a branch is a quoted string or another string ternary
+  while (!status && !done && !ut_string_ternary (tmp, &cond, &strue, &sfalse))
+  {
+    iter++;
+
+    status = neut_tess_expr_val (pTess, NULL, NULL, NULL, entity, id, cond,
+                                 &vals, &qty, NULL);
+
+    if (!status)
+    {
+      ut_string_string (vals[0] != 0 ? strue : sfalse, &tmp);
+
+      if (ut_string_isquoted (tmp))
+      {
+        ut_string_string (tmp + 1, pstring);
+        (*pstring)[strlen (*pstring) - 1] = '\0';
+        done = 1;
+      }
+    }
+
+    ut_free_1d (&vals);
+    ut_free_1d_char (&cond);
+    ut_free_1d_char (&strue);
+    ut_free_1d_char (&sfalse);
+  }
+
+  // not a string ternary: the string is used as is
+  if (iter == 0)
+    ut_string_string (expr, pstring);
+  else if (!done)
+    status = -1;
+
+  ut_free_1d_char (&tmp);
+
+  return status;
 }

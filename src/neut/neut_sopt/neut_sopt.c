@@ -4,7 +4,6 @@
 
 #include "neut_sopt_.h"
 
-#ifdef HAVE_NLOPT
 void
 neut_sopt_set_zero (struct SOPT *pSOpt)
 {
@@ -47,4 +46,3 @@ neut_sopt_free (struct SOPT *pSOpt)
 
   return;
 }
-#endif

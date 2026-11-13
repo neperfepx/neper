@@ -11,7 +11,7 @@ neut_tesr_fprintf_head (FILE * file, struct TESR Tesr)
 
   fprintf (file, "***tesr\n");
   fprintf (file, " **format\n");
-  fprintf (file, "   2.2\n");
+  fprintf (file, "   2.3\n");
   fprintf (file, " **general\n");
   fprintf (file, "   %d\n", Tesr.Dim);
   fprintf (file, "   ");
@@ -130,7 +130,7 @@ neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
       fprintf (file, "   %s\n", Tesr.CellCrySym);
     }
 
-    ol_e_free (e);
+    ol_e_free (&e);
   }
 
   return;

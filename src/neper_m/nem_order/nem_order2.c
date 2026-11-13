@@ -22,6 +22,9 @@ nem_order_pre (struct IN_M In, struct MESH *Mesh, int *domesh)
     domesh[0] = 0;
   }
 
+  if (Mesh[5].EltQty > 0)
+    domesh[5] = 1;
+
   if (dim == 2 && !strcmp (Mesh[2].EltType, "tri") && Mesh[4].EltQty > 0
       && !strcmp (Mesh[4].EltType, "quad"))
     ut_string_string ("quad6", &Mesh[4].EltType);
@@ -74,31 +77,84 @@ nem_order_dim (struct IN_M In, struct NODES *pNodes, struct MESH *pMeshU,
   return;
 }
 
+// projecting the order-2 nodes of the elements of curved faces onto their
+// domain faces, and those of the elements of curved edges onto their domain
+// edges (3D: intersection of the domain faces), in this order so that the
+// edge projection prevails
 void
-nem_order_periodic (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
+nem_order_curved (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
 {
-  nem_order_periodic_edges (Tess, pNodes, Mesh);
+  int i, j, edge, face, domedge, nodeqty_o1, nodeqty_tot, *domfaces = NULL, domfaceqty;
+  double *coo = NULL;
 
-  if (Tess.Dim == 3)
-    nem_order_periodic_faces (Tess, pNodes, Mesh);
+  if (Tess.Dim == 3 && Tess.DomFaceType && Mesh[2].EltOrder == 2
+      && Mesh[2].ElsetQty == Tess.FaceQty)
+  {
+    nodeqty_o1 = neut_elt_nodeqty (Mesh[2].EltType, 2, 1);
+    nodeqty_tot = neut_elt_nodeqty (Mesh[2].EltType, 2, 2);
 
-  neut_nodes_init_nodeslave (pNodes);
+    for (i = 1; i <= Mesh[2].EltQty; i++)
+    {
+      face = Mesh[2].EltElset[i];
+
+      if (neut_tess_face_iscurved (Tess, face))
+        for (j = nodeqty_o1; j < nodeqty_tot; j++)
+        {
+          coo = (*pNodes).NodeCoo[Mesh[2].EltNodes[i][j]];
+          neut_primparms_point_proj (Tess.DomFaceType[Tess.FaceDom[face][1]],
+                                     Tess.DomFaceParms[Tess.FaceDom[face][1]], coo, coo);
+        }
+    }
+  }
+
+  // (the domain edge types are not defined for a tessellation reconstructed
+  // from a raster tessellation)
+  if (Tess.EdgeDom && (Tess.Dim == 2 ? Tess.DomEdgeType != NULL : Tess.DomFaceType != NULL)
+      && Mesh[1].EltOrder == 2
+      && Mesh[1].ElsetQty == Tess.EdgeQty)
+    for (i = 1; i <= Mesh[1].EltQty; i++)
+    {
+      edge = Mesh[1].EltElset[i];
+
+      if (!neut_tess_edge_iscurved (Tess, edge))
+        continue;
+
+      coo = (*pNodes).NodeCoo[Mesh[1].EltNodes[i][2]];
+
+      if (Tess.Dim == 2)
+      {
+        domedge = Tess.EdgeDom[edge][1];
+        neut_primparms_point_proj (Tess.DomEdgeType[domedge], Tess.DomEdgeParms[domedge],
+                                   coo, coo);
+      }
+
+      else
+      {
+        neut_tess_edge_domfaces (Tess, edge, &domfaces, &domfaceqty);
+        neut_tess_domfaces_point_proj (Tess, domfaces, domfaceqty, coo, coo);
+        ut_free_1d_int (&domfaces);
+      }
+    }
 
   return;
 }
 
 void
-nem_order_post (struct IN_M In, int NodeQty_before, struct NODES *pNodes)
+nem_order_periodic (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
 {
-  int i;
+  // with -interface, the mesh nodes no longer match the tessellation
+  if ((*pNodes).DupNodeQty > 0)
+    nem_order_periodic_dup (pNodes, Mesh);
 
-  if (strcmp (In.interface, "continuous"))
+  else
   {
-    (*pNodes).DupNodeSlaveNb =
-      ut_realloc_1d_pint ((*pNodes).DupNodeSlaveNb, (*pNodes).NodeQty + 1);
-    for (i = NodeQty_before; i <= (*pNodes).NodeQty; i++)
-      (*pNodes).DupNodeSlaveNb[i] = NULL;
+    nem_order_periodic_edges (Tess, pNodes, Mesh);
+
+    if (Tess.Dim == 3)
+      nem_order_periodic_faces (Tess, pNodes, Mesh);
   }
+
+  neut_nodes_init_nodeslave (pNodes);
 
   return;
 }
@@ -300,6 +356,149 @@ nem_order_str_per_3d (int NodeQty_prev, struct MESHPARA MeshPara, struct NODES *
   }
 
   neut_nodes_fixperslaves (pNodes);
+
+  return;
+}
+
+void
+nem_order_1_elts (struct MESH *pMesh)
+{
+  int eltnodeqty_o2, eltnodeqty_o1;
+
+  eltnodeqty_o2 =
+    neut_elt_nodeqty ((*pMesh).EltType, (*pMesh).Dimension, 2);
+
+  if (!strcmp ((*pMesh).EltType, "quad9")
+      || !strcmp ((*pMesh).EltType, "quad6"))
+    ut_string_string ("quad", &(*pMesh).EltType);
+
+  eltnodeqty_o1 =
+    neut_elt_nodeqty ((*pMesh).EltType, (*pMesh).Dimension, 1);
+
+  // the order-1 nodes come first
+  ut_realloc_2d_int_size2 ((*pMesh).EltNodes + 1, (*pMesh).EltQty,
+                           eltnodeqty_o2, eltnodeqty_o1);
+
+  (*pMesh).EltOrder = 1;
+
+  return;
+}
+
+void
+nem_order_1_nodes (struct NODES *pNodes, struct MESH *Mesh, struct NSET *NSet)
+{
+  int i, j, k, eltnodeqty, node, NodeQty, PerNodeQty;
+  int *old_new = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+
+  if ((*pNodes).DupNodeQty > 0)
+    ut_print_neperbug ();
+
+  // recording the nodes of the elts
+  for (i = 0; i <= 5; i++)
+  {
+    eltnodeqty =
+      neut_elt_nodeqty (Mesh[i].EltType, Mesh[i].Dimension, Mesh[i].EltOrder);
+
+    for (j = 1; j <= Mesh[i].EltQty; j++)
+      for (k = 0; k < eltnodeqty; k++)
+        old_new[Mesh[i].EltNodes[j][k]] = 1;
+  }
+
+  NodeQty = 0;
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+    if (old_new[i])
+      old_new[i] = ++NodeQty;
+
+  // nodes (the new id of a node is lower than or equal to its old id)
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+  {
+    node = old_new[i];
+    if (!node)
+      continue;
+
+    ut_array_1d_memcpy ((*pNodes).NodeCoo[i], 3, (*pNodes).NodeCoo[node]);
+
+    if ((*pNodes).NodeCl)
+      (*pNodes).NodeCl[node] = (*pNodes).NodeCl[i];
+
+    if ((*pNodes).NodePart)
+      (*pNodes).NodePart[node] = (*pNodes).NodePart[i];
+
+    if ((*pNodes).PerNodeMaster)
+    {
+      (*pNodes).PerNodeMaster[node] = ((*pNodes).PerNodeMaster[i] > 0) ?
+        old_new[(*pNodes).PerNodeMaster[i]] : 0;
+      ut_array_1d_int_memcpy ((*pNodes).PerNodeShift[i], 3,
+                              (*pNodes).PerNodeShift[node]);
+    }
+  }
+
+  (*pNodes).NodeCoo =
+    ut_realloc_2d_delline ((*pNodes).NodeCoo, (*pNodes).NodeQty + 1,
+                           NodeQty + 1);
+
+  if ((*pNodes).NodeCl)
+    (*pNodes).NodeCl = ut_realloc_1d ((*pNodes).NodeCl, NodeQty + 1);
+
+  // periodicity
+  if ((*pNodes).PerNodeQty > 0)
+  {
+    PerNodeQty = 0;
+    for (i = 1; i <= (*pNodes).PerNodeQty; i++)
+      if (old_new[(*pNodes).PerNodeNb[i]])
+        (*pNodes).PerNodeNb[++PerNodeQty] = old_new[(*pNodes).PerNodeNb[i]];
+    (*pNodes).PerNodeQty = PerNodeQty;
+    (*pNodes).PerNodeNb =
+      ut_realloc_1d_int ((*pNodes).PerNodeNb, PerNodeQty + 1);
+
+    (*pNodes).PerNodeMaster =
+      ut_realloc_1d_int ((*pNodes).PerNodeMaster, NodeQty + 1);
+    (*pNodes).PerNodeShift =
+      ut_realloc_2d_int_delline ((*pNodes).PerNodeShift,
+                                 (*pNodes).NodeQty + 1, NodeQty + 1);
+
+    if ((*pNodes).PerNodeSlaveQty)
+    {
+      ut_free_1d_int (&(*pNodes).PerNodeSlaveQty);
+      ut_free_2d_int (&(*pNodes).PerNodeSlaveNb, (*pNodes).NodeQty + 1);
+      (*pNodes).NodeQty = NodeQty;
+      neut_nodes_init_nodeslave (pNodes);
+    }
+  }
+
+  // partitions
+  if ((*pNodes).NodePart)
+  {
+    (*pNodes).NodePart = ut_realloc_1d_int ((*pNodes).NodePart, NodeQty + 1);
+    ut_free_2d_int (&(*pNodes).Parts, (*pNodes).PartQty + 1);
+    (*pNodes).NodeQty = NodeQty;
+    neut_nodes_init_parts (pNodes);
+  }
+
+  (*pNodes).NodeQty = NodeQty;
+
+  // elts
+  for (i = 0; i <= 5; i++)
+  {
+    eltnodeqty =
+      neut_elt_nodeqty (Mesh[i].EltType, Mesh[i].Dimension, Mesh[i].EltOrder);
+
+    for (j = 1; j <= Mesh[i].EltQty; j++)
+      for (k = 0; k < eltnodeqty; k++)
+        Mesh[i].EltNodes[j][k] = old_new[Mesh[i].EltNodes[j][k]];
+
+    if (Mesh[i].NodeElts)
+    {
+      ut_free_2d_int (&Mesh[i].NodeElts, Mesh[i].NodeQty + 1);
+      neut_mesh_init_nodeelts (Mesh + i, NodeQty);
+    }
+  }
+
+  // nsets (if any)
+  if (NSet)
+    neut_nset_renumber (NSet, old_new);
+
+  ut_free_1d_int (&old_new);
 
   return;
 }

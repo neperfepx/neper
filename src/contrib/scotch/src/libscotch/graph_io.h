@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -34,6 +34,7 @@
 /**   NAME       : graph_io.h                              **/
 /**                                                        **/
 /**   AUTHOR     : Francois PELLEGRINI                     **/
+/**                Clement BARTHELEMY                      **/
 /**                                                        **/
 /**   FUNCTION   : These lines are the data declarations   **/
 /**                for the source graph input/output       **/
@@ -55,6 +56,8 @@
 /**                                 to   : 25 nov 2001     **/
 /**                # Version 6.0  : from : 07 jun 2018     **/
 /**                                 to   : 07 jun 2018     **/
+/**                # Version 7.0  : to   : 11 jul 2024     **/
+/**                                 to   : 11 jul 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -62,4 +65,4 @@
 **  The function prototypes.
 */
 
-int                         graphLoad2          (const Gnum, const Gnum, const Gnum * const, const Gnum * const, Gnum * const, const Gnum, const Gnum * const);
+int                         graphLoad2          (const Gnum, const Gnum, const Gnum * const, const Gnum * const, Gnum * restrict const, const Gnum, const Gnum * const);

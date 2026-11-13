@@ -1,4 +1,4 @@
-/* Copyright 2008,2010,2016 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2008,2010,2016,2019,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -46,14 +46,14 @@
 /**                                 to   : 11 aug 2010     **/
 /**                # Version 6.0  : from : 04 aug 2016     **/
 /**                                 to   : 04 aug 2016     **/
+/**                # Version 7.0  : from : 27 aug 2019     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define GRAPH_IO_MMKT
 
 #include "module.h"
 #include "common.h"
@@ -199,7 +199,7 @@ const char * const          dataptr)              /* Fake base value  */
   intSort2asc2 (sorttab, sortnbr);                /* Sort edges by increasing indices */
 
   edgetax = grafptr->edgetax;                     /* TRICK: point to beginning of sorted edge array for re-use */
-  for (sortnum = degrmax = 0, vertnum = baseval - 1, edgetmp = edgenum = baseval;
+  for (sortnum = degrmax = 0, vertnum = verttmp = baseval - 1, edgetmp = edgenum = baseval;
        sortnum < sortnbr; sortnum ++) {
     Gnum                vertend;
 

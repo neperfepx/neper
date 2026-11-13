@@ -22,10 +22,6 @@ extern "C"
 #include <glpk.h>
 #endif
 
-#ifdef HAVE_NLOPT
-#include <nlopt.h>
-#endif
-
 extern void ol_gnd_crys_b (struct OL_CRYS, double*);
 extern void ol_gnd_nye_rho_sc (struct OL_CRYS, double**, double*);
 extern void ol_gnd_nye_rho_l2 (struct OL_CRYS, double**, double*, double*);
@@ -35,9 +31,6 @@ extern void ol_gnd_nye_rho_energy (struct OL_CRYS, double**, double*, double*);
 extern void ol_gnd_nye_rho_simplex (struct OL_CRYS, double**, double*, double*, char*);
 #endif
 
-#ifdef HAVE_NLOPT
-extern void ol_gnd_nye_rho_norm (struct OL_CRYS, double**, double*, double*);
-#endif
 
 
 #endif /* OL_GND_RHO_H */

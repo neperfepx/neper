@@ -40,22 +40,16 @@ extern "C"
 /// \return 0 for little endian, 1 for big endian
   extern int ut_sys_endian (void);
 
-/// \brief Run a command with time limit
-/// \param exec: executable
-/// \param command: command (its arguments separated by spaces; it is not
-/// run through a shell)
-/// \param tmax: maximal time
-/// \note Ctrl+C also ends execution
-/// \note The standard output and error of the command are discarded
-/// \return process id on success, -1 on failure
-/// \author Romain Quey, Thierry Auger
-  extern int ut_sys_runwtime (char *exec, char *command, double tmax,
-                              struct timeval *pctrlc_t);
+/// \brief Quote a string for use as a single word of a shell command
+/// \param string: string
+/// \param *pquoted: quoted string (reallocated)
+/// \note A leading \c ~/ is left unquoted, so that the shell expands it
+  extern void ut_sys_shellquote (const char *string, char **pquoted);
 
-/// \brief Handle Ctrl+C as in ut_sys_runwtime, for a subprocess run by other
-/// means: the subprocess (which receives Ctrl+C too) ends, and Ctrl+C
-/// pressed again within 2 seconds ends execution
-/// \param pctrlc_t: time of the last Ctrl+C (as in ut_sys_runwtime)
+/// \brief Handle Ctrl+C while a subprocess runs: the subprocess (which
+/// receives Ctrl+C too) ends, and Ctrl+C pressed again within 2 seconds
+/// ends execution
+/// \param pctrlc_t: time of the last Ctrl+C
 /// \note ut_sys_ctrlc_begin is called before running the subprocess, and
 /// ut_sys_ctrlc_end after
   extern void ut_sys_ctrlc_begin (struct timeval *pctrlc_t);

@@ -22,6 +22,7 @@ neut_mesh_fprintf_tree (FILE *file, char *entity, struct NODES Nodes, struct MES
   neut_odf_set_zero (&Odf);
 
   ut_string_string (Mesh.Domain, &(Odf.Sp.space));
+  neut_odf_crysym (Odf, &(Odf.Sp.crysym));
 
   neut_nodes_memcpy (Nodes, &(Odf.Sp.Nodes));
   neut_mesh_memcpy (Mesh, Odf.Sp.Mesh + 3);
@@ -37,10 +38,11 @@ neut_mesh_fprintf_tree (FILE *file, char *entity, struct NODES Nodes, struct MES
 
   neut_oset_kdtree (&Grid, pqcloud, pqtree);
 
-  (*pqtree)->saveIndex(file);
+  (**pqtree).saveIndex(file);
 
-  // neut_odf_free (&Odf);
+  neut_odf_free (&Odf);
   ol_set_free (&Grid);
+  delete qtree;
 
   return;
 }

@@ -2,15 +2,18 @@
 /* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nem_meshing_1d_useg (double cl1, double cl2, double clt,
-				 double pl, int *pqty, double **pcoo,
-				 double **pcl);
-
-extern void nem_meshing_1d_useg_reverse (int ptqty, double *coo, double *cl);
-
-extern int cl1_cl_pl_n (double cl1, double cl, double pl);
-extern int cl1_pl_x_i (double cl1, double pl, double x);
-extern double cl1_pl_n_l (double cl1, double pl, double n);
-extern double cl1_cl2_pl_I (double cl1, double cl2, double pl);
-extern double cl1_pl_i_x (double cl1, double pl, int i);
-extern double cl1_pl_i_cl (double cl1, double pl, int i);
+extern void nem_meshing_1d_useg_pieces (double cl1, double cl2, double clt,
+                                        double clgrad, double *x, double *a,
+                                        double *b, double *F, int *pqty);
+extern double nem_meshing_1d_useg_piece_int (double a, double b, double u,
+                                             double v);
+extern double nem_meshing_1d_useg_piece_intinv (double a, double b, double u,
+                                                double dF);
+extern double nem_meshing_1d_useg_size (double cl1, double cl2, double clt,
+                                        double clgrad, double x);
+extern void nem_meshing_1d_useg_place (double *x, double *a, double *b,
+                                       double *F, int pieceqty, int n,
+                                       double *coo);
+extern double nem_meshing_1d_useg_sizeratio (double cl1, double cl2,
+                                             double clt, double clgrad,
+                                             double *coo, int n);

@@ -66,9 +66,21 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
   {
     if (!neut_tess_isvoid (FTess))
     {
+      // the svg format, possibly with arguments, among the formats
+      int i, qty;
+      char **formats = NULL, *svg = NULL;
+
+      ut_list_break (In.format, NEUT_SEP_NODEP, &formats, &qty);
+      for (i = 0; i < qty; i++)
+        if (!strncmp (formats[i], "svg", 3))
+          ut_string_string (formats[i], &svg);
+
       file = ut_file_open (In.svg, "w");
-      neut_tess_fprintf_svg (file, In.format, FTess);
+      neut_tess_fprintf_svg (file, svg, FTess);
       ut_file_close (file, In.svg, "w");
+
+      ut_free_2d_char (&formats, qty);
+      ut_free_1d_char (&svg);
     }
     else
       ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n",

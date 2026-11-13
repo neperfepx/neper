@@ -99,7 +99,7 @@ void
 net_transform_tesr_orirotate (char *string, struct TESR *pTesr)
 {
   int i, valqty, cellqty, *cells = NULL;
-  double theta, *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
   char *fct = NULL, **vars = NULL, **vals = NULL, *cellexpr = NULL, *csysexpr = NULL;
 
   ut_string_string ("1", &cellexpr);
@@ -111,9 +111,9 @@ net_transform_tesr_orirotate (char *string, struct TESR *pTesr)
     abort ();
 
   for (i = 0; i < 3; i++)
-    sscanf (vals[i], "%lf", r + i);
-  ol_r_set_unit (r);
-  sscanf (vals[3], "%lf", &theta);
+    sscanf (vals[i], "%lf", rtheta + i);
+  ol_r_set_unit (rtheta);
+  sscanf (vals[3], "%lf", rtheta + 3);
 
   for (i = 4; i < valqty; i++)
   {
@@ -128,10 +128,10 @@ net_transform_tesr_orirotate (char *string, struct TESR *pTesr)
   neut_tesr_expr_cells (pTesr, cellexpr, &cells, &cellqty);
 
   for (i = 0; i < cellqty; i++)
-    neut_tesr_cell_orirotate (pTesr, cells[i], r, theta, csysexpr);
+    neut_tesr_cell_orirotate (pTesr, cells[i], rtheta, csysexpr);
 
   ut_free_1d_int (&cells);
-  ol_r_free (r);
+  ol_rtheta_free (&rtheta);
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, valqty);
   ut_free_2d_char (&vals, valqty);

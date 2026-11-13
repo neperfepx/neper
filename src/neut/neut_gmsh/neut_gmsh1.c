@@ -4,39 +4,6 @@
 
 #include"neut_gmsh_.h"
 
-/* This is to deal with the default config and option files of gmsh. */
-void
-neut_gmsh_rc (char *action)
-{
-  char *s1 = ut_alloc_1d_char (1000);
-  char *s2 = ut_alloc_1d_char (1000);
-
-  sprintf (s1, "%s/.gmshrc", getenv ("HOME"));
-  sprintf (s2, "%s.bak", s1);
-
-  if (strcmp (action, "bak") == 0)
-    rename (s1, s2);
-  else if (strcmp (action, "unbak") == 0)
-    rename (s2, s1);
-  else
-    abort ();
-
-  sprintf (s1, "%s/.gmsh-options", getenv ("HOME"));
-  sprintf (s2, "%s.bak", s1);
-
-  if (strcmp (action, "bak") == 0)
-    rename (s1, s2);
-  else if (strcmp (action, "unbak") == 0)
-    rename (s2, s1);
-  else
-    abort ();
-
-  ut_free_1d_char (&s1);
-  ut_free_1d_char (&s2);
-
-  return;
-}
-
 int
 neut_gmsh_meshalgo2d_nb (char *algo, int *pnb)
 {

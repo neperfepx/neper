@@ -1,4 +1,4 @@
-/* Copyright 2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2020,2021 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -40,14 +40,14 @@
 /**                                                        **/
 /**   DATES      : # Version 6.1  : from : 25 aug 2020     **/
 /**                                 to   : 26 aug 2020     **/
+/**                # Version 7.0  : from : 28 aug 2020     **/
+/**                                 to   : 16 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define WGRAPH_PART_ES
 
 #include "module.h"
 #include "common.h"
@@ -59,6 +59,7 @@
 #include "kgraph_map_st.h"
 #include "wgraph.h"
 #include "wgraph_part_es.h"
+#include "scotch.h"
 
 /*****************************/
 /*                           */
@@ -71,13 +72,11 @@ wgraphPartEs (
 Wgraph * restrict const         grafptr,          /*+ Active graph      +*/
 const WgraphPartEsParam * const paraptr)          /*+ Method parameters +*/
 {
+  Arch                archdat;                    /* Complete graph target architecture */
   Kgraph              actgrafdat;                 /* K-way graph structure              */
-  Arch                tgtarchdat;                 /* Complete graph target architecture */
-  ArchDom             tgtdomndat;                 /* Initial domain                     */
   Gnum * restrict     comploadtab;
   Gnum * restrict     compsizetab;
   Gnum * restrict     npfltab;                    /* Neighbor part flag array           */
-  Anum                partnbr;                    /* Number of parts                    */
   Anum                partnum;
   Gnum                fronnum;
   Gnum                frlosum;
@@ -87,8 +86,7 @@ const WgraphPartEsParam * const paraptr)          /*+ Method parameters +*/
   const Gnum * restrict const vendtax = grafptr->s.vendtax;
   const Gnum * restrict const velotax = grafptr->s.velotax;
   const Gnum * restrict const edgetax = grafptr->s.edgetax;
-
-  partnbr = grafptr->partnbr;
+  const Gnum                  partnbr = grafptr->partnbr;
 
    if ((npfltab = memAlloc ((partnbr + 1) * sizeof (Gnum))) == NULL) {
     errorPrint ("wgraphPartEs: out of memory");
@@ -96,16 +94,14 @@ const WgraphPartEsParam * const paraptr)          /*+ Method parameters +*/
   }
   npfltab ++;                                     /* TRICK: set slot for frontier */
 
-  tgtarchdat.class   = archClass ("cmplt");       /* Create complete graph target architecture */
-  tgtarchdat.flagval = tgtarchdat.class->flagval; /* Copy architecture flag                    */
-  ((ArchCmplt *) &tgtarchdat.data)->termnbr = partnbr;
-  archDomFrst (&tgtarchdat, &tgtdomndat);
+  SCOTCH_archCmplt ((SCOTCH_Arch *) &archdat, (SCOTCH_Num) partnbr); /* Create complete graph target architecture */
 
-  if (kgraphInit (&actgrafdat, &grafptr->s, &tgtarchdat, &tgtdomndat, 0, NULL, NULL, 1, 0, 0) != 0) {
+  if (kgraphInit (&actgrafdat, &grafptr->s, &archdat, NULL, 0, NULL, 1, 0, 0) != 0) {
     errorPrint ("wgraphPartEs: cannot create mapping graph");
     memFree    (npfltab - 1);
-    return     (1);
+    return (1);
   }
+  actgrafdat.contptr = grafptr->contptr;
 
   if (kgraphMapSt (&actgrafdat, paraptr->strat) != 0) { /* Map active subgraph */
     errorPrint ("wgraphPartEs: cannot partition active graph");
@@ -116,13 +112,13 @@ const WgraphPartEsParam * const paraptr)          /*+ Method parameters +*/
   compsizetab = grafptr->compsize;
 
   for (partnum = 0; partnum < partnbr; partnum ++)
-    comploadtab[archDomNum (&tgtarchdat, &actgrafdat.m.domntab[partnum])] = actgrafdat.comploadavg[partnum] + actgrafdat.comploaddlt[partnum];
+    comploadtab[archDomNum (&archdat, &actgrafdat.m.domntab[partnum])] = actgrafdat.comploadavg[partnum] + actgrafdat.comploaddlt[partnum];
 
   memSet (compsizetab, 0, partnbr * sizeof (Gnum));
   for (vertnum = grafptr->s.baseval; vertnum < grafptr->s.vertnnd; vertnum ++) {
     Anum                partnum;
 
-    partnum = archDomNum (&tgtarchdat, &actgrafdat.m.domntab[actgrafdat.m.parttax[vertnum]]); /* Set part as value of terminal domain */
+    partnum = archDomNum (&archdat, &actgrafdat.m.domntab[actgrafdat.m.parttax[vertnum]]); /* Set part as value of terminal domain */
     grafptr->parttax[vertnum] = partnum;
     compsizetab[partnum] ++;
   }

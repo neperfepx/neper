@@ -1,4 +1,4 @@
-/* Copyright 2007-2013,2018,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2007-2013,2018,2020,2021,2023,2025 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -47,7 +47,9 @@
 /**                # Version 6.0  : from : 05 nov 2009     **/
 /**                                 to   : 31 may 2018     **/
 /**                # Version 6.1  : from : 30 jul 2020     **/
-/**                                 to   : 26 aug 2020     **/
+/**                                 to   : 18 dec 2021     **/
+/**                # Version 7.0  : from : 17 jan 2023     **/
+/**                                 to   : 09 jul 2025     **/
 /**                                                        **/
 /************************************************************/
 
@@ -55,17 +57,21 @@
 **  The defines and includes.
 */
 
-#define WGRAPH_PART_FM
+#define SCOTCH_WGRAPH_PART_FM
 
 /* #define SCOTCH_DEBUG_WGRAPH3 */
 
 #include "module.h"
 #include "common.h"
 #include "gain.h"
+#include "parser.h"
 #include "graph.h"
+#include "arch.h"
+#include "vgraph.h"
+#include "vgraph_separate_st.h"
 #include "wgraph.h"
-#include "wgraph_part_gg.h"
 #include "wgraph_part_fm.h"
+#include "wgraph_part_rb.h"
 
 /*
 **  The static and global variables.
@@ -253,6 +259,7 @@ const Gnum                    cplomax)            /*+ Maximum with respect to av
 
   linkbst = NULL;                                 /* Assume no candidate vertex found yet */
   tablbst = tablptr->tend;
+  cdltbst =                                       /* Prevent compiler from yelling */
   gainbst = GAINMAX;
 
   for (linkptr = (WgraphPartFmLink *) gainTablFrst (tablptr); /* Select candidate vertices */
@@ -300,7 +307,6 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
   int                             passnbr;        /* Maximum number of passes to go                */
   int                             moveflag;       /* Flag set if useful moves made                 */
   Gnum                            partnum;
-  Gnum                            partnbr;
   Gnum                            frlosum;
   Gnum                            frlobst;
   Gnum                            fronnbr;
@@ -318,20 +324,48 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
   const Gnum * restrict const velotax = grafptr->s.velotax;
   const Gnum * restrict const edgetax = grafptr->s.edgetax;
   Gnum * restrict const       parttax = grafptr->parttax;
+  const Gnum                  partnbr = grafptr->partnbr; /* Work with current number of parts */
   Gnum * restrict const       comploadtab = grafptr->compload;
   Gnum * restrict const       compsizetab = grafptr->compsize;
 
   if (grafptr->fronnbr == 0) {                    /* If no frontier defined */
-    WgraphPartGgParam   paradat;
+    WgraphPartRbParam   paradat;
+    Gnum                partnum;
+    Gnum                cplosum;                  /* Sum of vertex loads in parts and boundaries */
+    Gnum                cplomin;                  /* Minimum acceptable part load                */
+    Gnum                cplomax;                  /* Maximum acceptable part load                */
+    int                 o;
 
-    paradat.passnbr = 5;                          /* Use a standard algorithm */
-    wgraphPartGg (grafptr, &paradat);
+    for (partnum = 0, cplosum = 0; partnum < partnbr; partnum ++) /* Compute part load sum */
+      cplosum += comploadtab[partnum];
+    cplomin = (Gnum) ((float) cplosum * (1.0F - paraptr->deltrat) / (float) partnbr); /* Adjust minimum part load */
+    cplomax = (Gnum) ((float) cplosum * (1.0F + paraptr->deltrat) / (float) partnbr); /* Adjust minimum part load */
+
+    for (partnum = 0, cplosum = 0; partnum < partnbr; partnum ++) { /* Test if all parts fall into boundary */
+      if ((comploadtab[partnum] < cplomin) ||
+          (comploadtab[partnum] > cplomax))
+	break;
+    }
+    if (partnum >= partnbr)                       /* If balanced achieved, no need to recompute */
+      return (0);
+
+    if ((paradat.straptr = stratInit (&vgraphseparateststratab, "m{rat=0.7,vert=100,low=h{pass=10},asc=b{width=3,bnd=f{bal=0.05},org=(|h{pass=10})f{bal=0.05}}}")) == NULL) {
+      errorPrint ("wgraphPartFm: cannot create fallback strategy");
+      return (1);
+    }
+
+    o = wgraphPartRb (grafptr, &paradat);
+
+    stratExit (paradat.straptr);
+
+    if (o != 0) {
+      errorPrint ("wgraphPartFm: cannot apply fallback strategy");
+      return (1);
+    }
 
     if (grafptr->fronnbr == 0)                    /* If new partition has no frontier */
       return (0);                                 /* This algorithm is still useless  */
   }
-
-  partnbr = grafptr->partnbr;                     /* Work with current number of parts */
 
 #ifdef SCOTCH_DEBUG_WGRAPH2
   hashdat.hashsiz = 16;
@@ -386,7 +420,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
   while (wgraphPartFmHashClaim (&hashdat, grafptr->fronnbr)) { /* Prepare hash table for inserting frontier vertices */
     if (wgraphPartFmHashResize (&hashdat) != 0) {
       errorPrint ("wgraphPartFm: cannot resize hash array (1)");
-      goto abort;
+      goto fail;
     }
   }
 
@@ -411,7 +445,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_WGRAPH2
         if (hashdat.hashnbr > hashdat.hashmax) {  /* Table should not be filled-in to capacity */
           errorPrint ("wgraphPartFm: internal error (1)");
-          goto abort;
+          goto fail;
         }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
         vexxptr->nlstptr = NULL;                  /* Vertex not in working list */
@@ -456,9 +490,9 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_WGRAPH3
     grafptr->fronload = frlosum;
     grafptr->fronnbr  = fronnbr;
-    if (wgraphPartFmCheck (grafptr, &hashdat, cplosum) != 0) {
+    if (wgraphPartFmCheck (grafptr, &hashdat, &savedat, cplosum) != 0) {
       errorPrint ("wgraphPartFm: internal error (2)");
-      goto abort;
+      goto fail;
     }
 #endif /* SCOTCH_DEBUG_WGRAPH3 */
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
@@ -472,7 +506,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
       WgraphPartFmVertex *  vexxptr;
       WgraphPartFmVertex *  vexxend;
       WgraphPartFmVertex *  listptr;              /* List of vertices to process during a move   */
-      Gnum                  listnbr;
+      Gnum                  savenbr;              /* Number of save slots to fill                */
       Gnum                  hashnum;
       Anum                  partnum;
       Anum                  pminnum;
@@ -486,7 +520,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
       while (wgraphPartFmHashClaim (&hashdat, (vendtax[vertnum] - verttax[vertnum]))) { /* Possibly resize hash table before creating working list */
         if (wgraphPartFmHashResize (&hashdat) != 0) {
           errorPrint ("wgraphPartFm: cannot resize hash array (2)");
-          goto abort;
+          goto fail;
         }
       }
 
@@ -495,7 +529,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_WGRAPH2
         if (vexxptr->vertnum == ~0) {             /* If vertex not present */
           errorPrint ("wgraphPartFm: internal error (3)");
-          goto abort;
+          goto fail;
         }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
       }
@@ -504,13 +538,14 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
       if ((vexxptr->nlokptr != NULL) ||           /* Vertex should not be already locked or in working list */
           (vexxptr->nlstptr != NULL)) {
         errorPrint ("wgraphPartFm: internal error (4)");
-        goto abort;
+        goto fail;
       }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
 
       partnum = linkptr->partnum;                 /* Get vertex target part     */
       pminnum = linkptr->npmipartnum;             /* Get smallest impacted part */
       gainval = (velotax != NULL) ? - velotax[vertnum] : -1;
+      savenbr = 2;                                /* TRICK: account for move and load for vertex itself  */
       nplsidx = partnum;                          /* Initialize vertex part list: first cell is frontier */
       nplstab[partnum].nextidx = -1;
       nplstab[partnum].loadgainval = 0;           /* Vertex remains in its destination part */
@@ -528,7 +563,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_WGRAPH2
           if (nplstab[partend].nextidx != -2) {
             errorPrint ("wgraphPartFm: internal error (5)");
-            goto abort;
+            goto fail;
           }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
           nplstab[partend].nextidx = nplsidx;
@@ -537,6 +572,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
           nplstab[partend].sizegainval = -1;
           nplstab[partend].vechnum =              /* Initialize neighbor vertex indices for this part */
           nplstab[partend].vencnum = ~0;
+          savenbr ++;                             /* One more slot */
         }
         linktmp = linknum;
         linknum = linkdat.linktab[linknum].nextidx; /* Get next link        */
@@ -548,7 +584,6 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
       vexxptr->nlstptr = &wgraphpartfmvertexdummy; /* Flag vertex so not taken as frontier neighbor of neighbor */
 
       listptr = &wgraphpartfmvertexdummy;         /* Empty working list of end vertices                       */
-      listnbr = 1;                                /* TRICK: Already one item to account for vertex itself     */
       for (edgenum = verttax[vertnum]; edgenum < vendtax[vertnum]; edgenum ++) { /* For all neighbor vertices */
         Gnum                  vertend;
         WgraphPartFmVertex *  vexxend;
@@ -567,7 +602,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_WGRAPH2
             if (partend == -1) {                  /* If vertex was not in original frontier array */
               errorPrint ("wgraphPartFm: vertex not in frontier array (1)");
-              goto abort;
+              goto fail;
             }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
             if (partend == partnum)               /* If neighbor in same part as vertex destination */
@@ -582,7 +617,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_WGRAPH2
             if (hashdat.hashnbr > hashdat.hashmax) { /* Table should not be filled-in to capacity */
               errorPrint ("wgraphPartFm: internal error (6)");
-              goto abort;
+              goto fail;
             }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
             break;
@@ -620,7 +655,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_WGRAPH2
                 if (partent == -1) {              /* If vertex was not in original frontier array */
                   errorPrint ("wgraphPartFm: vertex not in frontier array (2)");
-                  goto abort;
+                  goto fail;
                 }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
                 break;
@@ -631,7 +666,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
                 (vexxent->nlstptr == NULL)) {     /* And not already in working list                                          */
               vexxent->nlstptr = listptr;         /* Add vertex to working list                                               */
               listptr = vexxent;
-              listnbr ++;
+              savenbr ++;
             }
           }
         }
@@ -639,15 +674,15 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
         if (vexxend->nlstptr == NULL) {           /* If neighbor vertex not already caught as neighbor of neighbor */
           vexxend->nlstptr = listptr;             /* Vertex is/will be in frontier                                 */
           listptr = vexxend;                      /* Link it for further processing                                */
-          listnbr ++;                             /* One more vertex in list                                       */
+          savenbr ++;                             /* One more vertex in list                                       */
         }
       }
       vexxptr->nlstptr = NULL;                    /* Unlock chosen vertex */
 
-      while (wgraphPartFmSaveClaim (&savedat, listnbr + (vendtax[vertnum] - verttax[vertnum]))) { /* TRICK: vertex is already accounted for in listnbr */
+      while (wgraphPartFmSaveClaim (&savedat, savenbr + (vendtax[vertnum] - verttax[vertnum]))) { /* TRICK: vertex is already accounted for in savenbr */
         if (wgraphPartFmSaveResize (&savedat) != 0) {
           errorPrint ("wgraphPartFm: cannot resize save array");
-          goto abort;
+          goto fail;
         }
       }
 
@@ -686,7 +721,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_WGRAPH2
                 if (partent == -1) {              /* If vertex was not in original frontier array */
                   errorPrint ("wgraphPartFm: vertex not in frontier array (3)");
-                  goto abort;
+                  goto fail;
                 }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
                 vexxent = NULL;
@@ -764,7 +799,7 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_WGRAPH2
                 if (partent == -1) {              /* If vertex was not in original frontier array */
                   errorPrint ("wgraphPartFm: vertex not in frontier array (3)");
-                  goto abort;
+                  goto fail;
                 }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
                 vexxent = NULL;
@@ -787,6 +822,12 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
           }
         }
 
+#ifdef SCOTCH_DEBUG_WGRAPH2
+        if (savedat.savenbr >= savedat.savesiz) {
+          errorPrint ("wgraphPartFm: internal error (7)");
+          goto fail;
+        }
+#endif /* SCOTCH_DEBUG_WGRAPH2 */
         savedat.savetab[savedat.savenbr].typeval = WGRAPHPARTFMSAVEMOVE;
         savedat.savetab[savedat.savenbr].u.movedat.vertnum = vexxend->vertnum;
         savedat.savetab[savedat.savenbr].u.movedat.partnum = vexxend->partnum;
@@ -797,6 +838,12 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
       do {                                        /* For all (possibly) updated parts including part -1 */
         Anum                parttmp;
 
+#ifdef SCOTCH_DEBUG_WGRAPH2
+        if (savedat.savenbr >= savedat.savesiz) {
+          errorPrint ("wgraphPartFm: internal error (8)");
+          goto fail;
+        }
+#endif /* SCOTCH_DEBUG_WGRAPH2 */
         savedat.savetab[savedat.savenbr].typeval = WGRAPHPARTFMSAVELOAD; /* Record change in load */
         savedat.savetab[savedat.savenbr].u.loaddat.partnum = partend;
         if (partend >= 0) {
@@ -807,6 +854,8 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
           cplosum += nplstab[partend].loadgainval; /* Update sum of part loads */
         }
         else {
+          if (savedat.savenbr >= savedat.savesiz)
+            fprintf (stderr, "OUCH\n");
           savedat.savetab[savedat.savenbr].u.loaddat.loadval = frlosum;
           savedat.savetab[savedat.savenbr].u.loaddat.sizeval = fronnbr;
           frlosum += nplstab[partend].loadgainval;
@@ -842,9 +891,9 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_WGRAPH3
       grafptr->fronload = frlosum;
       grafptr->fronnbr  = fronnbr;
-      if (wgraphPartFmCheck (grafptr, &hashdat, cplosum) != 0) {
-        errorPrint ("wgraphPartFm: internal error (7)");
-        goto abort;
+      if (wgraphPartFmCheck (grafptr, &hashdat, &savedat, cplosum) != 0) {
+        errorPrint ("wgraphPartFm: internal error (9)");
+        goto fail;
       }
 #endif /* SCOTCH_DEBUG_WGRAPH3 */
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
@@ -883,7 +932,6 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
       Gnum                  linknum;
       Anum                  partnum;
 
-
       savedat.savenbr --;
       switch (savedat.savetab[savedat.savenbr].typeval) {
         case WGRAPHPARTFMSAVEMOVE :               /* Moved-back vertices will be placed in locked list for next pass (if any) */
@@ -892,8 +940,8 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
                vexxptr->vertnum != vertnum; hashnum = (hashnum + 1) & hashdat.hashmsk, vexxptr = hashdat.hashtab + hashnum) {
 #ifdef SCOTCH_DEBUG_WGRAPH2
             if (vexxptr->vertnum == ~0) {         /* If vertex not present */
-              errorPrint ("wgraphPartFm: internal error (8)");
-              goto abort;
+              errorPrint ("wgraphPartFm: internal error (10)");
+              goto fail;
             }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
           }
@@ -959,18 +1007,18 @@ const WgraphPartFmParam * const paraptr)    /*+ Method parameters +*/
 #ifdef SCOTCH_DEBUG_WGRAPH2
   if ((grafptr->fronnbr  != fronnbr) ||           /* Compare with loads written back */
       (grafptr->fronload != frlosum)) {
-    errorPrint ("wgraphPartFm: internal error (9)");
-    goto abort;
+    errorPrint ("wgraphPartFm: internal error (11)");
+    goto fail;
   }
 
   if (wgraphCheck (grafptr) != 0) {
     errorPrint ("wgraphPartFm: inconsistent graph data");
-    goto abort;
+    goto fail;
   }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
 
   o = 0;                                          /* Everything went well */
-abort:
+fail:
   memFree (savedat.savetab);
   memFree (linkdat.linktab);
   memFree (hashdat.hashtab);
@@ -1000,10 +1048,12 @@ int
 wgraphPartFmCheck (
 const Wgraph * restrict const               grafptr,
 const WgraphPartFmHashData * restrict const hashptr,
+const WgraphPartFmSaveData * restrict const saveptr,
 const Gnum                                  cplosum)
 {
   Gnum                      vertnum;
   Gnum                      partnum;
+  Gnum                      savenum;
   Gnum                      fronnbr;
   Gnum                      frlosum;
   Gnum                      cplotmp;
@@ -1087,30 +1137,60 @@ const Gnum                                  cplosum)
   for (partnum = 0, cplotmp = 0; partnum < grafptr->partnbr; partnum ++) {
     if (grafptr->compsize[partnum] != compsizetab[partnum]) {
       errorPrint ("wgraphPartFmCheck: invalid part size array");
-      goto abort;
+      goto fail;
     }
     if (grafptr->compload[partnum] != comploadtab[partnum]) {
       errorPrint ("wgraphPartFmCheck: invalid part load array");
-      goto abort;
+      goto fail;
     }
     cplotmp += comploadtab[partnum];
   }
 
   if (grafptr->fronload != frlosum) {
     errorPrint ("wgraphPartFmCheck: invalid frontier load");
-    goto abort;
+    goto fail;
   }
   if (grafptr->fronnbr != fronnbr) {
     errorPrint ("wgraphPartFmCheck: invalid frontier size");
-    goto abort;
+    goto fail;
   }
   if (cplotmp != cplosum) {
     errorPrint ("wgraphPartFmCheck: invalid part load sum");
-    goto abort;
+    goto fail;
+  }
+
+  if ((saveptr->savenbr < 0) || (saveptr->savenbr > saveptr->savesiz)) {
+    errorPrint ("wgraphPartFmCheck: invalid save array contents");
+    goto fail;
+  }
+  for (savenum = 0; savenum < saveptr->savenbr; savenum ++) {
+    WgraphPartFmVertex *  vexxptr;
+    Gnum                  vertnum;
+    Gnum                  hashnum;
+
+    switch (saveptr->savetab[savenum].typeval) {
+      case WGRAPHPARTFMSAVEMOVE :
+        vertnum = saveptr->savetab[savenum].u.movedat.vertnum;
+        for (hashnum = (vertnum * WGRAPHPARTFMHASHPRIME) & hashptr->hashmsk, vexxptr = hashptr->hashtab + hashnum; /* Search for vertex in hash table */
+             vexxptr->vertnum != vertnum; hashnum = (hashnum + 1) & hashptr->hashmsk, vexxptr = hashptr->hashtab + hashnum) {
+          if (vexxptr->vertnum == ~0) {
+            errorPrint ("wgraphPartFmCheck: inconsistency in hash/save structure");
+            goto fail;
+          }
+        }
+        break;
+      case WGRAPHPARTFMSAVELOAD :
+        partnum = saveptr->savetab[savenum].u.loaddat.partnum;
+        if ((partnum < -1) || (partnum >= grafptr->partnbr)) {
+          errorPrint ("wgraphPartFmCheck: invalid part value");
+          goto fail;
+        }
+        break;
+    }
   }
 
   o = 0;                                          /* Everything went all right */
-abort :
+fail:
   memFree (flagtab);                              /* Free group leader */
 
   return (o);
@@ -1253,7 +1333,7 @@ WgraphPartFmSaveData * const  sdatptr)
   savesiz  = sdatptr->savesiz;                    /* Increase array size by 25% */
   savesiz += (savesiz >> 2) + 4;
 
-  if ((savetab = (WgraphPartFmSave *) memRealloc (sdatptr->savetab, savesiz * sizeof (WgraphPartFmLink))) == NULL) {
+  if ((savetab = (WgraphPartFmSave *) memRealloc (sdatptr->savetab, savesiz * sizeof (WgraphPartFmSave))) == NULL) {
     errorPrint ("wgraphPartFmSaveResize: out of memory");
     return (1);
   }
@@ -1302,7 +1382,7 @@ WgraphPartFmHashData * restrict const hdatptr)    /*+ Pointer to hash data struc
 
   hashmsk = hashsiz - 1;                          /* New hash mask                */
   lockptr = &wgraphpartfmvertexdummy;             /* No vertex in locked list yet */
-  for (hasoptr = hdatptr->hashtab; hasoptr < hdatptr->hashtab + hdatptr->hashsiz; hasoptr ++) { /* For all old hash slots  */
+  for (hasoptr = hdatptr->hashtab; hasoptr < hdatptr->hashtab + hdatptr->hashsiz; hasoptr ++) { /* For all old hash slots */
     WgraphPartFmVertex *  hasnptr;                /* Pointer to new hash slot */
     Gnum                  vertnum;
 

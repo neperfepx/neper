@@ -2,6 +2,4 @@
 /* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
-#ifdef HAVE_NLOPT
-extern void net_tess_opt_comp_post (struct TOPT TOpt, int res);
-#endif
+extern void net_tess_opt_comp_post (struct TOPT TOpt);

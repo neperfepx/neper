@@ -16,8 +16,13 @@
 #include"net_input.h"
 
 extern void net_input_treatargs (int, char **, int, char **, struct IN_T *);
+extern void net_input_orisampling_check (struct IN_T In);
+extern void net_input_orioptiini_check (struct IN_T In);
 extern int net_input_treatargs_multiscale (char *option, char **parg,
 					   int qty, char ***pvals);
 
 extern void net_input_options_default (struct IN_T *);
 extern void net_input_options_set (struct IN_T *, int, char **);
+extern void net_input_ternary_map (char *string, char *patterns,
+                                   char *valmatch, char *valnomatch,
+                                   char **pres);

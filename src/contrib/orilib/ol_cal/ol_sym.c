@@ -93,33 +93,6 @@ double Tm_3[12][3][3] = {
   {{-1, 0, 0}, {0, -1, 0}, {0, 0, 1}}
 };
 
-double Tm3m[24][3][3] = {
-  {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}},
-  {{1, 0, 0}, {0, -1, 0}, {0, 0, -1}},
-  {{-1, 0, 0}, {0, 1, 0}, {0, 0, -1}},
-  {{-1, 0, 0}, {0, -1, 0}, {0, 0, 1}},
-  {{0, 0, 1}, {1, 0, 0}, {0, 1, 0}},
-  {{0, 0, -1}, {1, 0, 0}, {0, -1, 0}},
-  {{0, 0, -1}, {-1, 0, 0}, {0, 1, 0}},
-  {{0, 0, 1}, {-1, 0, 0}, {0, -1, 0}},
-  {{0, 1, 0}, {0, 0, 1}, {1, 0, 0}},
-  {{0, 1, 0}, {0, 0, -1}, {-1, 0, 0}},
-  {{0, -1, 0}, {0, 0, 1}, {-1, 0, 0}},
-  {{0, -1, 0}, {0, 0, -1}, {1, 0, 0}},
-  {{1, 0, 0}, {0, 0, -1}, {0, 1, 0}},
-  {{0, 0, 1}, {0, 1, 0}, {-1, 0, 0}},
-  {{0, -1, 0}, {1, 0, 0}, {0, 0, 1}},
-  {{1, 0, 0}, {0, 0, 1}, {0, -1, 0}},
-  {{0, 0, -1}, {0, 1, 0}, {1, 0, 0}},
-  {{0, 1, 0}, {-1, 0, 0}, {0, 0, 1}},
-  {{0, 1, 0}, {1, 0, 0}, {0, 0, -1}},
-  {{0, -1, 0}, {-1, 0, 0}, {0, 0, -1}},
-  {{0, 0, 1}, {0, -1, 0}, {1, 0, 0}},
-  {{-1, 0, 0}, {0, 0, 1}, {0, 1, 0}},
-  {{0, 0, -1}, {0, -1, 0}, {-1, 0, 0}},
-  {{-1, 0, 0}, {0, 0, -1}, {0, -1, 0}}
-};
-
 double Tcubic[24][3][3] = {
   {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}},    /*  1:   0/[100]  */
   {{1, 0, 0}, {0, 0, 1}, {0, -1, 0}},   /*  2:  90/[100]  */
@@ -323,12 +296,6 @@ int signcubic[25][6] = {
 int
 ol_crysym_qty (char *lauegroup)
 {
-  return ol_lauegroup_qty (lauegroup);
-}
-
-int
-ol_lauegroup_qty (char *lauegroup)
-{
   if (!lauegroup || !strcmp (lauegroup, "none"))
     return 1;
   else if (strcmp (lauegroup, "-1") == 0)
@@ -363,109 +330,107 @@ ol_lauegroup_qty (char *lauegroup)
     return -1;
 }
 
-int
-ol_g_crysym (double **g, char *crysym, int nb, double **g2)
+void
+ol_g_crysym (double **g, char *crysym, int i, double **g2)
 {
   /* note: illegal character for variable names, e.g. '-' or '/', are
    * replaced by '_'. */
-  int i, j, qty;
+  int k, j, qty;
   double **T = ol_g_alloc ();
 
-  if ((qty = ol_crysym_qty (crysym) == -1))
-    return -1;
+  if ((qty = ol_crysym_qty (crysym)) == -1)
+    ut_print_message (2, 0, "Unknown crystal symmetry `%s'.\n", crysym);
 
-  nb--;                         /* 0-indexed local vs 1-indexed input; this modif on nb is *local* */
-  if (strcmp (crysym, "-1") == 0 || strcmp (crysym, "triclinic") == 0)
-    for (i = 0; i < 3; i++)
+  i--;                         /* 0-indexed local vs 1-indexed input; this modif on i is *local* */
+  if (!crysym || strcmp (crysym, "none") == 0 || strcmp (crysym, "-1") == 0
+      || strcmp (crysym, "triclinic") == 0)
+    for (k = 0; k < 3; k++)
       for (j = 0; j < 3; j++)
-        T[i][j] = T_1[nb][i][j];
+        T[k][j] = T_1[i][k][j];
   else if (strcmp (crysym, "2/m") == 0)
-    for (i = 0; i < 3; i++)
+    for (k = 0; k < 3; k++)
       for (j = 0; j < 3; j++)
-        T[i][j] = T2_m[nb][i][j];
+        T[k][j] = T2_m[i][k][j];
   else if (strcmp (crysym, "mmm") == 0)
-    for (i = 0; i < 3; i++)
+    for (k = 0; k < 3; k++)
       for (j = 0; j < 3; j++)
-        T[i][j] = Tmmm[nb][i][j];
+        T[k][j] = Tmmm[i][k][j];
   else if (strcmp (crysym, "4/m") == 0)
-    for (i = 0; i < 3; i++)
+    for (k = 0; k < 3; k++)
       for (j = 0; j < 3; j++)
-        T[i][j] = T4_m[nb][i][j];
+        T[k][j] = T4_m[i][k][j];
   else if (strcmp (crysym, "4/mmm") == 0)
-    for (i = 0; i < 3; i++)
+    for (k = 0; k < 3; k++)
       for (j = 0; j < 3; j++)
-        T[i][j] = T4_mmm[nb][i][j];
+        T[k][j] = T4_mmm[i][k][j];
   else if (strcmp (crysym, "-3") == 0)
-    for (i = 0; i < 3; i++)
+    for (k = 0; k < 3; k++)
       for (j = 0; j < 3; j++)
-        T[i][j] = T_3[nb][i][j];
+        T[k][j] = T_3[i][k][j];
   else if (strcmp (crysym, "-3m") == 0)
-    for (i = 0; i < 3; i++)
+    for (k = 0; k < 3; k++)
       for (j = 0; j < 3; j++)
-        T[i][j] = T_3m[nb][i][j];
+        T[k][j] = T_3m[i][k][j];
   else if (strcmp (crysym, "6/m") == 0)
-    for (i = 0; i < 3; i++)
+    for (k = 0; k < 3; k++)
       for (j = 0; j < 3; j++)
-        T[i][j] = T6_m[nb][i][j];
+        T[k][j] = T6_m[i][k][j];
   else if (strcmp (crysym, "6/mmm") == 0 || strcmp (crysym, "hexagonal") == 0)
-    for (i = 0; i < 3; i++)
+    for (k = 0; k < 3; k++)
       for (j = 0; j < 3; j++)
-        T[i][j] = T6_mmm[nb][i][j];
+        T[k][j] = T6_mmm[i][k][j];
   else if (strcmp (crysym, "m-3") == 0)
-    for (i = 0; i < 3; i++)
+    for (k = 0; k < 3; k++)
       for (j = 0; j < 3; j++)
-        T[i][j] = Tm_3[nb][i][j];
-  else if (strcmp (crysym, "m-3m") == 0)
-    for (i = 0; i < 3; i++)
+        T[k][j] = Tm_3[i][k][j];
+  else if (strcmp (crysym, "m-3m") == 0 || strcmp (crysym, "cubic") == 0)
+    for (k = 0; k < 3; k++)
       for (j = 0; j < 3; j++)
-        T[i][j] = Tm3m[nb][i][j];
-  else if (strcmp (crysym, "cubic") == 0)
-    for (i = 0; i < 3; i++)
-      for (j = 0; j < 3; j++)
-        T[i][j] = Tcubic[nb][i][j];
+        T[k][j] = Tcubic[i][k][j];
   else
-    abort ();
+    ut_print_message (2, 0, "Unknown crystal symmetry `%s'.\n", crysym);
 
   if (g)
     ol_g_g_g (g, T, g2);
   else
     ol_g_memcpy (T, g2);
 
-  ol_g_free (T);
+  ol_g_free (&T);
 
-  return 0;
+  return;
 }
 
 void
-ol_q_crysym (double *q, char *crysym, int nb, double *q2)
+ol_q_crysym (double *q, char *crysym, int i, double *q2)
 {
   double *U = NULL;
 
-  nb--;                         /* 0-indexed local vs 1-indexed input; this modif on nb is *local* */
-  if (!crysym || strcmp (crysym, "triclinic") == 0 || strcmp (crysym, "-1") == 0)
-    U = U_1[nb];
+  i--;                         /* 0-indexed local vs 1-indexed input; this modif on i is *local* */
+  if (!crysym || strcmp (crysym, "none") == 0 || strcmp (crysym, "triclinic") == 0
+      || strcmp (crysym, "-1") == 0)
+    U = U_1[i];
   else if (strcmp (crysym, "cubic") == 0 || strcmp (crysym, "m-3m") == 0)
-    U = Um3m[nb];
+    U = Um3m[i];
   else if (strcmp (crysym, "hexagonal") == 0 || strcmp (crysym, "6/mmm") == 0)
-    U = U6_mmm[nb];
+    U = U6_mmm[i];
   else if (strcmp (crysym, "2/m") == 0)
-    U = U2_m[nb];
+    U = U2_m[i];
   else if (strcmp (crysym, "mmm") == 0)
-    U = Ummm[nb];
+    U = Ummm[i];
   else if (strcmp (crysym, "4/m") == 0)
-    U = U4_m[nb];
+    U = U4_m[i];
   else if (strcmp (crysym, "4/mmm") == 0)
-    U = U4_mmm[nb];
+    U = U4_mmm[i];
   else if (strcmp (crysym, "-3") == 0)
-    U = U_3[nb];
+    U = U_3[i];
   else if (strcmp (crysym, "-3m") == 0)
-    U = U_3m[nb];
+    U = U_3m[i];
   else if (strcmp (crysym, "6/m") == 0)
-    U = U6_m[nb];
+    U = U6_m[i];
   else if (strcmp (crysym, "m-3") == 0)
-    U = Um_3[nb];
+    U = Um_3[i];
   else
-    abort ();
+    ut_print_message (2, 0, "Unknown crystal symmetry `%s'.\n", crysym);
 
   ol_q_q_q (q, U, q2);
   ol_q_q (q2, q2);
@@ -474,35 +439,35 @@ ol_q_crysym (double *q, char *crysym, int nb, double *q2)
 }
 
 void
-ol_q_crysym_nopos (double *q, char *crysym, int nb, double *q2)
+ol_q_crysym_nopos (double *q, char *crysym, int i, double *q2)
 {
   double *U = NULL;
 
-  nb--;                         /* 0-indexed local vs 1-indexed input; this modif on nb is *local* */
+  i--;                         /* 0-indexed local vs 1-indexed input; this modif on i is *local* */
   if (strcmp (crysym, "cubic") == 0 || strcmp (crysym, "m-3m") == 0)
-    U = Um3m[nb];
+    U = Um3m[i];
   else if (strcmp (crysym, "hexagonal") == 0 || strcmp (crysym, "6/mmm") == 0)
-    U = U6_mmm[nb];
+    U = U6_mmm[i];
   else if (strcmp (crysym, "triclinic") == 0 || strcmp (crysym, "-1") == 0)
-    U = U_1[nb];
+    U = U_1[i];
   else if (strcmp (crysym, "2/m") == 0)
-    U = U2_m[nb];
+    U = U2_m[i];
   else if (strcmp (crysym, "mmm") == 0)
-    U = Ummm[nb];
+    U = Ummm[i];
   else if (strcmp (crysym, "4/m") == 0)
-    U = U4_m[nb];
+    U = U4_m[i];
   else if (strcmp (crysym, "4/mmm") == 0)
-    U = U4_mmm[nb];
+    U = U4_mmm[i];
   else if (strcmp (crysym, "-3") == 0)
-    U = U_3[nb];
+    U = U_3[i];
   else if (strcmp (crysym, "-3m") == 0)
-    U = U_3m[nb];
+    U = U_3m[i];
   else if (strcmp (crysym, "6/m") == 0)
-    U = U6_m[nb];
+    U = U6_m[i];
   else if (strcmp (crysym, "m-3") == 0)
-    U = Um_3[nb];
+    U = Um_3[i];
   else
-    abort ();
+    ut_print_message (2, 0, "Unknown crystal symmetry `%s'.\n", crysym);
 
   ol_q_q_q (q, U, q2);
 
@@ -510,21 +475,20 @@ ol_q_crysym_nopos (double *q, char *crysym, int nb, double *q2)
 }
 
 void
-ol_m_crysym (int *m1, char *crysym, int nb, int *m2)
+ol_m_crysym (int *m1, char *crysym, int i, int *m2)
 {
-  int i;
+  int k;
 
-  /* TODO */
-  if (strcmp (crysym, "cubic") == 0)
+  if (!strcmp (crysym, "cubic") || !strcmp (crysym, "m-3m"))
   {
-    if (nb < 1 || nb > 24)
-      abort ();
+    if (i < 1 || i > 24)
+      ut_print_message (2, 0, "Invalid symmetry operator index (%d).\n", i);
 
-    for (i = 0; i < 6; i++)
-      m2[i] = signcubic[nb][i] * m1[permcubic[nb][i]];
+    for (k = 0; k < 6; k++)
+      m2[k] = signcubic[i][k] * m1[permcubic[i][k]];
   }
   else
-    abort ();
+    ut_print_message (2, 0, "Miller index symmetry is only available for cubic symmetry.\n");
 
   return;
 }
@@ -562,27 +526,9 @@ ol_g_gcrysym (double **g, char *crysym, double **g2)
 
   ol_g_crysym (g, crysym, minid, g2);
 
-  ol_g_free (tmp);
+  ol_g_free (&tmp);
 
-  return mintheta;
-}
-
-double
-ol_rtheta_rthetacrysym (double *r, double theta, char *crysym, double *r2,
-                        double *ptheta2)
-{
-  double mintheta;
-  double *q = ol_q_alloc ();
-  double *q2 = ol_q_alloc ();
-
-  ol_rtheta_q (r, theta, q);
-  mintheta = ol_q_qcrysym (q, crysym, q2);
-  ol_q_rtheta (q2, r2, ptheta2);
-
-  ol_q_free (q);
-  ol_q_free (q2);
-
-  return mintheta;
+  return mintheta * 180 / OL_PI;
 }
 
 double
@@ -596,8 +542,8 @@ ol_R_Rcrysym (double *R, char *crysym, double *R2)
   mintheta = ol_q_qcrysym (q, crysym, q2);
   ol_q_R (q2, R2);
 
-  ol_q_free (q);
-  ol_q_free (q2);
+  ol_q_free (&q);
+  ol_q_free (&q2);
 
   return mintheta;
 }
@@ -635,114 +581,104 @@ ol_q_qcrysym (double *q, char *crysym, double *q2)
 
   ol_q_crysym (q, crysym, minid, q2);
 
-  ol_q_free (tmp);
+  ol_q_free (&tmp);
 
   return mintheta * 180 / OL_PI;
 }
 
-void
-ol_m_mcrysym (int *m, char *crysym, int *m2)
+/* keeps, among the candidates cand[0..*pqty-1], those of minimal key */
+static void
+ol_m_mcrysym_keepmin (int *key, int *cand, int *pqty)
 {
-  int i, j, id;
-  int qty = ol_crysym_qty (crysym);
-  int **allm = ut_alloc_2d_int (qty, 6);
-  int *tmp = ut_alloc_1d_int (qty);
-  int *nb = ut_alloc_1d_int (qty);
+  int i, min = INT_MAX, qty = 0;
 
-  /* recording all sets of miller indices from cubic symmetry */
-  for (i = 0; i < qty; i++)
-    ol_m_crysym (m, crysym, i + 1, allm[i]);
+  for (i = 0; i < *pqty; i++)
+    if (key[cand[i]] < min)
+      min = key[cand[i]];
 
-  /* sorting according to the amount of negative indices */
-  for (i = 0; i < qty; i++)
-  {
-    tmp[i] = 0;
-    for (j = 0; j < 3; j++)
-      if (allm[i][j] < 0)
-        tmp[i] += 10;           /* "redhibitory" */
-    for (j = 3; j < 6; j++)
-      if (allm[i][j] < 0)
-        tmp[i]++;
-  }
-  ut_array_1d_int_sort_index (tmp, qty, nb);
+  for (i = 0; i < *pqty; i++)
+    if (key[cand[i]] == min)
+      cand[qty++] = cand[i];
 
-  /* searching the quantity of acceptable solutions, and recording */
-  for (i = 0; i < qty; i++)
-    if (tmp[nb[i]] != tmp[nb[i + 1]])
-    {
-      qty = i + 1;
-      break;
-    }
-  for (i = 0; i < qty; i++)
-    ol_m_memcpy (allm[nb[i]], allm[i]);
-
-  /* choosing the sets of Miller indices with increasing hkl */
-  for (id = 0; id < 3; id++)
-    if (qty > 1)
-    {
-      for (i = 0; i < qty; i++)
-        tmp[i] = allm[i][id];
-      ut_array_1d_int_sort_index (tmp, qty, nb);
-      /* searching the quantity of acceptable solutions, and recording */
-      for (i = 0; i < qty; i++)
-        if (tmp[nb[i]] != tmp[nb[i + 1]])
-        {
-          qty = i + 1;
-          break;
-        }
-      for (i = 0; i < qty; i++)
-        ol_m_memcpy (allm[nb[i]], allm[i]);
-    }
-
-  /* choosing those with decreasing uvw */
-  for (id = 3; id < 6; id++)
-    if (qty > 1)
-    {
-      for (i = 0; i < qty; i++)
-        tmp[i] = allm[i][id];
-      ut_array_1d_int_abssort_index (tmp, qty, nb);
-      ut_array_1d_int_reverseelts (nb, qty);
-      /* searching the quantity of acceptable solutions, and recording */
-      for (i = 0; i < qty; i++)
-        if (tmp[nb[i]] != tmp[nb[i + 1]])
-        {
-          qty = i + 1;
-          break;
-        }
-      for (i = 0; i < qty; i++)
-        ol_m_memcpy (allm[nb[i]], allm[i]);
-    }
-
-  /* choosing the one with the rightest minus sign */
-  if (qty != 1)
-  {
-    for (i = 0; i < qty; i++)
-    {
-      tmp[i] = 7;
-      for (j = 0; j <= 6; j++)
-        if (allm[i][j] < 0)
-        {
-          tmp[i] = j;
-          break;
-        }
-    }
-    ut_array_1d_int_sort_index (tmp, qty, nb);
-    ut_array_1d_int_reverseelts (nb, qty);
-
-    /* recording solutions */
-    ol_m_memcpy (allm[nb[0]], allm[0]);
-  }
-
-  ol_m_memcpy (allm[0], m2);
-
-  ut_free_2d_int (&allm, qty);
-  ut_free_1d_int (&tmp);
-  ut_free_1d_int (&nb);
+  (*pqty) = qty;
 
   return;
 }
 
-void
+double
+ol_m_mcrysym (int *m, char *crysym, int *m2)
+{
+  int i, j, id;
+  int allqty = ol_crysym_qty (crysym);
+  int qty = allqty;
+  int **allm = ut_alloc_2d_int (allqty, 6);
+  int *key = ut_alloc_1d_int (allqty);
+  int *cand = ut_alloc_1d_int (allqty);
+
+  /* recording all sets of miller indices */
+  for (i = 0; i < allqty; i++)
+  {
+    ol_m_crysym (m, crysym, i + 1, allm[i]);
+    cand[i] = i;
+  }
+
+  /* (i) (hkl) with positive values, (ii) [uvw] with as less negative values as possible */
+  for (i = 0; i < allqty; i++)
+  {
+    key[i] = 0;
+    for (j = 0; j < 3; j++)
+      if (allm[i][j] < 0)
+        key[i] += 10;           /* "redhibitory" */
+    for (j = 3; j < 6; j++)
+      if (allm[i][j] < 0)
+        key[i]++;
+  }
+  ol_m_mcrysym_keepmin (key, cand, &qty);
+
+  /* (iii) (hkl) with ascending values */
+  for (id = 0; id < 3; id++)
+  {
+    for (i = 0; i < allqty; i++)
+      key[i] = allm[i][id];
+    ol_m_mcrysym_keepmin (key, cand, &qty);
+  }
+
+  /* (iv) [uvw] with descending absolute values */
+  for (id = 3; id < 6; id++)
+  {
+    for (i = 0; i < allqty; i++)
+      key[i] = -abs (allm[i][id]);
+    ol_m_mcrysym_keepmin (key, cand, &qty);
+  }
+
+  /* (v) [uvw] with the negative values as at right as possible */
+  for (i = 0; i < allqty; i++)
+  {
+    key[i] = -6;
+    for (j = 0; j < 6; j++)
+      if (allm[i][j] < 0)
+      {
+        key[i] = -j;
+        break;
+      }
+  }
+  ol_m_mcrysym_keepmin (key, cand, &qty);
+
+  ol_m_memcpy (allm[cand[0]], m2);
+
+  double theta, **g = ol_g_alloc ();
+  ol_m_g (m2, g);
+  ol_g_theta (g, &theta);
+  ol_g_free (&g);
+
+  ut_free_2d_int (&allm, allqty);
+  ut_free_1d_int (&key);
+  ut_free_1d_int (&cand);
+
+  return theta;
+}
+
+double
 ol_e_ecrysym_rad (double *e, char *crysym, double *e2)
 {
   int i, id;
@@ -754,8 +690,10 @@ ol_e_ecrysym_rad (double *e, char *crysym, double *e2)
   ol_e_e_rad (e, e2);
   ol_e_q_rad (e2, q);
 
+  /* preferred: in the [0, OL_PI] x [0, OL_PI / 2] x [0, OL_PI / 2] domain (always possible for cubic
+     symmetry), with the smallest phi1; otherwise, the smallest phi1 */
   id = -1;
-  min = OL_PI;
+  min = DBL_MAX;
   for (i = 1; i <= qty; i++)
   {
     ol_q_crysym (q, crysym, i, tmp);
@@ -769,16 +707,35 @@ ol_e_ecrysym_rad (double *e, char *crysym, double *e2)
     }
   }
 
+  if (id == -1)
+  {
+    min = DBL_MAX;
+    for (i = 1; i <= qty; i++)
+    {
+      ol_q_crysym (q, crysym, i, tmp);
+      ol_q_e_rad (tmp, e2);
+
+      if (e2[0] < min)
+      {
+        min = e2[0];
+        id = i;
+      }
+    }
+  }
+
   ol_q_crysym (q, crysym, id, tmp);
   ol_q_e_rad (tmp, e2);
 
-  ol_q_free (q);
-  ol_q_free (tmp);
+  double theta;
+  ol_q_theta_rad (tmp, &theta);
 
-  return;
+  ol_q_free (&q);
+  ol_q_free (&tmp);
+
+  return theta;
 }
 
-void
+double
 ol_e_ecrysym (double *e, char *crysym, double *e2)
 {
   int i, id;
@@ -790,8 +747,10 @@ ol_e_ecrysym (double *e, char *crysym, double *e2)
   ol_e_e (e, e2);
   ol_e_q (e2, q);
 
+  /* preferred: in the [0, 180] x [0, 90] x [0, 90] domain (always possible for cubic
+     symmetry), with the smallest phi1; otherwise, the smallest phi1 */
   id = -1;
-  min = 180;
+  min = DBL_MAX;
   for (i = 1; i <= qty; i++)
   {
     ol_q_crysym (q, crysym, i, tmp);
@@ -805,117 +764,88 @@ ol_e_ecrysym (double *e, char *crysym, double *e2)
     }
   }
 
+  if (id == -1)
+  {
+    min = DBL_MAX;
+    for (i = 1; i <= qty; i++)
+    {
+      ol_q_crysym (q, crysym, i, tmp);
+      ol_q_e (tmp, e2);
+
+      if (e2[0] < min)
+      {
+        min = e2[0];
+        id = i;
+      }
+    }
+  }
+
   ol_q_crysym (q, crysym, id, tmp);
   ol_q_e (tmp, e2);
 
-  ol_q_free (q);
-  ol_q_free (tmp);
+  double theta;
+  ol_q_theta (tmp, &theta);
 
-  return;
+  ol_q_free (&q);
+  ol_q_free (&tmp);
+
+  return theta;
 }
 
 void
-ol_g_refsym (double **g, int nb, double **g2)
+ol_g_refsym (double **g, int i, double **g2)
 {
-  int i;
+  int k;
 
-  nb--;
+  i--;
 
   ol_g_memcpy (g, g2);
 
-  for (i = 0; i < 3; i++)
-    g2[i][nb] *= -1;
+  for (k = 0; k < 3; k++)
+    g2[k][i] *= -1;
 
-  for (i = 0; i < 3; i++)
-    g2[nb][i] *= -1;
+  for (k = 0; k < 3; k++)
+    g2[i][k] *= -1;
 
   return;
 }
 
 void
-ol_q_refsym (double *q, int nb, double *q2)
+ol_q_refsym (double *q, int i, double *q2)
 {
-  int i;
+  int k;
 
   ol_q_memcpy (q, q2);
 
-  for (i = 1; i < 4; i++)
-    if (i != nb)
-      q2[i] *= -1;
+  for (k = 1; k < 4; k++)
+    if (k != i)
+      q2[k] *= -1;
 
   return;
 }
 
 void
-ol_R_refsym (double *R, int nb, double *R2)
-{
-  int i;
-
-  nb--;
-
-  ol_R_memcpy (R, R2);
-
-  for (i = 0; i < 3; i++)
-    if (i != nb)
-      R2[i] *= -1;
-
-  return;
-}
-
-void
-ol_vect_refsym (double *vect, int nb, double *vect2)
+ol_vect_refsym (double *vect, int i, double *vect2)
 {
   ol_vect_memcpy (vect, vect2);
 
-  vect2[nb - 1] *= -1;
+  vect2[i - 1] *= -1;
 
   return;
 }
 
 void
-ol_e_refsym_rad (double *e, int nb, double *e2)
-{
-  double *q = ol_q_alloc ();
-  double *q2 = ol_q_alloc ();
-
-  ol_e_q_rad (e, q);
-  ol_q_refsym (q, nb, q2);
-  ol_q_e_rad (q2, e2);
-
-  ol_q_free (q);
-  ol_q_free (q2);
-
-  return;
-}
-
-void
-ol_e_refsym (double *e, int nb, double *e2)
-{
-  double *q = ol_q_alloc ();
-  double *q2 = ol_q_alloc ();
-
-  ol_e_q (e, q);
-  ol_q_refsym (q, nb, q2);
-  ol_q_e (q2, e2);
-
-  ol_q_free (q);
-  ol_q_free (q2);
-
-  return;
-}
-
-void
-ol_m_refsym (int *m, int nb, int *m2)
+ol_m_refsym (int *m, int i, int *m2)
 {
   ol_m_memcpy (m, m2);
 
-  if (nb == 1)
+  if (i == 1)
   {
     m2[0] *= -1;
     m2[4] *= -1;
     m2[5] *= -1;
   }
-  else if (nb == 2)
+  else if (i == 2)
   {
     m2[1] *= -1;
     m2[4] *= -1;
@@ -1012,58 +942,12 @@ ol_q_refsym_orthotropic (double *q, double **q2, int *pqty)
 }
 
 void
-ol_R_refsym_orthotropic (double *R, double **R2, int *pqty)
-{
-  int i, j;
-  double **Rtmp = ut_alloc_2d (3, 3);
-  double theta, thetamin;
-
-  ol_R_refsym (R, 1, Rtmp[0]);
-  ol_R_refsym (R, 2, Rtmp[1]);
-  ol_R_refsym (Rtmp[0], 2, Rtmp[2]);
-
-  (*pqty) = 1;
-  ol_R_memcpy (R, R2[0]);
-
-  for (i = 0; i < 3; i++)
-  {
-    thetamin = 1e32;
-    for (j = 0; j < (*pqty); j++)
-    {
-      ol_R_R_misori (Rtmp[i], R2[j], &theta);
-      thetamin = ut_num_min (thetamin, theta);
-    }
-
-    if (thetamin > OL_EPS_DEG)
-    {
-      ol_R_memcpy (Rtmp[i], R2[*pqty]);
-      (*pqty)++;
-    }
-  }
-
-  ut_free_2d (&Rtmp, 3);
-
-  return;
-}
-
-void
 ol_q_refsym_orthotropic_all (double *q, double **q2)
 {
   ol_q_memcpy (q, q2[0]);
   ol_q_refsym (q, 1, q2[1]);
   ol_q_refsym (q, 2, q2[2]);
   ol_q_refsym (q2[1], 2, q2[3]);
-
-  return;
-}
-
-void
-ol_R_refsym_orthotropic_all (double *R, double **R2)
-{
-  ol_R_memcpy (R, R2[0]);
-  ol_R_refsym (R, 1, R2[1]);
-  ol_R_refsym (R, 2, R2[2]);
-  ol_R_refsym (R2[1], 2, R2[3]);
 
   return;
 }
@@ -1113,9 +997,9 @@ ol_m_refsym_orthotropic (int *m, int **m2, int *pqty)
   }
 
   ut_free_3d (&gtmp, 3, 3);
-  ut_free_3d (&g2, 3, 3);
-  ol_g_free (g);
-  ol_m_free (mtmp);
+  ut_free_3d (&g2, 4, 3);
+  ol_g_free (&g);
+  ol_m_free (&mtmp);
 
   return;
 }
@@ -1139,7 +1023,7 @@ ol_g_refsym_monoclinic (double **g, double ***g2, int *pqty)
     (*pqty) = 2;
   }
 
-  ol_g_free (gtmp);
+  ol_g_free (&gtmp);
 
   return;
 }
@@ -1163,31 +1047,7 @@ ol_q_refsym_monoclinic (double *q, double **q2, int *pqty)
     (*pqty) = 2;
   }
 
-  ol_q_free (qtmp);
-
-  return;
-}
-
-void
-ol_R_refsym_monoclinic (double *R, double **R2, int *pqty)
-{
-  double *Rtmp = ol_R_alloc ();
-  double theta;
-
-  ol_R_refsym (R, 2, Rtmp);
-
-  (*pqty) = 1;
-  ol_R_memcpy (R, R2[0]);
-
-  ol_R_R_misori (Rtmp, R, &theta);
-
-  if (theta > OL_EPS_DEG)
-  {
-    ol_R_memcpy (Rtmp, R2[1]);
-    (*pqty) = 2;
-  }
-
-  ol_R_free (Rtmp);
+  ol_q_free (&qtmp);
 
   return;
 }
@@ -1206,7 +1066,7 @@ ol_m_refsym_monoclinic (int *m, int **m2, int *pqty)
   if ((*pqty) == 2)
     ol_m_refsym (m, 2, m2[1]);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1214,8 +1074,7 @@ ol_m_refsym_monoclinic (int *m, int **m2, int *pqty)
 void
 ol_g_refsym_g (double **g, int nb, double **gs)
 {
-  double *r = ol_r_alloc ();
-  double theta;
+  double *rtheta = ol_rtheta_alloc ();
   double **gcpy = ol_g_alloc ();
 
   ol_g_memcpy (g, gcpy);
@@ -1224,12 +1083,12 @@ ol_g_refsym_g (double **g, int nb, double **gs)
 
   ol_g_g_gdisori (gcpy, gs, "cubic", gs);
 
-  ol_g_rtheta (gs, r, &theta);
-  theta /= 2;
-  ol_rtheta_g (r, theta, gs);
+  ol_g_rtheta (gs, rtheta);
+  rtheta[3] /= 2;
+  ol_rtheta_g (rtheta, gs);
 
-  ol_r_free (r);
-  ol_g_free (gcpy);
+  ol_rtheta_free (&rtheta);
+  ol_g_free (&gcpy);
 
   return;
 }
@@ -1242,42 +1101,16 @@ ol_q_refsym_q (double *q, int nb, double *qs)
    * there must be something somewhere... */
 
   double *qtmp = ol_q_alloc ();
-  double *r = ol_r_alloc ();
-  double theta;
+  double *rtheta = ol_rtheta_alloc ();
 
   ol_q_refsym (q, nb, qtmp);
   ol_q_q_qdisori (q, qtmp, "cubic", qs);
-  ol_q_rtheta (qs, r, &theta);
-  theta *= 0.5;
-  ol_rtheta_q (r, theta, qs);
+  ol_q_rtheta (qs, rtheta);
+  rtheta[3] *= 0.5;
+  ol_rtheta_q (rtheta, qs);
 
-  ol_r_free (r);
-
-  return;
-}
-
-void
-ol_m_refsym_g (int *m, int nb, double **gs)
-{
-  int *m2 = ol_m_alloc ();
-  double **g1 = ol_g_alloc ();
-  double **g2 = ol_g_alloc ();
-  double *r = ol_r_alloc ();
-  double theta;
-
-  ol_m_refsym (m, nb, m2);
-
-  ol_m_g (m, g1);
-  ol_m_g (m2, g2);
-
-  ol_g_g_gdisori (g1, g2, "cubic", gs);
-  ol_g_rtheta (gs, r, &theta);
-  theta /= 2;
-  ol_rtheta_g (r, theta, gs);
-
-  ol_m_free (m2);
-  ol_g_free (g1);
-  ol_g_free (g2);
+  ol_q_free (&qtmp);
+  ol_rtheta_free (&rtheta);
 
   return;
 }
@@ -1323,9 +1156,9 @@ ol_e_ecrysym_orthotropic_rad (double *e, char *crysym, double **e2, int *pqty)
     abort ();
   }
 
-  ol_q_free (q);
-  ol_q_free (q2);
-  ol_e_free (etmp);
+  ol_q_free (&q);
+  ol_q_free (&q2);
+  ol_e_free (&etmp);
 
   return;
 }
@@ -1341,7 +1174,7 @@ ol_e_ecrysym_orthotropic (double *e, char *crysym, double **e2, int *pqty)
   for (i = 0; i < *pqty; i++)
     ol_e_rad2deg (e2[i], e2[i]);
 
-  ol_e_free (ecpy);
+  ol_e_free (&ecpy);
 
   return;
 }
@@ -1351,71 +1184,17 @@ ol_pole_crysym (int *pole1, char *crysym, int nb, int *pole2)
 {
   int i;
 
-  int permcubic[24][6] = {
-    {0, 1, 2, 3, 4, 5},
-    {0, 2, 1, 3, 5, 4},
-    {0, 1, 2, 3, 4, 5},
-    {0, 2, 1, 3, 5, 4},
-    {2, 1, 0, 5, 4, 3},
-    {0, 1, 2, 3, 4, 5},
-    {2, 1, 0, 5, 4, 3},
-    {1, 0, 2, 4, 3, 5},
-    {0, 1, 2, 3, 4, 5},
-    {1, 0, 2, 4, 3, 5},
-    {1, 0, 2, 4, 3, 5},
-    {0, 2, 1, 3, 5, 4},
-    {2, 1, 0, 5, 4, 3},
-    {1, 0, 2, 4, 3, 5},
-    {0, 2, 1, 3, 5, 4},
-    {2, 1, 0, 5, 4, 3},
-    {1, 2, 0, 4, 5, 3},
-    {2, 0, 1, 5, 3, 4},
-    {2, 0, 1, 5, 3, 4},
-    {1, 2, 0, 4, 5, 3},
-    {2, 0, 1, 5, 3, 4},
-    {1, 2, 0, 4, 5, 3},
-    {2, 0, 1, 5, 3, 4},
-    {1, 2, 0, 4, 5, 3}
-  };
-  int signcubic[24][6] = {
-    {1, 1, 1, 1, 1, 1},
-    {1, 1, -1, 1, 1, -1},
-    {1, -1, -1, 1, -1, -1},
-    {1, -1, 1, 1, -1, 1},
-    {-1, 1, 1, -1, 1, 1},
-    {-1, 1, -1, -1, 1, -1},
-    {1, 1, -1, 1, 1, -1},
-    {1, -1, 1, 1, -1, 1},
-    {-1, -1, 1, -1, -1, 1},
-    {-1, 1, 1, -1, 1, 1},
-    {1, 1, -1, 1, 1, -1},
-    {-1, 1, 1, -1, 1, 1},
-    {1, -1, 1, 1, -1, 1},
-    {-1, -1, -1, -1, -1, -1},
-    {-1, -1, -1, -1, -1, -1},
-    {-1, -1, -1, -1, -1, -1},
-    {1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1},
-    {-1, -1, 1, -1, -1, 1},
-    {-1, 1, -1, -1, 1, -1},
-    {1, -1, -1, 1, -1, -1},
-    {-1, -1, 1, -1, -1, 1},
-    {-1, 1, -1, -1, 1, -1},
-    {1, -1, -1, 1, -1, -1}
-  };
-
-  if (!strcmp (crysym, "cubic"))
+  if (!strcmp (crysym, "cubic") || !strcmp (crysym, "m-3m"))
   {
     if (nb < 1 || nb > 24)
-      abort ();
+      ut_print_message (2, 0, "Invalid symmetry operator %d (1 to 24).\n", nb);
 
-    nb--;
     for (i = 0; i < 3; i++)
       pole2[i] = signcubic[nb][i] * pole1[permcubic[nb][i]];
   }
 
-  else if (!strcmp (crysym, "hexagonal"))
-    abort ();
+  else
+    ut_print_message (2, 0, "Crystal symmetry `%s' not supported.\n", crysym);
 
   return;
 }
@@ -1424,13 +1203,12 @@ void
 ol_pole_polecrysym (int *pole, char *crysym, int *pole2)
 {
   int poleqty;
-  int qty = ol_crysym_qty (crysym);
   int **poles = NULL;
 
   ol_polef_polecrysym (pole, crysym, &poles, &poleqty);
   ol_pole_memcpy (poles[0], pole2);
 
-  ut_free_2d_int (&poles, qty);
+  ut_free_2d_int (&poles, poleqty);
 
   return;
 }
@@ -1514,10 +1292,10 @@ ol_polef_polecrysym (int *polef, char *crysym, int ***ppoles, int *ppoleqty)
     ut_array_2d_int_memcpy (poles, *ppoleqty, 3, *ppoles);
   }
 
-  ol_pole_free (tmp);
+  ol_pole_free (&tmp);
   ut_free_1d_int (&sort);
   ut_free_1d_int (&perm);
-  ut_free_2d_int (&poles, *ppoleqty);
+  ut_free_2d_int (&poles, 100);
 
   return;
 }
@@ -1533,7 +1311,7 @@ ol_vect_crysym (double *v, char *crysym, int nb, double *v2)
 
   ol_g_vect_vect (g, v, v2);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1545,36 +1323,38 @@ ol_vect_crysym_all (double *v, char *crysym, double ***pv2, int *pqty)
   double **gs = ol_g_alloc ();
   double *tmp = ut_alloc_1d (3);
   double *tmp2 = ut_alloc_1d (3);
-
-  (*pv2) = ut_alloc_2d (1, 3);
+  double **v2 = NULL;
 
   qty = ol_crysym_qty (crysym);
+
+  // (at most qty vectors)
+  v2 = ut_alloc_2d (qty, 3);
 
   (*pqty) = 0;
   for (i = 1; i <= qty; i++)
   {
     ol_g_crysym (NULL, crysym, i, gs);
-    ol_g_vect_vect (gs, v, tmp); // (*pv2)[i]);
+    ol_g_vect_vect (gs, v, tmp);
     ut_array_1d_memcpy (tmp, 3, tmp2);
     ut_array_1d_scale (tmp2, 3, -1);
 
     found = 0;
-    for (j = 1; j <= (*pqty); j++)
-      if (ut_array_1d_equal (tmp, (*pv2)[j], 3, 1e-6) || ut_array_1d_equal (tmp2, (*pv2)[j], 3, 1e-6))
+    for (j = 0; j < (*pqty); j++)
+      if (ut_array_1d_equal (tmp, v2[j], 3, 1e-6) || ut_array_1d_equal (tmp2, v2[j], 3, 1e-6))
       {
         found = 1;
         break;
       }
 
     if (!found)
-    {
-      (*pqty)++;
-      (*pv2) = ut_realloc_2d_addline (*pv2, (*pqty) + 1, 3);
-      ut_array_1d_memcpy (tmp, 3, (*pv2)[(*pqty)]);
-    }
+      ut_array_1d_memcpy (tmp, 3, v2[(*pqty)++]);
   }
 
-  ol_g_free (gs);
+  (*pv2) = ut_alloc_2d (*pqty, 3);
+  ut_array_2d_memcpy (v2, *pqty, 3, *pv2);
+
+  ut_free_2d (&v2, qty);
+  ol_g_free (&gs);
   ut_free_1d (&tmp);
   ut_free_1d (&tmp2);
 
@@ -1604,40 +1384,4 @@ ol_q_qrefsym_orthotropic (double *q, double *q2)
   ut_free_2d (&qsym, 4);
 
   return test;
-}
-
-void
-ol_e_refsym_orthotropic (double *e, double **e2, int *pqty)
-{
-  int i;
-  double *q = ol_q_alloc ();
-  double **q2 = ut_alloc_2d (4, 4);
-
-  ol_e_q (e, q);
-  ol_q_refsym_orthotropic (q, q2, pqty);
-  for (i = 0; i < *pqty; i++)
-    ol_q_e (q2[i], e2[i]);
-
-  ol_q_free (q);
-  ut_free_2d (&q2, 4);
-
-  return;
-}
-
-void
-ol_e_refsym_orthotropic_all (double *e, double **e2)
-{
-  int i;
-  double *q = ol_q_alloc ();
-  double **q2 = ut_alloc_2d (4, 4);
-
-  ol_e_q (e, q);
-  ol_q_refsym_orthotropic_all (q, q2);
-  for (i = 0; i < 4; i++)
-    ol_q_e (q2[i], e2[i]);
-
-  ol_q_free (q);
-  ut_free_2d (&q2, 4);
-
-  return;
 }

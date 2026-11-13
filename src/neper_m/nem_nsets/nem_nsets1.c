@@ -6,7 +6,7 @@
 
 void
 nem_nsets (struct IN_M In, struct TESS Tess, struct TESR Tesr,
-           struct MESH *Mesh, struct NSET *NSet)
+           struct NODES Nodes, struct MESH *Mesh, struct NSET *NSet)
 {
   if (!strcmp (In.elttype, "tri"))
   {
@@ -61,6 +61,13 @@ nem_nsets (struct IN_M In, struct TESS Tess, struct TESR Tesr,
       }
     }
   }
+
+  // empty nsets (e.g. the faces of a periodic domain, which are not
+  // boundaries)
+  neut_nset_rmempty (NSet);
+
+  if (strchr (In.nset, ':'))
+    nem_nsets_custom (In, Tess, Nodes, Mesh, NSet);
 
   return;
 }

@@ -8,10 +8,6 @@
 #include<limits.h>
 #include"ut.h"
 
-#ifdef HAVE_OPENMP
-#include <omp.h>
-#endif /* HAVE_OPENMP */
-
 #ifdef HAVE_MUPARSER
 #include "muParser.h"
 #endif
@@ -19,62 +15,88 @@
 void ut_math_functions (char ***pfcts, int *pfctqty);
 int ut_math_string_isfunction (char *string);
 
+// replacing the variables of an expression by names muparser accepts
+// (utvar<i>), matching whole names only (not followed or preceded by a
+// letter, digit or underscore), from the longest to the shortest, and not
+// followed by an opening parenthesis (functions)
+static void
+ut_math_expr_vars (char *inexpr, int varqty, char **vars, char **pexpr,
+                   char ***pnewvars)
+{
+  int i, j, k, id, pos, length, match;
+  int *lengths = ut_alloc_1d_int (varqty);
+  int *ids = ut_alloc_1d_int (varqty);
+  char *expr = NULL;
+
+  for (i = 0; i < varqty; i++)
+    lengths[i] = strlen (vars[i]);
+
+  ut_array_1d_int_sort_des_index (lengths, varqty, ids);
+
+  (*pnewvars) = ut_alloc_1d_pchar (varqty);
+  for (i = 0; i < varqty; i++)
+    ut_string_sprintf ((*pnewvars) + i, "utvar%d", i);
+
+  // each replacement is at most 8 + 10 characters long
+  length = strlen (inexpr);
+  expr = ut_alloc_1d_char (19 * length + 1);
+
+  pos = 0;
+  for (i = 0; i < length; i++)
+  {
+    match = -1;
+
+    if (i == 0 || !(isalnum (inexpr[i - 1]) || inexpr[i - 1] == '_'))
+      for (j = 0; j < varqty && match == -1; j++)
+      {
+        id = ids[j];
+        if (lengths[id] == 0 || strncmp (inexpr + i, vars[id], lengths[id]))
+          continue;
+
+        k = i + lengths[id];
+        if (isalnum (inexpr[k]) || inexpr[k] == '_')
+          continue;
+
+        while (inexpr[k] == ' ')
+          k++;
+        if (inexpr[k] == '(')
+          continue;
+
+        match = id;
+      }
+
+    if (match != -1)
+    {
+      pos += sprintf (expr + pos, "%s", (*pnewvars)[match]);
+      i += lengths[match] - 1;
+    }
+    else
+      expr[pos++] = inexpr[i];
+  }
+  expr[pos] = '\0';
+
+  (*pexpr) = expr;
+
+  ut_free_1d_int (&lengths);
+  ut_free_1d_int (&ids);
+
+  return;
+}
+
 int
 ut_math_eval (char *inexpr, int varqty, char **vars, double *vals, double *pres)
 {
-#ifdef HAVE_OPENMP
-  if (omp_get_thread_num() != 0)
-  {
-    printf ("ut_math_eval should not be multithreaded.\n");
-    abort ();
-  }
-#endif /* HAVE_OPENMP */
-
 #ifdef HAVE_MUPARSER
   using namespace mu;
-  int i, j, status;
-  char **newvars = ut_alloc_1d_pchar (varqty);
-  char *expr = ut_alloc_1d_char (strlen (inexpr) * 10);
-  int *length = ut_alloc_1d_int (varqty);
-  int id, *ids = ut_alloc_1d_int (varqty);
+  int i, status;
+  char **newvars = NULL;
+  char *expr = NULL;
 
-  expr = strcpy (expr, inexpr);
-
-  if (strstr (expr, "[") || strstr (expr, "]") || strstr (expr, "{")
-      || strstr (expr, "}"))
+  if (strstr (inexpr, "[") || strstr (inexpr, "]") || strstr (inexpr, "{")
+      || strstr (inexpr, "}"))
     abort ();
 
-  // will be processing the variables from the longest to the shortest,
-  // in case a short variable is contained in a larger variable, which
-  // would cause erroneous substitution in expr
-  for (i = 0; i < varqty; i++)
-    length[i] = strlen (vars[i]);
-
-  ut_array_1d_int_sort_des_index (length, varqty, ids);
-
-  for (i = 0; i < varqty; i++)
-  {
-    id = ids[i];
-    // testing if it's all letters
-    status = 0;
-    for (j = 0; j < varqty; j++)
-      if (!isalpha (vars[id][j]))
-      {
-        status = -1;
-        break;
-      }
-
-    // if not, we need to replace it, as muparser won't take it
-    if (!status)
-    {
-      do
-        ut_string_random (8, id, newvars + id);
-      while (strstr (newvars[id], vars[id]));
-      ut_string_fnrs (expr, vars[id], newvars[id], INT_MAX);
-    }
-    else
-      ut_string_string (vars[id], newvars + id);
-  }
+  ut_math_expr_vars (inexpr, varqty, vars, &expr, &newvars);
 
   status = 0;
 
@@ -83,7 +105,6 @@ ut_math_eval (char *inexpr, int varqty, char **vars, double *vals, double *pres)
     Parser p;
     for (i = 0; i < varqty; i++)
       p.DefineVar (newvars[i], vals + i);
-    // p.DefineFun("MySqr", MySqr);
     p.SetExpr (expr);
 
     *pres = p.Eval ();
@@ -96,8 +117,6 @@ ut_math_eval (char *inexpr, int varqty, char **vars, double *vals, double *pres)
 
   ut_free_2d_char (&newvars, varqty);
   ut_free_1d_char (&expr);
-  ut_free_1d_int (&length);
-  ut_free_1d_int (&ids);
 
   return status;
 
@@ -118,47 +137,15 @@ ut_math_evals (char *inexpr, int varqty, char **vars, double **vals, int evalqty
 {
 #ifdef HAVE_MUPARSER
   using namespace mu;
-  int i, j, status;
-  char **newvars = ut_alloc_1d_pchar (varqty);
-  char *expr = ut_alloc_1d_char (strlen (inexpr) * 10);
-  int *length = ut_alloc_1d_int (varqty);
-  int id, *ids = ut_alloc_1d_int (varqty);
+  int i, status;
+  char **newvars = NULL;
+  char *expr = NULL;
 
-  expr = strcpy (expr, inexpr);
-
-  if (strstr (expr, "[") || strstr (expr, "]") || strstr (expr, "{")
-      || strstr (expr, "}"))
+  if (strstr (inexpr, "[") || strstr (inexpr, "]") || strstr (inexpr, "{")
+      || strstr (inexpr, "}"))
     abort ();
 
-  // will be processing the variables from the longest to the shortest,
-  // in case a short variable is contained in a larger variable, which
-  // would cause erroneous substitution in expr
-  for (i = 0; i < varqty; i++)
-    length[i] = strlen (vars[i]);
-
-  ut_array_1d_int_sort_des_index (length, varqty, ids);
-
-  for (i = 0; i < varqty; i++)
-  {
-    id = ids[i];
-    // testing if it's all letters
-    status = 0;
-    for (j = 0; j < varqty; j++)
-      if (!isalpha (vars[id][j]))
-      {
-        status = -1;
-        break;
-      }
-
-    // if not, we need to replace it, as muparser won't take it
-    if (!status)
-    {
-      ut_string_random (8, id, newvars + id);
-      ut_string_fnrs (expr, vars[id], newvars[id], INT_MAX);
-    }
-    else
-      ut_string_string (vars[id], newvars + id);
-  }
+  ut_math_expr_vars (inexpr, varqty, vars, &expr, &newvars);
 
   status = 0;
 
@@ -167,7 +154,6 @@ ut_math_evals (char *inexpr, int varqty, char **vars, double **vals, int evalqty
     Parser p;
     for (i = 0; i < varqty; i++)
       p.DefineVar (newvars[i], vals[i]);
-    // p.DefineFun("MySqr", MySqr);
     p.SetExpr (expr);
 
     p.Eval (res, evalqty);
@@ -180,8 +166,6 @@ ut_math_evals (char *inexpr, int varqty, char **vars, double **vals, int evalqty
 
   ut_free_2d_char (&newvars, varqty);
   ut_free_1d_char (&expr);
-  ut_free_1d_int (&length);
-  ut_free_1d_int (&ids);
 
   return status;
 

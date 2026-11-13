@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018-2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018-2020,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -49,14 +49,14 @@
 /**                                 to   : 30 apr 2018     **/
 /**                # Version 6.1  : from : 11 nov 2019     **/
 /**                                 to   : 11 feb 2020     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HMESH_ORDER_HD
 
 #include "module.h"
 #include "common.h"
@@ -84,7 +84,7 @@
 
 int
 hmeshOrderHd (
-const Hmesh * restrict const              meshptr,
+Hmesh * restrict const                    meshptr,
 Order * restrict const                    ordeptr,
 const Gnum                                ordenum,
 OrderCblk * restrict const                cblkptr, /*+ Single column-block +*/
@@ -133,7 +133,7 @@ const HmeshOrderHdParam * restrict const  paraptr)
                      &nexttab, (size_t) (n           * sizeof (Gnum)),
                      &cwgttax, (size_t) (cwgtsiz     * sizeof (Gnum)), NULL) == NULL) { /* Not based yet */
     errorPrint ("hmeshOrderHd: out of memory");
-    return     (1);
+    return (1);
   }
 
   hmeshOrderHxFill (meshptr, petab, lentab, iwtab, nvartab, elentab, &pfree);
@@ -145,7 +145,7 @@ const HmeshOrderHdParam * restrict const  paraptr)
   if (ncmpa < 0) {
     errorPrint ("hmeshOrderHd: internal error");
     memFree    (petab);                           /* Free group leader */
-    return     (1);
+    return (1);
   }
 
   if (meshptr->m.vnlotax != NULL) {

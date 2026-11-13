@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2011 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2008,2011,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -47,14 +47,14 @@
 /**                                 to   : 24 may 2008     **/
 /**                # Version 5.1  : from : 27 sep 2008     **/
 /**                                 to   : 17 jul 2011     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 09 aug 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY_ERROR
 
 #include "module.h"
 #include "common.h"
@@ -71,14 +71,14 @@ static char                 _SCOTCHerrorProgName[32] = "";
 /* This routine sets the program name for
 ** error reporting.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
-SCOTCH_errorProg (
+errorProg (
 const char * const          progstr)              /*+ Program name +*/
 {
-  int                 charnbr;
+  size_t              charnbr;
   const char *        nsrcptr;
   char *              ndstptr;
 
@@ -105,7 +105,7 @@ const char * const          progstr)              /*+ Program name +*/
 */
 
 void
-SCOTCH_errorPrint (
+errorPrint (
 const char * const          errstr,               /*+ printf-like variable argument list */
 ...)
 {
@@ -114,7 +114,7 @@ const char * const          errstr,               /*+ printf-like variable argum
   int                 proclocnum;
 #endif /* SCOTCH_PTSCOTCH */
 
-  fprintf  (stderr, "%s", _SCOTCHerrorProgName);
+  fprintf (stderr, "%s", _SCOTCHerrorProgName);
 #ifdef SCOTCH_PTSCOTCH
   if ((MPI_Initialized (&proclocnum) == MPI_SUCCESS) &&
       (proclocnum != 0)                              &&
@@ -124,7 +124,7 @@ const char * const          errstr,               /*+ printf-like variable argum
     fprintf (stderr, ": ");
 #else /* SCOTCH_PTSCOTCH */
   if (_SCOTCHerrorProgName[0] != '\0')
-    fprintf  (stderr, ": ");
+    fprintf (stderr, ": ");
 #endif /* SCOTCH_PTSCOTCH */
   fprintf  (stderr, "ERROR: ");
   va_start (errlist, errstr);
@@ -138,11 +138,11 @@ const char * const          errstr,               /*+ printf-like variable argum
 ** a variable number of arguments, as printf ()
 ** does.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
-SCOTCH_errorPrintW (
+errorPrintW (
 const char * const          errstr,               /*+ printf-like variable argument list */
 ...)
 {
@@ -151,7 +151,7 @@ const char * const          errstr,               /*+ printf-like variable argum
   int                 proclocnum;
 #endif /* SCOTCH_PTSCOTCH */
 
-  fprintf  (stderr, "%s", _SCOTCHerrorProgName);
+  fprintf (stderr, "%s", _SCOTCHerrorProgName);
 #ifdef SCOTCH_PTSCOTCH
   if ((MPI_Initialized (&proclocnum) == MPI_SUCCESS) &&
       (proclocnum != 0)                              &&
@@ -161,7 +161,7 @@ const char * const          errstr,               /*+ printf-like variable argum
     fprintf (stderr, ": ");
 #else /* SCOTCH_PTSCOTCH */
   if (_SCOTCHerrorProgName[0] != '\0')
-    fprintf  (stderr, ": ");
+    fprintf (stderr, ": ");
 #endif /* SCOTCH_PTSCOTCH */
   fprintf  (stderr, "WARNING: ");
   va_start (errlist, errstr);

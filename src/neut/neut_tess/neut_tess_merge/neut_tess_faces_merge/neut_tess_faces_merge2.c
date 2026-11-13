@@ -89,7 +89,7 @@ neut_tess_faces_merge_edgelists (struct TESS *pTess, int *faces, int faceqty,
   {
     pos =
       ut_array_1d_int_eltpos ((*pTess).FaceEdgeNb[keepface] + 1,
-                              (*pTess).FaceVerQty[keepface],
+                              (*pTess).FaceEdgeQty[keepface],
                               (*pkeepedges)[i]);
 
     if (pos != -1)

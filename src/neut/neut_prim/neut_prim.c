@@ -31,6 +31,134 @@ neut_prim_free (struct PRIM *pPrim)
   return;
 }
 
+void
+neut_prim_memcpy (struct PRIM PrimA, struct PRIM *pPrimB)
+{
+  int dirqty, radqty;
+
+  neut_prim_free (pPrimB);
+
+  ut_string_string (PrimA.Type, &(*pPrimB).Type);
+
+  (*pPrimB).ParmQty = PrimA.ParmQty;
+  if (PrimA.Parms)
+  {
+    (*pPrimB).Parms = ut_alloc_1d (PrimA.ParmQty);
+    ut_array_1d_memcpy (PrimA.Parms, PrimA.ParmQty, (*pPrimB).Parms);
+  }
+
+  // array sizes are those of neut_prim_sscanf
+  dirqty = !strncmp (PrimA.Type, "ecylinder", 9) ? 9 : 3;
+  radqty = !strncmp (PrimA.Type, "ecylinder", 9) ? 3
+         : !strncmp (PrimA.Type, "torus", 5) ? 2 : 1;
+
+  if (PrimA.Eq)
+  {
+    (*pPrimB).Eq = ut_alloc_1d (4);
+    ut_array_1d_memcpy (PrimA.Eq, 4, (*pPrimB).Eq);
+  }
+
+  if (PrimA.Base)
+  {
+    (*pPrimB).Base = ut_alloc_1d (3);
+    ut_array_1d_memcpy (PrimA.Base, 3, (*pPrimB).Base);
+  }
+
+  if (PrimA.Dir)
+  {
+    (*pPrimB).Dir = ut_alloc_1d (dirqty);
+    ut_array_1d_memcpy (PrimA.Dir, dirqty, (*pPrimB).Dir);
+  }
+
+  if (PrimA.Rad)
+  {
+    (*pPrimB).Rad = ut_alloc_1d (radqty);
+    ut_array_1d_memcpy (PrimA.Rad, radqty, (*pPrimB).Rad);
+  }
+
+  return;
+}
+
+// type is "hspace" or "hspacei", as in neut_prim_sscanf; eq is not normalized
+void
+neut_prim_set_hspace (char *type, double *eq, struct PRIM *pPrim)
+{
+  ut_string_string (type, &(*pPrim).Type);
+
+  (*pPrim).ParmQty = 4;
+  (*pPrim).Parms = ut_alloc_1d ((*pPrim).ParmQty);
+
+  (*pPrim).Eq = ut_alloc_1d (4);
+  ut_array_1d_memcpy (eq, 4, (*pPrim).Eq);
+  if (!strcmp ((*pPrim).Type, "hspacei"))
+    ut_array_1d_scale ((*pPrim).Eq, 4, -1);
+  ut_array_1d_memcpy ((*pPrim).Eq, (*pPrim).ParmQty, (*pPrim).Parms);
+
+  return;
+}
+
+// neut_prim_shift translates a primitive by shift (not for cubes).
+void
+neut_prim_shift (struct PRIM *pPrim, double *shift)
+{
+  int i;
+
+  if (!strncmp ((*pPrim).Type, "cube", 4))
+    ut_print_neperbug ();
+
+  if ((*pPrim).Eq)
+  {
+    (*pPrim).Eq[0] += ut_array_1d_scalprod (shift, (*pPrim).Eq + 1, 3);
+    (*pPrim).Parms[0] = (*pPrim).Eq[0];
+  }
+
+  // the base point is the first 3 parameters
+  if ((*pPrim).Base)
+    for (i = 0; i < 3; i++)
+    {
+      (*pPrim).Base[i] += shift[i];
+      (*pPrim).Parms[i] = (*pPrim).Base[i];
+    }
+
+  return;
+}
+
+// neut_prim_rotate rotates a primitive about the origin, a vector v
+// becoming g v (not for cubes).
+void
+neut_prim_rotate (struct PRIM *pPrim, double **g)
+{
+  int i, dirqty;
+
+  if (!strncmp ((*pPrim).Type, "cube", 4))
+    ut_print_neperbug ();
+
+  if ((*pPrim).Eq)
+  {
+    ut_mat_vect_product (g, 3, 3, (*pPrim).Eq + 1, 3, (*pPrim).Eq + 1);
+    ut_array_1d_memcpy ((*pPrim).Eq, 4, (*pPrim).Parms);
+  }
+
+  if ((*pPrim).Base)
+  {
+    ut_mat_vect_product (g, 3, 3, (*pPrim).Base, 3, (*pPrim).Base);
+    ut_array_1d_memcpy ((*pPrim).Base, 3, (*pPrim).Parms);
+  }
+
+  // the direction vectors are the parameters that follow the base point
+  if ((*pPrim).Dir)
+  {
+    dirqty = !strncmp ((*pPrim).Type, "ecylinder", 9) ? 9 : 3;
+    for (i = 0; i < dirqty; i += 3)
+    {
+      ut_mat_vect_product (g, 3, 3, (*pPrim).Dir + i, 3, (*pPrim).Dir + i);
+      ut_array_1d_memcpy ((*pPrim).Dir + i, 3, (*pPrim).Parms + 3 + i);
+    }
+  }
+
+  return;
+}
+
 int
 neut_prim_sscanf (char *expr, struct PRIM *pPrim)
 {
@@ -54,6 +182,8 @@ neut_prim_sscanf (char *expr, struct PRIM *pPrim)
 
       ut_array_1d_scale ((*pPrim).Eq, 4,
                          1. / ut_array_1d_norm ((*pPrim).Eq + 1, 3));
+      if (!strcmp ((*pPrim).Type, "hspacei"))
+        ut_array_1d_scale ((*pPrim).Eq, 4, -1);
       ut_array_1d_memcpy ((*pPrim).Eq, (*pPrim).ParmQty, (*pPrim).Parms);
     }
   }
@@ -183,7 +313,7 @@ neut_prim_point_side (struct PRIM Prim, double *coo, int *pside)
   double dist;
 
   if (!strcmp (Prim.Type, "hspace"))
-    *pside = -ut_space_point_plane_side (coo - 1, Prim.Eq);
+    *pside = ut_space_point_plane_side (coo - 1, Prim.Eq);
   else if (!strcmp (Prim.Type, "hspacei"))
     *pside = ut_space_point_plane_side (coo - 1, Prim.Eq);
   else if (!strcmp (Prim.Type, "sphere"))
@@ -252,6 +382,50 @@ neut_prim_point_side (struct PRIM Prim, double *coo, int *pside)
                                 NULL);
     *pside = dist < Prim.Rad[1] ? 1 : -1;
   }
+
+  return;
+}
+
+// neut_primparms_point_side is neut_prim_point_side for a primitive given
+// by its type and parameters (as recorded for the domain faces).
+void
+neut_primparms_point_side (char *type, double *parms, double *coo, int *pside)
+{
+  double dir[9];
+  struct PRIM Prim;
+
+  neut_prim_set_zero (&Prim);
+  Prim.Type = type;
+  Prim.Parms = parms;
+
+  if (!strncmp (type, "hspace", 6))
+    Prim.Eq = parms;
+
+  else if (!strncmp (type, "sphere", 6))
+  {
+    Prim.Base = parms;
+    Prim.Rad = parms + 3;
+  }
+
+  else if (!strncmp (type, "cylinder", 8) || !strncmp (type, "torus", 5))
+  {
+    Prim.Base = parms;
+    Prim.Dir = parms + 3;
+    Prim.Rad = parms + 6;
+  }
+
+  else if (!strncmp (type, "ecylinder", 9))
+  {
+    ut_array_1d_memcpy (parms + 3, 9, dir);
+    ut_array_1d_normalize (dir, 3);
+    ut_array_1d_normalize (dir + 3, 3);
+    ut_array_1d_normalize (dir + 6, 3);
+    Prim.Base = parms;
+    Prim.Dir = dir;
+    Prim.Rad = parms + 12;
+  }
+
+  neut_prim_point_side (Prim, coo, pside);
 
   return;
 }

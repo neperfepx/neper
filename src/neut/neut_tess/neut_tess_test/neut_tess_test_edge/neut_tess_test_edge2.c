@@ -65,7 +65,7 @@ neut_tess_test_edgeReciprocityFace (struct TESS Tess, int i, int verbosity)
     face = Tess.EdgeFaceNb[i][j];
 
     if (ut_array_1d_int_eltpos
-        (Tess.FaceEdgeNb[face] + 1, Tess.FaceVerQty[face], i) == -1)
+        (Tess.FaceEdgeNb[face] + 1, Tess.FaceEdgeQty[face], i) == -1)
     {
       if (verbosity)
         ut_print_message (2, 3,

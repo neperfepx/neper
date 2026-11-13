@@ -36,7 +36,7 @@
 /**   AUTHOR     : Francois PELLEGRINI                     **/
 /**                Sebastien FOURESTIER (v6.0)             **/
 /**                                                        **/
-/**   FUNCTION   : These lines are the data declaration    **/
+/**   FUNCTION   : These lines are the data declarations   **/
 /**                for the tree-leaf pseudo-graph target   **/
 /**                architecture functions.                 **/
 /**                                                        **/
@@ -64,6 +64,8 @@
 /**                                 to   : 24 jun 2010     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 28 may 2018     **/
+/**                # Version 7.0  : from : 19 feb 2018     **/
+/**                                 to   : 19 feb 2018     **/
 /**                                                        **/
 /************************************************************/
 
@@ -135,9 +137,6 @@ int                         archTleafDomLoad    (const ArchTleaf * const, ArchTl
 int                         archTleafDomSave    (const ArchTleaf * const, const ArchTleafDom * const, FILE * restrict const);
 int                         archTleafDomBipart  (const ArchTleaf * const, const ArchTleafDom * const, ArchTleafDom * restrict const, ArchTleafDom * restrict const);
 int                         archTleafDomIncl    (const ArchTleaf * const, const ArchTleafDom * const, const ArchTleafDom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archTleafDomMpiType (const ArchTleaf * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 int                         archLtleafArchLoad  (ArchTleaf * restrict const, FILE * restrict const);
 int                         archLtleafArchSave  (const ArchTleaf * const, FILE * restrict const);
@@ -157,9 +156,6 @@ int                         archLtleafDomTerm   (const ArchTleaf * const, ArchTl
 #define archLtleafDomSave           archTleafDomSave
 #define archLtleafDomBipart         archTleafDomBipart
 #define archLtleafDomIncl           archTleafDomIncl
-#ifdef SCOTCH_PTSCOTCH
-#define archLtleafDomMpiType        archTleafDomMpiType
-#endif /* SCOTCH_PTSCOTCH */
 
 #endif /* ARCH_TLEAF_H_PROTO */
 #endif /* ARCH_NOPROTO       */

@@ -4,7 +4,7 @@
 #include "ol_m.h"
 
 int *
-ol_m_alloc ()
+ol_m_alloc (void)
 {
   int *m = ut_alloc_1d_int (6);
 
@@ -15,12 +15,9 @@ ol_m_alloc ()
 }
 
 void
-ol_m_free (int *m)
+ol_m_free (int **pm)
 {
-  if (!m)
-    return;
-  else
-    free (m);
+  ut_free_1d_int (pm);
 
   return;
 }
@@ -95,16 +92,7 @@ ol_m_g (int *m, double **g)
 }
 
 void
-ol_g_m (double **g, char *crysym, int maxid, int maxres, int **allm,
-        double *mstat, int *pqty)
-{
-  ol_g_m_quality (g, crysym, maxid, maxres, 0.5, allm, mstat, pqty);
-
-  return;
-}
-
-void
-ol_g_m_quality (double **g, char *crysym, int maxid, int maxres, double alpha,
+ol_g_m (double **g, char *crysym, int maxid, int maxres, double alpha,
                 int **allm, double *mstat, int *pqty)
 {
   int i, j, test, pos, hklpos, uvwpos, ID;
@@ -236,121 +224,22 @@ ol_g_m_quality (double **g, char *crysym, int maxid, int maxres, double alpha,
   ut_free_1d (&mq);
   ut_free_1d_int (&srt);
 
-  ol_m_free (m);
-  ol_g_free (g2);
+  ol_m_free (&m);
+  ol_g_free (&g2);
 
   return;
 }
 
 void
-ol_e_m (double *e, char *crysym, int maxid, int maxres, int **allm,
-        double *mstat, int *pqty)
-{
-  double **g = ol_g_alloc ();
-  ol_e_g (e, g);
-
-  ol_g_m_quality (g, crysym, maxid, maxres, 0.5, allm, mstat, pqty);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_e_m_quality (double *e, char *crysym, int maxid, int maxres, double alpha,
-                int **allm, double *mstat, int *pqty)
-{
-  double **g = ol_g_alloc ();
-  ol_e_g (e, g);
-
-  ol_g_m_quality (g, crysym, maxid, maxres, alpha, allm, mstat, pqty);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_rtheta_m (double *r, double theta, char *crysym, int maxid, int maxres,
-             int **allm, double *mstat, int *pqty)
-{
-  double **g = ol_g_alloc ();
-  ol_rtheta_g (r, theta, g);
-
-  ol_g_m_quality (g, crysym, maxid, maxres, 0.5, allm, mstat, pqty);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_rtheta_m_quality (double *r, double theta, char *crysym, int maxid,
-                     int maxres, double alpha, int **allm, double *mstat,
-                     int *pqty)
-{
-  double **g = ol_g_alloc ();
-  ol_rtheta_g (r, theta, g);
-
-  ol_g_m_quality (g, crysym, maxid, maxres, alpha, allm, mstat, pqty);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_R_m (double *R, char *crysym, int maxid, int maxres, int **allm,
-        double *mstat, int *pqty)
-{
-  double **g = ol_g_alloc ();
-  ol_R_g (R, g);
-
-  ol_g_m_quality (g, crysym, maxid, maxres, 0.5, allm, mstat, pqty);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_R_m_quality (double *R, char *crysym, int maxid, int maxres, double alpha,
-                int **allm, double *mstat, int *pqty)
-{
-  double **g = ol_g_alloc ();
-  ol_R_g (R, g);
-
-  ol_g_m_quality (g, crysym, maxid, maxres, alpha, allm, mstat, pqty);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_q_m (double *q, char *crysym, int maxid, int maxres, int **allm,
-        double *mstat, int *pqty)
-{
-  double **g = ol_g_alloc ();
-  ol_q_g (q, g);
-
-  ol_g_m_quality (g, crysym, maxid, maxres, 0.5, allm, mstat, pqty);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_q_m_quality (double *q, char *crysym, int maxid, int maxres, double alpha,
+ol_q_m (double *q, char *crysym, int maxid, int maxres, double alpha,
                 int **allm, double *mstat, int *pqty)
 {
   double **g = ol_g_alloc ();
   ol_q_g (q, g);
 
-  ol_g_m_quality (g, crysym, maxid, maxres, alpha, allm, mstat, pqty);
+  ol_g_m (g, crysym, maxid, maxres, alpha, allm, mstat, pqty);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -379,32 +268,6 @@ ol_m_fprintf (FILE * file, int *m, char *format)
 }
 
 void
-ol_m_e (int *m, double *e)
-{
-  double **g = ol_g_alloc ();
-
-  ol_m_g (m, g);
-  ol_g_e (g, e);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_m_e_rad (int *m, double *e)
-{
-  double **g = ol_g_alloc ();
-
-  ol_m_g (m, g);
-  ol_g_e_rad (g, e);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
 ol_m_q (int *m, double *q)
 {
   double **g = ol_g_alloc ();
@@ -412,83 +275,9 @@ ol_m_q (int *m, double *q)
   ol_m_g (m, g);
   ol_g_q (g, q);
 
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_m_rtheta (int *m, double *r, double *ptheta)
-{
-  double **g = ol_g_alloc ();
-
-  ol_m_g (m, g);
-  ol_g_rtheta (g, r, ptheta);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_m_rtheta_rad (int *m, double *r, double *ptheta)
-{
-  double **g = ol_g_alloc ();
-
-  ol_m_g (m, g);
-  ol_g_rtheta_rad (g, r, ptheta);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_m_r (int *m, double *r)
-{
-  double **g = ol_g_alloc ();
-
-  ol_m_g (m, g);
-  ol_g_r (g, r);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_m_theta_rad (int *m, double *ptheta)
-{
-  double **g = ol_g_alloc ();
-
-  ol_m_g (m, g);
-  ol_g_theta_rad (g, ptheta);
-
-  ol_g_free (g);
-
-  return;
-}
-
-void
-ol_m_theta (int *m, double *ptheta)
-{
-  ol_m_theta_rad (m, ptheta);
-  ol_theta_rad2deg (*ptheta, ptheta);
+  ol_g_free (&g);
 
   return;
 }
 
 
-
-void
-ol_m_R (int *m, double *R)
-{
-  double **g = ol_g_alloc ();
-
-  ol_m_g (m, g);
-  ol_g_R (g, R);
-
-  ol_g_free (g);
-
-  return;
-}

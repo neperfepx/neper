@@ -48,18 +48,22 @@ nem_meshing_0d_ver (struct TESS Tess, int ver, struct MESHPARA MeshPara,
 
   if (edgeqty > 0)
   {
+    // pl is the progression factor of the shortest edge
     mindist = DBL_MAX;
     for (i = 0; i < edgeqty; i++)
     {
       edge = edgelist[i];
-      if (edge > 0)
-        mindist = ut_num_min (mindist, Tess.EdgeLength[edge]);
+      if (edge > 0 && Tess.EdgeLength[edge] < mindist)
+      {
+        mindist = Tess.EdgeLength[edge];
+        if (MeshPara.edge_pl)
+          pl = MeshPara.edge_pl[edge];
+      }
     }
 
-    if (mindist > cl / (1 + pl))
-      (*pNodes).NodeCl[1] = cl;
-    else
-      (*pNodes).NodeCl[1] = mindist * pl;
+    // the elements around the vertex are at most pl times larger than
+    // the elements of the shortest edge (whose length is at most mindist)
+    (*pNodes).NodeCl[1] = ut_num_min (cl, mindist * pl);
 
     (*pNodes).NodeCl[1] = ut_num_max ((*pNodes).NodeCl[1], clmin);
   }

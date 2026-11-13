@@ -93,6 +93,10 @@ net_tess_opt_init_sset_coo_centre_randpt_test (struct TOPT *pTOpt,
   if ((*pTOpt).DomPoly.FaceQty > 0 && neut_poly_point_in ((*pTOpt).DomPoly, coo) == 0)
     status = -2;
 
+  // the domain may be a faceted hull to be cut by primitives
+  else if (!neut_tess_point_indomprims ((*pTOpt).Dom, coo))
+    status = -2;
+
   else if (pdist)
   {
     (*pdist) = 0;

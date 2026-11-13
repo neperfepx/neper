@@ -78,10 +78,48 @@ neut_mesh_slice (struct NODES Nodes, struct MESH Mesh,
     neut_mesh_init_nodeelts ((*pM)[i] + 2, 0);
     neut_mesh2d_mesh1d ((*pN)[i], (*pM)[i][2], (*pM)[i] + 1, NULL, NULL, NULL, 0);
     neut_mesh1d_mesh0d ((*pM)[i][1], (*pM)[i], NULL, NULL, NULL, 0);
+
+    ut_free_1d (&node_fact);
   }
 
   ut_free_1d (&eq);
   ut_free_2d_char (&label, *pSQty);
+
+  return;
+}
+
+void
+neut_mesh_slice_free (int SQty, struct NODES **pN, struct MESH ***pM,
+                      struct DATA **pSNodeData, struct DATA ****pSMeshData,
+                      int ***pEltNewOld)
+{
+  int i, j, k;
+
+  for (i = 0; i < SQty; i++)
+  {
+    neut_nodes_free ((*pN) + i);
+    neut_data_free ((*pSNodeData) + i);
+    for (j = 0; j < 3; j++)
+      neut_mesh_free ((*pM)[i] + j);
+    free ((*pM)[i]);
+    for (j = 0; j <= 3; j++)
+    {
+      for (k = 0; k < 3; k++)
+        neut_data_free ((*pSMeshData)[i][j] + k);
+      free ((*pSMeshData)[i][j]);
+    }
+    free ((*pSMeshData)[i]);
+  }
+
+  free (*pN);
+  (*pN) = NULL;
+  free (*pSNodeData);
+  (*pSNodeData) = NULL;
+  free (*pM);
+  (*pM) = NULL;
+  free (*pSMeshData);
+  (*pSMeshData) = NULL;
+  ut_free_2d_int (pEltNewOld, SQty);
 
   return;
 }

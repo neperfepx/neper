@@ -84,7 +84,10 @@ nev_print_show_tesr_vox (char *option, char *expr, struct TESR Tesr,
   int i, j, k, varqty, status;
   char **vars = NULL;
 
-  ut_string_string (expr, &expr);
+  // expr belongs to the caller (a string of In), working on a copy
+  char *expr0 = expr;
+  expr = NULL;
+  ut_string_string (expr0, &expr);
   if (!strcmp (expr, "all"))
     ut_string_string ("1", &expr);
   else if (!strcmp (expr, "none"))
@@ -127,6 +130,7 @@ nev_print_show_tesr_vox (char *option, char *expr, struct TESR Tesr,
       }
 
   ut_free_2d_char (&vars, varqty);
+  ut_free_1d_char (&expr);
 
   return;
 }

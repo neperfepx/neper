@@ -1,4 +1,4 @@
-/* Copyright 2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2007,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,10 +41,10 @@
 /**                                                        **/
 /**   DATES      : # Version P0.5 : from : 21 may 2007     **/
 /**                                 to   : 21 may 2007     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
-
-#define COMMON_FILE_H
 
 /*
 **  The type and structure definitions.

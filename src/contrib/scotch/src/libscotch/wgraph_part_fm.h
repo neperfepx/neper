@@ -1,4 +1,4 @@
-/* Copyright 2007-2010,2012,2018,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2007-2010,2012,2018,2020,2021,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -47,7 +47,9 @@
 /**                # Version 6.0  : from : 05 nov 2009     **/
 /**                                 to   : 31 may 2018     **/
 /**                # Version 6.1  : from : 30 jul 2020     **/
-/**                                 to   : 20 aug 2020     **/
+/**                                 to   : 04 apr 2021     **/
+/**                # Version 7.0  : from : 17 jan 2023     **/
+/**                                 to   : 17 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -162,7 +164,7 @@ typedef struct WgraphPartFmSaveData_ {
 **  The function prototypes.
 */
 
-#ifdef WGRAPH_PART_FM
+#ifdef SCOTCH_WGRAPH_PART_FM
 static int                  wgraphPartFmHashResize (WgraphPartFmHashData * const);
 
 static void                 wgraphPartFmLinkInit (WgraphPartFmLinkData * const);
@@ -173,9 +175,9 @@ static int                  wgraphPartFmLinkResize (WgraphPartFmLinkData * const
 static int                  wgraphPartFmSaveResize (WgraphPartFmSaveData * const);
 
 #ifdef SCOTCH_DEBUG_WGRAPH3
-static int                  wgraphPartFmCheck   (const Wgraph * restrict const, const WgraphPartFmHashData * restrict const, const Gnum);
+static int                  wgraphPartFmCheck   (const Wgraph * restrict const, const WgraphPartFmHashData * restrict const, const WgraphPartFmSaveData * restrict const, const Gnum);
 #endif /* SCOTCH_DEBUG_WGRAPH3 */
-#endif /* WGRAPH_PART_FM */
+#endif /* SCOTCH_WGRAPH_PART_FM */
 
 int                         wgraphPartFm        (Wgraph * restrict const, const WgraphPartFmParam * restrict const);
 
@@ -187,5 +189,5 @@ int                         wgraphPartFm        (Wgraph * restrict const, const 
 
 #define wgraphPartFmLinkClaim(ldatptr,linknbr) ((ldatptr)->lfrenbr < (linknbr))
 
-#define wgraphPartFmSaveInit(sdatptr) (sdatptr)->savenbr = (sdatptr)->savesiz
+#define wgraphPartFmSaveInit(sdatptr) (sdatptr)->savenbr = 0
 #define wgraphPartFmSaveClaim(sdatptr,savvnbr) (((sdatptr)->savesiz - (sdatptr)->savenbr) < (savvnbr))

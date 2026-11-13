@@ -6,7 +6,8 @@
 
 void
 net_mtess_flatten_ver_init_fvertessver (struct TESS *Tess, int *CTessIds,
-                                        int CTessQty, struct TESSE *TessE,
+                                        int CTessQty, int *VTessIds,
+                                        int VTessQty, struct TESSE *TessE,
                                         struct FLATTEN *pFlatten)
 {
   int i, j, id, fver;
@@ -21,16 +22,22 @@ net_mtess_flatten_ver_init_fvertessver (struct TESS *Tess, int *CTessIds,
         ut_print_neperbug ();
   }
 
-  // Init VerTessVerQty and VerTessVerNb from TessE[].VerFVer
+  // Init VerTessVerQty and VerTessVerNb from TessE[].VerFVer (the
+  // arrays allocated by neut_flatten_addver have NULL lines)
+  ut_free_1d_int (&(*pFlatten).VerTessVerQty);
+  ut_free_1d_ppint (&(*pFlatten).VerTessVerNb);
   (*pFlatten).VerTessVerQty = ut_alloc_1d_int ((*pFlatten).VerQty + 1);
   (*pFlatten).VerTessVerNb = ut_alloc_2d_pint ((*pFlatten).VerQty + 1, 1);
-  for (i = 0; i < CTessQty; i++)
+  // (the virtual tessellations have unflattened vertices)
+  for (i = 0; i < CTessQty + VTessQty; i++)
   {
-    id = CTessIds[i];
+    id = (i < CTessQty) ? CTessIds[i] : VTessIds[i - CTessQty];
 
     for (j = 1; j <= Tess[id].VerQty; j++)
     {
       fver = TessE[id].VerFVer[j];
+      if (fver == 0)
+        continue;
       (*pFlatten).VerTessVerQty[fver]++;
       (*pFlatten).VerTessVerNb[fver] =
         ut_realloc_2d_int_addline ((*pFlatten).VerTessVerNb[fver],

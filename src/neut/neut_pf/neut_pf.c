@@ -28,6 +28,7 @@ neut_pf_set_zero (struct PF *pPf)
   (*pPf).inputs = NULL;
   (*pPf).inputcellqty = NULL;
   (*pPf).inputcellpole = NULL;
+  (*pPf).inputcellori = NULL;
 
   (*pPf).ipfptqty = 0;
   (*pPf).ipfpts = NULL;
@@ -45,17 +46,32 @@ neut_pf_set_zero (struct PF *pPf)
 void
 neut_pf_free (struct PF *pPf)
 {
+  int i;
+
   ut_free_1d_char (&(*pPf).space);
   ut_free_1d_char (&(*pPf).shape);
   ut_free_1d_char (&(*pPf).projection);
   ut_free_1d_char (&(*pPf).refsym);
   ut_free_1d_char (&(*pPf).font);
   ut_free_1d_char (&(*pPf).mode);
+  ut_free_1d_char (&(*pPf).pfpolelabel);
+  ut_free_1d_char (&(*pPf).pfprojlabel);
+  ut_free_1d_char (&(*pPf).pfpolestring);
 
   ut_free_2d (&(*pPf).pfdir, 3);
   ut_free_2d (&(*pPf).pfpoles, (*pPf).pfpoleqty + 1);
 
   ut_free_2d (&(*pPf).ipfpts, (*pPf).ipfptqty);
+
+  if ((*pPf).inputcellori)
+    for (i = 0; i < (*pPf).inputqty; i++)
+      ut_free_2d ((*pPf).inputcellori + i, (*pPf).inputcellqty[i] + 1);
+  free ((*pPf).inputcellori);
+  (*pPf).inputcellori = NULL;
+  ut_free_2d_int (&(*pPf).inputcellpole, (*pPf).inputqty);
+  ut_free_1d_int (&(*pPf).inputcellqty);
+  ut_free_2d_char (&(*pPf).inputs, (*pPf).inputqty);
+  (*pPf).inputqty = 0;
 
   ut_free_1d_char (&(*pPf).crysym);
 
@@ -75,7 +91,7 @@ void
 neut_pf_init_ipfborder (struct PF *pPf)
 {
   int i;
-  double dtheta, *r = ol_r_alloc ();
+  double dtheta, *rtheta = ol_rtheta_alloc ();
   double **g = ol_g_alloc ();
   double* v = ut_alloc_1d (3);
 
@@ -84,18 +100,20 @@ neut_pf_init_ipfborder (struct PF *pPf)
     double* v110 = ut_alloc_1d (3);
     ut_array_1d_set_3 (v110, 0, OL_IS2, OL_IS2);
 
-    ol_r_set_this (r, 0, OL_IS2, -OL_IS2);
+    ol_r_set_this (rtheta, 0, OL_IS2, -OL_IS2);
 
     if (!(*pPf).ipfptqty)
       (*pPf).ipfptqty = 37;
 
     dtheta = 35.26439 / ((*pPf).ipfptqty - 2);
-    ol_rtheta_g (r, dtheta, g);
+    rtheta[3] = dtheta;
+    ol_rtheta_g (rtheta, g);
 
     (*pPf).ipfpts = ut_alloc_2d ((*pPf).ipfptqty, 2);
     for (i = 0; i < (*pPf).ipfptqty - 1; i++)
     {
-      ol_rtheta_g (r, i * dtheta, g);
+      rtheta[3] = i * dtheta;
+      ol_rtheta_g (rtheta, g);
       ol_g_vect_vect (g, v110, v);
       if (!strcmp ((*pPf).projection, "stereographic"))
         ol_vect_stprojxy (v, (*pPf).ipfpts[i + 1]);
@@ -120,18 +138,20 @@ neut_pf_init_ipfborder (struct PF *pPf)
     ut_array_1d_int_set_4 (hpole, 1, 0, -1, 0);
     ol_hpole_vect (hpole, v2110);
 
-    ol_r_set_this (r, 0, 0, 1);
+    ol_r_set_this (rtheta, 0, 0, 1);
 
     if (!(*pPf).ipfptqty)
       (*pPf).ipfptqty = 32;
 
     dtheta = 30. / ((*pPf).ipfptqty - 2);
-    ol_rtheta_g (r, dtheta, g);
+    rtheta[3] = dtheta;
+    ol_rtheta_g (rtheta, g);
 
     (*pPf).ipfpts = ut_alloc_2d ((*pPf).ipfptqty, 2);
     for (i = 0; i < (*pPf).ipfptqty - 1; i++)
     {
-      ol_rtheta_g (r, i * dtheta, g);
+      rtheta[3] = i * dtheta;
+      ol_rtheta_g (rtheta, g);
       ol_g_vect_vect (g, v2110, v);
       if (!strcmp ((*pPf).projection, "stereographic"))
         ol_vect_stprojxy (v, (*pPf).ipfpts[(*pPf).ipfptqty - 1 - i]);
@@ -161,8 +181,8 @@ neut_pf_init_ipfborder (struct PF *pPf)
 
   ut_free_1d (&delta);
 
-  ol_r_free (r);
-  ol_g_free (g);
+  ol_rtheta_free (&rtheta);
+  ol_g_free (&g);
   ut_free_1d (&v);
 
   return;

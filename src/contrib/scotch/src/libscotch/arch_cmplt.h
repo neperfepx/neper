@@ -36,7 +36,7 @@
 /**   AUTHOR     : Francois PELLEGRINI                     **/
 /**                Sebastien FOURESTIER (v6.0)             **/
 /**                                                        **/
-/**   FUNCTION   : These lines are the data declaration    **/
+/**   FUNCTION   : These lines are the data declarations   **/
 /**                for the complete graph target           **/
 /**                architecture functions.                 **/
 /**                                                        **/
@@ -64,6 +64,8 @@
 /**                                 to   : 19 jan 2008     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 28 may 2018     **/
+/**                # Version 7.0  : from : 18 feb 2018     **/
+/**                                 to   : 18 feb 2018     **/
 /**                                                        **/
 /************************************************************/
 
@@ -119,9 +121,6 @@ int                         archCmpltDomLoad    (const ArchCmplt * const, ArchCm
 int                         archCmpltDomSave    (const ArchCmplt * const, const ArchCmpltDom * const, FILE * const);
 int                         archCmpltDomBipart  (const ArchCmplt * const, const ArchCmpltDom * const, ArchCmpltDom * restrict const, ArchCmpltDom * restrict const);
 int                         archCmpltDomIncl    (const ArchCmplt * const, const ArchCmpltDom * const, const ArchCmpltDom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archCmpltDomMpiType (const ArchCmplt * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 #endif /* ARCH_CMPLT_H_PROTO */
 #endif /* ARCH_NOPROTO       */

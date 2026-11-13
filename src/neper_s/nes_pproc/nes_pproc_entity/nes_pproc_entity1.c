@@ -52,6 +52,9 @@ nes_pproc_entity (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
 
       neut_sim_simres (*pSim, entity, result, &SimRes);
 
+      if (!strcmp (SimRes.status, "unknown"))
+        nes_pproc_entity_odf_test (*pTess, Tesr, Mesh, entity, SimRes.expr);
+
       if (strcmp (SimRes.res, "ori") || strcmp (SimRes.res, SimRes.expr))
         sprintf (message, "%s", SimRes.res);
       else if (!neut_tess_isvoid (*pTess))
@@ -66,7 +69,11 @@ nes_pproc_entity (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
         printf (".");
       printf (" ");
 
-      ut_sys_mkdir (SimRes.dir);
+      // on failure, the directory of a new result is removed
+      if (strcmp (SimRes.status, "result"))
+        nes_pproc_entity_failure_set (SimRes.dir, dir);
+
+      ut_sys_mkdir ("%s", SimRes.dir);
 
       // result exists
       if (!strcmp (SimRes.status, "result"))
@@ -92,6 +99,8 @@ nes_pproc_entity (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
 
       else
         abort ();
+
+      nes_pproc_entity_failure_unset ();
     }
   }
 

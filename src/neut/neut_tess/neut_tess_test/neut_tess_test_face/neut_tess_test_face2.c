@@ -19,7 +19,7 @@ neut_tess_test_faceReciprocityEdge (struct TESS Tess, int i, int verbosity)
     return 2;
   }
 
-  for (j = 1; j <= Tess.FaceVerQty[i]; j++)
+  for (j = 1; j <= Tess.FaceEdgeQty[i]; j++)
   {
     edge = Tess.FaceEdgeNb[i][j];
     if (ut_array_1d_int_eltpos
@@ -255,7 +255,15 @@ neut_tess_test_vervsedge (struct TESS Tess, int face, int verbosity)
 {
   int i, ver, edge, pos;
 
-  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
+  if (Tess.FaceVerQty[face] != Tess.FaceEdgeQty[face])
+  {
+    if (verbosity)
+      printf ("ver and edge sequences do not match.\n");
+    return 1;
+  }
+
+  for (i = 1; i <= Tess.FaceEdgeQty[face]; i++)
+
   {
     ver = Tess.FaceVerNb[face][i];
     edge = Tess.FaceEdgeNb[face][i];

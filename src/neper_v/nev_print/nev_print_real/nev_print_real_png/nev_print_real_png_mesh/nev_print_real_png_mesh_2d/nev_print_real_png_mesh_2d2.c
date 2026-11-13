@@ -47,6 +47,7 @@ nev_print_real_png_mesh_2d_compress (struct MESH Mesh2D, int *showelt,
 
   ut_free_1d_int (&elts_tmp);
   ut_free_1d_int (&tmp);
+  ut_free_2d_int (&seq2, elt2dnodeqty);
 
   return;
 }

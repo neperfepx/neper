@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2010,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -54,14 +54,14 @@
 /**                                 to   : 10 dec 2001     **/
 /**                # Version 5.1  : from : 11 aug 2010     **/
 /**                                 to   : 11 aug 2010     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define GRAPH_LIST
 
 #include "module.h"
 #include "common.h"
@@ -91,7 +91,7 @@ VertList *          listptr)
 
 /* This routine deletes the given vertex number list.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -125,7 +125,7 @@ Gnum                vnumnbr)
   if (vnumnbr > 0) {                              /* Reallocate vertex space */
     if ((listptr->vnumtab = (Gnum *) memAlloc (vnumnbr * sizeof (Gnum))) == NULL) {
       errorPrint ("listAlloc: out of memory");
-      return     (1);
+      return (1);
     }
     listptr->vnumnbr = vnumnbr;
   }
@@ -171,18 +171,18 @@ FILE *              stream)
 
   if (intLoad (stream, &vnumnbr) != 1) {          /* Read number of vertices */
     errorPrint ("listLoad: bad input (1)");
-    return     (1);
+    return (1);
   }
 
   if (listAlloc (listptr, vnumnbr) != 0) {        /* Allocate vertex space */
     errorPrint ("listLoad: out of memory");
-    return     (1);
+    return (1);
   }
 
   for (vnumnum = 0; vnumnum < vnumnbr; vnumnum ++) { /* Read vertex list contents */
     if (intLoad (stream, &listptr->vnumtab[vnumnum]) != 1) {
       errorPrint ("listLoad: bad input (2)");
-      return     (1);
+      return (1);
     }
   }
 
@@ -190,7 +190,7 @@ FILE *              stream)
   for (vnumnum = 1; vnumnum < vnumnbr; vnumnum ++) { /* Search list for duplicates       */
     if (listptr->vnumtab[vnumnum] == listptr->vnumtab[vnumnum - 1]) {
       errorPrint ("listLoad: duplicate vertex numbers");
-      return     (1);
+      return (1);
     }
   }
 
@@ -200,7 +200,7 @@ FILE *              stream)
 /* This routine sorts a vertex list
 ** by ascending order.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -253,7 +253,7 @@ VertList *          srclistptr)                   /* Source list      */
 {
   if (listAlloc (dstlistptr, dstlistptr->vnumnbr) != 0) { /* Allocate vertex space */
     errorPrint ("listCopy: out of memory");
-    return     (1);
+    return (1);
   }
   memCpy (dstlistptr->vnumtab,                    /* Copy list data */
           srclistptr->vnumtab,

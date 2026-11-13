@@ -1,4 +1,4 @@
-/* Copyright 2008,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2008,2018,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -42,6 +42,8 @@
 /**                                 to   : 17 mar 2008     **/
 /**                # Version 6.0  : from : 08 jul 2018     **/
 /**                                 to   : 14 jul 2018     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 02 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -51,9 +53,9 @@
 
 /* Buffer size. */
 
-#define FILECOMPRESSDATASIZE        (128 * 1024) /* Size of (un)compressing buffers */
+#define FILECOMPRESSDATASIZE        (128 * 1024) /* Size of (de)compressing buffers */
 
-/* Available types of (un)compression. */
+/* Available types of (de)compression. */
 
 typedef enum FileCompressType_ {
   FILECOMPRESSTYPENOTIMPL = -1,                   /* Error code     */
@@ -63,11 +65,11 @@ typedef enum FileCompressType_ {
   FILECOMPRESSTYPELZMA
 } FileCompressType;
 
-/* (Un)compression type slot. */
+/* (De)compression type slot. */
 
 typedef struct FileCompressTab_ {
   char *                    name;                 /* File extension name  */
-  FileCompressType          type;                 /* (Un)compression type */
+  FileCompressType          type;                 /* (De)compression type */
 } FileCompressTab;
 
 /*
@@ -75,7 +77,7 @@ typedef struct FileCompressTab_ {
 */
 
 typedef struct FileCompress_ {
-  FileCompressType          typeval;              /*+ Type of (un)compression      +*/
+  FileCompressType          typeval;              /*+ Type of (de)compression      +*/
   int                       infdnum;              /*+ Inner file handle (pipe end) +*/
   FILE *                    oustptr;              /*+ Outer stream                 +*/
   byte *                    bufftab;              /*+ Data buffer                  +*/
@@ -91,26 +93,32 @@ typedef struct FileCompress_ {
 */
 
 #ifdef COMMON_FILE_COMPRESS_BZ2
-#ifdef COMMON_FILE_COMPRESS
+#ifdef SCOTCH_COMMON_FILE_COMPRESS
 static void                 fileCompressBz2     (FileCompress * const  dataptr);
-#endif /* COMMON_FILE_COMPRESS */
-#ifdef COMMON_FILE_DECOMPRESS
+#endif /* SCOTCH_COMMON_FILE_COMPRESS */
+#ifdef SCOTCH_COMMON_FILE_DECOMPRESS
 static void                 fileDecompressBz2   (FileCompress * const  dataptr);
-#endif /* COMMON_FILE_DECOMPRESS */
+#endif /* SCOTCH_COMMON_FILE_DECOMPRESS */
 #endif /* COMMON_FILE_COMPRESS_Bz2 */
 #ifdef COMMON_FILE_COMPRESS_GZ
-#ifdef COMMON_FILE_COMPRESS
+#ifdef SCOTCH_COMMON_FILE_COMPRESS
 static void                 fileCompressGz      (FileCompress * const  dataptr);
-#endif /* COMMON_FILE_COMPRESS */
-#ifdef COMMON_FILE_DECOMPRESS
+#endif /* SCOTCH_COMMON_FILE_COMPRESS */
+#ifdef SCOTCH_COMMON_FILE_DECOMPRESS
 static void                 fileDecompressGz    (FileCompress * const  dataptr);
-#endif /* COMMON_FILE_DECOMPRESS */
+#endif /* SCOTCH_COMMON_FILE_DECOMPRESS */
 #endif /* COMMON_FILE_COMPRESS_GZ */
 #ifdef COMMON_FILE_COMPRESS_LZMA
-#ifdef COMMON_FILE_COMPRESS
+#ifdef SCOTCH_COMMON_FILE_COMPRESS
 static void                 fileCompressLzma    (FileCompress * const  dataptr);
-#endif /* COMMON_FILE_COMPRESS */
-#ifdef COMMON_FILE_DECOMPRESS
+#endif /* SCOTCH_COMMON_FILE_COMPRESS */
+#ifdef SCOTCH_COMMON_FILE_DECOMPRESS
 static void                 fileDecompressLzma  (FileCompress * const  dataptr);
-#endif /* COMMON_FILE_DECOMPRESS */
+#endif /* SCOTCH_COMMON_FILE_DECOMPRESS */
 #endif /* COMMON_FILE_COMPRESS_LZMA */
+
+int                         fileCompress        (File * const, const FileCompressType);
+void                        fileCompressExit    (File * const);
+int                         fileCompressType    (const char * const);
+int                         fileDecompress      (File * const, const FileCompressType);
+int                         fileDecompressType  (const char * const);

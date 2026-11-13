@@ -11,6 +11,7 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
                                double *rad)
 {
   int i;
+  double wmin;
   char *prev = ut_alloc_1d_char (1000);
   int varqty = 4;
   char **vars = ut_alloc_2d_char (varqty, 10);
@@ -92,6 +93,13 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
       }
     }
   }
+
+  // So far, rad holds the Laguerre weights.  Converting them to the radii
+  // used for sphere packing and as optimization variables (w = rad^2).
+  // Only weight differences matter, so negative weights can be shifted.
+  wmin = ut_num_min (0, ut_array_1d_min (rad + 1, TOpt.CellQty));
+  for (i = 1; i <= TOpt.CellQty; i++)
+    rad[i] = sqrt (rad[i] - wmin);
 
   ut_free_1d_char (&prev);
   ut_free_2d_char (&vars, varqty);

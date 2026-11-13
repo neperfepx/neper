@@ -249,21 +249,23 @@ neut_tess_tess_facever (struct TESS TessA, struct TESS *pTessB)
   return;
 }
 
-/* a preliminar neut_tess_tess_faceVer is needed! */
 void
 neut_tess_tess_faceedge (struct TESS TessA, struct TESS *pTessB)
 {
   int i, j;
 
+  (*pTessB).FaceEdgeQty = ut_alloc_1d_int ((*pTessB).FaceQty + 1);
   (*pTessB).FaceEdgeNb = ut_alloc_1d_pint ((*pTessB).FaceQty + 1);
   (*pTessB).FaceEdgeOri = ut_alloc_1d_pint ((*pTessB).FaceQty + 1);
 
   for (i = 1; i <= (*pTessB).FaceQty; i++)
   {
-    (*pTessB).FaceEdgeNb[i] = ut_alloc_1d_int ((*pTessB).FaceVerQty[i] + 1);
-    (*pTessB).FaceEdgeOri[i] = ut_alloc_1d_int ((*pTessB).FaceVerQty[i] + 1);
+    (*pTessB).FaceEdgeQty[i] = TessA.FaceEdgeQty[i];
+    (*pTessB).FaceEdgeNb[i] = ut_alloc_1d_int ((*pTessB).FaceEdgeQty[i] + 1);
+    (*pTessB).FaceEdgeOri[i] = ut_alloc_1d_int ((*pTessB).FaceEdgeQty[i] + 1);
 
-    for (j = 1; j <= (*pTessB).FaceVerQty[i]; j++)
+    for (j = 1; j <= (*pTessB).FaceEdgeQty[i]; j++)
+
     {
       (*pTessB).FaceEdgeNb[i][j] = TessA.FaceEdgeNb[i][j];
       (*pTessB).FaceEdgeOri[i][j] = TessA.FaceEdgeOri[i][j];
@@ -440,6 +442,8 @@ neut_tess_tess_domaindata (struct TESS TessA, struct TESS *pTessB)
   if (TessA.DomType)
     ut_string_string (TessA.DomType, &((*pTessB).DomType));
 
+  neut_tess_tess_domprim (TessA, pTessB);
+
   // ver
 
   (*pTessB).DomVerQty = TessA.DomVerQty;
@@ -530,32 +534,7 @@ neut_tess_tess_domaindata (struct TESS TessA, struct TESS *pTessB)
 
   // face
 
-  (*pTessB).DomFaceQty = TessA.DomFaceQty;
-
-  (*pTessB).DomFaceEq = ut_alloc_2d ((*pTessB).DomFaceQty + 1, 4);
-  ut_array_2d_memcpy (TessA.DomFaceEq + 1, (*pTessB).DomFaceQty, 4,
-                      (*pTessB).DomFaceEq + 1);
-
-  (*pTessB).DomFaceType = ut_alloc_1d_pchar ((*pTessB).DomFaceQty + 1);
-  for (i = 1; i <= (*pTessB).DomFaceQty; i++)
-    ut_string_string (TessA.DomFaceType[i], (*pTessB).DomFaceType + i);
-
-  (*pTessB).DomFaceParmQty = ut_alloc_1d_int ((*pTessB).DomFaceQty + 1);
-  (*pTessB).DomFaceParms = ut_alloc_1d_pdouble ((*pTessB).DomFaceQty + 1);
-  for (i = 1; i <= (*pTessB).DomFaceQty; i++)
-  {
-    (*pTessB).DomFaceParmQty[i] = TessA.DomFaceParmQty[i];
-    if ((*pTessB).DomFaceParmQty[i] > 0)
-    {
-      (*pTessB).DomFaceParms[i] = ut_alloc_1d ((*pTessB).DomFaceParmQty[i]);
-      ut_array_1d_memcpy (TessA.DomFaceParms[i], (*pTessB).DomFaceParmQty[i],
-                          (*pTessB).DomFaceParms[i]);
-    }
-  }
-
-  (*pTessB).DomFaceLabel = ut_alloc_1d_pchar ((*pTessB).DomFaceQty + 1);
-  ut_array_1d_pchar_memcpy (TessA.DomFaceLabel + 1, (*pTessB).DomFaceQty,
-                            (*pTessB).DomFaceLabel + 1);
+  neut_tess_tess_domfaces_minimal (TessA, pTessB);
 
   (*pTessB).DomTessFaceQty = ut_alloc_1d_int ((*pTessB).DomFaceQty + 1);
   ut_array_1d_int_memcpy (TessA.DomTessFaceQty + 1, (*pTessB).DomFaceQty,

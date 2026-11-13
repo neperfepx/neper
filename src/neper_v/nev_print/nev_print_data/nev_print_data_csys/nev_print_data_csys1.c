@@ -46,5 +46,7 @@ nev_print_data_csys (struct SIM Sim, char *attribute, char *datastring, struct D
   ut_free_1d_char (&datatype);
   ut_free_1d_char (&datavalue);
 
+  neut_datainput_free (&DataInput);
+
   return;
 }

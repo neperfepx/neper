@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2018,2021,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -49,6 +49,8 @@
 /**                                 to   : 04 nov 2010     **/
 /**                # Version 6.0  : from : 07 jun 2018     **/
 /**                                 to   : 07 jun 2018     **/
+/**                # Version 7.0  : from : 26 apr 2021     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -64,8 +66,30 @@ typedef struct HgraphOrderNdParam_ {
   Strat *                   ordstratsep;          /*+ Separator ordering strategy +*/
 } HgraphOrderNdParam;
 
+/*+ This structure holds the splitting parameters. +*/
+
+typedef struct HgraphOrderNdSplit2_ {
+  Gnum                      vnumnbr;              /*+ Number of induced vertices               +*/
+  Gnum *                    vnumtab;              /*+ Pointer to list of induced vertices      +*/
+  Gnum                      vhalmax;              /*+ Upper bound on induced halo vertices     +*/
+  Gnum                      ordenum;              /*+ Local start index of inverse permutation +*/
+  OrderCblk *               cblkptr;              /*+ Column block to process                  +*/
+} HgraphOrderNdSplit2;
+
+typedef struct HgraphOrderNdSplit_ {
+  HgraphOrderNdSplit2         splttab[2];         /*+ Array of induced subgraph data +*/
+  const Hgraph *              grafptr;            /*+ Original graph                 +*/
+  Order *                     ordeptr;            /*+ Pointer to ordering            +*/
+  const HgraphOrderNdParam *  paraptr;            /*+ Nested dissection parameters   +*/
+  int *                       revaptr;            /*+ Pointer to return value        +*/
+} HgraphOrderNdSplit;
+
 /*
 **  The function prototypes.
 */
 
-int                         hgraphOrderNd       (const Hgraph * const, Order * const, const Gnum, OrderCblk * const, const HgraphOrderNdParam * const);
+#ifdef SCOTCH_HGRAPH_ORDER_ND
+static void                 hgraphOrderNd2      (Context * restrict const, const int, const HgraphOrderNdSplit * const);
+#endif /* SCOTCH_HGRAPH_ORDER_ND */
+
+int                         hgraphOrderNd       (Hgraph * const, Order * const, const Gnum, OrderCblk * const, const HgraphOrderNdParam * const);

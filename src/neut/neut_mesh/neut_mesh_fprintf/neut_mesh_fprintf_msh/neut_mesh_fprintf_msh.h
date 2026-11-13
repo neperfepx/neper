@@ -13,7 +13,7 @@ extern "C"
                                      struct TESS Tess, struct NODES Nodes,
                                      struct MESH Mesh0D, struct MESH Mesh1D,
                                      struct MESH Mesh2D, struct MESH Mesh3D,
-                                     struct MESH MeshCo,
+                                     struct MESH MeshCo, struct MESH MeshFasets,
                                      struct NSET NSet0D, struct NSET NSet1D, struct NSET NSet2D,
                                      char *nsetlist, char *fasetlist, char *numbering,
                                      char *version, char *mode);

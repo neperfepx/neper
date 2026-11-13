@@ -10,20 +10,14 @@
 /// tells if a simulation is void
 extern int neut_sim_isvoid (struct SIM Sim);
 
-/// read a simulation report file
-extern void neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode);
-
-/// writes a simulation report file
-extern void neut_sim_fprintf (char *dir, struct SIM Sim, char *mode);
-
 /// test inputs
 extern void neut_sim_testinputs (struct SIM Sim, struct TESS Tess, struct MESH *Mesh);
 
 /// returns the result of a filename
 extern void neut_sim_file_res (char *file, char *res);
 
-/// returns the type of simulation, fepx, merge or sim
-extern int neut_sim_name_type (char *name, char **ptype, char **pname, int *prestart);
+/// returns the type of simulation, merge or sim
+extern int neut_sim_name_type (char *name, char **ptype);
 
 // get the proper name of an entity (node, element or elset)
 extern void neut_sim_entity_entity (char *entity,  char **pentity2);
@@ -46,9 +40,6 @@ extern int neut_sim_entityismesh (char *entity);
 extern int neut_sim_entity_exist (struct SIM Sim, char *entity);
 
 extern void neut_sim_entity_res (struct SIM Sim, char *entity, char ***pres, int *presqty);
-
-/// returns the type of a result: int, real, ori, vector, tensor
-extern int neut_sim_res_type (struct SIM Sim, char *entity, char *res, char **ptype, int *pcolqty);
 
 // get the input file names
 extern void neut_sim_input_files (struct SIM Sim, char ***pfullfiles, char ***pfiles, int *pfileqty);

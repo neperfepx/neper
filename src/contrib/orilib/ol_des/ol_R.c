@@ -4,7 +4,7 @@
 #include "ol_R.h"
 
 double *
-ol_R_alloc ()
+ol_R_alloc (void)
 {
   double *R = ut_alloc_1d (3);
 
@@ -12,12 +12,9 @@ ol_R_alloc ()
 }
 
 void
-ol_R_free (double *R)
+ol_R_free (double **pR)
 {
-  if (!R)
-    return;
-  else
-    free (R);
+  ut_free_1d (pR);
 
   return;
 }
@@ -58,79 +55,55 @@ ol_R_memcpy (double *Rsrc, double *Rdest)
 }
 
 void
-ol_rtheta_R (double *r, double theta, double *R)
-{
-  ol_rtheta_R_rad (r, theta * OL_PI / 180, R);
-
-  return;
-}
-
-void
-ol_rtheta_R_rad (double *r, double theta, double *R)
+ol_rtheta_R (double *rtheta, double *R)
 {
   int i;
 
   for (i = 0; i <= 2; i++)
-    R[i] = r[i] * tan (theta / 2);
+    R[i] = rtheta[i] * tan (rtheta[3] * OL_PI / 360);
 
   return;
 }
 
 void
-ol_R_rtheta (double *R, double *r, double *ptheta)
+ol_rtheta_R_rad (double *rtheta, double *R)
 {
-  ol_R_rtheta_rad (R, r, ptheta);
-  ol_theta_rad2deg (*ptheta, ptheta);
+  int i;
+
+  for (i = 0; i <= 2; i++)
+    R[i] = rtheta[i] * tan (rtheta[3] / 2);
 
   return;
 }
 
 void
-ol_R_rtheta_rad (double *R, double *r, double *ptheta)
+ol_R_rtheta (double *R, double *rtheta)
+{
+  ol_R_rtheta_rad (R, rtheta);
+  ol_theta_rad2deg (rtheta[3], rtheta + 3);
+
+  return;
+}
+
+void
+ol_R_rtheta_rad (double *R, double *rtheta)
 {
   int i;
   double norm;
 
   norm = ut_array_1d_norm (R, 3);
 
-  (*ptheta) = 2 * atan (norm);
+  rtheta[3] = 2 * atan (norm);
 
-  if ((*ptheta) < OL_EPS_DEG)
+  if (rtheta[3] < OL_EPS_RAD)
   {
-    r[0] = 1;
-    r[1] = 0;
-    r[2] = 0;
+    rtheta[0] = 1;
+    rtheta[1] = 0;
+    rtheta[2] = 0;
   }
   else
     for (i = 0; i <= 2; i++)
-      r[i] = R[i] / norm;
-
-  return;
-}
-
-void
-ol_R_r (double *R, double *r)
-{
-  double theta;
-
-  ol_R_rtheta_rad (R, r, &theta);
-
-  return;
-}
-
-void
-ol_R_theta (double *R, double *ptheta)
-{
-  ol_R_theta_rad (R, ptheta);
-  ol_theta_rad2deg (*ptheta, ptheta);
-
-  return;
-}
-
-void
-ol_R_theta_rad (double *R, double *ptheta)
-{
-  (*ptheta) = 2 * atan (ut_array_1d_norm (R, 3));
+      rtheta[i] = R[i] / norm;
 
   return;
 }
@@ -138,18 +111,12 @@ ol_R_theta_rad (double *R, double *ptheta)
 void
 ol_g_R (double **g, double *R)
 {
-  int i;
-  double *r;
-  double theta;
+  double *rtheta = ol_rtheta_alloc ();
 
-  r = ol_r_alloc ();
+  ol_g_rtheta_rad (g, rtheta);
+  ol_rtheta_R_rad (rtheta, R);
 
-  ol_g_rtheta_rad (g, r, &theta);
-
-  for (i = 0; i <= 2; i++)
-    R[i] = r[i] * tan (theta / 2);
-
-  ol_r_free (r);
+  ol_rtheta_free (&rtheta);
 
   return;
 }
@@ -157,26 +124,12 @@ ol_g_R (double **g, double *R)
 void
 ol_R_g (double *R, double **g)
 {
-  int i;
-  double norm;
-  double *r;
-  double theta;
+  double *rtheta = ol_rtheta_alloc ();
 
-  r = ol_r_alloc ();
+  ol_R_rtheta_rad (R, rtheta);
+  ol_rtheta_g_rad (rtheta, g);
 
-  /* Calculation of the angle/axis pair from R */
-  norm = ut_num_sqrt (R[0] * R[0] + R[1] * R[1] + R[2] * R[2]);
-  theta = 2 * atan (norm);
-
-  if (theta > 0)
-    for (i = 0; i <= 2; i++)
-      r[i] = R[i] / norm;
-  else
-    ol_R_set_this (r, 1, 0, 0);
-
-  ol_rtheta_g_rad (r, theta, g);
-
-  ol_r_free (r);
+  ol_rtheta_free (&rtheta);
 
   return;
 }
@@ -199,30 +152,4 @@ ol_R_fprintf (FILE * file, double *R, char *format)
   fprintf (file, " ");
   fprintf (file, format, R[2]);
   return fprintf (file, "\n");
-}
-
-void
-ol_R_e (double *R, double *e)
-{
-  double *q = ol_q_alloc ();
-
-  ol_R_q (R, q);
-  ol_q_e (q, e);
-
-  ol_q_free (q);
-
-  return;
-}
-
-void
-ol_R_e_rad (double *R, double *e)
-{
-  double *q = ol_q_alloc ();
-
-  ol_R_q (R, q);
-  ol_q_e_rad (q, e);
-
-  ol_q_free (q);
-
-  return;
 }

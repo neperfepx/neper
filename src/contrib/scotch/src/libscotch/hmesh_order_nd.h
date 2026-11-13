@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018,2021,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,6 +43,8 @@
 /**                                 to   : 23 jan 2004     **/
 /**                # Version 6.0  : from : 07 jun 2018     **/
 /**                                 to   : 07 jun 2018     **/
+/**                # Version 7.0  : from : 27 apr 2021     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -58,8 +60,31 @@ typedef struct HmeshOrderNdParam_ {
   Strat *                   ordstratsep;          /*+ Separator ordering strategy +*/
 } HmeshOrderNdParam;
 
+/*+ This structure holds the splitting parameters. +*/
+
+typedef struct HmeshOrderNdSplit2_ {
+  Gnum                      velmnbr;              /*+ Number of induced elements               +*/
+  Gnum                      vnodnbr;              /*+ Number of induced nodes                  +*/
+  Gnum                      ordenum;              /*+ Local start index of inverse permutation +*/
+  OrderCblk *               cblkptr;              /*+ Column block to process                  +*/
+} HmeshOrderNdSplit2;
+
+typedef struct HmeshOrderNdSplit_ {
+  HmeshOrderNdSplit2        splttab[2];           /*+ Array of induced submesh data     +*/
+  const Hmesh *             meshptr;              /*+ Original mesh                     +*/
+  Gnum                      vnspnbr;              /*+ Number of induced separator nodes +*/
+  GraphPart *               parttax;              /*+ Pointer to part array             +*/
+  Order *                   ordeptr;              /*+ Pointer to ordering               +*/
+  const HmeshOrderNdParam * paraptr;              /*+ Nested dissection parameters      +*/
+  int *                     revaptr;              /*+ Pointer to return value           +*/
+} HmeshOrderNdSplit;
+
 /*
 **  The function prototypes.
 */
 
-int                         hmeshOrderNd        (const Hmesh * restrict const, Order * restrict const, const Gnum, OrderCblk * restrict const, const HmeshOrderNdParam * const);
+#ifdef SCOTCH_HMESH_ORDER_ND
+static void                 hmeshOrderNd2       (Context * restrict const, const int, const HmeshOrderNdSplit * const);
+#endif /* SCOTCH_HMESH_ORDER_ND */
+
+int                         hmeshOrderNd        (Hmesh * restrict const, Order * restrict const, const Gnum, OrderCblk * restrict const, const HmeshOrderNdParam * const);

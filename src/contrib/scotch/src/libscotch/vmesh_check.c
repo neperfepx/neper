@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2014,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -42,14 +42,14 @@
 /**                                 to   : 11 may 2004     **/
 /**                # Version 6.0  : from : 02 jun 2014     **/
 /**                                 to   : 21 may 2018     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define VMESH
 
 #include "module.h"
 #include "common.h"
@@ -86,11 +86,11 @@ const Vmesh * const         meshptr)
 
   if ((meshptr->ecmpsize[0] + meshptr->ecmpsize[1]) > meshptr->m.velmnbr) {
     errorPrint ("vmeshCheck: invalid element balance");
-    return     (1);
+    return (1);
   }
   if (meshptr->ncmploaddlt != (meshptr->ncmpload[0] - meshptr->ncmpload[1])) {
     errorPrint ("vmeshCheck: invalid node balance");
-    return     (1);
+    return (1);
   }
 
   ecmpsize[0] =
@@ -103,14 +103,14 @@ const Vmesh * const         meshptr)
     partnum = meshptr->parttax[velmnum];
     if ((partnum < 0) || (partnum > 1)) {
       errorPrint ("vmeshCheck: invalid part array (1)");
-      return     (1);
+      return (1);
     }
     ecmpsize[partnum] ++;
 
     if ((partnum != 0) &&
         (meshptr->m.verttax[velmnum] == meshptr->m.vendtax[velmnum])) {
       errorPrint ("vmeshCheck: isolated element not in part 0");
-      return     (1);
+      return (1);
     }
 
     edgecut[0] =
@@ -122,13 +122,13 @@ const Vmesh * const         meshptr)
 
     if (edgecut[1 - partnum] != 0) {
       errorPrint ("vmeshCheck: element connected to nodes in other part (%ld)", (long) velmnum);
-      return     (1);
+      return (1);
     }
   }
   if ((meshptr->ecmpsize[0] != ecmpsize[0]) ||
       (meshptr->ecmpsize[1] != ecmpsize[1])) {
     errorPrint ("vmeshCheck: invalid element parameters");
-    return     (1);
+    return (1);
   }
 
   ncmpload[0] =
@@ -145,7 +145,7 @@ const Vmesh * const         meshptr)
     partnum = meshptr->parttax[vnodnum];
     if ((partnum < 0) || (partnum > 2)) {
       errorPrint ("vmeshCheck: invalid part array (2)");
-      return     (1);
+      return (1);
     }
 
     ncmpsize[partnum] ++;
@@ -172,7 +172,7 @@ const Vmesh * const         meshptr)
 #endif /* SCOTCH_DEBUG_VMESH3 */
       if (edgecut[1 - partnum] != 0) {
         errorPrint ("vmeshCheck: node should be in separator (%ld)", (long) vnodnum);
-        return     (1);
+        return (1);
       }
     }
   }
@@ -183,17 +183,17 @@ const Vmesh * const         meshptr)
       (meshptr->ncmpsize[1] != ncmpsize[1]) ||
       (meshptr->fronnbr     != ncmpsize[2])) {
     errorPrint ("vmeshCheck: invalid node parameters");
-    return     (1);
+    return (1);
   }
 
   if ((meshptr->fronnbr < 0) ||
       (meshptr->fronnbr > meshptr->m.vnodnbr)) {
     errorPrint ("vmeshCheck: invalid number of frontier vertices");
-    return     (1);
+    return (1);
   }
   if ((frontax = memAlloc (meshptr->m.vnodnbr * sizeof (int))) == NULL) {
     errorPrint ("vmeshCheck: out of memory");
-    return     (1);
+    return (1);
   }
   memSet (frontax, 0, meshptr->m.vnodnbr * sizeof (int));
   frontax -= meshptr->m.vnodbas;
@@ -222,7 +222,7 @@ const Vmesh * const         meshptr)
 
   o = 0;                                          /* Everything turned well */
 
-fail :
+fail:
   memFree (frontax + meshptr->m.vnodbas);
 
   return (o);

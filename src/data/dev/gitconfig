@@ -3,3 +3,7 @@
 	email = john@doe.com
 [core]
 	editor = vim
+[merge]
+	tool = meld
+[mergetool]
+	keepBackup = false

@@ -308,20 +308,10 @@ neut_odf_crysym (struct ODF Odf, char **pcrysym)
 void
 neut_odf_free (struct ODF *pOdf)
 {
-  int i;
-
-  ut_free_1d_char (&(*pOdf).Sp.space);
-  ut_free_1d_char (&(*pOdf).Sp.spaceunit);
-  neut_tess_free (&(*pOdf).Sp.Tess);
-  neut_nodes_free (&(*pOdf).Sp.Nodes);
-  for (i = 0; i <= 3; i++)
-    neut_mesh_free ((*pOdf).Sp.Mesh + i);
+  neut_orispace_free (&(*pOdf).Sp);
 
   ut_free_1d (&((*pOdf).odf));
   ut_free_1d (&((*pOdf).odfn));
-
-  ut_fct_free (&((*pOdf).Sp.hfct));
-  ut_fct_free (&((*pOdf).Sp.thetafct));
 
   return;
 }

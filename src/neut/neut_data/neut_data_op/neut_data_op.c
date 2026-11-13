@@ -64,6 +64,7 @@ neut_data_set_default (struct DATA *pData)
   (*pData).ScaleTitle = NULL;
   (*pData).ScaleMin = NULL;
   (*pData).ScaleMax = NULL;
+  (*pData).ScaleDataRel[0] = (*pData).ScaleDataRel[1] = 0;
 
   (*pData).Axes = NULL;
 
@@ -88,41 +89,59 @@ neut_datainput_set_default (struct DATAINPUT *pDataInput)
 }
 
 void
+neut_datainput_free (struct DATAINPUT *pDataInput)
+{
+  ut_free_1d_char (&(*pDataInput).input);
+
+  return;
+}
+
+void
 neut_data_free (struct DATA *pData)
 {
-  ut_free_2d (&(*pData).ColData, (*pData).Qty);
+  // arrays are indexed 1
+  ut_free_1d_char (&(*pData).Entity);
+  ut_free_1d_char (&(*pData).Value);
+
+  ut_free_2d (&(*pData).Data, (*pData).Qty + 1);
+  ut_free_1d_char (&(*pData).DataType);
+  ut_free_1d_char (&(*pData).DataName);
+  (*pData).DataSize = 0;
+
+  ut_free_2d (&(*pData).ColData, (*pData).Qty + 1);
   ut_free_1d_char (&(*pData).ColDataType);
-  ut_free_1d_char (&(*pData).CooDataName);
+  ut_free_1d_char (&(*pData).ColDataName);
+  (*pData).ColDataSize = 0;
   ut_free_1d_char (&(*pData).ColScheme);
-  ut_free_2d_int (&(*pData).Col, (*pData).Qty);
+  ut_free_2d_int (&(*pData).Col, (*pData).Qty + 1);
   ut_free_1d_int (&(*pData).ColDataDef);
 
-  ut_free_2d (&(*pData).TrsData, (*pData).Qty);
+  ut_free_2d (&(*pData).TrsData, (*pData).Qty + 1);
   ut_free_1d_char (&(*pData).TrsDataType);
   ut_free_1d_char (&(*pData).TrsScheme);
   ut_free_1d (&(*pData).Trs);
 
-  ut_free_2d (&(*pData).RadData, (*pData).Qty);
+  ut_free_2d (&(*pData).RadData, (*pData).Qty + 1);
   ut_free_1d_char (&(*pData).RadDataType);
   ut_free_1d (&(*pData).Rad);
   ut_free_1d_char (&(*pData).RadDataName);
 
-  ut_free_2d_char (&(*pData).SymbolData, (*pData).Qty);
+  ut_free_2d_char (&(*pData).SymbolData, (*pData).Qty + 1);
   ut_free_1d_char (&(*pData).SymbolDataType);
-  ut_free_2d_char (&(*pData).Symbol, (*pData).Qty);
+  ut_free_2d_char (&(*pData).Symbol, (*pData).Qty + 1);
   ut_free_1d_char (&(*pData).SymbolDataName);
 
-  ut_free_2d (&(*pData).CooData, (*pData).Qty);
+  ut_free_2d (&(*pData).CooData, (*pData).Qty + 1);
   ut_free_1d_char (&(*pData).CooDataType);
-  ut_free_2d (&(*pData).Coo, (*pData).Qty);
+  ut_free_2d (&(*pData).Coo, (*pData).Qty + 1);
   (*pData).CooFact = 1;
   ut_free_1d_char (&(*pData).CooDataName);
 
-  ut_free_2d (&(*pData).WeightData, (*pData).Qty);
+  ut_free_2d (&(*pData).WeightData, (*pData).Qty + 1);
   ut_free_1d_char (&(*pData).WeightDataType);
   ut_free_1d (&(*pData).Weight);
 
-  ut_free_2d (&(*pData).LengthData, (*pData).Qty);
+  ut_free_2d (&(*pData).LengthData, (*pData).Qty + 1);
   ut_free_1d_char (&(*pData).LengthDataType);
   ut_free_1d (&(*pData).Length);
 
@@ -180,6 +199,7 @@ neut_data_mesh2slice_elts (struct DATA Data, struct MESH SMesh,
   }
 
   ut_string_string (Data.Scale, &((*pSData)[2][0].Scale));
+  ut_array_1d_int_memcpy (Data.ScaleDataRel, 2, (*pSData)[2][0].ScaleDataRel);
   ut_string_string (Data.ScaleTitle, &((*pSData)[2][0].ScaleTitle));
   ut_string_string (Data.ColScheme, &((*pSData)[2][0].ColScheme));
 
@@ -223,6 +243,7 @@ neut_data_mesh2slice_nodes (struct DATA NodeData, struct NODES SNodes,
   }
 
   ut_string_string (NodeData.Scale, &((*pSNodeData).Scale));
+  ut_array_1d_int_memcpy (NodeData.ScaleDataRel, 2, (*pSNodeData).ScaleDataRel);
   ut_string_string (NodeData.ScaleTitle, &((*pSNodeData).ScaleTitle));
   ut_string_string (NodeData.ColScheme, &((*pSNodeData).ColScheme));
 

@@ -1,4 +1,4 @@
-/* Copyright 2007-2010,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2007-2010,2020,2021,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -34,8 +34,8 @@
 /**   NAME       : wgraph.c                                **/
 /**                                                        **/
 /**   AUTHOR     : Jun-Ho HER (v6.0)                       **/
-/**                Francois PELLEGRINI                     **/
 /**                Charles-Edmond BICHOT (5.1b)            **/
+/**                Francois PELLEGRINI                     **/
 /**                                                        **/
 /**   FUNCTION   : This module contains the data structure **/
 /**                handling routines for the vertex overl- **/
@@ -46,7 +46,9 @@
 /**                # Version 6.0  : from : 28 may 2010     **/
 /**                                 to   : 29 may 2010     **/
 /**                # Version 6.1  : from : 01 sep 2020     **/
-/**                                 to   : 01 sep 2020     **/
+/**                                 to   : 02 dec 2021     **/
+/**                # Version 7.0  : from : 16 jan 2023     **/
+/**                                 to   : 16 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -54,11 +56,10 @@
 **  The defines and includes.
 */
 
-#define WGRAPH
-
 #include "module.h"
 #include "common.h"
 #include "graph.h"
+#include "arch.h"
 #include "wgraph.h"
 
 /***********************************/
@@ -70,7 +71,7 @@
 /* This routine initialize the active graph
 ** corresponding to the source graph
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -89,7 +90,7 @@ const Anum                      partnbr)
 /* This routine frees the contents
 ** of the given active graph
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -127,7 +128,7 @@ Wgraph * const              grafptr)              /* Active graph */
 		     &parttab,           (size_t) (partsiz            * sizeof (Anum)),
 		     &grafptr->frontab,  (size_t) (grafptr->s.vertnbr * sizeof (Gnum)), NULL) == NULL) {
     errorPrint ("wgraphAlloc: out of memory (1)");
-    return     (1);
+    return (1);
   }
   if (grafptr->parttax == NULL)                   /* Part array does not need flag as will be group freed */
     grafptr->parttax = parttab - grafptr->s.baseval;
@@ -138,7 +139,7 @@ Wgraph * const              grafptr)              /* Active graph */
 /* This routine moves all of the graph
 ** vertices to the first part.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -152,5 +153,76 @@ Wgraph * const              grafptr)
   grafptr->fronload    = 0;
   grafptr->fronnbr     = 0;
 
-  memSet (grafptr->parttax + grafptr->s.baseval, 0, grafptr->s.vertnbr * sizeof (Anum));  /* Set all vertices to part 0 */
+  memSet (grafptr->parttax + grafptr->s.baseval, 0, grafptr->s.vertnbr * sizeof (Anum)); /* Set all vertices to part 0 */
+}
+
+/* This routine computes the cost of the
+** current partition.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
+
+int
+wgraphCost (
+Wgraph * restrict const     grafptr)
+{
+  Gnum * restrict     flagtab;                    /* Flag array to avoid counting twice */
+  Gnum                frlosum;                    /* Sum of loads of frontier vertices  */
+  Gnum                vertnum;
+
+  const Gnum * restrict const velotax  = grafptr->s.velotax;
+  const Gnum * restrict const verttax  = grafptr->s.verttax;
+  const Gnum * restrict const vendtax  = grafptr->s.vendtax;
+  const Gnum * restrict const edgetax  = grafptr->s.edgetax;
+  const Anum * restrict const parttax  = grafptr->parttax;
+  Gnum * restrict const       compload = grafptr->compload;
+  Gnum * restrict const       compsize = grafptr->compsize;
+
+  memSet (compload, 0, grafptr->partnbr * sizeof (Gnum));
+  memSet (compsize, 0, grafptr->partnbr * sizeof (Gnum));
+
+  if ((flagtab = (Gnum *) memAlloc ((grafptr->partnbr + 1) * sizeof (Gnum))) == NULL) { /* TRICK: "+1" to create slot for a "-1" index */
+    errorPrint ("wgraphCost: out of memory");
+    return (1);
+  }
+  flagtab ++;                                     /* TRICK: trim array so that flagtab[-1] is valid */
+  memSet (flagtab, ~0, grafptr->partnbr * sizeof (Gnum)); /* Set normal part vertex indices to ~0   */
+
+  frlosum = 0;
+  for (vertnum = grafptr->s.baseval; vertnum < grafptr->s.vertnnd; vertnum ++) {
+    Anum                partval;
+    Gnum                veloval;
+
+    veloval = (velotax != NULL) ? velotax[vertnum] : 1;
+    partval = parttax[vertnum];
+    if (partval >= 0) {
+      compload[partval] += veloval;
+      compsize[partval] ++;
+    }
+    else {                                        /* Vertex is in separator */
+      Gnum                edgenum;
+
+      frlosum += veloval;
+
+      flagtab[-1] = vertnum;                      /* Separator neighbors will not be considered           */
+      for (edgenum = verttax[vertnum]; edgenum < vendtax[vertnum]; edgenum ++) { /* Compute contributions */
+        Gnum                vertend;
+        Gnum                partend;
+
+        vertend = edgetax[edgenum];
+        partend = parttax[vertend];
+        if (flagtab[partend] != vertnum) {        /* If part not yet considered           */
+          flagtab[partend] = vertnum;             /* Flag part as considered              */
+          compload[partend] += veloval;           /* Add load of separator vertex to part */
+          compsize[partend] ++;
+        }
+      }
+    }
+  }
+  grafptr->fronload = frlosum;
+
+  memFree (flagtab - 1);                          /* TRICK: free array using its real beginning */
+
+  return (0);
 }

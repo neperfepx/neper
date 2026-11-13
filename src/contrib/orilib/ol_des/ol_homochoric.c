@@ -5,8 +5,16 @@
 
 #ifdef HAVE_GSL
 
+// conversions between rotation axis / angle pairs and homochoric vectors,
+// used internally by the conversions from / to rotation matrices and
+// quaternions
+static void ol_rtheta_homochoric_rad (double *, double *);
+static void ol_homochoric_rtheta (struct FCT *, double *, double *);
+static void ol_homochoric_rtheta_rad (struct FCT *, double *, double *);
+static void ol_homochoric_theta_rad (struct FCT *, double *, double *);
+
 double *
-ol_homochoric_alloc ()
+ol_homochoric_alloc (void)
 {
   double *homochoric = ut_alloc_1d (3);
 
@@ -14,12 +22,9 @@ ol_homochoric_alloc ()
 }
 
 void
-ol_homochoric_free (double *homochoric)
+ol_homochoric_free (double **phomochoric)
 {
-  if (!homochoric)
-    return;
-  else
-    free (homochoric);
+  ut_free_1d (phomochoric);
 
   return;
 }
@@ -61,32 +66,23 @@ ol_homochoric_memcpy (double *homochoricsrc, double *homochoricdest)
   return;
 }
 
-void
-ol_rtheta_homochoric (double *r, double theta, double *homochoric)
-{
-  ol_rtheta_homochoric_rad (r, theta * OL_PI / 180, homochoric);
-
-  return;
-}
-
-void
-ol_rtheta_homochoric_rad (double *r, double theta, double *homochoric)
+static void
+ol_rtheta_homochoric_rad (double *rtheta, double *homochoric)
 {
   int i;
-  double norm = pow (0.75 * (theta - sin (theta)), 1. / 3);
+  double norm = pow (0.75 * (rtheta[3] - sin (rtheta[3])), 1. / 3);
 
   for (i = 0; i < 3; i++)
-    homochoric[i] = r[i] * norm;
+    homochoric[i] = rtheta[i] * norm;
 
   return;
 }
 
-void
-ol_homochoric_rtheta (struct FCT *phfct, double *homochoric, double *r,
-                      double *ptheta)
+static void
+ol_homochoric_rtheta (struct FCT *phfct, double *homochoric, double *rtheta)
 {
-  ol_homochoric_rtheta_rad (phfct, homochoric, r, ptheta);
-  ol_theta_rad2deg (*ptheta, ptheta);
+  ol_homochoric_rtheta_rad (phfct, homochoric, rtheta);
+  ol_theta_rad2deg (rtheta[3], rtheta + 3);
 
   return;
 }
@@ -94,12 +90,12 @@ ol_homochoric_rtheta (struct FCT *phfct, double *homochoric, double *r,
 void
 ol_homochoric_q (struct FCT *phfct, double *homochoric, double *q)
 {
-  double theta, *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
 
-  ol_homochoric_rtheta (phfct, homochoric, r, &theta);
-  ol_rtheta_q (r, theta, q);
+  ol_homochoric_rtheta (phfct, homochoric, rtheta);
+  ol_rtheta_q (rtheta, q);
 
-  ol_r_free (r);
+  ol_rtheta_free (&rtheta);
 
   return;
 }
@@ -124,52 +120,31 @@ ol_homochoric_thetafct (struct FCT *phfct)
   return;
 }
 
-void
-ol_homochoric_rtheta_rad (struct FCT *phfct, double *homochoric, double *r,
-                          double *ptheta)
+static void
+ol_homochoric_rtheta_rad (struct FCT *phfct, double *homochoric,
+                          double *rtheta)
 {
   int i;
   double norm;
 
   norm = ut_array_1d_norm (homochoric, 3);
 
-  ol_homochoric_theta_rad (phfct, homochoric, ptheta);
+  ol_homochoric_theta_rad (phfct, homochoric, rtheta + 3);
 
-  if ((*ptheta) < OL_EPS)
+  if (rtheta[3] < OL_EPS)
   {
-    r[0] = 1;
-    r[1] = 0;
-    r[2] = 0;
+    rtheta[0] = 1;
+    rtheta[1] = 0;
+    rtheta[2] = 0;
   }
   else
     for (i = 0; i < 3; i++)
-      r[i] = homochoric[i] / norm;
+      rtheta[i] = homochoric[i] / norm;
 
   return;
 }
 
-void
-ol_homochoric_r (double *homochoric, double *r)
-{
-  int i;
-  double norm = ut_array_1d_norm (homochoric, 3);
-
-  for (i = 0; i < 3; i++)
-    r[i] = homochoric[i] / norm;
-
-  return;
-}
-
-void
-ol_homochoric_theta (struct FCT *hfct, double *homochoric, double *ptheta)
-{
-  ol_homochoric_theta_rad (hfct, homochoric, ptheta);
-  ol_theta_rad2deg (*ptheta, ptheta);
-
-  return;
-}
-
-void
+static void
 ol_homochoric_theta_rad (struct FCT *phfct, double *homochoric,
                          double *ptheta)
 {
@@ -191,13 +166,27 @@ ol_homochoric_theta_rad (struct FCT *phfct, double *homochoric,
 void
 ol_g_homochoric (double **g, double *homochoric)
 {
-  double theta, *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
 
-  ol_g_rtheta_rad (g, r, &theta);
+  ol_g_rtheta_rad (g, rtheta);
 
-  ol_rtheta_homochoric (r, theta, homochoric);
+  ol_rtheta_homochoric_rad (rtheta, homochoric);
 
-  ol_r_free (r);
+  ol_rtheta_free (&rtheta);
+
+  return;
+}
+
+void
+ol_q_homochoric (double *q, double *homochoric)
+{
+  double *rtheta = ol_rtheta_alloc ();
+
+  ol_q_rtheta_rad (q, rtheta);
+
+  ol_rtheta_homochoric_rad (rtheta, homochoric);
+
+  ol_rtheta_free (&rtheta);
 
   return;
 }
@@ -205,13 +194,13 @@ ol_g_homochoric (double **g, double *homochoric)
 void
 ol_homochoric_g (struct FCT *phfct, double *homochoric, double **g)
 {
-  double theta, *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
 
-  ol_homochoric_rtheta (phfct, homochoric, r, &theta);
+  ol_homochoric_rtheta (phfct, homochoric, rtheta);
 
-  ol_rtheta_g (r, theta, g);
+  ol_rtheta_g (rtheta, g);
 
-  ol_r_free (r);
+  ol_rtheta_free (&rtheta);
 
   return;
 }
@@ -236,29 +225,6 @@ ol_homochoric_fprintf (FILE * file, double *homochoric, char *format)
   fprintf (file, " ");
   fprintf (file, format, homochoric[2]);
   return fprintf (file, "\n");
-}
-
-void
-ol_homochoric_e (struct FCT *phfct, double *homochoric, double *e)
-{
-  ol_homochoric_e_rad (phfct, homochoric, e);
-  ol_e_rad2deg (e, e);
-
-  return;
-}
-
-void
-ol_homochoric_e_rad (struct FCT *phfct, double *homochoric, double *e)
-{
-  double *q = ol_q_alloc ();
-
-  ol_homochoric_q (phfct, homochoric, q);
-
-  ol_q_e_rad (q, e);
-
-  ol_q_free (q);
-
-  return;
 }
 
 #endif // HAVE_GSL

@@ -4,7 +4,7 @@
 #include "ol_rtheta.h"
 
 double *
-ol_r_alloc ()
+ol_r_alloc (void)
 {
   double *r = ut_alloc_1d (3);
 
@@ -14,12 +14,9 @@ ol_r_alloc ()
 }
 
 void
-ol_r_free (double *r)
+ol_r_free (double **pr)
 {
-  if (!r)
-    return;
-  else
-    free (r);
+  ut_free_1d (pr);
 
   return;
 }
@@ -62,34 +59,51 @@ ol_r_set_this (double *r, double r1, double r2, double r3)
   return;
 }
 
-void
-ol_rtheta_set_zero (double *r, double *ptheta)
+double *
+ol_rtheta_alloc (void)
 {
-  ut_array_1d_zero (r, 3);
-  (*ptheta) = 0;
+  double *rtheta = ut_alloc_1d (4);
+
+  rtheta[0] = 1;
+
+  return rtheta;
+}
+
+void
+ol_rtheta_free (double **prtheta)
+{
+  ut_free_1d (prtheta);
 
   return;
 }
 
 void
-ol_rtheta_set_id (double *r, double *ptheta)
+ol_rtheta_set_zero (double *rtheta)
 {
-  r[0] = 1;
-  r[1] = 0;
-  r[2] = 0;
-  (*ptheta) = 0;
+  ut_array_1d_zero (rtheta, 4);
 
   return;
 }
 
 void
-ol_rtheta_set_this (double *r, double *ptheta, double r1, double r2,
-                    double r3, double thetaval)
+ol_rtheta_set_id (double *rtheta)
 {
-  r[0] = r1;
-  r[1] = r2;
-  r[2] = r3;
-  (*ptheta) = thetaval;
+  rtheta[0] = 1;
+  rtheta[1] = 0;
+  rtheta[2] = 0;
+  rtheta[3] = 0;
+
+  return;
+}
+
+void
+ol_rtheta_set_this (double *rtheta, double r1, double r2, double r3,
+                    double theta)
+{
+  rtheta[0] = r1;
+  rtheta[1] = r2;
+  rtheta[2] = r3;
+  rtheta[3] = theta;
 
   return;
 }
@@ -119,22 +133,20 @@ ol_r_memcpy (double *rsrc, double *rdest)
 }
 
 void
-ol_rtheta_memcpy (double *rsrc, double thetasrc, double *rdest,
-                  double *pthetadest)
+ol_rtheta_memcpy (double *rthetasrc, double *rthetadest)
 {
-  ut_array_1d_memcpy (rsrc, 3, rdest);
-  (*pthetadest) = thetasrc;
+  ut_array_1d_memcpy (rthetasrc, 4, rthetadest);
 
   return;
 }
 
 int
-ol_g_rtheta (double **g, double *r, double *ptheta)
+ol_g_rtheta (double **g, double *rtheta)
 {
   int status;
 
-  status = ol_g_rtheta_rad (g, r, ptheta);
-  ol_theta_rad2deg (*ptheta, ptheta);
+  status = ol_g_rtheta_rad (g, rtheta);
+  ol_theta_rad2deg (rtheta[3], rtheta + 3);
 
   return status;
 }
@@ -142,17 +154,22 @@ ol_g_rtheta (double **g, double *r, double *ptheta)
 int
 ol_g_r (double **g, double *r)
 {
-  double theta;
+  int status;
+  double rtheta[4];
 
-  return ol_g_rtheta_rad (g, r, &theta);
+  status = ol_g_rtheta_rad (g, rtheta);
+  ol_r_memcpy (rtheta, r);
+
+  return status;
 }
 
 
 int
-ol_g_rtheta_rad (double **g, double *r, double *ptheta)
+ol_g_rtheta_rad (double **g, double *rtheta)
 {
   int i, m;
   int status;
+  double *r = rtheta, *ptheta = rtheta + 3;
 
   (*ptheta) = ut_num_acos ((g[0][0] + g[1][1] + g[2][2] - 1) / 2);
 
@@ -165,9 +182,10 @@ ol_g_rtheta_rad (double **g, double *r, double *ptheta)
   }
   else if ((*ptheta) < (1 - OL_EPS_RAD) * OL_PI)
   {
-    if (ut_num_equal (g[1][2], g[2][1], OL_EPS) != 1
-        || ut_num_equal (g[1][2], g[2][1], OL_EPS) != 1
-        || ut_num_equal (g[1][2], g[2][1], OL_EPS) != 1)
+    /* a symmetric matrix is not a rotation of angle in ]0, 180[ */
+    if (ut_num_equal (g[1][2], g[2][1], OL_EPS)
+        && ut_num_equal (g[2][0], g[0][2], OL_EPS)
+        && ut_num_equal (g[0][1], g[1][0], OL_EPS))
       status = -1;
 
     r[0] = (g[1][2] - g[2][1]) / (2 * sin (*ptheta));
@@ -209,19 +227,23 @@ ol_g_theta_rad (double **g, double *ptheta)
 }
 
 void
-ol_rtheta_g (double *r, double theta, double **g)
+ol_rtheta_g (double *rtheta, double **g)
 {
-  ol_rtheta_g_rad (r, theta * OL_PI / 180, g);
+  double rtheta2[4];
+
+  ol_r_memcpy (rtheta, rtheta2);
+  ol_theta_deg2rad (rtheta[3], rtheta2 + 3);
+  ol_rtheta_g_rad (rtheta2, g);
 
   return;
 }
 
 void
-ol_rtheta_g_rad (double *r, double theta, double **g)
+ol_rtheta_g_rad (double *rtheta, double **g)
 {
-  double C, S;
-  C = cos (theta);
-  S = sin (theta);
+  double C, S, *r = rtheta;
+  C = cos (rtheta[3]);
+  S = sin (rtheta[3]);
 
   g[0][0] = r[0] * r[0] * (1 - C) + C;
   g[0][1] = r[0] * r[1] * (1 - C) + r[2] * S;
@@ -239,15 +261,15 @@ ol_rtheta_g_rad (double *r, double theta, double **g)
 }
 
 int
-ol_rtheta_fprintf (FILE * file, double *r, double theta, char *format)
+ol_rtheta_fprintf (FILE * file, double *rtheta, char *format)
 {
-  fprintf (file, format, r[0]);
+  fprintf (file, format, rtheta[0]);
   fprintf (file, " ");
-  fprintf (file, format, r[1]);
+  fprintf (file, format, rtheta[1]);
   fprintf (file, " ");
-  fprintf (file, format, r[2]);
+  fprintf (file, format, rtheta[2]);
   fprintf (file, " ");
-  fprintf (file, format, theta);
+  fprintf (file, format, rtheta[3]);
   return fprintf (file, "\n");
 }
 
@@ -271,9 +293,9 @@ ol_theta_fprintf (FILE * file, double theta, char *format)
 }
 
 int
-ol_rtheta_fscanf (FILE * file, double *r, double *ptheta)
+ol_rtheta_fscanf (FILE * file, double *rtheta)
 {
-  if (fscanf (file, "%lf%lf%lf%lf", &r[0], &r[1], &r[2], ptheta) == 4)
+  if (fscanf (file, "%lf%lf%lf%lf", &rtheta[0], &rtheta[1], &rtheta[2], &rtheta[3]) == 4)
     return 1;
   else
     return 0;
@@ -298,55 +320,35 @@ ol_theta_fscanf (FILE * file, double *ptheta)
 }
 
 void
-ol_rtheta_rtheta_rad (double *r1, double theta, double *r2, double *ptheta2)
+ol_rtheta_rtheta_rad (double *rtheta, double *rtheta2)
 {
-  ol_r_memcpy (r1, r2);
+  if (rtheta2 != rtheta)
+    ol_rtheta_memcpy (rtheta, rtheta2);
 
-  (*ptheta2) = theta;
+  /* ranging theta within [0, 2 OL_PI[ */
+  while (rtheta2[3] < 0)
+    rtheta2[3] += 2 * OL_PI;
+  while (rtheta2[3] >= 2 * OL_PI)
+    rtheta2[3] -= 2 * OL_PI;
 
-  /* ranging theta within [0,(2*OL_PI)] */
-  while (*ptheta2 < 0)
-    *ptheta2 += 2 * OL_PI;
-  while (*ptheta2 > 2 * OL_PI)
-    *ptheta2 -= 2 * OL_PI;
-
-  /* ranging theta within [0, OL_PI] */
-  if ((*ptheta2) > OL_PI)
+  /* ranging theta within [0, OL_PI]: a rotation of theta about r is a
+     rotation of 2 OL_PI - theta about -r */
+  if (rtheta2[3] > OL_PI)
   {
-    (*ptheta2) -= OL_PI;
-    ut_array_1d_scale (r2, 3, -1);
+    rtheta2[3] = 2 * OL_PI - rtheta2[3];
+    ut_array_1d_scale (rtheta2, 3, -1);
   }
 
   return;
 }
 
 void
-ol_rtheta_rtheta (double *r1, double theta, double *r2, double *ptheta2)
+ol_rtheta_rtheta (double *rtheta, double *rtheta2)
 {
-  ol_rtheta_rtheta_rad (r1, theta * OL_PI / 180, r2, ptheta2);
-  ol_theta_rad2deg (*ptheta2, ptheta2);
+  ol_rtheta_memcpy (rtheta, rtheta2);
+  ol_theta_deg2rad (rtheta2[3], rtheta2 + 3);
+  ol_rtheta_rtheta_rad (rtheta2, rtheta2);
+  ol_theta_rad2deg (rtheta2[3], rtheta2 + 3);
 
   return;
-}
-
-void
-ol_rtheta_e (double *r, double theta, double *e)
-{
-  double *q = ol_q_alloc ();
-
-  ol_rtheta_q (r, theta, q);
-  ol_q_e (q, e);
-
-  ol_q_free (q);
-}
-
-void
-ol_rtheta_e_rad (double *r, double theta, double *e)
-{
-  double *q = ol_q_alloc ();
-
-  ol_rtheta_q_rad (r, theta, q);
-  ol_q_e_rad (q, e);
-
-  ol_q_free (q);
 }

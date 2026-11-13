@@ -61,7 +61,7 @@ net_ori_random (long random, struct OL_SET *pOSet)
   }
 
   gsl_rng_free (r);
-  ol_e_free (e);
+  ol_e_free (&e);
 
   return;
 }
@@ -69,8 +69,7 @@ net_ori_random (long random, struct OL_SET *pOSet)
 // Author: L. Renversade.
 // fixed rq
 void
-net_ori_fiber (struct SEEDSET *SSet, int dtess, int dcell, long random,
-               char *distrib, struct OL_SET *pOSet)
+net_ori_fiber (long random, char *distrib, struct OL_SET *pOSet)
 {
   double theta;
   double *dirc = ut_alloc_1d (3);
@@ -81,7 +80,7 @@ net_ori_fiber (struct SEEDSET *SSet, int dtess, int dcell, long random,
 
   neut_ori_fiber (dirc, dirs, random, (*pOSet).size, (*pOSet).q);
 
-  neut_ori_fiber_spread (spread, dirs, SSet[dtess].Random + dcell,
+  neut_ori_fiber_spread (spread, dirs, random + 1,
                          (*pOSet).size, (*pOSet).crysym, (*pOSet).q);
 
   ut_free_1d_char (&spread);
@@ -150,15 +149,15 @@ net_ori_ks (long random, char *label, struct SEEDSET *SSet, int dtess, int dcell
     ol_q_q_q_cur (qtmp, qX, (*pOSet).q[i]);
   }
 
-  ol_q_free (qX);
-  ol_q_free (qtmp);
+  ol_q_free (&qX);
+  ol_q_free (&qtmp);
   gsl_rng_free (r);
-  ol_g_free (X);
+  ol_g_free (&X);
 
   if (partqty == 2)
-    net_ori_addspread (parts[1], SSet[dtess].Random + dcell, pOSet);
+    net_ori_addspread (parts[1], random, pOSet);
 
-  ol_q_free (q);
+  ol_q_free (&q);
   ut_free_2d_char (&parts, partqty);
 
   return;
@@ -228,20 +227,20 @@ net_ori_ti_beta2alpha (long random, char *label, struct SEEDSET *SSet, int dtess
   }
 
   ut_free_2d (&qX, 13);
-  ol_q_free (qtmp);
+  ol_q_free (&qtmp);
   gsl_rng_free (r);
 
   if (partqty == 2)
-    net_ori_addspread (parts[1], SSet[dtess].Random + dcell, pOSet);
+    net_ori_addspread (parts[1], random, pOSet);
 
-  ol_q_free (q);
+  ol_q_free (&q);
   ut_free_2d_char (&parts, partqty);
 
   return;
 }
 
 void
-net_ori_parent (char *string, struct SEEDSET *SSet, int dtess, int dcell, struct OL_SET *pOSet)
+net_ori_parent (long random, char *string, struct SEEDSET *SSet, int dtess, int dcell, struct OL_SET *pOSet)
 {
   int i, partqty;
   char **parts = NULL;
@@ -252,7 +251,7 @@ net_ori_parent (char *string, struct SEEDSET *SSet, int dtess, int dcell, struct
     ol_q_memcpy (SSet[dtess].SeedOri[dcell], (*pOSet).q[i]);
 
   if (partqty == 2)
-    net_ori_addspread (parts[1], SSet[dtess].Random + dcell, pOSet);
+    net_ori_addspread (parts[1], random, pOSet);
 
   ut_free_2d_char (&parts, partqty);
 
@@ -260,7 +259,7 @@ net_ori_parent (char *string, struct SEEDSET *SSet, int dtess, int dcell, struct
 }
 
 void
-net_ori_label (char *label, struct SEEDSET *SSet, int dtess, int dcell, struct OL_SET *pOSet)
+net_ori_label (long random, char *label, struct OL_SET *pOSet)
 {
   int i, status, partqty;
   double *q = ol_q_alloc ();
@@ -277,9 +276,9 @@ net_ori_label (char *label, struct SEEDSET *SSet, int dtess, int dcell, struct O
     abort ();
 
   if (partqty == 2)
-    net_ori_addspread (parts[1], SSet[dtess].Random + dcell, pOSet);
+    net_ori_addspread (parts[1], random, pOSet);
 
-  ol_q_free (q);
+  ol_q_free (&q);
   ut_free_2d_char (&parts, partqty);
 
   return;
@@ -365,8 +364,8 @@ net_ori_file (char *filename_in, struct OL_SET *pOSet)
     }
     else if (!strcmp (des, "axis-angle"))
     {
-      ol_rtheta_fscanf (fp, vect, vect + 3);
-      ol_rtheta_q (vect, vect[3], (*pOSet).q[i]);
+      ol_rtheta_fscanf (fp, vect);
+      ol_rtheta_q (vect, (*pOSet).q[i]);
     }
     else if (!strcmp (des, "quaternion"))
     {
@@ -397,7 +396,7 @@ net_ori_file (char *filename_in, struct OL_SET *pOSet)
   ut_free_1d_char (&conv);
   ut_free_1d_char (&tmp);
   ut_free_1d (&vect);
-  ol_g_free (g);
+  ol_g_free (&g);
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
   ut_free_1d_char (&filename);
@@ -429,7 +428,7 @@ net_ori_odf (long random, char *odf, struct OL_SET *pOSet)
 
   if (!strcmp (method, "inverse_uniform_sampling"))
   {
-    double *x = ut_alloc_1d (Odf.odfqty + 1);
+    double *x = NULL;
 
     neut_mesh_init_eltweight (Odf.Sp.Nodes, Odf.Sp.Mesh + 3);
 
@@ -464,6 +463,7 @@ net_ori_odf (long random, char *odf, struct OL_SET *pOSet)
     double n1, n2, n3;
     double fmax, t;
     double *e = ol_e_alloc ();
+    double *q = ol_q_alloc ();
     double *R = ol_R_alloc ();
 
     fmax = ut_array_1d_max (Odf.odf, Odf.odfqty);
@@ -476,7 +476,8 @@ net_ori_odf (long random, char *odf, struct OL_SET *pOSet)
       n2 = gsl_rng_uniform (r);
       n3 = gsl_rng_uniform (r);
       ol_nb_e (n1, n2, n3, e);
-      ol_e_R (e, R);
+      ol_e_q (e, q);
+      ol_q_R (q, R);
       ol_R_Rcrysym (R, (*pOSet).crysym, R);
 
       status = neut_mesh_point_elt (Odf.Sp.Nodes, Odf.Sp.Mesh[3], R, &elt);
@@ -492,12 +493,17 @@ net_ori_odf (long random, char *odf, struct OL_SET *pOSet)
     }
 
     gsl_rng_free (r);
-    ol_e_free (e);
-    ol_R_free (R);
+    ol_e_free (&e);
+    ol_q_free (&q);
+    ol_R_free (&R);
   }
 
   else
     ut_print_neperbug ();
+
+  gsl_rng_free (r2);
+  neut_odf_free (&Odf);
+  ut_free_1d_char (&method);
 
   return;
 }

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2016,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2016,2018,2019,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -47,6 +47,8 @@
 /**                                 to   : 17 mar 2005     **/
 /**                # Version 6.0  : from : 16 mar 2016     **/
 /**                                 to   : 31 may 2018     **/
+/**                # Version 7.0  : from : 21 aug 2019     **/
+/**                                 to   : 25 aug 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -54,15 +56,14 @@
 **  The defines and includes.
 */
 
-#define LIBRARY
-
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "parser.h"
 #include "graph.h"
 #include "arch.h"
-#include "arch_build.h"
-#include "arch_build2.h"
+#include "arch_deco_build.h"
+#include "arch_deco2_build.h"
 #include "mapping.h"
 #include "bgraph.h"
 #include "bgraph_bipart_st.h"
@@ -75,12 +76,12 @@
 /*                                    */
 /**************************************/
 
-/*+ This routine parses the given
-*** bipartitioning strategy.
-*** It returns:
-*** - 0   : if string successfully scanned.
-*** - !0  : on error.
-+*/
+/* This routine parses the given
+** bipartitioning strategy.
+** It returns:
+** - 0   : if string successfully scanned.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_stratGraphBipart (
@@ -98,52 +99,27 @@ const char * const          string)
   return (0);
 }
 
-/*+ This routine parses the given
-*** bipartitioning strategy.
-*** It returns:
-*** - 0   : if string successfully scanned.
-*** - !0  : on error.
-+*/
-
-int
-SCOTCH_stratArchBuild (
-SCOTCH_Strat * const        stratptr,
-const char * const          string)
-{
-  if (*((Strat **) stratptr) != NULL)
-    stratExit (*((Strat **) stratptr));
-
-#if 0
-  if ((*((Strat **) stratptr) = stratInit (&archbuildststratab, "")) == NULL) {
-    errorPrint (STRINGIFY (SCOTCH_stratArchBuild) ": error in architecture building strategy");
-    return (1);
-  }
-#endif
-
-  return (0);
-}
-
-/*+ This routine fills the contents of the given
-*** opaque target structure with the data provided
-*** by the user. The source graph provided on input
-*** is turned into a decomposition-defined target
-*** architecture.
-*** It returns:
-*** - 0   : if the computation succeeded.
-*** - !0  : on error.
-+*/
+/* This routine fills the contents of the given
+** opaque target structure with the data provided
+** by the user. The source graph provided on input
+** is turned into a decomposition-defined target
+** architecture.
+** It returns:
+** - 0   : if the computation succeeded.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_archBuild0 (
 SCOTCH_Arch * const         archptr,              /*+ Target architecture to build    +*/
-const SCOTCH_Graph * const  grafptr,              /*+ Graph to turn into architecture +*/
+const SCOTCH_Graph * const  libgrafptr,           /*+ Graph to turn into architecture +*/
 const SCOTCH_Num            listnbr,              /*+ Number of elements in sublist   +*/
-const SCOTCH_Num * const    listptr,              /*+ Pointer to sublist              +*/
+const SCOTCH_Num * const    listtab,              /*+ Pointer to sublist              +*/
 const SCOTCH_Strat * const  stratptr)             /*+ Bipartitoning strategy          +*/
 {
   Strat *             bipstratptr;
-  VertList            graflistdat;
-  VertList *          graflistptr;
+  Gnum *              graflisttab;
+  CONTEXTDECL        (libgrafptr);
   int                 o;
 
   if ((sizeof (SCOTCH_Num) != sizeof (Gnum)) ||
@@ -155,34 +131,36 @@ const SCOTCH_Strat * const  stratptr)             /*+ Bipartitoning strategy    
   if (*((Strat **) stratptr) == NULL)             /* Set default mapping strategy if necessary */
     *((Strat **) stratptr) = stratInit (&bgraphbipartststratab, "(m{vert=50,low=h{pass=10},asc=f{move=100,bal=0.1}}f{move=100,bal=0.05})(/((load0=load)|(load0=0))?x;)");
   bipstratptr = *((Strat **) stratptr);
-  if (bipstratptr->tabl != &bgraphbipartststratab) {
+  if (bipstratptr->tablptr != &bgraphbipartststratab) {
     errorPrint (STRINGIFY (SCOTCH_archBuild0) ": not a bipartitioning strategy");
     return (1);
   }
 
-  if ((listnbr == ((Graph *) grafptr)->vertnbr) || (listnbr == 0) || (listptr == NULL))
-    graflistptr = NULL;
-  else {
-    graflistptr = &graflistdat;
-    graflistdat.vnumnbr = (Gnum)   listnbr;
-    graflistdat.vnumtab = (Gnum *) listptr;
+  if (CONTEXTINIT (libgrafptr) != 0) {
+    errorPrint (STRINGIFY (SCOTCH_archBuild0) ": cannot initialize context");
+    return     (1);
   }
 
-  o = archDecoArchBuild ((Arch * const) archptr, (const Graph * const) grafptr, graflistptr, bipstratptr);
+  graflisttab = ((listnbr == 0) || (listtab == NULL)) ? NULL : (Gnum *) listtab;
 
+o = archDecoArchBuild ((Arch * const) archptr, (Graph *) CONTEXTGETOBJECT (libgrafptr), (Gnum) listnbr, graflisttab, bipstratptr, CONTEXTGETDATA (libgrafptr));
+
+  CONTEXTEXIT (libgrafptr);
   return (o);
 }
 
 int
 SCOTCH_archBuild2 (
 SCOTCH_Arch * const         archptr,              /*+ Target architecture to build    +*/
-const SCOTCH_Graph * const  grafptr,              /*+ Graph to turn into architecture +*/
+const SCOTCH_Graph * const  libgrafptr,           /*+ Graph to turn into architecture +*/
 const SCOTCH_Num            vnumnbr,              /*+ Number of elements in sublist   +*/
 const SCOTCH_Num * const    vnumtab)              /*+ Pointer to sublist              +*/
 {
   Gnum                vertnbr;
   Gnum                listnbr;
   Gnum *              listtab;
+  CONTEXTDECL        (libgrafptr);
+  int                 o;
 
   if ((sizeof (SCOTCH_Num) != sizeof (Gnum)) ||
       (sizeof (SCOTCH_Num) != sizeof (Anum))) {
@@ -190,7 +168,12 @@ const SCOTCH_Num * const    vnumtab)              /*+ Pointer to sublist        
     return (1);
   }
 
-  vertnbr = ((Graph *) grafptr)->vertnbr;
+  if (CONTEXTINIT (libgrafptr) != 0) {
+    errorPrint (STRINGIFY (SCOTCH_archBuild2) ": cannot initialize context");
+    return     (1);
+  }
+
+  vertnbr = ((Graph *) CONTEXTGETOBJECT (libgrafptr))->vertnbr;
   if ((vnumnbr == vertnbr) || (vnumnbr == 0) || (vnumtab == NULL)) {
     listnbr = vertnbr;
     listtab = NULL;
@@ -200,7 +183,10 @@ const SCOTCH_Num * const    vnumtab)              /*+ Pointer to sublist        
     listtab = (Gnum *) vnumtab;
   }
 
-  return (archDeco2ArchBuild ((Arch * const) archptr, (const Graph * const) grafptr, listnbr, listtab));
+  o = archDeco2ArchBuild ((Arch * const) archptr, (Graph *) CONTEXTGETOBJECT (libgrafptr), listnbr, listtab, CONTEXTGETDATA (libgrafptr));
+
+  CONTEXTEXIT (libgrafptr);
+  return (o);
 }
 
 int

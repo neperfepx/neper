@@ -63,169 +63,6 @@ ol_set_free (struct OL_SET *pOSet)
 }
 
 // REVISE to use net_ori_file
-int
-ol_set_fscanf (FILE * file, struct OL_SET *pSet, char *format)
-{
-  size_t i;
-  double *e = ol_e_alloc ();
-  int size, test, firstline_nbw, whole_nbw;
-  char *format2 = ut_alloc_1d_char (100);
-
-  // checking the number of string on the first line
-  // can be 1, 3 or 4.
-  ut_file_nextlinenbwords (file, &firstline_nbw);
-  whole_nbw = ut_file_nbwords_pointer (file);
-
-  /* required because size_t cannot be scanf (???) neither
-     with %u nor with %zu with -pedantic (ISO C90) */
-  /* adding 'z' is suggested on
-     http://manpages.ubuntu.com/manpages/jaunty/man3/scanf.3.html */
-
-  if (firstline_nbw == 2)
-  {
-    test = fscanf (file, "%d%s", &size, format2);
-
-    (*pSet).size = (unsigned int) size;
-    if (test != 2)
-      return 0;
-  }
-  else if (firstline_nbw == 3)
-  {
-    (*pSet).size = whole_nbw / 3;
-    strcpy (format2, "rodrigues");
-  }
-  else if (firstline_nbw == 4)
-  {
-    (*pSet).size = whole_nbw / 4;
-    strcpy (format2, "e,w");
-  }
-  else if (firstline_nbw == 5)
-  {
-    (*pSet).size = whole_nbw / 5;
-    strcpy (format2, "id,e,w");
-  }
-  else
-    return 0;
-
-  if (format)
-    strcpy (format, format2);
-
-  (*pSet) = ol_set_alloc ((*pSet).size, "cubic");
-
-  for (i = 0; i < (*pSet).size; i++)
-  {
-    if (!strcmp (format2, "e"))
-    {
-      ol_e_fscanf (file, e);
-      ol_e_q (e, (*pSet).q[i]);
-    }
-    else if (!strcmp (format2, "e,w"))
-    {
-      ol_e_fscanf (file, e);
-      ol_e_q (e, (*pSet).q[i]);
-      if (fscanf (file, "%lf", &((*pSet).weight[i])) != 1)
-        return -1;
-    }
-    else if (!strcmp (format2, "id,e,w"))
-    {
-      if (fscanf (file, "%d", &((*pSet).id[i])) != 1)
-        return -1;
-      ol_e_fscanf (file, e);
-      ol_e_q (e, (*pSet).q[i]);
-      if (fscanf (file, "%lf", &((*pSet).weight[i])) != 1)
-        return -1;
-    }
-    else if (!strcmp (format2, "id,e"))
-    {
-      if (fscanf (file, "%d", &((*pSet).id[i])) != 1)
-        return -1;
-      ol_e_fscanf (file, e);
-      ol_e_q (e, (*pSet).q[i]);
-    }
-    else
-      abort ();
-  }
-
-  ol_e_free (e);
-  ut_free_1d_char (&format2);
-
-  return 1;
-}
-
-int
-ol_set_fscanf_sample (FILE * file, double factor, struct OL_SET *pSet,
-                      char *format)
-{
-  /* needed for -O3 opti */
-  struct OL_SET Setb = ol_set_alloc (1, NULL);
-
-  ol_set_fscanf (file, &Setb, format);
-  ol_set_sample (Setb, factor, pSet);
-  ol_set_free (&Setb);
-
-  return 1;
-}
-
-int
-ol_set_fscanf_sample_nb (FILE * file, int nb, struct OL_SET *pSet,
-                         char *format)
-{
-  /* needed for -O3 opti */
-  struct OL_SET Setb = ol_set_alloc (1, NULL);
-
-  ol_set_fscanf (file, &Setb, format);
-  ol_set_sample_nb (Setb, nb, pSet);
-  ol_set_free (&Setb);
-
-  return 1;
-}
-
-int
-ol_set_fprintf (FILE * file, struct OL_SET Set, char *format)
-{
-  unsigned int i;
-  int test;
-  double *e = ol_e_alloc ();
-  char *fmt = ut_alloc_1d_char (4 * strlen (format) + 10);
-  int id, weight;
-
-  test = -1;
-
-  id = ut_array_1d_int_eltpos (Set.id, Set.size, 0) == -1 ? 0 : 1;
-
-  weight = 0;
-  for (i = 0; i < Set.size; i++)
-    if (fabs (Set.weight[i] - 1) > 1e-6)
-    {
-      weight = 1;
-      break;
-    }
-
-  if (id == 0 && weight == 0)
-  {
-    sprintf (fmt, "%s %s %s\n", format, format, format);
-    for (i = 0; i < Set.size; i++)
-    {
-      ol_q_e (Set.q[i], e);
-      test = fprintf (file, fmt, e[0], e[1], e[2]);
-    }
-  }
-  else
-  {
-    sprintf (fmt, "%%d %s %s %s %s\n", format, format, format, format);
-    for (i = 0; i < Set.size; i++)
-    {
-      ol_q_e (Set.q[i], e);
-      test = fprintf (file, fmt, Set.id[i], e[0], e[1], e[2], Set.weight[i]);
-    }
-  }
-
-  ol_e_free (e);
-  ut_free_1d_char (&fmt);
-
-  return test;
-}
-
 void
 ol_set_subset (struct OL_SET Set1, double factor, struct OL_SET *pSet2)
 {
@@ -243,6 +80,8 @@ ol_set_subset (struct OL_SET Set1, double factor, struct OL_SET *pSet2)
   (*pSet2).q = ut_alloc_2d (qty, 4);
   (*pSet2).weight = ut_alloc_1d (qty);
   (*pSet2).id = ut_alloc_1d_int (qty);
+  (*pSet2).theta = Set1.theta ? ut_alloc_1d (qty) : NULL;
+  (*pSet2).theta3 = Set1.theta3 ? ut_alloc_1d_pdouble (qty) : NULL;
 
   id = (int) (factorinv * .5 - .5);
   while (id < Set1.size)
@@ -250,9 +89,24 @@ ol_set_subset (struct OL_SET Set1, double factor, struct OL_SET *pSet2)
     ol_q_memcpy (Set1.q[id], (*pSet2).q[(*pSet2).size]);
     (*pSet2).weight[(*pSet2).size] = Set1.weight[id];
     (*pSet2).id[(*pSet2).size] = Set1.id[id];
+    if (Set1.theta)
+      (*pSet2).theta[(*pSet2).size] = Set1.theta[id];
+    if (Set1.theta3 && Set1.theta3[id])
+    {
+      (*pSet2).theta3[(*pSet2).size] = ut_alloc_1d (3);
+      ut_array_1d_memcpy (Set1.theta3[id], 3, (*pSet2).theta3[(*pSet2).size]);
+    }
     (*pSet2).size++;
     id = (int) (factorinv * ((*pSet2).size + 0.5) - 0.5);
   }
+
+  return;
+}
+
+void
+ol_set_subset_qty (struct OL_SET Set1, int qty, struct OL_SET *pSet2)
+{
+  ol_set_subset (Set1, qty / (double) Set1.size, pSet2);
 
   return;
 }
@@ -263,7 +117,7 @@ ol_set_orthotropic (struct OL_SET Set1, struct OL_SET *pSet2)
   unsigned int i, j, id;
   double **qsym = ut_alloc_2d (3, 4);
 
-  (*pSet2) = ol_set_alloc (Set1.size * 4, (*pSet2).crysym);
+  (*pSet2) = ol_set_alloc (Set1.size * 4, Set1.crysym);
 
   id = 0;
   for (i = 0; i < Set1.size; i++)
@@ -272,12 +126,11 @@ ol_set_orthotropic (struct OL_SET Set1, struct OL_SET *pSet2)
     ol_q_refsym (Set1.q[i], 2, qsym[1]);
     ol_q_refsym (qsym[0], 2, qsym[2]);
 
-    ol_q_memcpy (Set1.q[i], (*pSet2).q[id++]);
-    for (j = 0; j < 3; j++)
+    for (j = 0; j < 4; j++)
     {
-      ol_q_memcpy (qsym[j], (*pSet2).q[id]);
-      (*pSet2).weight[id] = Set1.weight[id];
-      (*pSet2).id[id] = Set1.id[id];
+      ol_q_memcpy (j == 0 ? Set1.q[i] : qsym[j - 1], (*pSet2).q[id]);
+      (*pSet2).weight[id] = Set1.weight[i];
+      (*pSet2).id[id] = Set1.id[i];
       id++;
     }
   }
@@ -344,6 +197,12 @@ ol_set_cat (struct OL_SET* OSets, int SetQty, struct OL_SET *pOSet)
       (*pOSet).theta = ut_alloc_1d (size);
       break;
     }
+  for (i = 0; i < SetQty; i++)
+    if (OSets[i].theta3)
+    {
+      (*pOSet).theta3 = ut_alloc_1d_pdouble (size);
+      break;
+    }
 
   id = 0;
   for (i = 0; i < SetQty; i++)
@@ -353,6 +212,11 @@ ol_set_cat (struct OL_SET* OSets, int SetQty, struct OL_SET *pOSet)
       (*pOSet).weight[id] = OSets[i].weight[j];
       if (OSets[i].theta)
         (*pOSet).theta[id] = OSets[i].theta[j];
+      if (OSets[i].theta3 && OSets[i].theta3[j])
+      {
+        (*pOSet).theta3[id] = ut_alloc_1d (3);
+        ut_array_1d_memcpy (OSets[i].theta3[j], 3, (*pOSet).theta3[id]);
+      }
       (*pOSet).id[id] = OSets[i].id[j];
       id++;
     }
@@ -384,6 +248,17 @@ ol_set_shuf (struct OL_SET *pOSet, int random)
     (*pOSet).weight[i] = OSetCpy.weight[id[i]];
     if (OSetCpy.id)
       (*pOSet).id[i] = OSetCpy.id[id[i]];
+    if (OSetCpy.theta)
+      (*pOSet).theta[i] = OSetCpy.theta[id[i]];
+    if (OSetCpy.theta3)
+    {
+      ut_free_1d (&(*pOSet).theta3[i]);
+      if (OSetCpy.theta3[id[i]])
+      {
+        (*pOSet).theta3[i] = ut_alloc_1d (3);
+        ut_array_1d_memcpy (OSetCpy.theta3[id[i]], 3, (*pOSet).theta3[i]);
+      }
+    }
   }
 
   gsl_rng_free (r);

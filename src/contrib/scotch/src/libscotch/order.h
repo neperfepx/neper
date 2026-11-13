@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2018,2023-2025 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -34,6 +34,7 @@
 /**   NAME       : order.h                                 **/
 /**                                                        **/
 /**   AUTHOR     : Francois PELLEGRINI                     **/
+/**                Clement BARTHELEMY                      **/
 /**                                                        **/
 /**   FUNCTION   : This module contains the data           **/
 /**                declarations for the generic ordering   **/
@@ -49,28 +50,52 @@
 /**                                 to   : 04 nov 2010     **/
 /**                # Version 6.0  : from : 08 may 2018     **/
 /**                                 to   : 06 jun 2018     **/
+/**                # Version 7.0  : from : 26 apr 2021     **/
+/**                                 to   : 17 jan 2025     **/
 /**                                                        **/
 /************************************************************/
-
-#define ORDER_H
 
 /*
 **  The defines.
 */
+
+#define SCOTCH_ORDER_H
 
 /*+ Ordering option flags. +*/
 
 #define ORDERNONE                   0x0000        /* No options set                 */
 #define ORDERFREEPERI               0x0001        /* Free inverse permutation array */
 
-/*+ Column block separation tree cell flags.
-    The ORDERCBLKNEDI value must correspond
-    to a single bit and be equal to the
-    DORDERCBLKNEDI value.                    +*/
+/*+ Column block tree cell flags.
+    They must be the same as the
+    distributed column block tree flags.
+    These flags must be separate bits, so
+    that values can be or-ed (notably with
+    ORDERCBLKLEAF in hdgraphOrderNd().
+    ORDERCBLKNEDI corresponds to a nested
+    dissection node. If the node has a
+    separator (3 sub-blocks), the father of
+    the leftmost two blocks is the last one;
+    if is has no separator (2 sub-blocks), the
+    father of the two sub-blocks is the father
+    of the node (like ORDERCBLKDICO).
+    ORDERCBLKDICO corresponds to a set of
+    disconnected components; the father of
+    the two sub-blocks is the father of the
+    node.
+    ORDERCBLKSEQU corresponds to a sequential
+    node: each sub-block is the father of its
+    left neighbor.
+    ORDERCBLKLEAF corresponds to a leaf node
+    in the elimination tree, i.e., the node
+    should not have sub-nodes (save when
+    or-ed with other flags).                   +*/
 
-#define ORDERCBLKOTHR               0x0000        /*+ Other ordering node              +*/
+#define ORDERCBLKNONE               0x0000        /*+ Not yet assigned                 +*/
 #define ORDERCBLKNEDI               0x0001        /*+ Nested dissection separator node +*/
 #define ORDERCBLKDICO               0x0002        /*+ Disconnected components node     +*/
+#define ORDERCBLKSEQU               0x0004        /*+ Sequentially dependent node      +*/
+#define ORDERCBLKLEAF               0x0008        /*+ Leaf node                        +*/
 
 /*
 **  The type and structure definitions.
@@ -102,31 +127,34 @@ typedef struct OrderCblk_ {
     values are based from baseval.               +*/
 
 typedef struct Order_ {
-  int                       flagval;              /*+ Flag value                          +*/
-  Gnum                      baseval;              /*+ Base value for structures           +*/
-  Gnum                      vnodnbr;              /*+ Number of node vertices             +*/
-  Gnum                      treenbr;              /*+ Number of column block tree nodes   +*/
-  Gnum                      cblknbr;              /*+ Number of column blocks             +*/
-  OrderCblk                 cblktre;              /*+ Root of column block tree           +*/
-  Gnum *                    peritab;              /*+ Inverse permutation array [vnodnbr] +*/
+  int                       flagval;              /*+ Flag value                               +*/
+  Gnum                      baseval;              /*+ Base value for structures                +*/
+  Gnum                      vnodnbr;              /*+ Number of node vertices                  +*/
+  Gnum                      treenbr;              /*+ Number of column block tree nodes        +*/
+  Gnum                      cblknbr;              /*+ Number of column blocks                  +*/
+  OrderCblk                 rootdat;              /*+ Root of column block tree                +*/
+  Gnum *                    peritab;              /*+ Inverse permutation array [vnodnbr]      +*/
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_t           mutedat;              /*+ Local mutex for counter and link updates +*/
+#endif /* SCOTCH_PTHREAD */
 } Order;
 
 /*
 **  The function prototypes.
 */
 
-#ifdef ORDER
+#ifdef SCOTCH_ORDER
 static void                 orderExit2          (OrderCblk * const, const Gnum);
 static void                 orderRang2          (Gnum ** const, Gnum * const, const OrderCblk * const);
 static void                 orderTree2          (Gnum * restrict const, Gnum * restrict const, const OrderCblk * restrict const, Gnum);
-#endif /* ORDER */
+#endif /* SCOTCH_ORDER */
 
 int                         orderInit           (Order * const, const Gnum, const Gnum, Gnum * const);
 void                        orderExit           (Order * const);
 int                         orderLoad           (Order * restrict const, const Gnum * restrict const, FILE * restrict const);
 int                         orderSave           (const Order * restrict const, const Gnum * restrict const, FILE * restrict const);
-int                         orderSaveMap        (const Order * const, const Gnum * restrict const, FILE * restrict const);
-int                         orderSaveTree       (const Order * const, const Gnum * restrict const, FILE * restrict const);
+int                         orderSaveMap        (const Order * restrict const, const Gnum * restrict const, FILE * restrict const);
+int                         orderSaveTree       (const Order * restrict const, const Gnum * restrict const, FILE * restrict const);
 void                        orderPeri           (const Gnum * const, const Gnum, const Gnum, Gnum * const, const Gnum);
 void                        orderRang           (const Order * const, Gnum * const);
 void                        orderTree           (const Order * restrict const, Gnum * restrict const);

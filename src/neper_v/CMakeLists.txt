@@ -24,11 +24,14 @@ add_library(neper_v
 ./nev_print/nev_print_show/nev_print_show_tess/nev_print_show_tess1.c
 ./nev_print/nev_print_show/nev_print_show_tesr/nev_print_show_tesr1.c
 ./nev_print/nev_print_show/nev_print_show_mesh/nev_print_show_mesh1.c
+  ./nev_print/nev_print_show/nev_print_show_mesh/nev_print_show_mesh2.c
 ./nev_print/nev_print_show/nev_print_show_point/nev_print_show_point1.c
 ./nev_print/nev_print_show/nev_print_show1.c
+./nev_print/nev_print_show/nev_print_show2.c
 ./neper_v.c
 ./nev_load/nev_load1.c
 ./nev_print/nev_print_data/nev_print_data1.c
+./nev_print/nev_print_data/nev_print_data2.c
 ./nev_print/nev_print_data/nev_print_data_tess/nev_print_data_tess1.c
 ./nev_print/nev_print_data/nev_print_data_tess/nev_print_data_tess2.c
 ./nev_print/nev_print_data/nev_print_data_tesr/nev_print_data_tesr1.c
@@ -62,7 +65,12 @@ add_library(neper_v
 ./nev_print/nev_print_real/nev_print_real_png/nev_print_real_png_mesh/nev_print_real_png_mesh_3d/nev_print_real_png_mesh_3d1.c
 ./nev_print/nev_print_real/nev_print_real_png/nev_print_real_png_mesh/nev_print_real_png_mesh_3d/nev_print_real_png_mesh_3d2.c
 ./nev_print/nev_print_real/nev_print_real_png/nev_print_real_png_mesh/nev_print_real_png_mesh_3d/nev_print_real_png_mesh_3d3.c
+./nev_print/nev_print_real/nev_print_real_png/nev_print_real_png_mesh/nev_print_real_png_mesh_co/nev_print_real_png_mesh_co1.c
+./nev_print/nev_print_real/nev_print_real_png/nev_print_real_png_mesh/nev_print_real_png_mesh_co/nev_print_real_png_mesh_co2.c
+./nev_print/nev_print_real/nev_print_real_png/nev_print_real_png_mesh/nev_print_real_png_mesh_co/nev_print_real_png_mesh_co3.c
 ./nev_print/nev_print_real/nev_print_real_png/nev_print_real_png_tess/nev_print_real_png_tess1.c
+./nev_print/nev_print_real/nev_print_real_png/nev_print_real_png_tess/nev_print_real_png_tess2.c
+./nev_print/nev_print_real/nev_print_real_png/nev_print_real_png_tess/nev_print_real_png_tess3.c
 ./nev_print/nev_print_real/nev_print_real_png/nev_print_real_png_tesr/nev_print_real_png_tesr1.c
 ./nev_print/nev_print_real/nev_print_real_png/nev_print_real_png_point/nev_print_real_png_point1.c
 ./nev_print/nev_print_scale/nev_print_scale1.c

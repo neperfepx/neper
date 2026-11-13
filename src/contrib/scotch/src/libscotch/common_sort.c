@@ -1,17 +1,16 @@
-/* This file is part of the Scotch distribution. It does
-** not have the standard Scotch header with the INRIA & co.
-** copyright notice because it is a very slight adaptation
-** of the qsort routine of glibc 2.4, taylored to match
-** Scotch needs. As Scotch is distributed according to the
-** CeCILL-C license, which is LGPL-compatible, no further
-** notices are required. Hence, this "common_sort.c" file
-** is distributed according the terms of the LGPL, see
-** copyright notice just below.
+/* This file is part of the Scotch distribution.
+** It does not include the standard Scotch header because it is a very
+** slight adaptation of the qsort routine of glibc 2.4, taylored to
+** match Scotch needs.
+** Consequently, this file is distributed according to the terms of
+** the GNU LGPL, see copyright notice below.
 */
 
 /* Copyright (C) 1991,1992,1996,1997,1999,2004 Free Software Foundation, Inc.
-   This file is part of the GNU C Library.
+   This file is extracted from the GNU C Library.
    Written by Douglas C. Schmidt (schmidt@ics.uci.edu).
+   Modifications (C) 2005 IPB, Universite de Bordeaux, INRIA & CNRS
+   Modified by Francois Pellegrini (francois.pellegrini@u-bordeaux.fr).
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -32,11 +31,8 @@
    Engineering a sort function; Jon Bentley and M. Douglas McIlroy;
    Software - Practice and Experience; Vol. 23 (11), 1249-1265, 1993.  */
 
-#ifndef MAX_THRESH
-
-#define MAX_THRESH 6
-
-#define max_thresh                  (MAX_THRESH * INTSORTSIZE) /* Variable turned into constant */
+#ifndef STACK_NODE_DEFINED
+#define STACK_NODE_DEFINED
 
 /* Stack node declarations used to store unfulfilled partition obligations. */
 typedef struct
@@ -44,6 +40,14 @@ typedef struct
     char *lo;
     char *hi;
   } stack_node;
+
+#endif /* STACK_NODE_DEFINED */
+
+#ifndef MAX_THRESH
+
+#define MAX_THRESH 6
+
+#define max_thresh                  (MAX_THRESH * INTSORTSIZE) /* Variable turned into constant */
 
 /* The next 4 #defines implement a very fast in-line stack abstraction. */
 /* The stack needs log (total_elements) entries (we could even subtract
@@ -128,12 +132,11 @@ const INT                   total_elems)          /*+ Number of entries to sort 
 	  if (INTSORTCMP ((void *) mid, (void *) lo))
 	    INTSORTSWAP (mid, lo);
 	  if (INTSORTCMP ((void *) hi, (void *) mid))
-	    INTSORTSWAP (mid, hi);
-	  else
-	    goto jump_over;
-	  if (INTSORTCMP ((void *) mid, (void *) lo))
-	    INTSORTSWAP (mid, lo);
-	jump_over:;
+	    {
+	      INTSORTSWAP (mid, hi);
+	      if (INTSORTCMP ((void *) mid, (void *) lo))
+		INTSORTSWAP (mid, lo);
+	    }
 
 	  left_ptr  = lo + INTSORTSIZE;
 	  right_ptr = hi - INTSORTSIZE;
@@ -251,3 +254,10 @@ const INT                   total_elems)          /*+ Number of entries to sort 
       }
   }
 }
+
+#undef MAX_THRESH
+#undef max_thresh
+#undef STACK_SIZE
+#undef PUSH
+#undef POP
+#undef STACK_NOT_EMPTY

@@ -13,7 +13,7 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess, int dtess,
   struct TESS *pTess = Tess + tessid;
   struct SEEDSET *pSSet = SSet + tessid;
 
-  net_polys_tess (Tess[dtess].Level + 1, TOpt.SSet, tessid, TOpt.Poly, pTess);
+  net_tess3d_tess (Tess[dtess].Level + 1, TOpt.SSet, tessid, TOpt.Poly, pTess);
 
   if (TOpt.aspratio)
     neut_tess_scale (pTess, TOpt.aspratio[0], TOpt.aspratio[1],

@@ -33,9 +33,10 @@
 /**                                                        **/
 /**   NAME       : arch_dist.h                             **/
 /**                                                        **/
-/**   AUTHOR     : Sebastien FOURESTIER (v6.0)             **/
+/**   AUTHOR     : Francois PELLEGRINI                     **/
+/**                Sebastien FOURESTIER (v6.0)             **/
 /**                                                        **/
-/**   FUNCTION   : These lines are the data declaration    **/
+/**   FUNCTION   : These lines are the data declarations   **/
 /**                for the distance multiplicator pseudo-  **/
 /**                architecture functions. This pseudo-    **/
 /**                architecture is used by graph reparti-  **/
@@ -44,6 +45,8 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 28 may 2018     **/
+/**                # Version 7.0  : from : 19 feb 2018     **/
+/**                                 to   : 19 feb 2018     **/
 /**                                                        **/
 /************************************************************/
 
@@ -92,9 +95,6 @@ int                         archDistDomLoad     (const ArchDist * const, ArchDom
 int                         archDistDomSave     (const ArchDist * const, const ArchDom * const, FILE * const);
 int                         archDistDomBipart   (const ArchDist * const, const ArchDom * const, ArchDom * restrict const, ArchDom * restrict const);
 int                         archDistDomIncl     (const ArchDist * const, const ArchDom * const, const ArchDom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archDistDomMpiType  (const ArchDist * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 #endif /* ARCH_DIST_H_PROTO */
 #endif /* ARCH_NOPROTO      */

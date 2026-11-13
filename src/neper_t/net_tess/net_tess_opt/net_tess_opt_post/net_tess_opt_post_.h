@@ -9,7 +9,7 @@
 
 #include"ut.h"
 #include"neut_t.h"
-#include"net_tess/net_tess3d/net_tesl/net_tesl.h"
+#include"net_tess/net_tess3d/net_tess3d_tess/net_tess3d_tess.h"
 #include"net_tess/net_tess3d/net_tess3d_domain/net_tess3d_domain.h"
 #include"net_tess/net_tess3d/net_tess3d_periodic/net_tess3d_periodic.h"
 

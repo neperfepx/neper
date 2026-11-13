@@ -25,8 +25,8 @@ jobs:
       - name: Install Sphinx
         run: pip install "sphinx<8"
 
-      - name: Install Read the Docs theme for Sphinx
-        run: pip install sphinx-rtd-theme
+      - name: Install the Sphinx theme
+        run: pip install pydata-sphinx-theme==0.17.1
 
       - name: Build the documentation
         working-directory: doc
@@ -37,4 +37,18 @@ jobs:
         with:
           name: documentation
           path: doc/build/html
+          retention-days: ${{ github.event.repository.private && 1 || 7 }}
+
+      # (the developer documentation, dev/, is on devel only, not on main)
+      - name: Build the developer documentation
+        if: hashFiles('dev/conf.py') != ''
+        working-directory: dev
+        run: make html
+
+      - name: Upload the developer documentation
+        if: hashFiles('dev/conf.py') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: developer-documentation
+          path: dev/build/html
           retention-days: ${{ github.event.repository.private && 1 || 7 }}

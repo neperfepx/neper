@@ -56,14 +56,11 @@ extern void net_tess_opt_init_current (struct TOPT *pTOpt);
 extern void net_tess_opt_init_bounds (struct TOPT *pTOpt);
 extern void net_tess_opt_init_bounds_seeds (struct TOPT *pTOpt);
 extern void net_tess_opt_init_bounds_ori (struct TOPT *pTOpt);
-extern void net_tess_opt_init_bounds_crystal (struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_parms_objective (char *distribobjective,
 					       struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_parms_algo (struct IN_T, int level, struct MTESS MTess, struct TESS *Tess, int dtess, int dcell, struct TOPT *pTOpt);
-extern void net_tess_opt_init_parms_algomaxiter (struct IN_T, int level, struct TOPT *pTOpt);
-
 extern void net_tess_opt_init_target_bin (double xmin, double xmax,
 					  double mean, int ptqty, double *x);
 

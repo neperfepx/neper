@@ -33,8 +33,8 @@ extern void neut_mesh_fscanf_msh_physical (FILE *file, struct MESH *pMesh0D,
 
 extern void neut_mesh_fscanf_msh_orientations (FILE *file, char *entity, char *version, struct MESH *pMesh);
 extern void neut_mesh_fscanf_msh_groups (FILE *file, struct MESH *pMesh);
-extern void neut_mesh_fscanf_msh_nsets (FILE *file);
-extern void neut_mesh_fscanf_msh_fasets (FILE *file, struct MESH *pMesh);
+extern void neut_mesh_fscanf_msh_nsets (FILE *file, int *node_nbs, struct NSET *pNSet);
+extern void neut_mesh_fscanf_msh_fasets (FILE *file, char *version, int *node_nbs, struct MESH *pMesh, struct MESH *pMesh3D, struct MESH *pMeshFasets);
 extern void neut_mesh_fscanf_msh_nodeparts (FILE *file, struct NODES *pNodes);
 
 extern void neut_mesh_fscanf_msh_crysym (FILE *file, struct NODES *pNodes, struct MESH *pMesh0D,

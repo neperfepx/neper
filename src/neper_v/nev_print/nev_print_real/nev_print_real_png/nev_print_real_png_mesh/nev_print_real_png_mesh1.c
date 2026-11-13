@@ -14,6 +14,8 @@ nev_print_real_png_mesh (FILE * file, struct PRINT Print, struct TESS Tess,
   nev_print_real_png_mesh_3d (file, Print, Nodes, Mesh, NodeData, MeshData,
                      &printelt3dface);
 
+  nev_print_real_png_mesh_co (file, Print, Mesh, NodeData, MeshData);
+
   nev_print_real_png_mesh_2d (file, Print, Nodes, Mesh, NodeData, MeshData);
 
   nev_print_real_png_mesh_1d (file, Print, Tess, Nodes, Mesh, NodeData, MeshData);
@@ -21,6 +23,8 @@ nev_print_real_png_mesh (FILE * file, struct PRINT Print, struct TESS Tess,
   nev_print_real_png_mesh_0d (file, Print, Mesh, NodeData, MeshData);
 
   nev_print_real_png_mesh_nodes (file, Print, Nodes, Mesh, NodeData);
+
+  ut_free_2d_int (&printelt3dface, Mesh[3].EltQty + 1);
 
   return;
 }

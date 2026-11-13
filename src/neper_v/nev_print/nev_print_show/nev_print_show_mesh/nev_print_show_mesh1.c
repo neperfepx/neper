@@ -23,6 +23,8 @@ nev_print_show_mesh_elt (char *entity_in, char *expr, struct TESS *pTess,
     strcpy (entity, "elt2d");
   else if (!strcmp (entity_in, "elt3d"))
     strcpy (entity, "elt3d");
+  else if (!strcmp (entity_in, "eltco"))
+    strcpy (entity, "eltco");
   else if (!strcmp (entity_in, "elt"))
     sprintf (entity, "elt%dd", neut_mesh_array_dim (Mesh));
   else
@@ -50,6 +52,11 @@ nev_print_show_mesh_elt (char *entity_in, char *expr, struct TESS *pTess,
   {
     qty = Mesh[3].EltQty;
     pshowarray = &((*pPrint).showelt3d);
+  }
+  else if (!strcmp (entity, "eltco"))
+  {
+    qty = Mesh[4].EltQty;
+    pshowarray = &((*pPrint).showeltco);
   }
   else
     abort ();
@@ -98,11 +105,11 @@ nev_print_show_mesh_elt (char *entity_in, char *expr, struct TESS *pTess,
 
 void
 nev_print_show_mesh_nodes (char *expr, struct TESS *pTess,
-                     struct NODES Nodes, struct MESH *Mesh,
+                     struct NODES Nodes, struct MESH *Mesh, struct NSET NSet,
                      struct PRINT *pPrint)
 {
-  int i, j, status, varqty = 0;
-  char **vars = NULL;
+  int i, j, status, varqty = 0, **nsetnode = NULL;
+  char **vars = NULL, *expr2 = NULL;
   double *vals = NULL;
 
   (*pPrint).shownode =
@@ -112,13 +119,21 @@ nev_print_show_mesh_nodes (char *expr, struct TESS *pTess,
 
   if (status != 0)
   {
-    ut_math_vars (expr, &vars, &varqty);
+    nev_print_show_mesh_nodes_nset (expr, NSet, Nodes.NodeQty, &expr2, &nsetnode);
+
+    ut_math_vars (expr2, &vars, &varqty);
     vals = ut_alloc_1d (varqty);
 
     for (i = 1; i <= Nodes.NodeQty; i++)
     {
       for (j = 0; j < varqty; j++)
       {
+        if (!strncmp (vars[j], "nset_", 5))
+        {
+          vals[j] = nsetnode[atoi (vars[j] + 5)][i];
+          continue;
+        }
+
         status = neut_mesh_var_val_one (Nodes, Mesh, pTess,
                                         (*pPrint).showelt0d,
                                         (*pPrint).showelt1d,
@@ -130,7 +145,7 @@ nev_print_show_mesh_nodes (char *expr, struct TESS *pTess,
       }
 
       status =
-        ut_math_eval_int (expr, varqty, vars, vals,
+        ut_math_eval_int (expr2, varqty, vars, vals,
                           &((*pPrint).shownode[i]));
       if (status)
         ut_print_exprbug (expr);
@@ -140,6 +155,9 @@ nev_print_show_mesh_nodes (char *expr, struct TESS *pTess,
   (*pPrint).shownode[0] =
     ut_array_1d_int_sum ((*pPrint).shownode + 1, Nodes.NodeQty);
 
+  if (nsetnode)
+    ut_free_2d_int (&nsetnode, NSet.qty + 1);
+  ut_free_1d_char (&expr2);
   ut_free_2d_char (&vars, varqty);
   ut_free_1d (&vals);
 
@@ -167,6 +185,8 @@ nev_print_show_mesh_elset (char *entity_in, char *expr, struct TESS *pTess,
     strcpy (entity, "elset2d");
   else if (!strcmp (entity_in, "elset3d"))
     strcpy (entity, "elset3d");
+  else if (!strcmp (entity_in, "elsetco"))
+    strcpy (entity, "elsetco");
   else if (!strcmp (entity_in, "elset"))
     sprintf (entity, "elset%dd", neut_mesh_array_dim (Mesh));
   else
@@ -204,10 +224,19 @@ nev_print_show_mesh_elset (char *entity_in, char *expr, struct TESS *pTess,
     pshowelset = &((*pPrint).showelset3d);
     pshowelt = &((*pPrint).showelt3d);
   }
+  else if (!strcmp (entity, "elsetco"))
+  {
+    elsets = Mesh[4].Elsets;
+    elsetqty = Mesh[4].ElsetQty;
+    EltQty = Mesh[4].EltQty;
+    pshowelset = &((*pPrint).showelsetco);
+    pshowelt = &((*pPrint).showeltco);
+  }
   else
     abort ();
 
-  (*pshowelset) = ut_alloc_1d_int (elsetqty + 1);
+  (*pshowelset) = ut_realloc_1d_int ((*pshowelset), elsetqty + 1);
+  ut_array_1d_int_zero ((*pshowelset), elsetqty + 1);
   (*pshowelt) = ut_realloc_1d_int ((*pshowelt), EltQty + 1);
   ut_array_1d_int_zero ((*pshowelt), EltQty + 1);
 

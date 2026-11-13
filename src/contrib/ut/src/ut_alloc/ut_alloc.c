@@ -43,7 +43,7 @@ ut_alloc_1d_int (unsigned int size)
 unsigned int *
 ut_alloc_1d_uint (unsigned int size)
 {
-  unsigned int *array = calloc (size, sizeof (int));
+  unsigned int *array = calloc (size, sizeof (unsigned int));
   ut_alloc_check (array, size);
 
   return array;
@@ -52,7 +52,7 @@ ut_alloc_1d_uint (unsigned int size)
 unsigned short *
 ut_alloc_1d_ushort (unsigned int size)
 {
-  unsigned short *array = calloc (size, sizeof (int));
+  unsigned short *array = calloc (size, sizeof (unsigned short));
   ut_alloc_check (array, size);
 
   return array;
@@ -70,7 +70,7 @@ ut_alloc_1d_char (unsigned int size)
 unsigned char *
 ut_alloc_1d_uchar (unsigned int size)
 {
-  unsigned char *array = calloc (size, sizeof (int));
+  unsigned char *array = calloc (size, sizeof (unsigned char));
   ut_alloc_check (array, size);
 
   return array;
@@ -159,7 +159,7 @@ ut_alloc_1d_ppushort (unsigned int size)
 {
   unsigned int i;
 
-  unsigned short ***array = calloc (size, sizeof (int **));
+  unsigned short ***array = calloc (size, sizeof (unsigned short **));
   ut_alloc_check (array, size);
   for (i = 0; i < size; i++)
     array[i] = NULL;
@@ -172,7 +172,7 @@ ut_alloc_1d_ppuchar (unsigned int size)
 {
   unsigned int i;
 
-  unsigned char ***array = calloc (size, sizeof (int **));
+  unsigned char ***array = calloc (size, sizeof (unsigned char **));
   ut_alloc_check (array, size);
   for (i = 0; i < size; i++)
     array[i] = NULL;
@@ -284,12 +284,12 @@ unsigned int **
 ut_alloc_2d_uint (unsigned int size1, unsigned int size2)
 {
   unsigned int i;
-  unsigned int **array = calloc (size1, sizeof (int *));
+  unsigned int **array = calloc (size1, sizeof (unsigned int *));
   ut_alloc_check (array, size1);
 
   for (i = 0; i < size1; i++)
   {
-    array[i] = calloc (size2, sizeof (int));
+    array[i] = calloc (size2, sizeof (unsigned int));
     ut_alloc_check (array[i], size2);
   }
 
@@ -640,11 +640,16 @@ ut_alloc_4d (unsigned int size1, unsigned int size2, unsigned int size3,
 int *
 ut_realloc_1d_int (int *array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (int));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (int));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 int *
@@ -656,33 +661,41 @@ ut_realloc_1d_int_zero (int *array, unsigned int size, unsigned int zero)
     abort ();
 
   array = ut_realloc_1d_int (array, size);
-  if (size == 0)
-    free (array);
 
   for (i = 0; i < zero; i++)
     array[size - 1 - i] = 0;
 
-  return size ? array : NULL;
+  return array;
 }
 
 unsigned short *
 ut_realloc_1d_ushort (unsigned short *array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (unsigned short));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (unsigned short));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 unsigned char *
 ut_realloc_1d_uchar (unsigned char *array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (unsigned char));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (unsigned char));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 double *
@@ -694,61 +707,91 @@ ut_realloc_1d (double *array, unsigned int size)
 double *
 ut_realloc_1d_double (double *array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (double));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (double));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 char *
 ut_realloc_1d_char (char *array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (char));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (char));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 int **
 ut_realloc_1d_pint (int **array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (int *));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (int *));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 unsigned short **
 ut_realloc_1d_pushort (unsigned short **array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (unsigned short *));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (unsigned short *));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 unsigned char **
 ut_realloc_1d_puchar (unsigned char **array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (unsigned char *));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (unsigned char *));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 char **
 ut_realloc_1d_pchar (char **array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (char *));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (char *));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 char **
@@ -765,7 +808,7 @@ ut_realloc_1d_pchar_null (char **array, unsigned int size, unsigned int null)
     for (i = 0; i < null; i++)
       array[size - 1 - i] = NULL;
 
-  return size ? array : NULL;
+  return array;
 }
 
 char ***
@@ -782,7 +825,7 @@ ut_realloc_1d_ppchar_null (char ***array, unsigned int size, unsigned int null)
     for (i = 0; i < null; i++)
       array[size - 1 - i] = NULL;
 
-  return size ? array : NULL;
+  return array;
 }
 
 int **
@@ -799,7 +842,7 @@ ut_realloc_1d_pint_null (int **array, unsigned int size, unsigned int null)
     for (i = 0; i < null; i++)
       array[size - 1 - i] = NULL;
 
-  return size ? array : NULL;
+  return array;
 }
 
 int ***
@@ -816,17 +859,22 @@ ut_realloc_1d_ppint_null (int ***array, unsigned int size, unsigned int null)
     for (i = 0; i < null; i++)
       array[size - 1 - i] = NULL;
 
-  return size ? array : NULL;
+  return array;
 }
 
 double **
 ut_realloc_1d_pdouble (double **array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (double *));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (double *));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 double **
@@ -843,46 +891,67 @@ ut_realloc_1d_pdouble_null (double **array, unsigned int size, unsigned int null
     for (i = 0; i < null; i++)
       array[size - 1 - i] = NULL;
 
-  return size ? array : NULL;
+  return array;
 }
 
 double ***
 ut_realloc_1d_ppdouble (double ***array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (double **));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (double **));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 int ***
 ut_realloc_1d_ppint (int ***array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (int **));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (int **));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 char ***
 ut_realloc_1d_ppchar (char ***array, unsigned int size)
 {
-  array = realloc (array, size * sizeof (char **));
   if (size == 0)
+  {
     free (array);
+    return NULL;
+  }
 
-  return size ? array : NULL;
+  array = realloc (array, size * sizeof (char **));
+  ut_alloc_check (array, size);
+
+  return array;
 }
 
 int **
 ut_realloc_2d_int_addline (int **array, int size1, int size2)
 {
+  int i, isnull = !array;
+
   array = ut_realloc_1d_pint (array, size1);
+  // the previous lines are undefined if array was NULL
+  if (isnull)
+    for (i = 0; i < size1 - 1; i++)
+      array[i] = NULL;
   array[size1 - 1] = ut_alloc_1d_int (size2);
 
-  return size1 ? array : NULL;
+  return array;
 }
 
 int **
@@ -904,7 +973,13 @@ ut_realloc_2d_int_size2 (int **array, int size1, int size2_before,
 unsigned short **
 ut_realloc_2d_ushort_addline (unsigned short **array, int size1, int size2)
 {
+  int i, isnull = !array;
+
   array = ut_realloc_1d_pushort (array, size1);
+  // the previous lines are undefined if array was NULL
+  if (isnull)
+    for (i = 0; i < size1 - 1; i++)
+      array[i] = NULL;
   array[size1 - 1] = ut_alloc_1d_ushort (size2);
 
   return array;
@@ -913,7 +988,13 @@ ut_realloc_2d_ushort_addline (unsigned short **array, int size1, int size2)
 unsigned char **
 ut_realloc_2d_uchar_addline (unsigned char **array, int size1, int size2)
 {
+  int i, isnull = !array;
+
   array = ut_realloc_1d_puchar (array, size1);
+  // the previous lines are undefined if array was NULL
+  if (isnull)
+    for (i = 0; i < size1 - 1; i++)
+      array[i] = NULL;
   array[size1 - 1] = ut_alloc_1d_uchar (size2);
 
   return array;
@@ -928,7 +1009,13 @@ ut_realloc_2d_addline (double **array, int size1, int size2)
 double **
 ut_realloc_2d_double_addline (double **array, int size1, int size2)
 {
+  int i, isnull = !array;
+
   array = ut_realloc_1d_pdouble (array, size1);
+  // the previous lines are undefined if array was NULL
+  if (isnull)
+    for (i = 0; i < size1 - 1; i++)
+      array[i] = NULL;
   array[size1 - 1] = ut_alloc_1d (size2);
 
   return array;
@@ -937,7 +1024,13 @@ ut_realloc_2d_double_addline (double **array, int size1, int size2)
 char **
 ut_realloc_2d_char_addline (char **array, int size1, int size2)
 {
+  int i, isnull = !array;
+
   array = ut_realloc_1d_pchar (array, size1);
+  // the previous lines are undefined if array was NULL
+  if (isnull)
+    for (i = 0; i < size1 - 1; i++)
+      array[i] = NULL;
   array[size1 - 1] = ut_alloc_1d_char (size2);
 
   return array;
@@ -1005,7 +1098,13 @@ double ***
 ut_realloc_3d_double_addarray (double ***array, int size1, int size2,
                                int size3)
 {
+  int i, isnull = !array;
+
   array = ut_realloc_1d_ppdouble (array, size1);
+  // the previous lines are undefined if array was NULL
+  if (isnull)
+    for (i = 0; i < size1 - 1; i++)
+      array[i] = NULL;
   array[size1 - 1] = ut_alloc_2d (size2, size3);
 
   return array;
@@ -1014,7 +1113,13 @@ ut_realloc_3d_double_addarray (double ***array, int size1, int size2,
 int ***
 ut_realloc_3d_int_addarray (int ***array, int size1, int size2, int size3)
 {
+  int i, isnull = !array;
+
   array = ut_realloc_1d_ppint (array, size1);
+  // the previous lines are undefined if array was NULL
+  if (isnull)
+    for (i = 0; i < size1 - 1; i++)
+      array[i] = NULL;
   array[size1 - 1] = ut_alloc_2d_int (size2, size3);
 
   return array;
@@ -1027,7 +1132,8 @@ ut_alloc_2d_contig (unsigned int size1, unsigned int size2)
 
   /* allocate chunk: size1 times the pointer, size1 * size2 times the value */
   double **array =
-    malloc (size1 * sizeof (double *) + size1 * size2 * sizeof (double));
+    malloc (size1 * sizeof (double *) + (size_t) size1 * size2 * sizeof (double));
+  ut_alloc_check (array, size1 * size2);
 
   /* calculate pointer to first row: point directly behind the pointers,
    * then cast */
@@ -1054,7 +1160,8 @@ ut_alloc_2d_contig_long (unsigned int size1, unsigned int size2)
 
   /* allocate chunk: size1 times the pointer, size1 * size2 times the value */
   long **array =
-    malloc (size1 * sizeof (long *) + size1 * size2 * sizeof (long));
+    malloc (size1 * sizeof (long *) + (size_t) size1 * size2 * sizeof (long));
+  ut_alloc_check (array, size1 * size2);
 
   /* calculate pointer to first row: point directly behind the pointers,
    * then cast */
@@ -1078,5 +1185,5 @@ void
 ut_alloc_check (void *ptr, int size)
 {
   if (size > 0 && !ptr)
-    ut_print_message (2, 0, "memory allocation failed! (%d)\n");
+    ut_print_message (2, 0, "memory allocation failed! (%d)\n", size);
 }

@@ -11,5 +11,6 @@
 
 #include"nem_sort.h"
 
-extern void nem_sort_nodes (struct IN_M In, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh);
+extern void nem_sort_nodes (struct IN_M In, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh,
+                            struct NSET *NSet);
 extern void nem_sort_elts (struct IN_M In, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh);

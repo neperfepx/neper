@@ -96,14 +96,15 @@ int
 ut_mat_inverse_22 (double **m, double **minv)
 {
   double det = ut_mat_det_22 (m);
+  double m00 = m[0][0], m01 = m[0][1], m10 = m[1][0], m11 = m[1][1];
 
   if (fabs (det) < 1e-6)
     return -1;
 
-  minv[0][0] = m[1][1] / det;
-  minv[0][1] = -m[0][1] / det;
-  minv[1][0] = -m[1][0] / det;
-  minv[1][1] = m[0][0] / det;
+  minv[0][0] = m11 / det;
+  minv[0][1] = -m01 / det;
+  minv[1][0] = -m10 / det;
+  minv[1][1] = m00 / det;
 
   return 0;
 }
@@ -112,6 +113,15 @@ int
 ut_mat_inverse_33 (double **m, double **minv)
 {
   double det = ut_mat_det_33 (m);
+  double **mcpy = NULL;
+
+  if (fabs (det) < 1e-15)
+    return -1;
+
+  // copy, in case m and minv are the same
+  mcpy = ut_alloc_2d (3, 3);
+  ut_array_2d_memcpy (m, 3, 3, mcpy);
+  m = mcpy;
 
   minv[0][0] = (m[1][1] * m[2][2] - m[2][1] * m[1][2]);
   minv[0][1] = -(m[1][0] * m[2][2] - m[2][0] * m[1][2]);
@@ -128,6 +138,8 @@ ut_mat_inverse_33 (double **m, double **minv)
   ut_mat_transpose (minv, 3, 3, minv);
 
   ut_array_2d_scale (minv, 3, 3, 1 / det);
+
+  ut_free_2d (&mcpy, 3);
 
   return 0;
 }
@@ -172,6 +184,9 @@ ut_mat_eigen (double **A, int size, double *eval, double **evect)
     ut_array_1d_memcpy (eval2, size, eval);
   if (evect)
     ut_array_2d_memcpy (evect2, size, size, evect);
+
+  ut_free_2d (&evect2, size);
+  ut_free_1d (&eval2);
 
   return;
 }
@@ -500,12 +515,12 @@ ut_mat_inverse (double **mat, int n, double **inv)
 
 #else
   if (n == 2)
-    ut_mat_inverse_22 (mat, inv);
+    return ut_mat_inverse_22 (mat, inv);
   else if (n == 3)
-    ut_mat_inverse_33 (mat, inv);
+    return ut_mat_inverse_33 (mat, inv);
   else
     ut_print_messagewnc (2, 72,
-                         "ut_mat_inverse for n>3 not available since ut has been compiled without gsl.\n");
+                         "ut_mat_inverse for n>3 not available since ut has been compiled without gsl.");
 #endif
 
   return 0;
@@ -515,7 +530,7 @@ void
 ut_mat_svd (double **A, int M, int N, double **U, double **S, double **V)
 {
   int i;
-  double **AAt = NULL, **AtA = NULL;
+  double **AAt = NULL, **AtA = NULL, **tmp = NULL;
   double **At = ut_alloc_2d (N, M);
   double *L = ut_alloc_1d (ut_num_max (M, N));
 
@@ -529,22 +544,26 @@ ut_mat_svd (double **A, int M, int N, double **U, double **S, double **V)
     ut_free_2d (&AAt, M);
   }
 
-  if (V)
+  if (V || (S && !U))
   {
     AtA = ut_alloc_2d (N, N);
+    tmp = ut_alloc_2d (N, N);
     ut_mat_product (At, N, M, A, M, N, AtA);
-    ut_mat_eigen (AtA, N, L, V);
+    ut_mat_eigen (AtA, N, L, tmp);
+    if (V)
+      ut_array_2d_memcpy (tmp, N, N, V);
     ut_free_2d (&AtA, N);
+    ut_free_2d (&tmp, N);
   }
 
   if (S)
   {
     ut_array_2d_zero (S, M, N);
     for (i = 0; i < ut_num_min (M, N); i++)
-      S[i][i] = sqrt (L[i]);
+      S[i][i] = ut_num_sqrt (L[i]);
   }
 
-  ut_free_2d (&At, M);
+  ut_free_2d (&At, N);
   ut_free_1d (&L);
 
   return;
@@ -702,6 +721,7 @@ ut_mat_polar (double **A, int size1, int size2, double **Q, double **S)
 
   ut_free_2d (&At, size2);
   ut_free_2d (&AtA, size2);
+  ut_free_2d (&Sinv, size2);
 
   return;
 }

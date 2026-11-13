@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2008,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -42,14 +42,14 @@
 /**                                 to   : 05 mar 2003     **/
 /**                # Version 5.1  : from : 09 nov 2008     **/
 /**                                 to   : 09 nov 2008     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define VMESH
 
 #include "module.h"
 #include "common.h"
@@ -67,7 +67,7 @@
 /* This routine frees the contents
 ** of the given active mesh.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -87,7 +87,7 @@ Vmesh * const               meshptr)
 /* This routine moves all of the mesh
 ** elements to the first part.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void

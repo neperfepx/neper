@@ -1,4 +1,4 @@
-/* Copyright 2019,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2019,2020,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,14 +41,14 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 28 dec 2019     **/
 /**                                 to   : 09 jan 2020     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 21 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -63,12 +63,12 @@
 /*                                  */
 /************************************/
 
-/*+ This routine dumps the given graph on the form
-*** of C source code, using a prefix and a suffix.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine dumps the given graph on the form
+** of C source code, using a prefix and a suffix.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphDump (

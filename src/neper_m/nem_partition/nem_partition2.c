@@ -7,73 +7,18 @@
 #ifdef HAVE_LIBSCOTCH
 
 void
-nem_partition_init (struct IN_M In, SCOTCH_Arch * pArch, struct PART *pPart)
+nem_partition_init (struct IN_M In, struct PART *pPart)
 {
   char *format = ut_alloc_1d_char (10);
-  char **list = NULL;
-  FILE *file = NULL;
-  int qty = -1;
-  char *archfile = NULL;
 
   ut_string_format (In.partstring, format);
 
-  // partitioning
-  if (format[strlen (format) - 1] == 'd')
-  {
-    ut_string_string ("partitioning", &(*pPart).mode);
-    ut_string_int (In.partstring, &((*pPart).qty));
-  }
+  if (strcmp (format, "%d") || sscanf (In.partstring, "%d", &(*pPart).qty) != 1
+      || (*pPart).qty < 1)
+    ut_print_message (2, 2, "Option -part: `%s' is not a valid number of partitions.\n",
+                      In.partstring);
 
-  // mapping
-  else if (format[strlen (format) - 1] == 's')
-  {
-    ut_string_string ("mapping", &(*pPart).mode);
-    (*pPart).mapping = ut_alloc_1d_char (strlen (In.partstring) + 1);
-    strcpy ((*pPart).mapping, In.partstring);
-
-    ut_list_break (In.partstring, NEUT_SEP_DEP, &list, &qty);
-
-    // from an architecture file
-    if (qty == 1)
-    {
-      archfile = ut_alloc_1d_char (strlen (In.partstring) + 1);
-      strcpy (archfile, In.partstring);
-    }
-
-    // from an architecture file
-    else if (qty == 2)
-    {
-      int procqty, proccoreqty;
-      ut_string_int (list[0], &procqty);
-      ut_string_int (list[1], &proccoreqty);
-      archfile = ut_alloc_1d_char (14);
-      strcpy (archfile, "neperarch.tmp");
-
-      file = ut_file_open (archfile, "W");
-      nem_partition_writearch (file, procqty, proccoreqty, 10, 11, 99);
-      ut_file_close (file, archfile, "W");
-    }
-
-    else
-      ut_print_neperbug ();
-  }
-  else
-    ut_print_neperbug ();
-
-  if (!strcmp ((*pPart).mode, "mapping"))
-  {
-    file = ut_file_open (archfile, (qty == 1) ? "r" : "R");
-    SCOTCH_archLoad (pArch, file);
-    ut_file_close (file, archfile, (qty == 1) ? "r" : "R");
-    (*pPart).qty = SCOTCH_archSize (pArch);
-  }
-
-  if (qty == 2)
-    remove ("neperarch.tmp");
-
-  ut_free_1d_char (&archfile);
   ut_free_1d_char (&format);
-  ut_free_2d_char (&list, qty);
 
   return;
 }
@@ -108,8 +53,7 @@ nem_partition_prep (struct NODES *pNodes, struct MESH *Mesh,
 }
 
 void
-nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh,
-                     SCOTCH_Arch * pArch, struct NODES *pNodes,
+nem_partition_nodes (SCOTCH_Mesh * pSCMesh, struct NODES *pNodes,
                      struct MESH *Mesh, struct PART *pPart)
 {
   SCOTCH_Num *parttab;
@@ -117,10 +61,9 @@ nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh,
   int dim = neut_mesh_array_dim (Mesh);
   int eltnodeqty = neut_elt_nodeqty (Mesh[dim].EltType, Mesh[dim].Dimension,
                                      Mesh[dim].EltOrder);
-  int i, j, qty;
-  SCOTCH_Graph Graph;
+  int i;
+  SCOTCH_Graph Graph, *pGraph = &Graph;
   SCOTCH_Strat Strat;
-  int *node_nbs = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
   int *version = ut_alloc_1d_int (3);
 
   SCOTCH_stratInit (&Strat);
@@ -143,105 +86,62 @@ nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh,
                           "r{job=t,map=t,poli=S,sep=m{vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}|m{vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}}");
   }
 
-  parttab = ut_alloc_1d_int (Mesh[dim].EltQty * eltnodeqty * 2 + 2);
+  // SCOTCH_Num may be 32- or 64-bit, depending on the Scotch build
+  parttab = (SCOTCH_Num *) calloc (Mesh[dim].EltQty * eltnodeqty * 2 + 2,
+                                   sizeof (SCOTCH_Num));
 
-  if (!strcmp (In.partmethod, "scotch"))
-  {
-    SCOTCH_meshGraph (pSCMesh, &Graph);
+  SCOTCH_meshGraph (pSCMesh, &Graph);
 
-    if (!strcmp ((*pPart).mode, "partitioning"))
-      SCOTCH_graphPart (&Graph, (*pPart).qty, &Strat, parttab + 1);
-    else if (!strcmp ((*pPart).mode, "mapping"))
-      SCOTCH_graphMap (&Graph, pArch, &Strat, parttab + 1);
-  }
+  // Scotch >= 7 is multithreaded; it uses Neper's number of threads
+#if SCOTCH_VERSION >= 7
+  SCOTCH_Context Context;
+  SCOTCH_Graph ContextGraph;
+  int threadqty = 1;
+#ifdef HAVE_OPENMP
+  threadqty = omp_get_max_threads ();
+#endif
 
-  else if (!strcmp (In.partmethod, "linear"))
-    for (j = 1; j <= (*pNodes).NodeQty; j++)
-      parttab[j] = (*pPart).qty * (j - 1) / (*pNodes).NodeQty;
+  SCOTCH_contextInit (&Context);
+  SCOTCH_contextThreadSpawn (&Context, threadqty, NULL);
+  SCOTCH_graphInit (&ContextGraph);
+  SCOTCH_contextBindGraph (&Context, &Graph, &ContextGraph);
+  pGraph = &ContextGraph;
+#endif
 
-  else
-    ut_print_neperbug ();
+  SCOTCH_graphPart (pGraph, (*pPart).qty, &Strat, parttab + 1);
+
+#if SCOTCH_VERSION >= 7
+  SCOTCH_graphExit (&ContextGraph);
+  SCOTCH_contextExit (&Context);
+#endif
 
   (*pPart).node_parts = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
   (*pPart).node_parts[0] = (*pNodes).NodeQty;
-  ut_array_1d_int_memcpy (parttab + 1, (*pNodes).NodeQty,
-                          (*pPart).node_parts + 1);
-  ut_free_1d_int (&parttab);
-
-  /* renumbering nodes and elt nodes */
-  qty = 0;
-  for (i = 0; i < (*pPart).qty; i++)
-    for (j = 1; j <= (*pNodes).NodeQty; j++)
-      if ((*pPart).node_parts[j] == i)
-        node_nbs[j] = ++qty;
-  node_nbs[0] = (*pNodes).NodeQty;
-  ut_array_1d_int_sort ((*pPart).node_parts + 1, (*pNodes).NodeQty);
-
-  if (qty != (*pNodes).NodeQty)
-    ut_print_neperbug ();
-
-  neut_nodes_renumber_switch (pNodes, node_nbs);
-  for (i = 0; i <= dim; i++)
-    neut_mesh_nodes_switch (Mesh + i, node_nbs);
-  ut_array_1d_int_sort ((*pPart).node_parts + 1, (*pNodes).NodeQty);
-  /* end */
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+    (*pPart).node_parts[i] = (int) parttab[i];
+  free (parttab);
 
   for (i = 0; i < (*pPart).qty; i++)
     (*pPart).NodeQty[i] =
       ut_array_1d_int_valnb ((*pPart).node_parts + 1, (*pNodes).NodeQty, i);
 
-  ut_free_1d_int (&node_nbs);
   ut_free_1d_int (&version);
 
   return;
 }
 
 void
-nem_partition_elts (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh, struct PART *pPart)
+nem_partition_elts (struct NODES *pNodes, struct MESH *Mesh, struct PART *pPart)
 {
-  int i, j, qty, PartQty;
-  int **coms = ut_alloc_2d_int ((*pPart).qty, 2);
-  int *elt_nbs = NULL;
   int dim = neut_mesh_array_dim (Mesh);
 
   (*pPart).elt_parts = ut_alloc_1d_int (Mesh[dim].EltQty + 1);
   (*pPart).elt_parts[0] = Mesh[dim].EltQty;
   ut_array_1d_int_set ((*pPart).elt_parts + 1, Mesh[dim].EltQty, -1);
 
-  elt_nbs = ut_alloc_1d_int (Mesh[dim].EltQty + 1);
-
   ut_array_1d_int_zero ((*pPart).EltQty, (*pPart).qty);
 
-
-  if (!strcmp (In.partmethod, "scotch"))
-    nem_partition_elts_direct (Mesh, pPart);
-
-  else if (!strcmp (In.partmethod, "linear"))
-    nem_partition_elts_bynumber (Mesh, pPart);
-
-  else
-    abort ();
-
-  qty = 0;
-  for (i = 0; i < (*pPart).qty; i++)
-    for (j = 1; j <= Mesh[dim].EltQty; j++)
-      if ((*pPart).elt_parts[j] == i)
-        elt_nbs[j] = ++qty;
-  elt_nbs[0] = Mesh[dim].EltQty;
-
-  /* renumbering elts */
-  neut_mesh_elts_switch (Mesh + dim, elt_nbs);
-  ut_array_1d_int_sort ((*pPart).elt_parts + 1, Mesh[dim].EltQty);
-  /* end */
-
-  for (i = 1; i <= Mesh[dim].EltQty; i++)
-    if (neut_mesh_elt_isbound (Mesh[dim], i, (*pPart).node_parts))
-      neut_mesh_elt_coms (Mesh[dim], i, (*pPart).qty, (*pPart).node_parts,
-                          (*pPart).elt_parts, coms, &PartQty);
-
-  // reinitializing eltelset (brute force method)
-  if (Mesh[dim].EltElset != NULL)
-    neut_mesh_init_eltelset (Mesh + dim, NULL);
+  nem_partition_elts_direct (Mesh, pPart);
 
   Mesh[dim].PartQty = (*pPart).qty;
 
@@ -260,9 +160,6 @@ nem_partition_elts (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh, str
   ut_array_1d_int_addval ((*pNodes).NodePart + 1, (*pNodes).NodeQty, 1, (*pNodes).NodePart + 1);
 
   neut_nodes_init_parts (pNodes);
-
-  ut_free_2d_int (&coms, (*pPart).qty);
-  ut_free_1d_int (&elt_nbs);
 
   return;
 }

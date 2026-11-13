@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2020,2021,2023-2025 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -47,14 +47,14 @@
 /**                                 to   : 25 jul 2007     **/
 /**                # Version 6.1  : from : 18 jan 2020     **/
 /**                                 to   : 18 jan 2020     **/
+/**                # Version 7.0  : from : 26 apr 2021     **/
+/**                                 to   : 10 oct 2025     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HGRAPH_ORDER_BL
 
 #include "module.h"
 #include "common.h"
@@ -79,7 +79,7 @@
 
 int
 hgraphOrderBl (
-const Hgraph * restrict const             grafptr,
+Hgraph * restrict const                   grafptr,
 Order * restrict const                    ordeptr,
 const Gnum                                ordenum, /*+ Zero-based ordering number +*/
 OrderCblk * restrict const                cblkptr, /*+ Single column-block        +*/
@@ -90,10 +90,10 @@ const HgraphOrderBlParam * restrict const paraptr)
 
   if (paraptr->cblkmin <= 0) {
     errorPrint ("hgraphOrderBl: invalid minimum block size");
-    return     (1);
+    return (1);
   }
 
-  if (hgraphOrderSt (grafptr, ordeptr, ordenum, cblkptr, paraptr->strat) != 0) /* Perform ordering strategy */
+  if (hgraphOrderSt (grafptr, ordeptr, ordenum, cblkptr, paraptr->straptr) != 0) /* Perform ordering strategy */
     return (1);
 
   if (cblkptr->cblktab == NULL) {                 /* If single column block */
@@ -113,14 +113,14 @@ const HgraphOrderBlParam * restrict const paraptr)
 
     if ((cblkptr->cblktab = (OrderCblk *) memAlloc (cblksiz * sizeof (OrderCblk))) == NULL) {
       errorPrint ("hgraphOrderBl: out of memory");
-      return     (1);
+      return (1);
     }
 
     if (grafptr->s.velotax == NULL) {             /* For unweighted graphs, split blocks evenly */
       Gnum                cblknum;
 
       for (cblknum = 0; cblknum < cblksiz; cblknum ++) { /* No more column blocks than those allocated */
-        cblkptr->cblktab[cblknum].typeval = ORDERCBLKOTHR;
+        cblkptr->cblktab[cblknum].typeval = ORDERCBLKLEAF;
         cblkptr->cblktab[cblknum].vnodnbr = DATASIZE (grafptr->vnlosum, cblknbr, cblknum);
         cblkptr->cblktab[cblknum].cblknbr = 0;
         cblkptr->cblktab[cblknum].cblktab = NULL;
@@ -137,7 +137,7 @@ const HgraphOrderBlParam * restrict const paraptr)
       vnlomax =
       vnlosum = 0;
       vnodbas =
-      vnodnum = 0;
+      vnodnum = grafptr->s.baseval;
       cblknum =
       cblkidx = 0;
       do {                                        /* Go on filling column blocks    */
@@ -159,11 +159,11 @@ const HgraphOrderBlParam * restrict const paraptr)
         } while (vnlomax <= vnlosum);             /* Next bound must be higher than current state */
 
         do {                                      /* Accumulate weights until bound is reached */
-          vnlosum += grafptr->s.velotax[ordeptr->peritab[vnodnum]];
+          vnlosum += grafptr->s.velotax[vnodnum];
           vnodnum ++;
         } while (vnlosum < vnlomax);
 
-        cblkptr->cblktab[cblknum].typeval = ORDERCBLKOTHR; /* Build relevant column block */
+        cblkptr->cblktab[cblknum].typeval = ORDERCBLKLEAF; /* Build relevant column block */
         cblkptr->cblktab[cblknum].vnodnbr = vnodnum - vnodbas;
         cblkptr->cblktab[cblknum].cblknbr = 0;
         cblkptr->cblktab[cblknum].cblktab = NULL;
@@ -174,9 +174,16 @@ const HgraphOrderBlParam * restrict const paraptr)
       cblknbr = cblknum;                          /* Use effective number of blocks */
     }
 
+    cblkptr->typeval = ORDERCBLKSEQU;             /* Node becomes a sequence of blocks */
+    cblkptr->cblknbr = cblknbr;
+#ifdef SCOTCH_PTHREAD
+    pthread_mutex_lock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
     ordeptr->treenbr += cblknbr;                  /* That many more tree nodes    */
     ordeptr->cblknbr += cblknbr - 1;              /* That many more column blocks */
-    cblkptr->cblknbr  = cblknbr;
+#ifdef SCOTCH_PTHREAD
+    pthread_mutex_unlock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
   }
   else {                                          /* Block already partitioned */
     Gnum                cblknum;

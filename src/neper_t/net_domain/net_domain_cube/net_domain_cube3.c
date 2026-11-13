@@ -99,10 +99,10 @@ IniFaceEq (double **size, struct POLY *pDomain)
   (*pDomain).FaceEq = ut_alloc_2d (7, 4);
 
   // an outgoing vector would require scaling by -1
-  (*pDomain).FaceEq[1][1] = 1;
+  (*pDomain).FaceEq[1][1] = -1;
   (*pDomain).FaceEq[1][2] = 0;
   (*pDomain).FaceEq[1][3] = 0;
-  (*pDomain).FaceEq[1][0] = size[0][0];
+  (*pDomain).FaceEq[1][0] = -size[0][0];
 
   (*pDomain).FaceEq[2][1] = 1;
   (*pDomain).FaceEq[2][2] = 0;
@@ -111,9 +111,9 @@ IniFaceEq (double **size, struct POLY *pDomain)
 
   // an outgoing vector would require scaling by -1
   (*pDomain).FaceEq[3][1] = 0;
-  (*pDomain).FaceEq[3][2] = 1;
+  (*pDomain).FaceEq[3][2] = -1;
   (*pDomain).FaceEq[3][3] = 0;
-  (*pDomain).FaceEq[3][0] = size[1][0];
+  (*pDomain).FaceEq[3][0] = -size[1][0];
 
   (*pDomain).FaceEq[4][1] = 0;
   (*pDomain).FaceEq[4][2] = 1;
@@ -123,8 +123,8 @@ IniFaceEq (double **size, struct POLY *pDomain)
   // an outgoing vector would require scaling by -1
   (*pDomain).FaceEq[5][1] = 0;
   (*pDomain).FaceEq[5][2] = 0;
-  (*pDomain).FaceEq[5][3] = 1;
-  (*pDomain).FaceEq[5][0] = size[2][0];
+  (*pDomain).FaceEq[5][3] = -1;
+  (*pDomain).FaceEq[5][0] = -size[2][0];
 
   (*pDomain).FaceEq[6][1] = 0;
   (*pDomain).FaceEq[6][2] = 0;
@@ -165,30 +165,35 @@ IniFaceVerNb (struct POLY *pDomain)
 {
   (*pDomain).FaceVerNb = ut_alloc_2d_int (7, 5);
 
-  (*pDomain).FaceVerNb[1][1] = 4;
-  (*pDomain).FaceVerNb[1][2] = 6;
-  (*pDomain).FaceVerNb[1][3] = 5;
-  (*pDomain).FaceVerNb[1][4] = 1;
-  (*pDomain).FaceVerNb[2][1] = 2;
-  (*pDomain).FaceVerNb[2][2] = 8;
-  (*pDomain).FaceVerNb[2][3] = 7;
-  (*pDomain).FaceVerNb[2][4] = 3;
+  (*pDomain).FaceVerNb[1][1] = 1;
+  (*pDomain).FaceVerNb[1][2] = 5;
+  (*pDomain).FaceVerNb[1][3] = 6;
+  (*pDomain).FaceVerNb[1][4] = 4;
+
+  (*pDomain).FaceVerNb[2][1] = 3;
+  (*pDomain).FaceVerNb[2][2] = 7;
+  (*pDomain).FaceVerNb[2][3] = 8;
+  (*pDomain).FaceVerNb[2][4] = 2;
+
   (*pDomain).FaceVerNb[3][1] = 1;
-  (*pDomain).FaceVerNb[3][2] = 5;
+  (*pDomain).FaceVerNb[3][2] = 2;
   (*pDomain).FaceVerNb[3][3] = 8;
-  (*pDomain).FaceVerNb[3][4] = 2;
-  (*pDomain).FaceVerNb[4][1] = 4;
-  (*pDomain).FaceVerNb[4][2] = 3;
-  (*pDomain).FaceVerNb[4][3] = 7;
-  (*pDomain).FaceVerNb[4][4] = 6;
+  (*pDomain).FaceVerNb[3][4] = 5;
+
+  (*pDomain).FaceVerNb[4][1] = 6;
+  (*pDomain).FaceVerNb[4][2] = 7;
+  (*pDomain).FaceVerNb[4][3] = 3;
+  (*pDomain).FaceVerNb[4][4] = 4;
+
   (*pDomain).FaceVerNb[5][1] = 1;
-  (*pDomain).FaceVerNb[5][2] = 2;
+  (*pDomain).FaceVerNb[5][2] = 4;
   (*pDomain).FaceVerNb[5][3] = 3;
-  (*pDomain).FaceVerNb[5][4] = 4;
-  (*pDomain).FaceVerNb[6][1] = 5;
-  (*pDomain).FaceVerNb[6][2] = 6;
-  (*pDomain).FaceVerNb[6][3] = 7;
-  (*pDomain).FaceVerNb[6][4] = 8;
+  (*pDomain).FaceVerNb[5][4] = 2;
+
+  (*pDomain).FaceVerNb[6][1] = 8;
+  (*pDomain).FaceVerNb[6][2] = 7;
+  (*pDomain).FaceVerNb[6][3] = 6;
+  (*pDomain).FaceVerNb[6][4] = 5;
 
   return;
 }

@@ -1,21 +1,23 @@
 .. _visualize_tessellation:
 
-Visualizing a Tessellation
-==========================
+Visualizing a Tessellation (-V)
+===============================
 
-A tessellation can be visualized using the :ref:`neper_v`.  The entities to show can be specified, so as their size, transparency and other properties.  The crystals can also be visualized.  Advanced visualizations can be realized.
+.. note::
+
+  This tutorial presents the tessellation-related options of the :ref:`neper_v`.
+
+  To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :data:`--rcfile`)::
+
+    neper -V -imagesize 800:400
+
+A tessellation can be visualized using the :ref:`neper_v`.  The entities to show can be specified, as well as their size, transparency and other properties.  The crystals can also be visualized.  Advanced visualizations can be realized.
 
 A simple tessellation is used in this tutorial, which is generated using the command
 
 .. code-block:: console
 
-  $ neper -T -n 200 -morpho gg -oricrysym cubic -o n200
-
-.. note::
-
-  To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :option:`--rcfile`)::
-
-    neper -V -imagesize 800:400
+  $ neper -T -n 200 -morpho gg -crysym cubic -o n200
 
 Generating a Tessellation Image
 -------------------------------
@@ -33,7 +35,7 @@ This generates a PNG image named :file:`img1.png`.  By default, all cells and ed
 Showing Specific Entities
 -------------------------
 
-The entities to show can be specified using options :option:`-show*`, using any logical expression based on the :ref:`tessellation_keys` as arguments.  For instance, only some of the cells can be shown:
+The entities to show can be specified using options :data:`-show*`, using any logical expression based on the :ref:`tessellation_keys` as arguments.  For instance, only some of the cells can be shown:
 
 .. code-block:: console
 
@@ -53,55 +55,52 @@ The figure is not very clear, and only the domain edges can be added instead:
 
 .. code-block:: console
 
-  $ neper -V n200.tess -showcell "z<0.5" -showedge "cell_shown||domtype==1" -print img4
+  $ neper -V n200.tess -showcell "z<0.5" -showdomain 1 -print img4
 
 .. image:: visualize_tessellation/img4.png
 
-:data:`cell_shown` (or :data:`cell_shown==1`) selects edges for which at least one cell is shown, :data:`domtype==1` selects edges that belong to a domain edge, and :data:`||` is the logical :code:`OR`.
+The edges of the shown cells are shown, and :option:`-showdomain` shows the domain (as a wireframe), so that its shape remains visible.
 
-A logical expression can be arbitrarily complex.  For example, the following command only shows the cells that have a volume larger than average (0.005, for a 200-cell in a unit cube), have at least 20 faces and are interior to the domain:
+A logical expression can be arbitrarily complex.  For example, the following command only shows the cells that have a volume larger than average (0.005, for a 200-cell tessellation in a unit cube), have at least 20 faces and are interior to the domain:
 
 .. code-block:: console
 
-  $ neper -V n200.tess -showcell "(vol>0.005)&&(facenb>=20)&&(body>0)" -showedge "cell_shown||domtype==1" -print img5
+  $ neper -V n200.tess -showcell "(vol>0.005)&&(facenb>=20)&&(body>0)" -showdomain 1 -print img5
 
 .. image:: visualize_tessellation/img5.png
 
-It is also possible to fully hide the cells and visualize the tessellation based on the individual faces, edges, etc.:
+It is also possible to fully hide the cells and visualize the tessellation based on the individual faces, edges, etc. (:data:`face_shown` selects the edges of the shown faces):
 
 .. code-block:: console
 
-  $ neper -V n200.tess -showcell none -showface "z<0.5" -showedge "face_shown||domtype==1" -print img6
+  $ neper -V n200.tess -showcell none -showface "z<0.5" -showedge face_shown -showdomain 1 -print img6
 
 .. image:: visualize_tessellation/img6.png
 
-Faces appear in white by default, but can be assigned colored, as will be covered in the following.
+Faces appear in white by default, but can be colored, as will be covered in the following.
 
-The vertices can also be shown (as before, the domain edges are shown):
+The vertices can also be shown (as before, the domain is shown):
 
 .. code-block:: console
 
-  $ neper -V n200.tess -showcell none -showedge "domtype==1" -showver all -print img7
+  $ neper -V n200.tess -showcell none -showdomain 1 -showver all -print img7
 
 .. image:: visualize_tessellation/img7.png
 
-Finally, the crystals can be shown (as before, the domain edges are shown):
+Finally, the crystals can be shown (as before, the domain is shown):
 
 .. code-block:: console
 
-  $ neper -V n200.tess -showcell none -showcrystal all -showedge "domtype==1" -print img8
+  $ neper -V n200.tess -showcell none -showcrystal all -showdomain 1 -print img8
 
 .. image:: visualize_tessellation/img8.png
 
-By default, crystals are represented based on the cell crystal symmetry (as specified by option :option:`-oricrysym`), the cell size and the crystal orientations.
+By default, crystals are represented based on the cell crystal symmetry (as specified by option :option:`-crysym`), the cell size and the crystal orientations.
 
 Setting Color, Transparency, Size, etc.
 ---------------------------------------
 
-The way entities are represented can be specified using options :option:`-data*`.  The entities of a tessellation are the cells (which correspond to polyhedra in 3D and faces in 2D), polyhedra, faces, edges, vertices, seeds and crystals, and their properties include
-the color (options :option:`-data<entity>col`, :option:`-data<entity>colscheme` and :option:`-data<entity>scale` and :option:`-data<entity>scaletitle`),
-transparency (option :option:`-data<entity>trs`) and radius (or size) (option :option:`-data<entity>rad`).
-Similarly to the :option:`-show*` options, the :option:`-data*` options can take (mathematical) expressions as argument.
+The way entities are represented can be specified using options :data:`-data*`.  The entities of a tessellation are the cells (which correspond to polyhedra in 3D and faces in 2D), polyhedra, faces, edges, vertices, seeds and crystals, and their properties include the color (options :data:`-data<entity>col`, :data:`-data<entity>colscheme`, :data:`-data<entity>scale` and :data:`-data<entity>scaletitle`), transparency (option :data:`-data<entity>trs`) and radius (or size) (option :data:`-data<entity>rad`).  Similarly to the :data:`-show*` options, the :data:`-data*` options can take (mathematical) expressions as argument.
 
 Coloring Cells by Orientations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -147,19 +146,19 @@ The different integer values are assigned colors using a color palette (see :ref
 
 .. image:: visualize_tessellation/img12.png
 
-All cells are green, which represents effectively a value of 2 according to the color palette (see :ref:`color_map_for_integer_values`).
+All cells are green, which effectively represents a value of 2 according to the color palette (see :ref:`color_map_for_integer_values`).
 
 Other entities can be colored in the same way.  For example, to color the vertices from their cell numbers:
 
 .. code-block:: console
 
-  $ neper -V n200.tess -datavercol int:cellnb -dataverrad 0.02 -showcell "z<0.5" -showedge "cell_shown||domtype==1" -showver cell_shown -print img13
+  $ neper -V n200.tess -datavercol int:cellnb -dataverrad "default*4" -showcell "z<0.5" -showdomain 1 -showver cell_shown -print img13
 
 .. image:: visualize_tessellation/img13.png
 
 The image shows the vertices having 1, 2, 3 and 4 cells in red, green, blue and yellow, respectively.
 
-.. note:: In options :option:`-data*col`, the data type may be omitted if it can be determined from the data value, as in :data:`-datavercol cellnb`.
+.. note:: In options :data:`-data*col`, the data type may be omitted if it can be determined from the data value, as in :data:`-datavercol cellnb`.
 
 Coloring Entities from Real Values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -173,7 +172,7 @@ Cells can be colored from real values, for example from the cell equivalent diam
 
 .. image:: visualize_tessellation/img14.png
 
-This originally produces a PNG file named :file:`img14.png` for the map and a PNG file named :file:`img14-scale.png` for the scale bar, which is included to :file:`img14.png` thanks to :program:`convert`.
+This originally produces a PNG file named :file:`img14.png` for the map and a PNG file named :file:`img14-scale3.png` for the scale bar, which is included in :file:`img14.png` thanks to :program:`convert`.
 
 Again, mathematical expressions can be used:
 
@@ -184,7 +183,7 @@ Again, mathematical expressions can be used:
 
 .. image:: visualize_tessellation/img15.png
 
-The color key (see :ref:`color_map_for_real_values`) can be changed using option :option:`-datacellcolscheme`:
+The color key (see :ref:`color_map_for_real_values`) can be changed using option :data:`-datacellcolscheme`:
 
 .. code-block:: console
 
@@ -206,7 +205,7 @@ Crystals can be colored, for example, from the cell equivalent diameters:
 
 .. code-block:: console
 
-  $ neper -V n200.tess -showcell none -showcrystal all -datacrystalcol real:diameq -datacrystalscale 0.00:0.50 -datacrystalscaletitle "Equivalent diameter" -showedge "domtype==1" -print img18
+  $ neper -V n200.tess -showcell none -showcrystal all -datacrystalcol real:diameq -datacrystalscale 0.00:0.50 -datacrystalscaletitle "Equivalent diameter" -showdomain 1 -print img18
   $ convert img18.png img18-scalec.png -gravity East -composite img18.png
 
 .. image:: visualize_tessellation/img18.png
@@ -214,7 +213,7 @@ Crystals can be colored, for example, from the cell equivalent diameters:
 Making Entities Transparent
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The transparency level of entities can be specified using options :option:`-data<entity>trs`.  The transparency ranges from :data:`0` (fully opaque) to :data:`1` (fully transparent).  The example below uses semi-transparency to show the tessellation interior:
+The transparency level of entities can be specified using options :data:`-data<entity>trs`.  The transparency ranges from :data:`0` (fully opaque) to :data:`1` (fully transparent).  The example below uses semi-transparency to show the tessellation interior:
 
 .. code-block:: console
 
@@ -234,11 +233,11 @@ Again, this works for all entities.  For example, to show all interior faces col
 Changing the Entity Radius
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The radius of entities can by modified using options :option:`-data<entity>rad`, and this works for vertices, edges, seeds and crystals.  For example, to plot thick (and colored) edges:
+The radius of entities can be modified using options :data:`-data<entity>rad`, and this works for vertices, edges, seeds and crystals.  For example, to plot thick (and colored) edges:
 
 .. code-block:: console
 
-  $ neper -V n200.tess -dataedgerad 0.05 -dataedgecol id -print img21
+  $ neper -V n200.tess -dataedgerad "default*10" -dataedgecol id -print img21
 
 .. image:: visualize_tessellation/img21.png
 
@@ -258,7 +257,7 @@ Neper uses POV-Ray, a ray-tracing software, to generate the PNG images.  As such
 Camera Settings
 ^^^^^^^^^^^^^^^
 
-The camera position can be changed using option :option:`-cameracoo`, for example to produce orthogonal views - option :option:`-camerasky` may also be needed, to define the vertical direction, and option :option:`-cameraangle` sets the opening angle along the horizontal direction:
+The camera position can be changed using option :option:`-cameracoo`, for example to produce orthogonal views; option :option:`-camerasky` may also be needed, to define the vertical direction, and option :option:`-cameraangle` sets the opening angle along the horizontal direction:
 
 .. code-block:: console
 
@@ -271,7 +270,7 @@ The camera position can be changed using option :option:`-cameracoo`, for exampl
 
 .. note:: Several images can be generated in a single Neper command by using option :option:`-print` several times.
 
-The camera projection type can be specified using option :option:`-cameraprojection` - in 3D, the default is :data:`perspective`, but :data:`orthographic` is also available:
+The camera projection type can be specified using option :option:`-cameraprojection`; in 3D, the default is :data:`perspective`, but :data:`orthographic` is also available:
 
 .. code-block:: console
 
@@ -284,16 +283,16 @@ The orthographic projection keeps parallel lines parallel.
 Scene Settings
 ^^^^^^^^^^^^^^
 
-Shadowing can be turned on or off using option :option:`-showshadow`:
+Light effects can be set using options :option:`-lightambient`, :option:`-lightsource`, :option:`-lightdiffuse` and :option:`-lightreflection`.  They can be disabled as follows:
 
 .. code-block:: console
 
-  $ neper -V n200.tess -datacellcol real:diameq -datacellscale 0.00:0.50 -datacellscaletitle "Equivalent diameter" -sceneshadow 0 -print img25
+  $ neper -V n200.tess -datacellcol real:diameq -datacellscale 0.00:0.50 -datacellscaletitle "Equivalent diameter" -lightambient 1 -lightsource none -print img25
   $ convert img25.png img25-scale3.png -gravity East -composite img25.png
 
 .. image:: visualize_tessellation/img25.png
 
-While shadowing generally improves visualization, turning it off may be useful to render "true" colors, which closely match a color key.  Shadowing not only generates shadows between objects, but also affects the color of objects depending on their orientation with respect to the light source.
+While light effects generally improve visualization, turning them off may be useful to render "true" colors, which closely match a color key.  Light effects not only generate shadows between objects (when enabled in :option:`-lightsource`), but also affect the color of objects depending on their orientation with respect to the light sources.
 
 The background color of the scene can be specified using option :option:`-scenebackground` (see :ref:`colors`):
 

@@ -11,9 +11,6 @@ extern "C"
 			 int TessId, struct MTESS *pMTess,
 			 struct TESS *pTess);
 
-  extern void net_polys_tess (int level, struct SEEDSET SSet, int TessId,
-			      struct POLY *Poly, struct TESS *pTess);
-
 #ifdef __cplusplus
 }
 #endif

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2020,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,15 +44,14 @@
 /**                                 to   : 11 jun 2007     **/
 /**                # Version 6.0  : from : 23 jan 2020     **/
 /**                                 to   : 26 jan 2020     **/
+/**                # Version 7.0  : from : 12 sep 2019     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HMESH
-#define HMESH_INDUCE
 
 #include "module.h"
 #include "common.h"
@@ -145,7 +144,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
                      &indmeshptr->m.vnlotax, (size_t) ( indvnlonbr      * sizeof (Gnum)),
                      &indmeshptr->m.vnumtax, (size_t) ( orgvnodnbr      * sizeof (Gnum)), NULL) == NULL) {  /* vnumtab is of size vnohnbr */
     errorPrint ("hmeshInducePart: out of memory (1)");
-    return     (1);
+    return (1);
   }
   indmeshptr->m.verttax -= indmeshptr->m.baseval;
   indmeshptr->m.vendtax  = indmeshptr->m.verttax + 1; /* Compact array */
@@ -164,7 +163,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
                      &indvnuhtax, (size_t) ((orgvnspnbr + orgmeshptr->m.vnodnnd - orgmeshptr->vnohnnd) * sizeof (Gnum)), NULL) == NULL) {
     errorPrint ("hmeshInducePart: out of memory (2)"); /* Allocate induced mesh graph structure */
     hmeshExit  (indmeshptr);
-    return     (1);
+    return (1);
   }
   indedgetax -= indmeshptr->m.baseval;
   orgindxtax -= orgmeshptr->m.baseval;
@@ -187,7 +186,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
 #ifdef SCOTCH_DEBUG_HMESH2
   if ((indvnodnum - indmeshptr->m.vnodbas) != orgvnodnbr) {
     errorPrint ("hmeshInducePart: internal error (1)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_HMESH2 */
   memSet (orgindxtax + orgmeshptr->vnohnnd, ~0, (orgmeshptr->m.vnodnnd - orgmeshptr->vnohnnd) * sizeof (Gnum)); /* Pre-set halo node vertices */
@@ -212,7 +211,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
 #ifdef SCOTCH_DEBUG_HMESH2
       if (indvertnum >= indmeshptr->m.velmnnd) {  /* If too many element vertices kept                 */
         errorPrint ("hmeshInducePart: internal error (2)"); /* Maybe a problem with veisnbr or veihnbr */
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_HMESH2 */
 
@@ -237,7 +236,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
           if ((orgvertend < orgmeshptr->vnohnnd) &&
               (orgparttax[orgvertend] != 2)) {
             errorPrint ("hmeshInducePart: internal error (3)");
-            return     (1);
+            return (1);
           }
 #endif /* SCOTCH_DEBUG_HMESH2 */
           if (orgmeshptr->m.vnlotax != NULL) {
@@ -261,7 +260,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
 #ifdef SCOTCH_DEBUG_HMESH2
       if (indedgenum != indedhdnum) {
         errorPrint ("hmeshInducePart: internal error (4)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_HMESH2 */
       if (indedhdnum == indmeshptr->m.verttax[indvertnum]) /* If element has halo nodes only */
@@ -278,7 +277,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
 #ifdef SCOTCH_DEBUG_HMESH2
   if (indvertnum != (indvelmnbr + orgmeshptr->m.baseval)) {
     errorPrint ("hmeshInducePart: internal error (5)"); /* Maybe a problem with veisnbr or veihnbr */
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_HMESH2 */
 
@@ -315,7 +314,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
 #ifdef SCOTCH_DEBUG_HMESH2
       if (orgindxtax[orgvertend] == ~0) {
         errorPrint ("hmeshInducePart: internal error (6)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_HMESH2 */
       indedgetax[indedgenum ++] = orgindxtax[orgvertend];
@@ -323,6 +322,8 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
   }
 
   indmeshptr->enohnbr = indedgenum - indmeshptr->m.baseval;
+  indmeshptr->levlnum = orgmeshptr->levlnum + 1;
+  indmeshptr->contptr = orgmeshptr->contptr;
 
   for ( ; indvertnum < indmeshptr->m.vnodnnd; indvertnum ++) { /* For all halo induced node vertices */
     Gnum                orgvnodnum;
@@ -337,7 +338,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
       Gnum                orgvertend;
 
       orgvertend = orgmeshptr->m.edgetax[orgedgenum];
-      if (orgindxtax[orgvertend] != ~0) {       /* If end element belongs to right part */
+      if (orgindxtax[orgvertend] != ~0) {         /* If end element belongs to right part */
         indedgetax[indedgenum ++] = orgindxtax[orgvertend];
       }
     }
@@ -345,7 +346,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
 #ifdef SCOTCH_DEBUG_HMESH2
   if ((indedgenum - indmeshptr->m.baseval) != indedgenbr) {
     errorPrint ("hmeshInducePart: internal error (7)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_HMESH2 */
   indmeshptr->m.verttax[indvertnum] = indedgenum; /* Set end of edge array */
@@ -353,7 +354,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
   indmeshptr->m.vnodnnd = indvertnum;             /* Record number of induced non-element vertices */
   indmeshptr->m.vnodnbr = indvertnum - indmeshptr->m.vnodbas;
 
-  if (orgmeshptr->m.vnumtax != NULL) {          /* If source mesh is not original mesh */
+  if (orgmeshptr->m.vnumtax != NULL) {            /* If source mesh is not original mesh */
     for (indvnodnum = indmeshptr->m.vnodbas; indvnodnum < indmeshptr->vnohnnd; indvnodnum ++)
       indmeshptr->m.vnumtax[indvnodnum] = orgmeshptr->m.vnumtax[indmeshptr->m.vnumtax[indvnodnum] + (orgmeshptr->m.vnodbas - orgmeshptr->m.baseval)];
   }
@@ -365,7 +366,7 @@ Hmesh * restrict const            indmeshptr)     /* Pointer to induced halo sub
   if (hmeshCheck (indmeshptr) != 0) {             /* Check halo mesh consistency */
     errorPrint ("hmeshInducePart: inconsistent halo mesh data");
     hmeshExit  (indmeshptr);
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_HMESH2 */
 

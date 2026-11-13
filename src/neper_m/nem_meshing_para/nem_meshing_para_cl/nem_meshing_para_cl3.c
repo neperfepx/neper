@@ -59,3 +59,20 @@ nem_meshing_para_rcl2cl_ver (struct MESHPARA *pMeshPara, struct TESS Tess,
 
   return 0;
 }
+
+// nem_meshing_para_cl2rcl converts absolute cl values of entities to
+// relative values (the inverse of nem_meshing_para_rcl2cl*)
+int
+nem_meshing_para_cl2rcl (struct MESHPARA *pMeshPara, struct TESS Tess,
+                         char *entity, double *cl)
+{
+  int qty;
+  double fact;
+
+  neut_tess_entity_qty (Tess, entity, &qty);
+
+  rcl2cl (1, Tess.Dim, (*pMeshPara).cellsize, 1, (*pMeshPara).elttype, &fact);
+  ut_array_1d_scale (cl + 1, qty, 1 / fact);
+
+  return 0;
+}

@@ -7,8 +7,6 @@
 void
 neut_part_set_zero (struct PART *pPart)
 {
-  (*pPart).mode = NULL;
-  (*pPart).mapping = NULL;
   (*pPart).qty = 0;
 
   (*pPart).node_parts = NULL;

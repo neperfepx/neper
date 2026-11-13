@@ -54,7 +54,7 @@ nev_print_pf_ptsprint_density_odf (struct PF Pf,
 	}
     }
 
-    ol_vect_free (P);
+    ol_vect_free (&P);
   }
 
   sum = 0;
@@ -287,10 +287,7 @@ nev_print_pf_ptsprint_density_write (struct PF Pf, struct PRINT Print, FILE *fil
   char *filename2 = ut_string_addextension (basename, ".level");
   char *basecolor = NULL;
 
-  if (!strcmp (Print.colormode, "bright"))
-    ut_string_string ("black", &basecolor);
-  else
-    ut_string_string ("white", &basecolor);
+  ut_string_string ("black", &basecolor);
 
   nev_print_pf_ptsprint_density_write_data (Pf, filename2, ldensity);
 
@@ -407,8 +404,8 @@ nev_print_pf_ptsprint_density_write (struct PF Pf, struct PRINT Print, FILE *fil
     fprintf (file, "%g,", tickvals[i]); // g avoids failed tests associated to machine precision
   fprintf (file, "}, operator --), new pen[] {");
   for (i = 1; i < tickqty - 1; i++)
-    fprintf (file, "%s+linewidth(%f),", !strcmp (Print.colormode, "bright") ? "black" : "white", 0.5);
-  fprintf (file, "%s+linewidth(%f)});\n", !strcmp (Print.colormode, "bright") ? "black" : "white", 0.5);
+    fprintf (file, "%s+linewidth(%f),", "black", 0.5);
+  fprintf (file, "%s+linewidth(%f)});\n", "black", 0.5);
 
   ut_free_2d_char (&parts, partqty);
   ut_free_2d_char (&tmp, qty);
@@ -471,10 +468,7 @@ void
 nev_print_pf_ptsprint_density_write_mask (struct PRINT Print, FILE *file, struct PF Pf)
 {
   char *background = NULL;
-  if (!strcmp (Print.colormode, "bright"))
-    ut_string_string ("black", &background);
-  else
-    ut_string_string ("white", &background);
+  ut_string_string ("black", &background);
 
   if (!strcmp (Pf.space, "pf"))
   {

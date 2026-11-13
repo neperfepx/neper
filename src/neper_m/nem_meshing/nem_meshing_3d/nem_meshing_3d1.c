@@ -10,7 +10,7 @@ nem_meshing_3d (struct IN_M In, struct MESHPARA MeshPara, struct TESS *pTess,
 {
   int i, id, polyqty, *poly = NULL, qty;
   double allowed_t, max_elapsed_t = 0;
-  char *message = NULL;
+  char *message = NULL, *algos = NULL;
   struct MULTIM Multim;
   struct timeval ctrlc_t = { 0, 0 };
   struct NODES *N =
@@ -31,7 +31,9 @@ nem_meshing_3d (struct IN_M In, struct MESHPARA MeshPara, struct TESS *pTess,
     message = ut_alloc_1d_char (128);
 
     neut_multim_set_zero (&Multim);
-    neut_multim_init (3, In.mesh3dalgo, (*pTess).PolyQty, &Multim);
+    nem_meshing_3d_algos (In, &algos);
+    neut_multim_init (3, algos, (*pTess).PolyQty, &Multim);
+    ut_free_1d_char (&algos);
 
     Mesh[3] = neut_mesh_alloc (3, "tri", 1, 0, 0);
 
@@ -46,8 +48,9 @@ nem_meshing_3d (struct IN_M In, struct MESHPARA MeshPara, struct TESS *pTess,
       {
         id = poly[i];
 
-        nem_meshing_3d_poly (In, MeshPara.poly_cl[id],
-                             MeshPara.mesh3dclreps[id], &Multim, &ctrlc_t,
+        nem_meshing_3d_poly (In, MeshPara.poly_cl[id], log (MeshPara.poly_pl[id]),
+                             MeshPara.mesh3dclreps[id],
+                             &Multim, &ctrlc_t,
                              &allowed_t, &max_elapsed_t, (*pTess), pNodes, Mesh,
                              N + id, M + id, id);
 
@@ -57,6 +60,8 @@ nem_meshing_3d (struct IN_M In, struct MESHPARA MeshPara, struct TESS *pTess,
         if (In.mesh3dreport)
           nem_meshing_3d_report_poly (Multim, id);
       }
+
+    nem_mesh_gmsh_lib_stop ();
 
     // Recording poly mesh in global mesh
     for (i = 0; i < polyqty; i++)

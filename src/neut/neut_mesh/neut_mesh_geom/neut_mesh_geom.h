@@ -40,8 +40,8 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_mesh_elt_lengths (struct NODES Nodes, struct MESH Mesh,
-				     int elt, double *lengths);
+  extern int neut_mesh_elt_lengths (struct NODES Nodes, struct MESH Mesh,
+				    int elt, double *lengths);
 
 /// \brief Get the area of an elt of a 2D mesh.
 ///
@@ -251,12 +251,20 @@ extern "C"
   extern int neut_mesh_elset_Odis (struct NODES Nodes, struct MESH Mesh,
 				   int elset, char *Odisexpr, double *pOdis);
 
-/// \brief Get the Osize value of a mesh.
+/// \brief Get the Osize value of a mesh, for individual elt characteristic
+/// lengths (indexed from 1).
 ///
 /// See (CMAME, 2011) for the definition of Osize.
 ///
-  extern int neut_mesh_Osize (struct NODES Nodes, struct MESH Mesh, double cl,
-			      double *pOsize);
+  extern int neut_mesh_Osize_eltcl (struct NODES Nodes, struct MESH Mesh,
+                                    double *eltcl, double *pOsize);
+
+/// \brief Get the Osize value of a mesh, for the elt characteristic lengths
+/// given by the mesh size map of boundary nodes (their characteristic
+/// lengths increased by clgrad times the distance, up to cl).
+  extern int neut_mesh_Osize_sizemap (struct NODES Nodes, struct MESH Mesh,
+                                      struct NODES BNodes, double cl,
+                                      double clgrad, double *pOsize);
 
 /// \brief Get the angle between two sides of an elt at a particular node.
 ///

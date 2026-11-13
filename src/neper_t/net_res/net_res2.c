@@ -8,19 +8,15 @@ void
 net_res_sim (struct IN_T In, struct TESS Tess, struct TESR Tesr)
 {
   FILE *file = NULL;
-  struct SIM Sim;
-  char *simmsh = ut_alloc_1d_char (1000);
-  char *simtess = ut_alloc_1d_char (1000);
-  char *simtesr = ut_alloc_1d_char (1000);
+  char *body = NULL, *simtess = NULL, *simtesr = NULL;
 
-  neut_sim_set_zero (&Sim);
+  ut_file_removepath (In.body, &body);
 
   ut_dir_openmessage (In.sim, "w");
 
   if (!neut_tess_isvoid (Tess))
   {
-    neut_tess_sim (In.sim, Tess, &Sim);
-    sprintf (simtess, "%s/inputs/simulation.tess", In.sim);
+    ut_string_sprintf (&simtess, "%s/inputs/%s.tess", In.sim, body);
 
     file = ut_file_open (simtess, "W");
     neut_tess_fprintf (file, Tess);
@@ -29,21 +25,16 @@ net_res_sim (struct IN_T In, struct TESS Tess, struct TESR Tesr)
 
   if (!neut_tesr_isvoid (Tesr))
   {
-    neut_tesr_sim (In.sim, Tesr, &Sim);
-    sprintf (simtesr, "%s/inputs/simulation.tesr", In.sim);
+    ut_string_sprintf (&simtesr, "%s/inputs/%s.tesr", In.sim, body);
 
     file = ut_file_open (simtesr, "W");
     neut_tesr_fprintf (file, NULL, Tesr);
     ut_file_close (file, simtesr, "W");
   }
 
-  neut_sim_fprintf (In.sim, Sim, "W");
-
   ut_dir_closemessage (In.sim, "w");
 
-  neut_sim_free (&Sim);
-
-  ut_free_1d_char (&simmsh);
+  ut_free_1d_char (&body);
   ut_free_1d_char (&simtess);
   ut_free_1d_char (&simtesr);
 

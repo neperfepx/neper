@@ -16,8 +16,11 @@ extern "C"
 #define NEUT_POLY_OP_H
 
   extern void neut_poly_free (struct POLY *);
+  extern void neut_poly_poly (struct POLY, struct POLY *);
   extern void neut_poly_array_free (struct POLY **pPoly, int size);
   extern void neut_poly_set_zero (struct POLY *);
+
+  extern void neut_poly_fixverorder (struct POLY *);
 
 #endif				/* NEUT_POLY_OP_H */
 

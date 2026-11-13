@@ -15,7 +15,7 @@ neut_meshpara_set_zero (struct MESHPARA *pMeshPara)
   (*pMeshPara).elttype = NULL;
 
   (*pMeshPara).cltype = NULL;
-  (*pMeshPara).elttype = NULL;
+  (*pMeshPara).eltsplit = 0;
   (*pMeshPara).clratio = NULL;
 
   (*pMeshPara).poly_cl = NULL;
@@ -23,7 +23,11 @@ neut_meshpara_set_zero (struct MESHPARA *pMeshPara)
   (*pMeshPara).edge_cl = NULL;
   (*pMeshPara).ver_cl = NULL;
 
+  (*pMeshPara).poly_pl = NULL;
+  (*pMeshPara).mesh2dclreps = NULL;
   (*pMeshPara).mesh3dclreps = NULL;
+  (*pMeshPara).face_pl = NULL;
+  (*pMeshPara).edge_pl = NULL;
 
   (*pMeshPara).face_op = NULL;
   (*pMeshPara).edge_op = NULL;
@@ -47,7 +51,12 @@ neut_meshpara_free (struct MESHPARA *pMeshPara)
   ut_free_1d (&(*pMeshPara).edge_cl);
   ut_free_1d (&(*pMeshPara).ver_cl);
 
+  ut_free_1d (&(*pMeshPara).poly_pl);
+  ut_free_1d (&(*pMeshPara).mesh2dclreps);
   ut_free_1d (&(*pMeshPara).mesh3dclreps);
+  ut_free_1d (&(*pMeshPara).face_pl);
+  ut_free_1d (&(*pMeshPara).edge_pl);
+
 
   ut_free_1d_char (&(*pMeshPara).elttype);
 
@@ -61,6 +70,24 @@ neut_meshpara_free (struct MESHPARA *pMeshPara)
   (*pMeshPara).PolyQty = 0;
 
   ut_free_1d_int (&(*pMeshPara).msize);
+
+  return;
+}
+
+// scaling the characteristic lengths (of all entities, and the minimum one)
+void
+neut_meshpara_cl_scale (struct MESHPARA *pMeshPara, struct TESS Tess, double fact)
+{
+  if ((*pMeshPara).poly_cl)
+    ut_array_1d_scale ((*pMeshPara).poly_cl + 1, Tess.PolyQty, fact);
+  if ((*pMeshPara).face_cl)
+    ut_array_1d_scale ((*pMeshPara).face_cl + 1, Tess.FaceQty, fact);
+  if ((*pMeshPara).edge_cl)
+    ut_array_1d_scale ((*pMeshPara).edge_cl + 1, Tess.EdgeQty, fact);
+  if ((*pMeshPara).ver_cl)
+    ut_array_1d_scale ((*pMeshPara).ver_cl + 1, Tess.VerQty, fact);
+
+  (*pMeshPara).clmin *= fact;
 
   return;
 }

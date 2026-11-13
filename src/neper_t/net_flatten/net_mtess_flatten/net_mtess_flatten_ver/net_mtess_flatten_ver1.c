@@ -6,10 +6,11 @@
 
 void
 net_mtess_flatten_ver (struct MTESS MTess, struct TESS *Tess, int TessId,
-                       int *CTessIds, int CTessQty, struct TESS *pFTess,
+                       int *CTessIds, int CTessQty, int *VTessIds,
+                       int VTessQty, struct TESS *pFTess,
                        struct TESSE *TessE, struct FLATTEN *pFlatten)
 {
-  int i, j, id, domver, domverid;
+  int i, j, id, domver, domverid, isvirtual;
   int *dom = ut_alloc_1d_int (2);
 
   // Vertices
@@ -28,10 +29,13 @@ net_mtess_flatten_ver (struct MTESS MTess, struct TESS *Tess, int TessId,
     neut_flatten_addver (pFlatten, dom);
   }
 
-  // adding vertices of tessellations Ln+1
-  for (i = 0; i < CTessQty; i++)
+  // adding vertices of tessellations Ln+1, then of the virtual
+  // tessellations (periodicity), for which only the vertices on the
+  // entities of tessellation Ln are added
+  for (i = 0; i < CTessQty + VTessQty; i++)
   {
-    id = CTessIds[i];
+    isvirtual = (i >= CTessQty);
+    id = isvirtual ? VTessIds[i - CTessQty] : CTessIds[i];
 
     TessE[id].VerFVer = ut_alloc_1d_int (Tess[id].VerQty + 1);
 
@@ -51,6 +55,9 @@ net_mtess_flatten_ver (struct MTESS MTess, struct TESS *Tess, int TessId,
         else
           abort ();
 
+        if (isvirtual && (dom[0] == 3 || dom[1] == 0))
+          continue;
+
         neut_tess_addver (pFTess, Tess[id].VerCoo[j]);
         TessE[id].VerFVer[j] = (*pFTess).VerQty;
         neut_flatten_addver (pFlatten, dom);
@@ -64,8 +71,8 @@ net_mtess_flatten_ver (struct MTESS MTess, struct TESS *Tess, int TessId,
   }
 
   // filling pFVerTessVerQty and pFVerTessVerNb
-  net_mtess_flatten_ver_init_fvertessver (Tess, CTessIds, CTessQty, TessE,
-                                          pFlatten);
+  net_mtess_flatten_ver_init_fvertessver (Tess, CTessIds, CTessQty, VTessIds,
+                                          VTessQty, TessE, pFlatten);
 
   ut_free_1d_int (&dom);
 

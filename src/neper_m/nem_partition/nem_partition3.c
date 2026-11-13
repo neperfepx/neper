@@ -7,46 +7,14 @@
 #ifdef HAVE_LIBSCOTCH
 
 void
-nem_partition_writearch (FILE * file, int procqty, int proccoreqty, int dcore,
-                         int dncor, int dproc)
-{
-  int i, j, ip;
-  int coreqty = procqty * proccoreqty;
-
-  fprintf (file, "deco 0\n");
-  fprintf (file, "%d %d\n", coreqty, coreqty * 2 - 1);
-
-  for (i = 0; i < coreqty; i++)
-    fprintf (file, "%d 1 %d\n", i, i + coreqty);
-
-  for (i = 1; i < coreqty; i++)
-  {
-    for (j = 1; j <= i; j++)
-    {
-      ip = proccoreqty * (i / proccoreqty);
-
-      if (j <= ip)
-        fprintf (file, "%d", dproc);
-      else if (j < i)
-        fprintf (file, "%d", dncor);
-      else
-        fprintf (file, "%d", dcore);
-
-      fprintf (file, (j < i) ? " " : "\n");
-    }
-  }
-
-  return;
-}
-
-void
 nem_partition_elts_direct (struct MESH *Mesh, struct PART *pPart)
 {
-  int part, elt, dim = neut_mesh_array_dim (Mesh);
+  int i, part, elt, dim = neut_mesh_array_dim (Mesh);
   int eltnodeqty =
     neut_elt_nodeqty ("tri", Mesh[dim].Dimension, Mesh[dim].EltOrder);
   int *eltnodepartqty = NULL, **eltnodeparts = NULL, **eltnodepartnodeqty = NULL;
   int **nodeparteltqty = NULL, ***nodepartelts = NULL;
+  int *availqty = ut_alloc_1d_int ((*pPart).qty);
 
   nem_partition_elts_direct_pre (Mesh, *pPart, &eltnodepartqty, &eltnodeparts,
                                  &eltnodepartnodeqty, &nodepartelts,
@@ -55,34 +23,26 @@ nem_partition_elts_direct (struct MESH *Mesh, struct PART *pPart)
   nem_partition_elts_direct_recordinteriorelts (pPart, eltnodeqty,
                                                 nodepartelts, nodeparteltqty);
 
+  // number of elements available to each partition (i.e. that have nodes
+  // in the partition), updated as elements are recorded
+  for (i = 0; i < (*pPart).qty; i++)
+    availqty[i] = ut_array_1d_int_sum (nodeparteltqty[i] + 1, eltnodeqty);
+
   while (!nem_partition_elts_direct_findelt (Mesh[dim], *pPart, eltnodeparts, eltnodepartqty,
                                              eltnodepartnodeqty,
                                              nodepartelts, nodeparteltqty,
-                                             eltnodeqty, &part, &elt))
+                                             availqty, eltnodeqty, &part, &elt))
     nem_partition_elts_direct_recordelt (pPart, part, elt, eltnodepartqty,
                                          eltnodeparts, eltnodepartnodeqty,
-                                         nodepartelts, nodeparteltqty);
+                                         nodepartelts, nodeparteltqty,
+                                         availqty);
 
+  ut_free_1d_int (&availqty);
   ut_free_2d_int (&nodeparteltqty, (*pPart).qty);
   ut_free_3d_int (&nodepartelts, (*pPart).qty, eltnodeqty + 1);
   ut_free_1d_int (&eltnodepartqty);
   ut_free_2d_int (&eltnodeparts, Mesh[dim].EltQty + 1);
   ut_free_2d_int (&eltnodepartnodeqty, Mesh[dim].EltQty + 1);
-
-  return;
-}
-
-void
-nem_partition_elts_bynumber (struct MESH *Mesh, struct PART *pPart)
-{
-  int j;
-  int dim = neut_mesh_array_dim (Mesh);
-
-  for (j = 1; j <= Mesh[dim].EltQty; j++)
-  {
-    (*pPart).elt_parts[j] = (*pPart).qty * (j - 1) / Mesh[dim].EltQty;
-    (*pPart).EltQty[(*pPart).elt_parts[j]]++;
-  }
 
   return;
 }

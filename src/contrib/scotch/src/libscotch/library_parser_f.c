@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2014,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -45,14 +45,14 @@
 /**                                 to   : 27 mar 2010     **/
 /**                # Version 6.0  : from : 07 jan 2014     **/
 /**                                 to   : 25 apr 2018     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 21 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -68,11 +68,11 @@
 
 SCOTCH_FORTRAN (                      \
 STRATINIT, stratinit, (               \
-SCOTCH_Strat * const        stratptr, \
+SCOTCH_Strat * const        straptr,  \
 int * const                 revaptr), \
-(stratptr, revaptr))
+(straptr, revaptr))
 {
-  *revaptr = SCOTCH_stratInit (stratptr);
+  *revaptr = SCOTCH_stratInit (straptr);
 }
 
 /*
@@ -81,22 +81,22 @@ int * const                 revaptr), \
 
 SCOTCH_FORTRAN (                       \
 STRATEXIT, stratexit, (                \
-SCOTCH_Strat * const        stratptr), \
-(stratptr))
+SCOTCH_Strat * const        straptr),  \
+(straptr))
 {
-  SCOTCH_stratExit (stratptr);
+  SCOTCH_stratExit (straptr);
 }
 
 /*
 **
 */
 
-SCOTCH_FORTRAN (                       \
-STRATFREE, stratfree, (                \
-SCOTCH_Strat * const        stratptr), \
-(stratptr))
+SCOTCH_FORTRAN (                      \
+STRATFREE, stratfree, (               \
+SCOTCH_Strat * const        straptr), \
+(straptr))
 {
-  SCOTCH_stratFree (stratptr);
+  SCOTCH_stratFree (straptr);
 }
 
 /*
@@ -105,10 +105,10 @@ SCOTCH_Strat * const        stratptr), \
 
 SCOTCH_FORTRAN (                      \
 STRATSAVE, stratsave, (               \
-SCOTCH_Strat * const        stratptr, \
+SCOTCH_Strat * const        straptr,  \
 int * const                 fileptr,  \
 int * const                 revaptr), \
-(stratptr, fileptr, revaptr))
+(straptr, fileptr, revaptr))
 {
   FILE *              stream;                     /* Stream to build from handle */
   int                 filenum;                    /* Duplicated handle           */
@@ -127,7 +127,7 @@ int * const                 revaptr), \
     return;
   }
 
-  o = SCOTCH_stratSave (stratptr, stream);
+  o = SCOTCH_stratSave (straptr, stream);
 
   fclose (stream);                                /* This closes filenum too */
 

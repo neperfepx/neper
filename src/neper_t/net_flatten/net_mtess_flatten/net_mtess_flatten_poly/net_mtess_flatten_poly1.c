@@ -20,6 +20,7 @@ net_mtess_flatten_poly (struct MTESS MTess, struct TESS *Tess, int TessId,
   {
     id = CTessIds[i];
 
+    (*pTessE)[id].PolyQty = Tess[id].PolyQty;
     (*pTessE)[id].PolyFPolyQty = ut_alloc_1d_int (Tess[id].PolyQty + 1);
     (*pTessE)[id].PolyFPolyNb = ut_alloc_1d_pint (Tess[id].PolyQty + 1);
   }

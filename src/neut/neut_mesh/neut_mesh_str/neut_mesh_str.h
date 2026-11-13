@@ -15,10 +15,10 @@ extern "C"
 ///
 ///
   extern void neut_mesh_str (int dim, int *size, int *periodic, struct NODES *pNodes,
-			     struct MESH *pMesh, struct NSET *pNSet);
+			     struct MESH *pMesh, struct MESH *pMeshFasets, struct NSET *pNSet);
 
   extern void neut_mesh_str_3d (int *size, int *periodic, struct NODES *pNodes, struct
-				MESH *pMesh, struct NSET *pNSet);
+				MESH *pMesh, struct MESH *pMeshFasets, struct NSET *pNSet);
   extern void neut_mesh_str_2d (int *size, int *periodic, struct NODES *pNodes, struct
 				MESH *pMesh, struct NSET *pNSet);
   extern void neut_mesh_str_1d (int *size, struct NODES *pNodes, struct

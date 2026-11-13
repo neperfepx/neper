@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2009-2012,2016,2017 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2009-2012,2016,2017,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -54,14 +54,14 @@
 /**                                 to   : 15 apr 2011     **/
 /**                # Version 6.0  : from : 23 feb 2011     **/
 /**                                 to   : 02 jan 2017     **/
+/**                # Version 7.0  : from : 17 jan 2023     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define BGRAPH_BIPART_ST
 
 #include "module.h"
 #include "common.h"
@@ -77,6 +77,7 @@
 #include "bgraph_bipart_df.h"
 #include "bgraph_bipart_ex.h"
 #include "bgraph_bipart_fm.h"
+#include "bgraph_bipart_ga.h"
 #include "bgraph_bipart_gg.h"
 #include "bgraph_bipart_gp.h"
 #include "bgraph_bipart_ml.h"
@@ -105,6 +106,11 @@ static union {                                /* Default parameters for bipartit
 } bgraphbipartstdefaultfm = { { 80, ~0, 0.01L, BGRAPHBIPARTFMTYPEBOUNDARY } };
 
 static union {
+  BgraphBipartGaParam       param;
+  StratNodeMethodData       padding;
+} bgraphbipartstdefaultga = { { 40, 100 } };
+
+static union {
   BgraphBipartGgParam       param;
   StratNodeMethodData       padding;
 } bgraphbipartstdefaultgg = { { 5 } };
@@ -120,15 +126,16 @@ static union {
 } bgraphbipartstdefaultml = { { 100, 0.8L, &stratdummy, &stratdummy } };
 
 static StratMethodTab       bgraphbipartstmethtab[] = { /* Bipartitioning methods array */
-                              { BGRAPHBIPARTSTMETHBD, "b",  bgraphBipartBd, &bgraphbipartstdefaultbd },
-                              { BGRAPHBIPARTSTMETHDF, "d",  bgraphBipartDf, &bgraphbipartstdefaultdf },
-                              { BGRAPHBIPARTSTMETHEX, "x",  bgraphBipartEx, NULL },
-                              { BGRAPHBIPARTSTMETHFM, "f",  bgraphBipartFm, &bgraphbipartstdefaultfm },
-                              { BGRAPHBIPARTSTMETHGG, "h",  bgraphBipartGg, &bgraphbipartstdefaultgg },
-                              { BGRAPHBIPARTSTMETHGP, "g",  bgraphBipartGp, &bgraphbipartstdefaultgp },
-                              { BGRAPHBIPARTSTMETHML, "m",  bgraphBipartMl, &bgraphbipartstdefaultml },
-                              { BGRAPHBIPARTSTMETHZR, "z",  bgraphBipartZr, NULL },
-                              { -1,                   NULL, NULL,           NULL } };
+                              { BGRAPHBIPARTSTMETHBD, "b",  (StratMethodFunc) bgraphBipartBd, &bgraphbipartstdefaultbd },
+                              { BGRAPHBIPARTSTMETHDF, "d",  (StratMethodFunc) bgraphBipartDf, &bgraphbipartstdefaultdf },
+                              { BGRAPHBIPARTSTMETHEX, "x",  (StratMethodFunc) bgraphBipartEx, NULL },
+                              { BGRAPHBIPARTSTMETHFM, "f",  (StratMethodFunc) bgraphBipartFm, &bgraphbipartstdefaultfm },
+                              { BGRAPHBIPARTSTMETHGA, "a",  (StratMethodFunc) bgraphBipartGa, &bgraphbipartstdefaultga },
+                              { BGRAPHBIPARTSTMETHGG, "h",  (StratMethodFunc) bgraphBipartGg, &bgraphbipartstdefaultgg },
+                              { BGRAPHBIPARTSTMETHGP, "g",  (StratMethodFunc) bgraphBipartGp, &bgraphbipartstdefaultgp },
+                              { BGRAPHBIPARTSTMETHML, "m",  (StratMethodFunc) bgraphBipartMl, &bgraphbipartstdefaultml },
+                              { BGRAPHBIPARTSTMETHZR, "z",  (StratMethodFunc) bgraphBipartZr, NULL },
+                              { -1,                   NULL, (StratMethodFunc) NULL,           NULL } };
 
 static StratParamTab        bgraphbipartstparatab[] = { /* Method parameter list */
                               { BGRAPHBIPARTSTMETHBD,  STRATPARAMSTRAT,  "bnd",
@@ -167,6 +174,14 @@ static StratParamTab        bgraphbipartstparatab[] = { /* Method parameter list
                                 (byte *) &bgraphbipartstdefaultfm.param,
                                 (byte *) &bgraphbipartstdefaultfm.param.typeval,
                                 (void *) "ab" },
+                              { BGRAPHBIPARTSTMETHGA,  STRATPARAMINT,    "pass",
+                                (byte *) &bgraphbipartstdefaultga.param,
+                                (byte *) &bgraphbipartstdefaultga.param.passnbr,
+                                NULL },
+                              { BGRAPHBIPARTSTMETHGA,  STRATPARAMINT,    "pop",
+                                (byte *) &bgraphbipartstdefaultga.param,
+                                (byte *) &bgraphbipartstdefaultga.param.popunbr,
+                                NULL },
                               { BGRAPHBIPARTSTMETHGG,  STRATPARAMINT,    "pass",
                                 (byte *) &bgraphbipartstdefaultgg.param,
                                 (byte *) &bgraphbipartstdefaultgg.param.passnbr,
@@ -252,55 +267,57 @@ StratTab                    bgraphbipartststratab = { /* Strategy tables for gra
 int
 bgraphBipartSt (
 Bgraph * restrict const       grafptr,            /*+ Active graph to bipartition +*/
-const Strat * restrict const  strat)              /*+ Bipartitioning strategy     +*/
+const Strat * restrict const  straptr)            /*+ Bipartitioning strategy     +*/
 {
-  StratTest           val;                        /* Result of condition evaluation */
+  StratTest           testdat;                    /* Result of condition evaluation */
   BgraphStore         savetab[2];                 /* Results of the two strategies  */
+  Gnum                compload0;
   int                 o;
-  int                 o2;
+  int                 o0;
+  int                 o1;
 
 #ifdef SCOTCH_DEBUG_BGRAPH2
   if (sizeof (Gnum) != sizeof (INT)) {
     errorPrint ("bgraphBipartSt: invalid type specification for parser variables");
-    return     (1);
+    return (1);
   }
   if ((sizeof (BgraphBipartFmParam) > sizeof (StratNodeMethodData)) ||
       (sizeof (BgraphBipartGgParam) > sizeof (StratNodeMethodData)) ||
       (sizeof (BgraphBipartMlParam) > sizeof (StratNodeMethodData))) {
     errorPrint ("bgraphBipartSt: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_BGRAPH2 */
 #ifdef SCOTCH_DEBUG_BGRAPH1
-  if (strat->tabl != &bgraphbipartststratab) {
+  if (straptr->tablptr != &bgraphbipartststratab) {
     errorPrint ("bgraphBipartSt: invalid parameter (1)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_BGRAPH1 */
 
   o = 0;
-  switch (strat->type) {
+  switch (straptr->typeval) {
     case STRATNODECONCAT :
-      o = bgraphBipartSt (grafptr, strat->data.concat.strat[0]); /* Apply the first strategy      */
-      if (o == 0)                                 /* If it worked all right                       */
-        o |= bgraphBipartSt (grafptr, strat->data.concat.strat[1]); /* Then apply second strategy */
+      o = bgraphBipartSt (grafptr, straptr->data.concdat.stratab[0]); /* Apply the first strategy      */
+      if (o == 0)                                 /* If it worked all right                            */
+        o |= bgraphBipartSt (grafptr, straptr->data.concdat.stratab[1]); /* Then apply second strategy */
       break;
     case STRATNODECOND :
-      o = stratTestEval (strat->data.cond.test, &val, (void *) grafptr); /* Evaluate expression */
-      if (o == 0) {                               /* If evaluation was correct                  */
+      o = stratTestEval (straptr->data.conddat.testptr, &testdat, (void *) grafptr); /* Evaluate expression */
+      if (o == 0) {                               /* If evaluation was correct */
 #ifdef SCOTCH_DEBUG_VGRAPH2
-        if ((val.typetest != STRATTESTVAL) ||
-            (val.typenode != STRATPARAMLOG)) {
+        if ((testdat.testval != STRATTESTVAL) ||
+            (testdat.nodeval != STRATPARAMLOG)) {
           errorPrint ("bgraphBipartSt: invalid test result");
           o = 1;
           break;
         }
 #endif /* SCOTCH_DEBUG_VGRAPH2 */
-        if (val.data.val.vallog == 1)             /* If expression is true                    */
-          o = bgraphBipartSt (grafptr, strat->data.cond.strat[0]); /* Apply first strategy    */
-        else {                                    /* Else if expression is false              */
-          if (strat->data.cond.strat[1] != NULL)  /* And if there is an else statement        */
-            o = bgraphBipartSt (grafptr, strat->data.cond.strat[1]); /* Apply second strategy */
+        if (testdat.data.val.vallog == 1)         /* If expression is true                           */
+          o = bgraphBipartSt (grafptr, straptr->data.conddat.stratab[0]); /* Apply first strategy    */
+        else {                                    /* Else if expression is false                     */
+          if (straptr->data.conddat.stratab[1] != NULL)  /* And if there is an else statement        */
+            o = bgraphBipartSt (grafptr, straptr->data.conddat.stratab[1]); /* Apply second strategy */
         }
       }
       break;
@@ -309,67 +326,66 @@ const Strat * restrict const  strat)              /*+ Bipartitioning strategy   
     case STRATNODESELECT :
       if (((bgraphStoreInit (grafptr, &savetab[0])) != 0) || /* Allocate save areas */
           ((bgraphStoreInit (grafptr, &savetab[1])) != 0)) {
-        errorPrint ("bgraphBipartSt: out of memory");
+        errorPrint      ("bgraphBipartSt: out of memory");
         bgraphStoreExit (&savetab[0]);
-        return          (1);
+        return (1);
       }
 
-      bgraphStoreSave     (grafptr, &savetab[1]); /* Save initial bipartition              */
-      o = bgraphBipartSt  (grafptr, strat->data.select.strat[0]); /* Apply first strategy  */
-      bgraphStoreSave     (grafptr, &savetab[0]); /* Save its result                       */
-      bgraphStoreUpdt     (grafptr, &savetab[1]); /* Restore initial bipartition           */
-      o2 = bgraphBipartSt (grafptr, strat->data.select.strat[1]); /* Apply second strategy */
+      bgraphStoreSave     (grafptr, &savetab[1]); /* Save initial bipartition                   */
+      o0 = bgraphBipartSt (grafptr, straptr->data.seledat.stratab[0]); /* Apply first strategy  */
+      bgraphStoreSave     (grafptr, &savetab[0]); /* Save its result                            */
+      bgraphStoreUpdt     (grafptr, &savetab[1]); /* Restore initial bipartition                */
+      o1 = bgraphBipartSt (grafptr, straptr->data.seledat.stratab[1]); /* Apply second strategy */
 
-      if ((o == 0) || (o2 == 0)) {                /* If at least one method did bipartition */
-        Gnum                compload0;
-	int                 b0;
-        int                 b1;
-
-        compload0 = grafptr->compload0avg + savetab[0].compload0dlt;
-        b0 = ((compload0 < grafptr->compload0min) ||
-              (compload0 > grafptr->compload0max)) ? 1 : o;
-        compload0 = grafptr->compload0avg + grafptr->compload0dlt;
-        b1 = ((compload0 < grafptr->compload0min) ||
-              (compload0 > grafptr->compload0max)) ? 1 : o2;
-
-        do {                                      /* Do we want to restore partition 0 ? */
-          if (b0 > b1)
-            break;
-          if (b0 == b1) {                         /* If both are valid or invalid  */
-            if (b0 == 0) {                        /* If both are valid             */
-              if ( (savetab[0].commload >  grafptr->commload) || /* Compare on cut */
-                  ((savetab[0].commload == grafptr->commload) &&
-                   (abs (savetab[0].compload0dlt) > abs (grafptr->compload0dlt))))
-                break;
-            }
-            else {                                /* If both are invalid */
-              if ( (abs (savetab[0].compload0dlt) >  abs (grafptr->compload0dlt)) || /* Compare on imbalance */
-                  ((abs (savetab[0].compload0dlt) == abs (grafptr->compload0dlt)) &&
-                   (savetab[0].commload > grafptr->commload)))
-                break;
-            }
-          }
-
-          bgraphStoreUpdt (grafptr, &savetab[0]); /* Restore its result */
-        }  while (0);
+      if ((o0 | o1) != 0) {                       /* If at least one method failed */
+        if (o0 == 0)                              /* If first succeeded, take it   */
+          goto take0;
+        if (o1 != 0) {                            /* If none succeeded           */
+          bgraphStoreUpdt (grafptr, &savetab[1]); /* Restore initial bipartition */
+          o = 1;                                  /* Indicate error              */
+        }
+        goto take1;                               /* If second succeeded, keep it; anyway, go freeing data structures */
       }
-      if (o2 < o)                                 /* o = min(o,o2): if one biparts, then bipart */
-        o = o2;                                   /* Else if one stops, then stop, else error   */
 
-      bgraphStoreExit (&savetab[0]);              /* Free both save areas */
-      bgraphStoreExit (&savetab[1]);
+      compload0 = grafptr->compload0avg + savetab[0].compload0dlt;
+      o0 = ((compload0 < grafptr->compload0min) ||
+            (compload0 > grafptr->compload0max)) ? 1 : 0;
+      compload0 = grafptr->compload0avg + grafptr->compload0dlt;
+      o1 = ((compload0 < grafptr->compload0min) ||
+            (compload0 > grafptr->compload0max)) ? 1 : 0;
+
+      if (o1 > o0)                                /* If first is balanced and second is not, take first */
+        goto take0;
+      if (o1 < o0)                                /* If second is balanced and first is not, take second */
+        goto take1;
+      if (o0 == 0) {                              /* If both are balanced    */
+        if ( (savetab[0].commload >  grafptr->commload) || /* Compare on cut */
+            ((savetab[0].commload == grafptr->commload) &&
+             (ABS (savetab[0].compload0dlt) > ABS (grafptr->compload0dlt))))
+          goto take1;
+        else
+          goto take0;
+      }
+      else {                                      /* If both are imbalanced */
+        if ( (ABS (savetab[0].compload0dlt) >  ABS (grafptr->compload0dlt)) || /* Compare on imbalance */
+            ((ABS (savetab[0].compload0dlt) == ABS (grafptr->compload0dlt)) &&
+             (savetab[0].commload > grafptr->commload)))
+          goto take1;
+      }
+
+take0:
+      bgraphStoreUpdt (grafptr, &savetab[0]);     /* Restore first partition          */
+take1:                                            /* Keep second partition by default */
+      bgraphStoreExit (&savetab[1]);              /* Free both save areas             */
+      bgraphStoreExit (&savetab[0]);
       break;
-#ifdef SCOTCH_DEBUG_BGRAPH2
     case STRATNODEMETHOD :
-#else /* SCOTCH_DEBUG_BGRAPH2 */
-    default :
-#endif /* SCOTCH_DEBUG_BGRAPH2 */
-      return (strat->tabl->methtab[strat->data.method.meth].func (grafptr, (void *) &strat->data.method.data));
-#ifdef SCOTCH_DEBUG_BGRAPH2
+      return (((BgraphBipartFunc) (straptr->tablptr->methtab[straptr->data.methdat.methnum].funcptr))
+              (grafptr, (const void * const) &straptr->data.methdat.datadat));
     default :
       errorPrint ("bgraphBipartSt: invalid parameter (2)");
-      return     (1);
-#endif /* SCOTCH_DEBUG_BGRAPH2 */
+      return (1);
   }
+
   return (o);
 }

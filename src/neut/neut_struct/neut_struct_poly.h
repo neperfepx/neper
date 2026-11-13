@@ -12,7 +12,6 @@ extern "C"
 
 /* DEFINITION OF STRUCTURE POLY
  * It contains the exhaustive description of one polyhedron.
- * POLY is a compacted form of structure POLYMOD.
  */
 
   struct POLY
@@ -22,10 +21,6 @@ extern "C"
 
     // If PseudoDim == 2, size in the 3rd direction
     double PseudoSize;
-
-    /* All entities of POLY structure are the same than those of POLYMOD
-     * structure. VerUse and FaceUse do not exist in POLY.
-     */
 
     /* GENERAL INFORMATION ***************************************************
      */

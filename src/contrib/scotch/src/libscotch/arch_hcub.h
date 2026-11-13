@@ -35,7 +35,7 @@
 /**                                                        **/
 /**   AUTHOR     : Francois PELLEGRINI                     **/
 /**                                                        **/
-/**   FUNCTION   : These lines are the data declaration    **/
+/**   FUNCTION   : These lines are the data declarations   **/
 /**                for the hypercube graph target          **/
 /**                architecture functions.                 **/
 /**                                                        **/
@@ -61,6 +61,8 @@
 /**                                 to   : 21 jan 2008     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 28 may 2018     **/
+/**                # Version 7.0  : from : 19 feb 2018     **/
+/**                                 to   : 19 feb 2018     **/
 /**                                                        **/
 /************************************************************/
 
@@ -115,9 +117,6 @@ int                         archHcubDomLoad     (const ArchHcub * const, ArchHcu
 int                         archHcubDomSave     (const ArchHcub * const, const ArchHcubDom * const, FILE * restrict const);
 int                         archHcubDomBipart   (const ArchHcub * const, const ArchHcubDom * const, ArchHcubDom * restrict const, ArchHcubDom * restrict const);
 int                         archHcubDomIncl     (const ArchHcub * const, const ArchHcubDom * const, const ArchHcubDom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archHcubDomMpiType  (const ArchHcub * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 #endif /* ARCH_HCUB_H_PROTO */
 #endif /* ARCH_NOPROTO      */

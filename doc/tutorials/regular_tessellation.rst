@@ -1,13 +1,13 @@
-.. _simple_model:
+.. _regular_tessellation:
 
-Generating Regular Tessellations
-================================
+Generating Regular Tessellations (-T)
+=====================================
 
 .. note::
 
   This tutorial presents the :option:`-n`, :option:`-morpho` and :option:`-dim` options of the :ref:`neper_t`. For details on the use of the :ref:`neper_v` in this tutorial, see :ref:`visualize_tessellation`.
 
-  To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :option:`--rcfile`)::
+  To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :data:`--rcfile`)::
 
     neper -V -imagesize 800:400
 
@@ -42,7 +42,7 @@ The tessellation can be visualized with some cells hidden to better highlight th
 
 .. code-block:: console
 
-  $ neper -V tocta4.tess -showcell "z<0.75" -showedge "cell_shown||domtype==1" -print img2
+  $ neper -V tocta4.tess -showcell "z<0.75" -showdomain 1 -print img2
 
 .. image:: regular_tessellation/img2.png
 
@@ -108,7 +108,7 @@ The tessellation can be visualized as follows:
 Specifying Different Numbers of Cells along Each Direction (:option:`-morpho`)
 ------------------------------------------------------------------------------
 
-Different number of cells can be specified along each direction. For example, for cubes:
+Different numbers of cells can be specified along the different directions. For example, for cubes:
 
 .. code-block:: console
 
@@ -144,11 +144,11 @@ Similarly, for truncated octahedra, squares and hexagons:
   $ neper -T -morpho "square(8,4)" -domain "square(2,1)" -dim 2 -o square42
   $ neper -T -morpho "hex(8,4)" -domain "square(2,sqrt(3)/2)" -dim 2 -o hex42
 
-The tessellation can be visualized as follows:
+The tessellations can be visualized as follows:
 
 .. code-block:: console
 
-  $ neper -V tocta448.tess -showcell "z<0.75" -showedge "cell_shown||domtype==1" -print img9
+  $ neper -V tocta448.tess -showcell "z<0.75" -showdomain 1 -print img9
   $ neper -V square42.tess -cameraangle 22 -print img10
   $ neper -V hex42.tess -cameraangle 22 -print img11
 

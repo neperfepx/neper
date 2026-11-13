@@ -49,7 +49,7 @@ neut_oset_kdtree_build (struct QCLOUD *pqcloud, my_kd_tree_t ** pqtree)
 {
   (*pqtree) = new my_kd_tree_t (4, *pqcloud);
   // KDTreeSingleIndexAdaptorParams (10 /* max leaf */ ));
-  (*pqtree)->buildIndex ();
+  (**pqtree).buildIndex ();
 
   return;
 }

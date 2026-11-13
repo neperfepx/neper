@@ -33,13 +33,11 @@ neut_mtess_free (struct MTESS *pMTess, struct TESS **pTess)
   ut_free_1d_int (&(*pMTess).LevelTessQty);
   ut_free_2d_int (&(*pMTess).LevelTess, (*pMTess).LevelQty + 1);
   ut_free_2d_int (&(*pMTess).TessDom, (*pMTess).TessQty + 1);
-  ut_free_2d_int (&(*pMTess).DomTess, (*pMTess).TessQty + 1);
 
-  /* UNCOMMENT and FIXME with neper -T -n from_morpho::2 -morpho "cube(2)::voronoi"
-     ut_free_2d_int (&(*pMTess).TessDomVerNb, (*pMTess).TessQty + 1);
-     ut_free_2d_int (&(*pMTess).TessDomEdgeNb, (*pMTess).TessQty + 1);
-     ut_free_2d_int (&(*pMTess).TessDomFaceNb, (*pMTess).TessQty + 1);
-   */
+  ut_free_2d_int (&(*pMTess).DomTess, (*pMTess).TessQty + 1);
+  ut_free_2d_int (&(*pMTess).TessDomVerNb, (*pMTess).TessQty + 1);
+  ut_free_2d_int (&(*pMTess).TessDomEdgeNb, (*pMTess).TessQty + 1);
+  ut_free_2d_int (&(*pMTess).TessDomFaceNb, (*pMTess).TessQty + 1);
 
   if ((*pMTess).DomTessFaceNb)
   {
@@ -87,7 +85,7 @@ neut_mtess_set_dom (struct MTESS *pMTess, struct TESS **pTess)
 
   if (pTess)
   {
-    (*pTess) = calloc (sizeof (struct TESS), 1);
+    (*pTess) = calloc (1, sizeof (struct TESS));
     neut_tess_set_zero (*pTess);
   }
 
@@ -110,7 +108,8 @@ neut_mtess_set_tess (struct MTESS *pMTess, struct TESS **pTess)
   (*pMTess).TessDom = ut_alloc_2d_int (2, 2);
   ut_array_1d_int_set ((*pMTess).TessDom[1], 2, 1);
 
-  (*pMTess).DomTess = ut_alloc_2d_int (1, 2);
+  // TessQty + 1 lines, as freed by neut_mtess_free
+  (*pMTess).DomTess = ut_alloc_2d_int (2, 2);
   (*pMTess).DomTess[0][1] = 1;
 
   (*pMTess).TessDQty = 0;

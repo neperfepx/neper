@@ -7,7 +7,7 @@ int
 ol_label_g (char *label, double **g)
 {
   int status = 0;
-  double *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
   double *des = ut_alloc_1d (4);
   double *des2 = ut_alloc_1d (4);
   int *m = ol_m_alloc ();
@@ -16,23 +16,18 @@ ol_label_g (char *label, double **g)
     ol_g_set_id (g);
   else if (!strcmp (label, "goss") || !strcmp (label, "Goss"))
   {
-    ol_r_set_this (r, 1, 0, 0);
-    ol_rtheta_g (r, 45, g);
+    ol_rtheta_set_this (rtheta, 1, 0, 0, 45);
+    ol_rtheta_g (rtheta, g);
   }
   else if (!strcmp (label, "u") || !strcmp (label, "U"))
   {
-    ol_r_set_this (r, 0, 1, 0);
-    ol_rtheta_g (r, 45, g);
+    ol_rtheta_set_this (rtheta, 0, 1, 0, 45);
+    ol_rtheta_g (rtheta, g);
   }
   else if (!strcmp (label, "45NDcube") || !strcmp (label, "45NDCube"))
   {
-    ol_r_set_this (r, 0, 0, 1);
-    ol_rtheta_g (r, 45, g);
-  }
-  else if (!strcmp (label, "45NDcube") || !strcmp (label, "45NDCube"))
-  {
-    ol_r_set_this (r, 0, 0, 1);
-    ol_rtheta_g (r, 45, g);
+    ol_rtheta_set_this (rtheta, 0, 0, 1, 45);
+    ol_rtheta_g (rtheta, g);
   }
   else if (!strcmp (label, "s1") || !strcmp (label, "S1"))
   {
@@ -107,7 +102,7 @@ ol_label_g (char *label, double **g)
   else if (!strncmp (label, "rtheta(", 7))
   {
     sscanf (label, "rtheta(%lf,%lf,%lf,%lf)", des, des + 1, des + 2, des + 3);
-    ol_rtheta_g (des, des[3], g);
+    ol_rtheta_g (des, g);
   }
   else if (!strncmp (label, "R(", 2))
   {
@@ -152,7 +147,7 @@ ol_label_g (char *label, double **g)
   else if (!strncmp (label, "axis-angle(", 11))
   {
     sscanf (label, "axis-angle(%lf,%lf,%lf,%lf)", des, des + 1, des + 2, des + 3);
-    ol_rtheta_g (des, des[3], g);
+    ol_rtheta_g (des, g);
   }
   else if (!strncmp (label, "rodrigues(", 10))
   {
@@ -167,8 +162,8 @@ ol_label_g (char *label, double **g)
   else
     status = -1;
 
-  ol_r_free (r);
-  ol_m_free (m);
+  ol_rtheta_free (&rtheta);
+  ol_m_free (&m);
   ut_free_1d (&des);
   ut_free_1d (&des2);
 
@@ -214,13 +209,18 @@ ol_label_q (char *label, double *q)
     ut_array_1d_set (q, 4, FCC_PSC_BETA_BENT);
     status = 0;
   }
+  else if (!strcmp (label, "100_x3"))
+  {
+    ut_array_1d_set (q, 4, _100_X3);
+    status = 0;
+  }
   else if (!strcmp (label, "110_x3"))
   {
     ut_array_1d_set (q, 4, _110_X3);
     status = 0;
   }
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return status;
 }
@@ -282,5 +282,5 @@ ol_specialid_label (int id, char *label)
   ol_specialid_q (id, q);
   ol_q_label (q, label);
 
-  ol_q_free (q);
+  ol_q_free (&q);
 }

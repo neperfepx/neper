@@ -1,4 +1,4 @@
-/* Copyright 2012,2015,2018,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2012,2015,2018-2021,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,8 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 02 oct 2012     **/
 /**                                 to   : 21 feb 2020     **/
+/**                # Version 7.0  : from : 01 aug 2018     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -48,45 +50,32 @@
 **  The defines.
 */
 
-#if (defined SCOTCH_PTHREAD) && (defined GRAPHCOARSENTHREAD)
-#define GRAPHMATCHTHREAD
-#endif /* (defined SCOTCH_PTHREAD) && (defined GRAPHCOARSENTHREAD) */
-
 /** Prime number for cache-friendly perturbations. **/
 
 #define GRAPHMATCHSCANPERTPRIME     179           /* Prime number */
 
 /** Function block building macro. **/
 
-#define GRAPHMATCHFUNCBLOCK(t)      graphMatch##t##NfNvNe, \
-                                    graphMatch##t##NfNvEl, \
-                                    graphMatch##t##NfVlNe, \
-                                    graphMatch##t##NfVlEl, \
-                                    graphMatch##t##FxNvNe, \
-                                    graphMatch##t##FxNvEl, \
-                                    graphMatch##t##FxVlNe, \
-                                    graphMatch##t##FxVlEl
+#define GRAPHMATCHFUNCBLOCK(t)      graphMatch##t##NfNe, \
+                                    graphMatch##t##NfEl, \
+                                    graphMatch##t##FxNe, \
+                                    graphMatch##t##FxEl
 
-#define GRAPHMATCHFUNCDECL(t)       static void graphMatch##t##NfNvNe (GraphCoarsenThread *); \
-                                    static void graphMatch##t##NfNvEl (GraphCoarsenThread *); \
-                                    static void graphMatch##t##NfVlNe (GraphCoarsenThread *); \
-                                    static void graphMatch##t##NfVlEl (GraphCoarsenThread *); \
-                                    static void graphMatch##t##FxNvNe (GraphCoarsenThread *); \
-                                    static void graphMatch##t##FxNvEl (GraphCoarsenThread *); \
-                                    static void graphMatch##t##FxVlNe (GraphCoarsenThread *); \
-                                    static void graphMatch##t##FxVlEl (GraphCoarsenThread *);
+#define GRAPHMATCHFUNCDECL(t)       static void graphMatch##t##NfNe (GraphCoarsenData * restrict const, GraphCoarsenThread * restrict const); \
+                                    static void graphMatch##t##NfEl (GraphCoarsenData * restrict const, GraphCoarsenThread * restrict const); \
+                                    static void graphMatch##t##FxNe (GraphCoarsenData * restrict const, GraphCoarsenThread * restrict const); \
+                                    static void graphMatch##t##FxEl (GraphCoarsenData * restrict const, GraphCoarsenThread * restrict const)
 
 /*
 **  The function prototypes.
 */
 
-#ifdef GRAPH_MATCH
-GRAPHMATCHFUNCDECL (Seq)
-GRAPHMATCHFUNCDECL (ThrBeg)
-GRAPHMATCHFUNCDECL (ThrMid)
-GRAPHMATCHFUNCDECL (ThrEnd)
-#endif /* GRAPH_MATCH */
+#ifdef SCOTCH_GRAPH_MATCH
+GRAPHMATCHFUNCDECL (Seq);
+#ifndef GRAPHMATCHNOTHREAD
+GRAPHMATCHFUNCDECL (Thr);
+#endif /* GRAPHMATCHNOTHREAD */
+#endif /* SCOTCH_GRAPH_MATCH */
 
-void                        graphMatchNone      (GraphCoarsenData *);
-int                         graphMatchInit      (GraphCoarsenData *);
-void                        graphMatch          (GraphCoarsenThread * restrict const);
+int                         graphMatchInit      (GraphCoarsenData * restrict, const int);
+void                        graphMatch          (ThreadDescriptor * restrict const, GraphCoarsenData * const);

@@ -14,7 +14,6 @@ nev_input_options_default (struct IN_V *pIn)
   (*pIn).povray = NULL;
   ut_string_string ("povray", &((*pIn).povray));
 
-  (*pIn).povrayantialiasing = 1;
 
   // asymptote ------------------------------------------------------------
   (*pIn).asymptote = NULL;
@@ -28,8 +27,6 @@ nev_input_options_default (struct IN_V *pIn)
   (*pIn).space = NULL;
   ut_string_string ("real", &((*pIn).space));
 
-  (*pIn).outdir = NULL;
-  ut_string_string (".", &(*pIn).outdir);
 
   (*pIn).step = NULL;
   ut_string_string ("0", &(*pIn).step);
@@ -38,8 +35,6 @@ nev_input_options_default (struct IN_V *pIn)
 
   (*pIn).slice = NULL;
 
-  (*pIn).colormode = NULL;
-  ut_string_string ("bright", &(*pIn).colormode);
 
   (*pIn).scenebackground = NULL;
   ut_string_string ("default", &(*pIn).scenebackground);
@@ -115,6 +110,8 @@ nev_input_options_default (struct IN_V *pIn)
   (*pIn).orimode = NULL;
   ut_string_string ("symbol", &(*pIn).orimode);
 
+  (*pIn).orisym = NULL;
+  ut_string_string ("monoclinic", &(*pIn).orisym);
   (*pIn).orilayout = NULL;
   ut_string_string ("default", &(*pIn).orilayout);
 
@@ -152,7 +149,6 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
   strcpy (ArgList[++ArgQty], "-lightambient");
   strcpy (ArgList[++ArgQty], "-lightdiffuse");
   strcpy (ArgList[++ArgQty], "-lightreflection");
-  strcpy (ArgList[++ArgQty], "-colormode");
   strcpy (ArgList[++ArgQty], "-scenebackground");
   strcpy (ArgList[++ArgQty], "-pfpole");
   strcpy (ArgList[++ArgQty], "-pfpolelabel");
@@ -174,6 +170,7 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
   strcpy (ArgList[++ArgQty], "-orimode");
   strcpy (ArgList[++ArgQty], "-orilayout");
   strcpy (ArgList[++ArgQty], "-orifield");
+  strcpy (ArgList[++ArgQty], "-orisym");
   strcpy (ArgList[++ArgQty], "-ipfpole");
   strcpy (ArgList[++ArgQty], "-ipfpolelabel");
   strcpy (ArgList[++ArgQty], "-ipfprojection");
@@ -186,11 +183,9 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
   strcpy (ArgList[++ArgQty], "-ipfsym");
   strcpy (ArgList[++ArgQty], "-ipfclustering");
   strcpy (ArgList[++ArgQty], "-ipfshape");
-  strcpy (ArgList[++ArgQty], "-outdir");
   strcpy (ArgList[++ArgQty], "-imageformat");
   strcpy (ArgList[++ArgQty], "-imagesize");
   strcpy (ArgList[++ArgQty], "-includepov");
-  strcpy (ArgList[++ArgQty], "-povrayantialiasing");
   strcpy (ArgList[++ArgQty], "-print");
   strcpy (ArgList[++ArgQty], "-datacell");
   strcpy (ArgList[++ArgQty], "-datacellcol");
@@ -324,11 +319,15 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
   strcpy (ArgList[++ArgQty], "-datacsyscol");
   strcpy (ArgList[++ArgQty], "-datacsysfontsize");
 
+  strcpy (ArgList[++ArgQty], "-datadomainrad");
+  strcpy (ArgList[++ArgQty], "-datadomaincol");
+
   strcpy (ArgList[++ArgQty], "-showtess");
   strcpy (ArgList[++ArgQty], "-showtesr");
   strcpy (ArgList[++ArgQty], "-showmesh");
   strcpy (ArgList[++ArgQty], "-showmeshslice");
   strcpy (ArgList[++ArgQty], "-showcsys");
+  strcpy (ArgList[++ArgQty], "-showdomain");
   strcpy (ArgList[++ArgQty], "-showscale");
   strcpy (ArgList[++ArgQty], "-showscalemin");
   strcpy (ArgList[++ArgQty], "-showscalemax");
@@ -391,7 +390,7 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
       }
       ut_string_fnrs (Arg, "-ipf", "-pf", 1);
 
-      /* Prerequisites ---------------------------------------------- */
+      /* External programs ------------------------------------------ */
 
       if (!strcmp (Arg, "-povray"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).povray));
@@ -462,8 +461,6 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
       else if (!strcmp (Arg, "-lightreflection"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).lightreflection));
 
-      else if (!strcmp (Arg, "-colormode"))
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).colormode));
 
       else if (!strcmp (Arg, "-scenebackground"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).scenebackground));
@@ -507,11 +504,11 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
         ut_arg_nextasstring (argv, &i, Arg, &(*pIn).orimode);
       else if (!strcmp (Arg, "-orilayout"))
         ut_arg_nextasstring (argv, &i, Arg, &(*pIn).orilayout);
+      else if (!strcmp (Arg, "-orisym"))
+        ut_arg_nextasstring (argv, &i, Arg, &(*pIn).orisym);
       else if (!strcmp (Arg, "-orifield"))
         ut_arg_nextasstring (argv, &i, Arg, &(*pIn).orifield);
 
-      else if (!strcmp (Arg, "-outdir"))
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).outdir));
 
       else if (!strcmp (Arg, "-imageformat"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).imageformat));
@@ -522,8 +519,6 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
       else if (!strcmp (Arg, "-includepov"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).includepov));
 
-      else if (!strcmp (Arg, "-povrayantialiasing"))
-        ut_arg_nextaslogical (argv, &i, Arg, &((*pIn).povrayantialiasing));
 
       else if (!strcmp (Arg, "-print"))
       {

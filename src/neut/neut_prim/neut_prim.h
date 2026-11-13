@@ -17,9 +17,14 @@ extern "C"
 
 extern void neut_prim_set_zero (struct PRIM *);
 extern void neut_prim_free (struct PRIM *);
+extern void neut_prim_memcpy (struct PRIM PrimA, struct PRIM *pPrimB);
+extern void neut_prim_set_hspace (char *type, double *eq, struct PRIM *);
+extern void neut_prim_shift (struct PRIM *, double *shift);
+extern void neut_prim_rotate (struct PRIM *, double **g);
 extern int  neut_prim_sscanf (char *expr, struct PRIM *);
 extern void neut_prim_point_mirror (struct PRIM Prim, double *coo, double *mirror);
 extern void neut_prim_point_side (struct PRIM Prim, double *coo, int *pside);
+extern void neut_primparms_point_side (char *type, double *parms, double *coo, int *pside);
 extern double neut_prim_point_proj (struct PRIM Prim, double *coo, double *proj);
 extern double neut_primparms_point_proj (char* type, double *parms, double *coo, double *proj);
 extern void neut_primparms_point_tangentplane (char* type, double *parms, double *coo, double *plane);

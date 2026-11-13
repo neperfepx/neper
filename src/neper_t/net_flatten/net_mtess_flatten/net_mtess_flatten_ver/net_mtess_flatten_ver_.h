@@ -11,5 +11,6 @@
 
 extern void net_mtess_flatten_ver_init_fvertessver (struct TESS *Tess,
 					      int *CTessIds, int CTessQty,
+					      int *VTessIds, int VTessQty,
 					      struct TESSE *TessE,
 					      struct FLATTEN *pFlatten);

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2012,2014,2016 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2012,2014,2016,2018,2021,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -53,6 +53,8 @@
 /**                                 to   : 11 aug 2010     **/
 /**                # Version 6.0  : from : 01 jun 2012     **/
 /**                                 to   : 30 dec 2016     **/
+/**                # Version 7.0  : from : 02 mar 2018     **/
+/**                                 to   : 07 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -60,7 +62,7 @@
 **  The defines and includes.
 */
 
-#define PARSER
+#define SCOTCH_PARSER
 
 #include "module.h"
 #include "common.h"
@@ -70,6 +72,7 @@
 
 #include "parser.h"
 #include "parser_yy.h"
+#include "parser_ly.h"
 
 /*
 **  The static and global variables.
@@ -77,11 +80,6 @@
 
 static StratTab             stratdummytab = { NULL, NULL, NULL }; /* Dummy strategy table for the dummy empty object       */
 Strat                       stratdummy = { &stratdummytab, STRATNODEEMPTY }; /* Dummy empty object for offset computations */
-
-#ifdef COMMON_PTHREAD_MEMORY
-static int                  muteflag = 1;         /*+ Flag for mutex initialization +*/
-static pthread_mutex_t      mutelocdat;           /*+ Local mutex for parsing       +*/
-#endif /* COMMON_PTHREAD_MEMORY */
 
 /**************************/
 /*                        */
@@ -111,19 +109,7 @@ const char * const          string)               /*+ Strategy string to parse  
   }
 #endif /* SCOTCH_DEBUG_PARSER1 */
 
-#ifdef COMMON_PTHREAD_MEMORY
-  if (muteflag != 0) {                            /* Unsafe code with respect to race conditions but should work; portable TSL needed */
-    muteflag = 0;
-    pthread_mutex_init (&mutelocdat, NULL);       /* Initialize local mutex */
-  }
-  pthread_mutex_lock (&mutelocdat);               /* Lock local mutex */
-#endif /* COMMON_PTHREAD_MEMORY */
-
   o = stratParserParse (strattab, string);        /* Parse strategy string */
-
-#ifdef COMMON_PTHREAD_MEMORY
-  pthread_mutex_unlock (&mutelocdat);             /* Unlock local mutex */
-#endif /* COMMON_PTHREAD_MEMORY */
 
   return (o);
 }
@@ -136,57 +122,54 @@ const char * const          string)               /*+ Strategy string to parse  
 
 int
 stratExit (
-Strat * const               strat)
+Strat * const               straptr)
 {
   StratParamTab *   paratab;                      /* Table of method parameters                  */
-  byte *            paraofft;                     /* Offset of parameter within method structure */
+  byte *            poffptr;                      /* Offset of parameter within method structure */
   unsigned int      i;
   int               o;
 
-  if (strat == NULL)                              /* If node does not exist, abort */
+  if (straptr == NULL)                            /* If node does not exist, abort */
     return (0);
 
   o = 0;                                          /* Assume everything will be all right */
-  switch (strat->type) {                          /* Recursively free sub-strategies     */
+  switch (straptr->typeval) {                     /* Recursively free sub-strategies     */
     case STRATNODECONCAT :
-      o  = stratExit (strat->data.concat.strat[0]);
-      o |= stratExit (strat->data.concat.strat[1]);
+      o  = stratExit (straptr->data.concdat.stratab[0]);
+      o |= stratExit (straptr->data.concdat.stratab[1]);
       break;
     case STRATNODECOND :
-      o  = stratTestExit (strat->data.cond.test);
-      o |= stratExit     (strat->data.cond.strat[0]);
-      if (strat->data.cond.strat[1] != NULL)
-        o |= stratExit (strat->data.cond.strat[1]);
+      o  = stratTestExit (straptr->data.conddat.testptr);
+      o |= stratExit     (straptr->data.conddat.stratab[0]);
+      if (straptr->data.conddat.stratab[1] != NULL)
+        o |= stratExit (straptr->data.conddat.stratab[1]);
       break;
     case STRATNODESELECT :
-      o  = stratExit (strat->data.select.strat[0]);
-      o |= stratExit (strat->data.select.strat[1]);
+      o  = stratExit (straptr->data.seledat.stratab[0]);
+      o |= stratExit (straptr->data.seledat.stratab[1]);
       break;
     case STRATNODEEMPTY :                         /* Empty strategy node         */
-      if (strat == &stratdummy)                   /* If node is empty dummy node */
+      if (straptr == &stratdummy)                 /* If node is empty dummy node */
         return (0);                               /* Return without freeing it   */
       break;
     case STRATNODEMETHOD :                        /* Method strategy node       */
-      paratab = strat->tabl->paratab;             /* Free the method parameters */
-      for (i = 0; paratab[i].name != NULL; i ++) {
-        if ((paratab[i].meth == strat->data.method.meth) && /* For all parameters of that method    */
-            (paratab[i].type == STRATPARAMSTRAT)) { /* Which are non-deprecated strategy parameters */
-          paraofft = (byte *) &strat->data.method.data + /* Compute parameter offset within method  */
-                      (paratab[i].dataofft -
-                       paratab[i].database);
-          o |= stratExit (*((Strat **) paraofft)); /* Perform recursion */
+      paratab = straptr->tablptr->paratab;        /* Free the method parameters */
+      for (i = 0; paratab[i].nameptr != NULL; i ++) {
+        if ((paratab[i].methnum == straptr->data.methdat.methnum) && /* For all parameters of that method */
+            (paratab[i].typeval == STRATPARAMSTRAT)) { /* Which are non-deprecated strategy parameters    */
+          poffptr = (byte *) &straptr->data.methdat.datadat + /* Compute parameter offset within method   */
+                    (paratab[i].doffptr - paratab[i].dbasptr);
+          o |= stratExit (*((Strat **) poffptr)); /* Perform recursion */
         }
       }
       break;
-#ifdef SCOTCH_DEBUG_PARSER2
     default :
       errorPrint ("stratExit: invalid strategy node");
       o = 1;
       break;
-#endif /* SCOTCH_DEBUG_PARSER2 */
   }
 
-  memFree (strat);                                /* Free strategy structure itself */
+  memFree (straptr);                              /* Free strategy structure itself */
   return  (o);                                    /* Return output code             */
 }
 
@@ -199,7 +182,7 @@ Strat * const               strat)
 
 int
 stratSave (
-const Strat * const         strat,
+const Strat * const         straptr,
 FILE * const                stream)
 {
   unsigned int      paraflag;                     /* Flag set if method has parameters           */
@@ -209,58 +192,57 @@ FILE * const                stream)
   int               o;
 
   o = 0;
-  switch (strat->type) {                          /* Recursively view sub-strategies */
+  switch (straptr->typeval) {                     /* Recursively view sub-strategies */
     case STRATNODECOND :
       if ((fprintf (stream, "(/(") == EOF) ||
-          (stratTestSave (strat->data.cond.test, stream) != 0) ||
+          (stratTestSave (straptr->data.conddat.testptr, stream) != 0) ||
           (fprintf (stream, ")?(") == EOF) ||
-          (stratSave (strat->data.cond.strat[0], stream) != 0))
+          (stratSave (straptr->data.conddat.stratab[0], stream) != 0))
         o = 1;
-      if ((o == 0) && (strat->data.cond.strat[1] != NULL)) {
+      if ((o == 0) && (straptr->data.conddat.stratab[1] != NULL)) {
         if ((fprintf (stream, "):(") == EOF) ||
-            (stratSave (strat->data.cond.strat[1], stream) != 0))
+            (stratSave (straptr->data.conddat.stratab[1], stream) != 0))
           o = 1;
       }
       if (o == 0)
         o = (fprintf (stream, ");)") == EOF);
       break;
     case STRATNODECONCAT :
-      if ((stratSave (strat->data.concat.strat[0], stream) != 0) ||
-          (stratSave (strat->data.concat.strat[1], stream) != 0))
+      if ((stratSave (straptr->data.concdat.stratab[0], stream) != 0) ||
+          (stratSave (straptr->data.concdat.stratab[1], stream) != 0))
         o = 1;
       break;
     case STRATNODESELECT :
       if ((fprintf (stream, "(") == EOF) ||
-          (stratSave (strat->data.select.strat[0], stream) != 0) ||
+          (stratSave (straptr->data.seledat.stratab[0], stream) != 0) ||
           (fprintf (stream, "|") == EOF) ||
-          (stratSave (strat->data.select.strat[1], stream) != 0) ||
+          (stratSave (straptr->data.seledat.stratab[1], stream) != 0) ||
           (fprintf (stream, ")") == EOF))
         o = 1;
     case STRATNODEEMPTY :
       break;
     case STRATNODEMETHOD :
-      if (fprintf (stream, "%s", strat->tabl->methtab[strat->data.method.meth].name) == EOF) { /* Print method name */
+      if (fprintf (stream, "%s", straptr->tablptr->methtab[straptr->data.methdat.methnum].nameptr) == EOF) { /* Print method name */
         o = 1;
         break;
       }
       paraflag = 0;                               /* No method parameters seen yet */
-      paratab  = strat->tabl->paratab;
-      for (i = 0; paratab[i].name != NULL; i ++) {
-        if ((paratab[i].meth == strat->data.method.meth) && /* For all parameters of that method  */
-            ((paratab[i].type & STRATPARAMDEPRECATED) == 0)) { /* Which are not deprecated        */
-          paraofft = (byte*) &strat->data.method.data + /* Compute parameter offset within method */
-                     (paratab[i].dataofft -
-                      paratab[i].database);
+      paratab  = straptr->tablptr->paratab;
+      for (i = 0; paratab[i].nameptr != NULL; i ++) {
+        if ((paratab[i].methnum == straptr->data.methdat.methnum) && /* For all parameters of that method */
+            ((paratab[i].typeval & STRATPARAMDEPRECATED) == 0)) { /* Which are not deprecated             */
+          paraofft = (byte*) &straptr->data.methdat.datadat + /* Compute parameter offset within method   */
+                     (paratab[i].doffptr - paratab[i].dbasptr);
           if (fprintf (stream, "%c%s=",           /* Open or continue parameter list */
                        ((paraflag ++ == 0) ? '{' : ','),
-                       paratab[i].name) == EOF) {
+                       paratab[i].nameptr) == EOF) {
             o = 1;
             break;
           }
-          switch (paratab[i].type) {              /* Print parameter value         */
+          switch (paratab[i].typeval) {           /* Print parameter value         */
             case STRATPARAMCASE :                 /* Case value                    */
               o = (fprintf (stream, "%c",         /* Print corresponding character */
-                            ((char *) paratab[i].datasltr)[*((unsigned int *) paraofft)]) == EOF);
+                            ((char *) paratab[i].dselptr)[*((unsigned int *) paraofft)]) == EOF);
               break;
             case STRATPARAMINT :                  /* Integer value */
               o = (fprintf (stream, INTSTRING, *((INT *) paraofft)) == EOF);
@@ -274,11 +256,9 @@ FILE * const                stream)
             case STRATPARAMSTRING :               /* String value */
               o = (fprintf (stream, "%s", (char *) paraofft) == EOF);
               break;
-#ifdef SCOTCH_DEBUG_PARSER2
             default :
               errorPrint ("stratSave: invalid parameter type");
-              return     (1);
-#endif /* SCOTCH_DEBUG_PARSER2 */
+              return (1);
           }
         }
         if (o != 0)                               /* If an error has occured */
@@ -287,11 +267,9 @@ FILE * const                stream)
       if ((o == 0) && (paraflag != 0))            /* If there is a parameter list */
         o |= (fprintf (stream, "}") == EOF);      /* Close it                     */
       break;
-#ifdef SCOTCH_DEBUG_PARSER2
     default :
       errorPrint ("stratSave: invalid strategy node");
-      return     (1);
-#endif /* SCOTCH_DEBUG_PARSER2 */
+      return (1);
   }
   if (o != 0) {
     errorPrint ("stratSave: bad output");
@@ -315,65 +293,65 @@ FILE * const                stream)
 
 int
 stratTestEval (
-const StratTest * restrict const  test,
-StratTest * restrict const        eval,           /*+ Place where to return final value                      +*/
-const void * restrict const       data)           /*+ Pointer to data structure where to read variables from +*/
+const StratTest * restrict const  testptr,
+StratTest * restrict const        evalptr,        /*+ Place where to return final value                      +*/
+const void * restrict const       dataptr)        /*+ Pointer to data structure where to read variables from +*/
 {
-  StratTest         val[2];                       /* Temporary evaluation variables */
+  StratTest         testtab[2];                   /* Temporary evaluation variables */
   StratTestType     sign;                         /* Sign of comparison             */
   int               o;
 
 #ifdef SCOTCH_DEBUG_PARSER1
-  if ((test == NULL) || (eval == NULL) || (data == NULL)) {
+  if ((testptr == NULL) || (evalptr == NULL) || (dataptr == NULL)) {
     errorPrint ("stratTestEval: invalid parameter");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_PARSER1 */
 
   o = 0;                                          /* Assume no error */
-  switch (test->typetest) {
+  switch (testptr->testval) {
     case STRATTESTNOT :                           /* Not operator */
-      o = stratTestEval (test->data.test[0], eval, data);
+      o = stratTestEval (testptr->data.testtab[0], evalptr, dataptr);
 #ifdef SCOTCH_DEBUG_PARSER2
-      if ((o == 0) && (eval->typenode != STRATPARAMLOG)) {
+      if ((o == 0) && (evalptr->nodeval != STRATPARAMLOG)) {
         errorPrint ("stratTestEval: internal error (1)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_PARSER2 */
-      eval->data.val.vallog = 1 - eval->data.val.vallog;
+      evalptr->data.val.vallog = 1 - evalptr->data.val.vallog;
       break;
     case STRATTESTAND :                           /* And operator */
-      o = stratTestEval (test->data.test[0], eval, data);
+      o = stratTestEval (testptr->data.testtab[0], evalptr, dataptr);
 #ifdef SCOTCH_DEBUG_PARSER2
-      if ((o == 0) && (eval->typenode != STRATPARAMLOG)) {
+      if ((o == 0) && (evalptr->nodeval != STRATPARAMLOG)) {
         errorPrint ("stratTestEval: internal error (2)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_PARSER2 */
-      if ((o == 0) && (eval->data.val.vallog == 1)) {
-        o = stratTestEval (test->data.test[1], eval, data);
+      if ((o == 0) && (evalptr->data.val.vallog == 1)) {
+        o = stratTestEval (testptr->data.testtab[1], evalptr, dataptr);
 #ifdef SCOTCH_DEBUG_PARSER2
-        if (eval->typenode != STRATPARAMLOG) {
+        if (evalptr->nodeval != STRATPARAMLOG) {
           errorPrint ("stratTestEval: internal error (3)");
-          return     (1);
+          return (1);
         }
 #endif /* SCOTCH_DEBUG_PARSER2 */
       }
       break;
     case STRATTESTOR :                            /* Or operator */
-      o = stratTestEval (test->data.test[0], eval, data);
+      o = stratTestEval (testptr->data.testtab[0], evalptr, dataptr);
 #ifdef SCOTCH_DEBUG_PARSER2
-      if ((o == 0) && (eval->typenode != STRATPARAMLOG)) {
+      if ((o == 0) && (evalptr->nodeval != STRATPARAMLOG)) {
         errorPrint ("stratTestEval: internal error (4)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_PARSER2 */
-      if ((o == 0) && (eval->data.val.vallog == 0)) {
-        o = stratTestEval (test->data.test[1], eval, data);
+      if ((o == 0) && (evalptr->data.val.vallog == 0)) {
+        o = stratTestEval (testptr->data.testtab[1], evalptr, dataptr);
 #ifdef SCOTCH_DEBUG_PARSER2
-        if (eval->typenode != STRATPARAMLOG) {
+        if (evalptr->nodeval != STRATPARAMLOG) {
           errorPrint ("stratTestEval: internal error (5)");
-          return     (1);
+          return (1);
         }
 #endif /* SCOTCH_DEBUG_PARSER2 */
       }
@@ -381,105 +359,99 @@ const void * restrict const       data)           /*+ Pointer to data structure 
     case STRATTESTLT :                            /* Less-than operator    */
     case STRATTESTEQ :                            /* Equal-to operator     */
     case STRATTESTGT :                            /* Greater-than operator */
-      o  = stratTestEval (test->data.test[0], &val[0], data);
-      o |= stratTestEval (test->data.test[1], &val[1], data);
-      o |= stratTestEvalCast (&val[0], &val[1]);
+      o  = stratTestEval (testptr->data.testtab[0], &testtab[0], dataptr);
+      o |= stratTestEval (testptr->data.testtab[1], &testtab[1], dataptr);
+      o |= stratTestEvalCast (&testtab[0], &testtab[1]);
       if (o != 0)
         break;
       sign = STRATTESTNBR;                        /* In case of error */
-      switch (val[0].typenode) {
+      switch (testtab[0].nodeval) {
         case STRATPARAMDOUBLE :
-          sign = (val[0].data.val.valdbl < val[1].data.val.valdbl) ? STRATTESTLT : ((val[0].data.val.valdbl > val[1].data.val.valdbl) ? STRATTESTGT : STRATTESTEQ);
+          sign = (testtab[0].data.val.valdbl < testtab[1].data.val.valdbl) ? STRATTESTLT : ((testtab[0].data.val.valdbl > testtab[1].data.val.valdbl) ? STRATTESTGT : STRATTESTEQ);
           break;
         case STRATPARAMINT :
-          sign = (val[0].data.val.valint < val[1].data.val.valint) ? STRATTESTLT : ((val[0].data.val.valint > val[1].data.val.valint) ? STRATTESTGT : STRATTESTEQ);
+          sign = (testtab[0].data.val.valint < testtab[1].data.val.valint) ? STRATTESTLT : ((testtab[0].data.val.valint > testtab[1].data.val.valint) ? STRATTESTGT : STRATTESTEQ);
           break;
-#ifdef SCOTCH_DEBUG_PARSER2
         default :
           errorPrint ("stratTestEval: internal error (6)");
           o = 1;
           break;
-#endif /* SCOTCH_DEBUG_PARSER2 */
       }
-      eval->typenode        = STRATPARAMLOG;      /* Build test result */
-      eval->data.val.vallog = (sign == test->typetest);
+      evalptr->nodeval         = STRATPARAMLOG;   /* Build test result */
+      evalptr->data.val.vallog = (sign == testptr->testval);
       break;
     case STRATTESTADD :                           /* Addition operator */
-      o  = stratTestEval (test->data.test[0], &val[0], data);
-      o |= stratTestEval (test->data.test[1], &val[1], data);
-      o |= stratTestEvalCast (&val[0], &val[1]);
+      o  = stratTestEval (testptr->data.testtab[0], &testtab[0], dataptr);
+      o |= stratTestEval (testptr->data.testtab[1], &testtab[1], dataptr);
+      o |= stratTestEvalCast (&testtab[0], &testtab[1]);
       if (o != 0)
         break;
-      if (val[0].typenode == STRATPARAMDOUBLE)
-        eval->data.val.valdbl = val[0].data.val.valdbl + val[1].data.val.valdbl;
+      if (testtab[0].nodeval == STRATPARAMDOUBLE)
+        evalptr->data.val.valdbl = testtab[0].data.val.valdbl + testtab[1].data.val.valdbl;
       else
-        eval->data.val.valint = val[0].data.val.valint + val[1].data.val.valint;
-      eval->typenode = val[0].typenode;
+        evalptr->data.val.valint = testtab[0].data.val.valint + testtab[1].data.val.valint;
+      evalptr->nodeval = testtab[0].nodeval;
       break;
     case STRATTESTSUB :                           /* Subtraction operator */
-      o  = stratTestEval (test->data.test[0], &val[0], data);
-      o |= stratTestEval (test->data.test[1], &val[1], data);
-      o |= stratTestEvalCast (&val[0], &val[1]);
+      o  = stratTestEval (testptr->data.testtab[0], &testtab[0], dataptr);
+      o |= stratTestEval (testptr->data.testtab[1], &testtab[1], dataptr);
+      o |= stratTestEvalCast (&testtab[0], &testtab[1]);
       if (o != 0)
         break;
-      if (val[0].typenode == STRATPARAMDOUBLE)
-        eval->data.val.valdbl = val[0].data.val.valdbl - val[1].data.val.valdbl;
+      if (testtab[0].nodeval == STRATPARAMDOUBLE)
+        evalptr->data.val.valdbl = testtab[0].data.val.valdbl - testtab[1].data.val.valdbl;
       else
-        eval->data.val.valint = val[0].data.val.valint - val[1].data.val.valint;
-      eval->typenode = val[0].typenode;
+        evalptr->data.val.valint = testtab[0].data.val.valint - testtab[1].data.val.valint;
+      evalptr->nodeval = testtab[0].nodeval;
       break;
     case STRATTESTMUL :                           /* Multiplication operator */
-      o  = stratTestEval (test->data.test[0], &val[0], data);
-      o |= stratTestEval (test->data.test[1], &val[1], data);
-      o |= stratTestEvalCast (&val[0], &val[1]);
+      o  = stratTestEval (testptr->data.testtab[0], &testtab[0], dataptr);
+      o |= stratTestEval (testptr->data.testtab[1], &testtab[1], dataptr);
+      o |= stratTestEvalCast (&testtab[0], &testtab[1]);
       if (o != 0)
         break;
-      if (val[0].typenode == STRATPARAMDOUBLE)
-        eval->data.val.valdbl = val[0].data.val.valdbl * val[1].data.val.valdbl;
+      if (testtab[0].nodeval == STRATPARAMDOUBLE)
+        evalptr->data.val.valdbl = testtab[0].data.val.valdbl * testtab[1].data.val.valdbl;
       else
-        eval->data.val.valint = val[0].data.val.valint * val[1].data.val.valint;
-      eval->typenode = val[0].typenode;
+        evalptr->data.val.valint = testtab[0].data.val.valint * testtab[1].data.val.valint;
+      evalptr->nodeval = testtab[0].nodeval;
       break;
     case STRATTESTMOD :                           /* Modulus operator */
-      o  = stratTestEval (test->data.test[0], &val[0], data);
-      o |= stratTestEval (test->data.test[1], &val[1], data);
-      o |= stratTestEvalCast (&val[0], &val[1]);
+      o  = stratTestEval (testptr->data.testtab[0], &testtab[0], dataptr);
+      o |= stratTestEval (testptr->data.testtab[1], &testtab[1], dataptr);
+      o |= stratTestEvalCast (&testtab[0], &testtab[1]);
       if (o != 0)
         break;
-      if (val[0].typenode == STRATPARAMDOUBLE)
-        eval->data.val.valdbl = fmod (val[0].data.val.valdbl, val[1].data.val.valdbl);
+      if (testtab[0].nodeval == STRATPARAMDOUBLE)
+        evalptr->data.val.valdbl = fmod (testtab[0].data.val.valdbl, testtab[1].data.val.valdbl);
       else
-        eval->data.val.valint = val[0].data.val.valint % val[1].data.val.valint;
-      eval->typenode = val[0].typenode;
+        evalptr->data.val.valint = testtab[0].data.val.valint % testtab[1].data.val.valint;
+      evalptr->nodeval = testtab[0].nodeval;
       break;
     case STRATTESTVAL :                           /* Constant value */
-      *eval = *test;                              /* Copy value     */
+      *evalptr = *testptr;                        /* Copy value     */
       break;
     case STRATTESTVAR :                           /* Variable */
-      switch (test->typenode) {
+      switch (testptr->nodeval) {
         case STRATPARAMDOUBLE :
-          eval->data.val.valdbl = *((double *) ((byte *) data + test->data.var.datadisp));
+          evalptr->data.val.valdbl = *((double *) ((byte *) dataptr + testptr->data.var.dataoft));
           break;
         case STRATPARAMINT :
-          eval->data.val.valint = *((INT *) ((byte *) data + test->data.var.datadisp));
+          evalptr->data.val.valint = *((INT *) ((byte *) dataptr + testptr->data.var.dataoft));
           break;
-#ifdef SCOTCH_DEBUG_PARSER1
         default :
           errorPrint ("stratTestEval: internal error (7)");
           o = 1;
           break;
-#endif /* SCOTCH_DEBUG_PARSER1 */
       }
-      eval->typenode = test->typenode;
+      evalptr->nodeval = testptr->nodeval;
       break;
-#ifdef SCOTCH_DEBUG_PARSER1
     default :
-      errorPrint ("stratTestEval: invalid condition type (%u)", test->typetest);
+      errorPrint ("stratTestEval: invalid condition type (%u)", testptr->testval);
       o = 1;
       break;
-#endif /* SCOTCH_DEBUG_PARSER1 */
   }
-  eval->typetest = STRATTESTVAL;
+  evalptr->testval = STRATTESTVAL;
 
   return (o);
 }
@@ -488,31 +460,31 @@ const void * restrict const       data)           /*+ Pointer to data structure 
 ** of the two input values so as to
 ** get the same type for both values.
 ** It returns:
-** - VOID  : in all cases;
+** - void  : in all cases;
 */
 
 static
 int
 stratTestEvalCast (
-StratTest * const           test0,
-StratTest * const           test1)
+StratTest * const           tes0ptr,
+StratTest * const           tes1ptr)
 {
 #ifdef SCOTCH_DEBUG_PARSER2
-  if (((test0->typenode != STRATPARAMINT) && (test0->typenode != STRATPARAMDOUBLE)) ||
-      ((test1->typenode != STRATPARAMINT) && (test1->typenode != STRATPARAMDOUBLE))) {
+  if (((tes0ptr->nodeval != STRATPARAMINT) && (tes0ptr->nodeval != STRATPARAMDOUBLE)) ||
+      ((tes1ptr->nodeval != STRATPARAMINT) && (tes1ptr->nodeval != STRATPARAMDOUBLE))) {
     errorPrint ("stratTestEvalCast: internal error");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_PARSER2 */
 
-  if (test0->typenode != test1->typenode) {       /* If value types differ */
-    if (test0->typenode == STRATPARAMDOUBLE) {
-      test1->typenode        = STRATPARAMDOUBLE;
-      test1->data.val.valdbl = (double) test1->data.val.valint;
+  if (tes0ptr->nodeval != tes1ptr->nodeval) {     /* If value types differ */
+    if (tes0ptr->nodeval == STRATPARAMDOUBLE) {
+      tes1ptr->nodeval         = STRATPARAMDOUBLE;
+      tes1ptr->data.val.valdbl = (double) tes1ptr->data.val.valint;
     }
     else {
-      test0->typenode        = STRATPARAMDOUBLE;
-      test0->data.val.valdbl = (double) test0->data.val.valint;
+      tes0ptr->nodeval         = STRATPARAMDOUBLE;
+      tes0ptr->data.val.valdbl = (double) tes0ptr->data.val.valint;
     }
   }
 
@@ -528,21 +500,21 @@ StratTest * const           test1)
 
 int
 stratTestExit (
-StratTest * const           test)
+StratTest * const           testptr)
 {
   int               o;                            /* Output condition flag */
 
 #ifdef SCOTCH_DEBUG_PARSER1
-  if (test == NULL) {
+  if (testptr == NULL) {
     errorPrint ("stratTestExit: invalid parameter");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_PARSER1 */
 
   o = 0;
-  switch (test->typetest) {
-    case STRATTESTNOT :                           /* Not operator */
-      o = stratTestExit (test->data.test[0]);     /* Free the son */
+  switch (testptr->testval) {
+    case STRATTESTNOT :                           /* Not operator   */
+      o = stratTestExit (testptr->data.testtab[0]); /* Free the son */
       break;
     case STRATTESTAND :                           /* And operator            */
     case STRATTESTOR  :                           /* Or operator             */
@@ -553,21 +525,19 @@ StratTest * const           test)
     case STRATTESTMUL :                           /* Multiplication operator */
     case STRATTESTADD :                           /* Addition operator       */
     case STRATTESTSUB :                           /* Subtraction operator    */
-      o  = stratTestExit (test->data.test[0]);    /* Free the sons           */
-      o |= stratTestExit (test->data.test[1]);
+      o  = stratTestExit (testptr->data.testtab[0]); /* Free the sons        */
+      o |= stratTestExit (testptr->data.testtab[1]);
       break;
     case STRATTESTVAL :                           /* Constant value */
     case STRATTESTVAR :                           /* Variable       */
       break;
-#ifdef SCOTCH_DEBUG_PARSER1
     default :
-      errorPrint ("stratTestExit: invalid condition type (%u)", test->typetest);
+      errorPrint ("stratTestExit: invalid condition type (%u)", testptr->testval);
       o = 1;
       break;
-#endif /* SCOTCH_DEBUG_PARSER1 */
   }
 
-  memFree (test);                                 /* Free the structure */
+  memFree (testptr);                              /* Free the structure */
   return  (o);
 }
 
@@ -583,24 +553,24 @@ static char *               strattestsavepa[2][2] = { { "(", ")" }, { "", "" } }
 
 int
 stratTestSave (
-const StratTest * const     test,
+const StratTest * const     testptr,
 FILE * const                stream)
 {
   int               i;
   int               o;
 
 #ifdef SCOTCH_DEBUG_PARSER1
-  if ((test == NULL) || (stream == NULL)) {
+  if ((testptr == NULL) || (stream == NULL)) {
     errorPrint ("stratTestSave: invalid parameter");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_PARSER1 */
 
   o = 0;                                          /* Assume no error */
-  switch (test->typetest) {
+  switch (testptr->testval) {
     case STRATTESTNOT :                           /* Not operator */
       if ((fprintf (stream, "!(") == EOF) ||
-          (stratTestSave (test->data.test[0], stream) != 0) ||
+          (stratTestSave (testptr->data.testtab[0], stream) != 0) ||
           (fprintf (stream, ")") == EOF))
         o = 1;
       break;
@@ -613,51 +583,76 @@ FILE * const                stream)
     case STRATTESTSUB :                           /* Subtraction operator    */
     case STRATTESTMUL :                           /* Multiplication operator */
     case STRATTESTMOD :                           /* Modulus operator        */
-      i = (test->data.test[0]->typetest < test->typetest) ? 1 : 0;
+      i = (testptr->data.testtab[0]->testval < testptr->testval) ? 1 : 0;
       fprintf (stream, "%s", strattestsavepa[i][0]);
-      o = stratTestSave (test->data.test[0], stream);
+      o = stratTestSave (testptr->data.testtab[0], stream);
       fprintf (stream, "%s", strattestsavepa[i][1]);
       if (o == 0) {
-        fprintf (stream, "%c", strattestsaveop[test->typetest]);
-        i = (test->data.test[1]->typetest < test->typetest) ? 1 : 0;
+        fprintf (stream, "%c", strattestsaveop[testptr->testval]);
+        i = (testptr->data.testtab[1]->testval < testptr->testval) ? 1 : 0;
         fprintf (stream, "%s", strattestsavepa[i][0]);
-        stratTestSave (test->data.test[1], stream);
+        stratTestSave (testptr->data.testtab[1], stream);
         fprintf (stream, "%s", strattestsavepa[i][1]);
       }
       break;
     case STRATTESTVAL :                           /* Constant value */
-      switch (test->typenode) {
+      switch (testptr->nodeval) {
         case STRATPARAMDOUBLE :
-          o = (fprintf (stream, "%lf", test->data.val.valdbl) == EOF);
+          o = (fprintf (stream, "%lf", testptr->data.val.valdbl) == EOF);
           break;
         case STRATPARAMINT :
-          o = (fprintf (stream, INTSTRING, (INT) test->data.val.valint) == EOF);
+          o = (fprintf (stream, INTSTRING, (INT) testptr->data.val.valint) == EOF);
           break;
-#ifdef SCOTCH_DEBUG_PARSER2
         default :
           errorPrint ("stratTestSave: invalid value type");
           o = 1;
-#endif /* SCOTCH_DEBUG_PARSER2 */
       }
       break;
     case STRATTESTVAR :                           /* Variable */
-      for (i = 0; test->data.var.datatab->condtab[i].name != NULL; i ++) {
-        if ((test->data.var.datatab->condtab[i].dataofft -
-             test->data.var.datatab->condtab[i].database) == test->data.var.datadisp)
+      for (i = 0; testptr->data.var.datatab->condtab[i].nameptr != NULL; i ++) {
+        if ((testptr->data.var.datatab->condtab[i].doffptr -
+             testptr->data.var.datatab->condtab[i].dbasptr) == testptr->data.var.dataoft)
           break;
       }
-      if (test->data.var.datatab->condtab[i].name == NULL) {
+      if (testptr->data.var.datatab->condtab[i].nameptr == NULL) {
         errorPrint ("stratTestSave: invalid variable displacement");
-        return     (1);
+        return (1);
       }
-      o = (fprintf (stream, "%s", test->data.var.datatab->condtab[i].name) == EOF);
+      o = (fprintf (stream, "%s", testptr->data.var.datatab->condtab[i].nameptr) == EOF);
       break;
-#ifdef SCOTCH_DEBUG_PARSER2
     default :
-      errorPrint ("stratTestSave: invalid condition type (%u)", test->typetest);
+      errorPrint ("stratTestSave: invalid condition type (%u)", testptr->testval);
       o = 1;
-#endif /* SCOTCH_DEBUG_PARSER2 */
   }
 
   return (o);
+}
+
+/*********************************/
+/*                               */
+/* The parser location routines. */
+/*                               */
+/*********************************/
+
+void
+parserLocationUpdate (
+ParserLocation * const      locaptr,
+const char * const          textptr)
+{
+  int                 textidx;
+
+  locaptr->cobenum = locaptr->coennum;
+  locaptr->libenum = locaptr->liennum;
+  locaptr->tebeptr = locaptr->teenptr;
+
+  for (textidx = 0; textptr[textidx] != '\0'; textidx ++) {
+    if (textptr[textidx] == '\n') {
+      locaptr->coennum = 0;
+      locaptr->liennum ++;
+    }
+    else
+      locaptr->coennum ++;
+  }
+
+  locaptr->teenptr += textidx;
 }

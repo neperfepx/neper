@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -47,14 +47,14 @@
 /**                                 to   : 27 jan 2004     **/
 /**                # Version 5.0  : from : 12 sep 2007     **/
 /**                                 to   : 12 sep 2007     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HMESH_ORDER_GP
 
 #include "module.h"
 #include "common.h"
@@ -78,7 +78,7 @@
 
 int
 hmeshOrderGp (
-const Hmesh * restrict const              meshptr,
+Hmesh * restrict const                    meshptr,
 Order * restrict const                    ordeptr,
 const Gnum                                ordenum,
 OrderCblk * restrict const                cblkptr, /*+ Single column-block +*/
@@ -98,7 +98,7 @@ const HmeshOrderGpParam * restrict const  paraptr)
         &queue.qtab, (size_t) ((meshptr->vnohnnd - meshptr->m.baseval)   * sizeof (Gnum)),
         &vexxtax,    (size_t) ((meshptr->m.velmnbr + meshptr->m.vnodnbr) * sizeof (HmeshOrderGpVertex)), NULL) == NULL) {
     errorPrint ("hmeshOrderGp: out of memory");
-    return     (1);
+    return (1);
   }
   vexxtax -= meshptr->m.baseval;                /* Base vexxtab array */
   memSet (vexxtax + meshptr->m.velmbas, 0, meshptr->m.velmnbr                      * sizeof (HmeshOrderGpVertex)); /* Initialize pass numbers for */
@@ -109,7 +109,7 @@ const HmeshOrderGpParam * restrict const  paraptr)
     while (rootptr->passnum != 0)                 /* Find first unallocated root */
       rootptr ++;
 
-    vdianum  = rootptr - vexxtax;                 /* Start from found root */
+    vdianum  = (Gnum) (rootptr - vexxtax);        /* Start from found root */
     vdiadist = 0;
     for (passflag = 1; (passflag -- != 0) && (passnum <= paraptr->passnbr); passnum ++) { /* Loop if modifications */
       hmeshOrderGpQueueFlush (&queue);            /* Flush vertex queue         */
@@ -187,7 +187,7 @@ const HmeshOrderGpParam * restrict const  paraptr)
         if ((ordeptr->peritab[ordeval] <   ordeptr->baseval) ||
             (ordeptr->peritab[ordeval] >= (ordeptr->baseval + ordeptr->vnodnbr))) {
           errorPrint ("hmeshOrderGp: invalid permutation index");
-          return     (1);
+          return (1);
         }
 #endif /* SCOTCH_DEBUG_ORDER2 */
         ordeval ++;
@@ -233,7 +233,7 @@ const HmeshOrderGpParam * restrict const  paraptr)
     if (ordeptr->peritab[ordeval] == ~0) {
       errorPrint ("hmeshOrderGp: internal error");
       memFree    (queue.qtab);                    /* Free group leader */
-      return     (1);
+      return (1);
     }
   }
 #endif /* SCOTCH_DEBUG_ORDER2 */

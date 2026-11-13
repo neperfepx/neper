@@ -21,7 +21,7 @@ nes_pproc (struct IN_S In, struct SIM *pSim)
 
   nes_pproc_load (pSim, &Tess, &Tesr, &Nodes, Mesh);
 
-  nes_pproc_orispace (In, Tess.CellCrySym, pSim);
+  nes_pproc_orispace (In, pSim);
 
   for (i = 0; i < In.entityqty; i++)
     nes_pproc_entity (pSim, &Tess, Tesr, &Nodes, Mesh, In.entities[i], In.entityresexpr[i]);

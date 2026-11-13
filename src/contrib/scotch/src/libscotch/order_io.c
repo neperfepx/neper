@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2019,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -34,6 +34,7 @@
 /**   NAME       : order_io.c                              **/
 /**                                                        **/
 /**   AUTHOR     : Francois PELLEGRINI                     **/
+/**                Clement BARTHELEMY                      **/
 /**                                                        **/
 /**   FUNCTION   : This module handles generic orderings.  **/
 /**                                                        **/
@@ -47,14 +48,14 @@
 /**                                 to   : 11 aug 2010     **/
 /**                # Version 6.0  : from : 29 sep 2019     **/
 /**                                 to   : 29 sep 2019     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 11 jul 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define ORDER_IO
 
 #include "module.h"
 #include "common.h"
@@ -189,7 +190,7 @@ int
 orderSaveMap (
 const Order * restrict const  ordeptr,
 const Gnum * restrict const   vlbltax,
-FILE * const                  stream)
+FILE * restrict const         stream)
 {
   const Gnum * restrict peritax;
   Gnum * restrict       rangtab;
@@ -247,7 +248,7 @@ int
 orderSaveTree (
 const Order * restrict const  ordeptr,
 const Gnum * restrict const   vlbltax,
-FILE * const                  stream)
+FILE * restrict const         stream)
 {
   const Gnum * restrict peritax;
   Gnum * restrict       rangtab;

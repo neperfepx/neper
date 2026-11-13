@@ -57,6 +57,7 @@ ol_set_misorispread (char *distrib, int dim, long int random, struct OL_SET *pOS
     {
       for (j = 0; j < dim; j++)
         v[j] = (sig[j] > 0) ? gsl_ran_gaussian (rand, sig[j] / 2) : 0;
+      ut_array_1d_scale (v, dim, M_PI / 180);
 
       ol_lnq_q (v, (*pOSet).q[i]);
     }
@@ -67,8 +68,8 @@ ol_set_misorispread (char *distrib, int dim, long int random, struct OL_SET *pOS
 
   else if (!strcmp (fct, "flat"))
   {
-    double *r = ol_r_alloc ();
-    double tmp, theta, thetamax = 0;
+    double *rtheta = ol_rtheta_alloc ();
+    double tmp, thetamax = 0;
 
     for (i = 0; i < varqty; i++)
     {
@@ -79,21 +80,21 @@ ol_set_misorispread (char *distrib, int dim, long int random, struct OL_SET *pOS
     for (i = 0; i < (int) (*pOSet).size; i++)
     {
       if (dim == 3)
-      ol_nb_max_rtheta (gsl_rng_uniform (rand), gsl_rng_uniform (rand),
-                        gsl_rng_uniform (rand), thetamax, r, &theta);
+        ol_nb_max_rtheta (gsl_rng_uniform (rand), gsl_rng_uniform (rand),
+                          gsl_rng_uniform (rand), thetamax, rtheta);
       else if (dim == 2)
       {
         tmp = gsl_rng_uniform (rand) * 2 * M_PI;
-        ut_array_1d_set_2 (r, cos (tmp), sin (tmp));
-        theta = thetamax * pow (gsl_rng_uniform (rand), 0.5);
+        ut_array_1d_set_2 (rtheta, cos (tmp), sin (tmp));
+        rtheta[3] = thetamax * pow (gsl_rng_uniform (rand), 0.5);
       }
       else
         abort ();
 
-      ol_rtheta_q (r, theta, (*pOSet).q[i]);
+      ol_rtheta_q (rtheta, (*pOSet).q[i]);
     }
 
-    ol_r_free (r);
+    ol_rtheta_free (&rtheta);
   }
 
   else
@@ -115,6 +116,7 @@ ol_set_clean (struct OL_SET *pOSet)
   double *weight = ut_alloc_1d ((*pOSet).size);
   double *theta = ut_alloc_1d ((*pOSet).size);
   int *id = ut_alloc_1d_int ((*pOSet).size);
+  double **theta3 = (*pOSet).theta3;
 
   oldsize = (*pOSet).size;
   ut_array_2d_memcpy     ((*pOSet).q,      oldsize, 4, q);
@@ -142,6 +144,8 @@ ol_set_clean (struct OL_SET *pOSet)
       (*pOSet).theta = ut_realloc_1d ((*pOSet).theta, (*pOSet).size);
     if ((*pOSet).id)
       (*pOSet).id = ut_realloc_1d_int ((*pOSet).id, (*pOSet).size);
+    if (theta3)
+      (*pOSet).theta3 = ut_alloc_1d_pdouble ((*pOSet).size);
 
     pos = 0;
     for (i = 0; i < oldsize; i++)
@@ -153,8 +157,16 @@ ol_set_clean (struct OL_SET *pOSet)
         (*pOSet).theta[pos] = theta[i];
         if ((*pOSet).id)
           (*pOSet).id[pos] = id[i];
+        if (theta3)
+        {
+          (*pOSet).theta3[pos] = theta3[i];
+          theta3[i] = NULL;
+        }
         pos++;
       }
+
+    if (theta3)
+      ut_free_2d (&theta3, oldsize);
   }
 
   ut_free_2d (&q, oldsize);
@@ -190,6 +202,29 @@ ol_set_addori (struct OL_SET *pOSet, double *q, double weight, double theta, int
     (*pOSet).id = ut_realloc_1d_int ((*pOSet).id, (*pOSet).size);
     (*pOSet).id[(*pOSet).size - 1] = id;
   }
+
+  if ((*pOSet).theta3)
+  {
+    (*pOSet).theta3 = ut_realloc_1d_pdouble ((*pOSet).theta3, (*pOSet).size);
+    (*pOSet).theta3[(*pOSet).size - 1] = NULL;
+  }
+
+  return;
+}
+
+// sets the theta3 values of the last orientation of a set (if theta3 is
+// not NULL)
+static void
+ol_set_lastori_theta3 (struct OL_SET *pOSet, double *theta3)
+{
+  if (!theta3)
+    return;
+
+  if (!(*pOSet).theta3)
+    (*pOSet).theta3 = ut_alloc_1d_pdouble ((*pOSet).size);
+
+  (*pOSet).theta3[(*pOSet).size - 1] = ut_alloc_1d (3);
+  ut_array_1d_memcpy (theta3, 3, (*pOSet).theta3[(*pOSet).size - 1]);
 
   return;
 }
@@ -229,6 +264,7 @@ ol_set_expandset (struct OL_SET OSet1, struct OL_SET *pOSet2)
                        OSet1c.weight ? OSet1c.weight[i] : 1,
                        OSet1c.theta ? OSet1c.theta[i] : 0,
                        OSet1c.id ? OSet1c.id[i] : i);
+        ol_set_lastori_theta3 (pOSet2, OSet1c.theta3 ? OSet1c.theta3[i] : NULL);
       }
       else
       {
@@ -239,7 +275,7 @@ ol_set_expandset (struct OL_SET OSet1, struct OL_SET *pOSet2)
 
         ol_q_special_set (OSet1c.q[i], &OSet3);
 
-        for (int j = 0; j < (int) OSet3.size; j++)
+        for (j = 0; j < (int) OSet3.size; j++)
           if (OSet3.weight && isnan (OSet3.weight[j]))
             abort ();
 
@@ -253,12 +289,14 @@ ol_set_expandset (struct OL_SET OSet1, struct OL_SET *pOSet2)
           if (isnan ((*pOSet2).weight[(*pOSet2).size - 1]))
             abort ();
 
+          ol_set_lastori_theta3 (pOSet2, OSet1c.theta3 ? OSet1c.theta3[i] : NULL);
+
           if (!strcmp (label, "uniform"))
           {
             if (!(*pOSet2).theta)
               (*pOSet2).theta = ut_alloc_1d ((*pOSet2).size);
 
-            (*pOSet2).theta[j] = DBL_MAX;
+            (*pOSet2).theta[(*pOSet2).size - 1] = DBL_MAX;
           }
         }
 
@@ -278,7 +316,7 @@ ol_q_special_set (double *qlabel, struct OL_SET *pOSet)
   double *qref = ol_q_alloc ();
   double *qrot = ol_q_alloc ();
   double *q = ol_q_alloc ();
-  double *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
   double *R = ol_R_alloc ();
   double *qnew = ol_q_alloc ();
   double theta, thetamin, thetamax;
@@ -292,8 +330,9 @@ ol_q_special_set (double *qlabel, struct OL_SET *pOSet)
   // random / uniform
   if (ut_num_equal (qlabel[0], UNIFORM, 1e-6))
   {
-    ol_r_set_this (r, 1, 0, 0);
-    ol_rtheta_q (r, 0.1, qnew); // any orientation would do.  We avoid (0,0,0) because of a bug in openGJK down the road.
+    ol_r_set_this (rtheta, 1, 0, 0);
+    rtheta[3] = 0.1;
+    ol_rtheta_q (rtheta, qnew); // any orientation would do.  We avoid (0,0,0) because of a bug in openGJK down the road.
     ol_set_addori (pOSet, qnew, 0, DBL_MAX, 0);
   }
 
@@ -304,13 +343,15 @@ ol_q_special_set (double *qlabel, struct OL_SET *pOSet)
     thetamax = 45;
     stepqty = ut_num_d2ri ((thetamax - thetamin) / theta_step);
 
-    ol_r_set_this (r, 1, 0, 0);
-    ol_rtheta_q (r, 45, qref);
-    ol_r_set_this (r, 0, 0, 1);
+    ol_r_set_this (rtheta, 1, 0, 0);
+    rtheta[3] = 45;
+    ol_rtheta_q (rtheta, qref);
+    ol_r_set_this (rtheta, 0, 0, 1);
 
     for (i = 0; i < stepqty + 1; i++)
     {
-      ol_rtheta_q (r, thetamin + (thetamax - thetamin) * ((double) i / stepqty), qrot);
+      rtheta[3] = thetamin + (thetamax - thetamin) * ((double) i / stepqty);
+      ol_rtheta_q (rtheta, qrot);
       ol_q_q_q_ref (qref, qrot, qnew);
       ol_set_addori (pOSet, qnew, 0, 0, 0);
     }
@@ -323,13 +364,15 @@ ol_q_special_set (double *qlabel, struct OL_SET *pOSet)
     thetamax = 135;
     stepqty = ut_num_d2ri ((thetamax - thetamin) / theta_step);
 
-    ol_r_set_this (r, 1, 0, 0);
-    ol_rtheta_q (r, 45, qref);
-    ol_r_set_this (r, 0, 0, 1);
+    ol_r_set_this (rtheta, 1, 0, 0);
+    rtheta[3] = 45;
+    ol_rtheta_q (rtheta, qref);
+    ol_r_set_this (rtheta, 0, 0, 1);
 
     for (i = 0; i < stepqty + 1; i++)
     {
-      ol_rtheta_q (r, thetamin + (thetamax - thetamin) * ((double) i / stepqty), qrot);
+      rtheta[3] = thetamin + (thetamax - thetamin) * ((double) i / stepqty);
+      ol_rtheta_q (rtheta, qrot);
       ol_q_q_q_ref (qref, qrot, qnew);
       ol_set_addori (pOSet, qnew, 0, 0, 0);
     }
@@ -342,13 +385,15 @@ ol_q_special_set (double *qlabel, struct OL_SET *pOSet)
     thetamax = 90;
     stepqty = ut_num_d2ri ((thetamax - thetamin) / theta_step);
 
-    ol_r_set_this (r, 1, 0, 0);
-    ol_rtheta_q (r, 45, qref);
-    ol_r_set_this (r, 0, 0, 1);
+    ol_r_set_this (rtheta, 1, 0, 0);
+    rtheta[3] = 45;
+    ol_rtheta_q (rtheta, qref);
+    ol_r_set_this (rtheta, 0, 0, 1);
 
     for (i = 0; i < stepqty + 1; i++)
     {
-      ol_rtheta_q (r, thetamin + (thetamax - thetamin) * ((double) i / stepqty), qrot);
+      rtheta[3] = thetamin + (thetamax - thetamin) * ((double) i / stepqty);
+      ol_rtheta_q (rtheta, qrot);
       ol_q_q_q_ref (qref, qrot, qnew);
       ol_set_addori (pOSet, qnew, 0, 0, 0);
     }
@@ -368,13 +413,15 @@ ol_q_special_set (double *qlabel, struct OL_SET *pOSet)
 
     // first segment
     ol_q_q_qmisori (q1, q2, qrot);
-    ol_q_rtheta (qrot, r, &theta);
+    ol_q_rtheta (qrot, rtheta);
+    theta = rtheta[3];
 
     stepqty = ut_num_d2ri (theta / theta_step);
 
     for (i = 0; i < stepqty + 1; i++)
     {
-      ol_rtheta_q (r, theta * i / stepqty, qrot);
+      rtheta[3] = theta * i / stepqty;
+      ol_rtheta_q (rtheta, qrot);
       ol_q_q_q_ref (q1, qrot, qnew);
       ol_set_addori (pOSet, qnew, 0, 0, 0);
     }
@@ -387,10 +434,10 @@ ol_q_special_set (double *qlabel, struct OL_SET *pOSet)
       ol_set_addori (pOSet, qnew, 0, 0, 0);
     }
 
-    ol_R_free (R1);
-    ol_R_free (R2);
-    ol_q_free (q1);
-    ol_q_free (q2);
+    ol_R_free (&R1);
+    ol_R_free (&R2);
+    ol_q_free (&q1);
+    ol_q_free (&q2);
   }
 
   else if (ut_num_equal (qlabel[0], FCC_PSC_BETA_BENT, 1e-6))
@@ -422,14 +469,16 @@ ol_q_special_set (double *qlabel, struct OL_SET *pOSet)
 
     // first segment
     ol_q_q_qmisori (q1, q2, qrot);
-    ol_q_rtheta (qrot, r, &theta);
+    ol_q_rtheta (qrot, rtheta);
+    theta = rtheta[3];
 
     stepqty = ut_num_d2ri (theta / theta_step);
 
     dist1 = ut_space_dist (R1, Rc);
     for (i = 0; i < stepqty + 1; i++)
     {
-      ol_rtheta_q (r, theta * i / stepqty, qrot);
+      rtheta[3] = theta * i / stepqty;
+      ol_rtheta_q (rtheta, qrot);
       ol_q_q_q_ref (q1, qrot, qnew);
       ol_q_R (qnew, Rtmp);
       dist = ut_space_dist (Rtmp, Rc);
@@ -448,15 +497,15 @@ ol_q_special_set (double *qlabel, struct OL_SET *pOSet)
       ol_set_addori (pOSet, qnew, 0, 0, 0);
     }
 
-    ol_R_free (R1);
-    ol_R_free (R2);
-    ol_R_free (Rtmp);
-    ol_R_free (Rc);
+    ol_R_free (&R1);
+    ol_R_free (&R2);
+    ol_R_free (&Rtmp);
+    ol_R_free (&Rc);
     ut_free_1d (&v1);
     ut_free_1d (&v2);
     ut_free_1d (&z);
-    ol_q_free (q1);
-    ol_q_free (q2);
+    ol_q_free (&q1);
+    ol_q_free (&q2);
   }
 
   // 100_x3
@@ -467,11 +516,12 @@ ol_q_special_set (double *qlabel, struct OL_SET *pOSet)
     stepqty = ut_num_d2ri ((thetamax - thetamin) / theta_step);
 
     ol_q_set_unit (qref);
-    ol_r_set_this (r, 0, 0, 1);
+    ol_r_set_this (rtheta, 0, 0, 1);
 
     for (i = 0; i < stepqty + 1; i++)
     {
-      ol_rtheta_q (r, thetamin + (thetamax - thetamin) * ((double) i / stepqty), qrot);
+      rtheta[3] = thetamin + (thetamax - thetamin) * ((double) i / stepqty);
+      ol_rtheta_q (rtheta, qrot);
       ol_q_q_q_ref (qref, qrot, qnew);
       ol_set_addori (pOSet, qnew, 0, 0, 0);
     }
@@ -484,30 +534,29 @@ ol_q_special_set (double *qlabel, struct OL_SET *pOSet)
     thetamax = 180;
     stepqty = ut_num_d2ri ((thetamax - thetamin) / theta_step);
 
-    ol_r_set_this (r, 1 / sqrt (2), -1 / sqrt (2), 0);
-    ol_rtheta_q_rad (r, acos (1. / sqrt (3)), qref);
-    ol_r_set_this (r, 0, 0, 1);
+    ol_r_set_this (rtheta, 1 / sqrt (2), -1 / sqrt (2), 0);
+    rtheta[3] = acos (1. / sqrt (3));
+    ol_rtheta_q_rad (rtheta, qref);
+    ol_r_set_this (rtheta, 0, 0, 1);
 
     for (i = 0; i < stepqty + 1; i++)
     {
-      ol_rtheta_q (r, thetamin + (thetamax - thetamin) * ((double) i / stepqty), qrot);
+      rtheta[3] = thetamin + (thetamax - thetamin) * ((double) i / stepqty);
+      ol_rtheta_q (rtheta, qrot);
       ol_q_q_q_ref (qref, qrot, qnew);
       ol_set_addori (pOSet, qnew, 0, 0, 0);
-      double *R = ol_R_alloc ();
-      ol_q_R (qnew, R);
-      printf ("AA: "); ol_R_fprintf (stdout, R, "%f");
     }
   }
 
   else
     status = -1;
 
-  ol_q_free (qref);
-  ol_q_free (qrot);
-  ol_q_free (q);
-  ol_r_free (r);
-  ol_R_free (R);
-  ol_q_free (qnew);
+  ol_q_free (&qref);
+  ol_q_free (&qrot);
+  ol_q_free (&q);
+  ol_rtheta_free (&rtheta);
+  ol_R_free (&R);
+  ol_q_free (&qnew);
 
   return status;
 }

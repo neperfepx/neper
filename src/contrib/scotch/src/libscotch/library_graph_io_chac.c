@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2010,2019,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,6 +43,8 @@
 /**                                 to   : 19 jan 2004     **/
 /**                # Version 5.1  : from : 27 apr 2010     **/
 /**                                 to   : 27 apr 2010     **/
+/**                # Version 7.0  : from : 07 may 2019     **/
+/**                                 to   : 21 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -50,10 +52,9 @@
 **  The defines and includes.
 */
 
-#define LIBRARY
-
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "geom.h"
 #include "graph.h"
 #include "scotch.h"
@@ -66,11 +67,11 @@
 /*                                   */
 /*************************************/
 
-/*+ This routine loads the given opaque geom
-*** structure with the data of the given stream.
-*** - 0   : if loading succeeded.
-*** - !0  : on error.
-+*/
+/* This routine loads the given opaque geom
+** structure with the data of the given stream.
+** - 0   : if loading succeeded.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphGeomLoadChac (
@@ -80,15 +81,15 @@ FILE * const                  filegrfptr,
 FILE * const                  filegeoptr,
 const char * const            dataptr)
 {
-  return (graphGeomLoadChac ((Graph *) grafptr, (Geom *) geomptr, filegrfptr, filegeoptr, dataptr));
+  return (graphGeomLoadChac ((Graph *) CONTEXTOBJECT (grafptr), (Geom *) geomptr, filegrfptr, filegeoptr, dataptr));
 }
 
-/*+ This routine saves the contents of the given
-*** opaque graph structure to the given stream.
-*** It returns:
-*** - 0   : if the saving succeeded.
-*** - !0  : on error.
-+*/
+/* This routine saves the contents of the given
+** opaque graph structure to the given stream.
+** It returns:
+** - 0   : if the saving succeeded.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphGeomSaveChac (
@@ -98,5 +99,5 @@ FILE * const                        filegrfptr,
 FILE * const                        filegeoptr,
 const char * const                  dataptr)
 {
-  return (graphGeomSaveChac ((Graph *) grafptr, (Geom *) geomptr, filegrfptr, filegeoptr, dataptr));
+  return (graphGeomSaveChac ((Graph *) CONTEXTOBJECT (grafptr), (Geom *) geomptr, filegrfptr, filegeoptr, dataptr));
 }

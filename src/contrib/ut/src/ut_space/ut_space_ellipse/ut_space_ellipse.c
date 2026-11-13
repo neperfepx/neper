@@ -13,7 +13,7 @@
 //y0,y1 = initial point on ellipse axis (center of ellipse is 0,0)
 //x0,x1 = intersection point
 
-double
+static double
 GetRoot (double r0, double z0, double z1, double g)
 {
   double n0 = r0 * z0;

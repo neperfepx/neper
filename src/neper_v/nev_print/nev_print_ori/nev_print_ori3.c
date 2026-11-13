@@ -10,9 +10,10 @@ nev_print_ori_file_data_ori (int input, struct ORI *pOri, double **q,
                             double ***ppts, double **pptwgts,
                             int **pptcells, int *pptqty)
 {
-  int i, j;
+  int i, j, s, symqty = neut_ori_sym_qty ((*pOri).sym);
   struct OL_SET Set;
   double *qref = ol_q_alloc ();
+  double *qs = ol_q_alloc ();
 
   (void) input;
 
@@ -23,15 +24,6 @@ nev_print_ori_file_data_ori (int input, struct ORI *pOri, double **q,
     ol_q_refcsys (q[i], qref, Set.q[i]);
     Set.weight[i] = weights ? weights[i] : 1;
   }
-
-  /*
-  else if (! strcmp (InORI.SamplingType, "rel"))
-    ol_set_fscanf_sample (in, InORI.Sampling[id], &Set, NULL);
-  else if (! strcmp (InORI.SamplingType, "abs"))
-    ol_set_fscanf_sample_nb (in, InORI.Sampling[id], &Set, NULL);
-  else
-    abort ();
-  */
 
   (*ppts) = ut_alloc_2d (1, 3);
   (*pptcells) = ut_alloc_1d_int (1);
@@ -53,51 +45,56 @@ nev_print_ori_file_data_ori (int input, struct ORI *pOri, double **q,
           ol_q_special_set (Set.q[i], &OSet);
 
           for (j = 0; j < (int) OSet.size; j++)
-          {
-            double **Rs = NULL;
-            int Rqty, k;
-
-            ol_q_R (OSet.q[j], R);
-
-            neut_ori_R_Rcrysym_all (*pOri, R, &Rs, &Rqty);
-
-            for (k = 0; k < Rqty; k++)
+            for (s = 0; s < symqty; s++)
             {
-              (*pptqty)++;
-              (*ppts) = ut_realloc_2d_addline (*ppts, *pptqty, 3);
-              (*pptcells) = ut_realloc_1d_int (*pptcells, *pptqty);
-              (*pptwgts) = ut_realloc_1d (*pptwgts, *pptqty);
+              double **Rs = NULL;
+              int Rqty, k;
 
-              ut_array_1d_memcpy (Rs[k], 3, (*ppts)[(*pptqty - 1)]);
+              neut_ori_sym_q ((*pOri).sym, s, OSet.q[j], qs);
+              ol_q_R (qs, R);
 
-              (*pptcells)[(*pptqty) - 1] = i + 1;
-              (*pptwgts)[(*pptqty) - 1] = Set.weight[i] / OSet.size;
+              neut_ori_R_Rcrysym_all (*pOri, R, &Rs, &Rqty);
+
+              for (k = 0; k < Rqty; k++)
+              {
+                (*pptqty)++;
+                (*ppts) = ut_realloc_2d_addline (*ppts, *pptqty, 3);
+                (*pptcells) = ut_realloc_1d_int (*pptcells, *pptqty);
+                (*pptwgts) = ut_realloc_1d (*pptwgts, *pptqty);
+
+                ut_array_1d_memcpy (Rs[k], 3, (*ppts)[(*pptqty - 1)]);
+
+                (*pptcells)[(*pptqty) - 1] = i + 1;
+                (*pptwgts)[(*pptqty) - 1] = Set.weight[i] / OSet.size;
+              }
+              ut_free_2d (&Rs, Rqty);
             }
-            ut_free_2d (&Rs, Rqty);
-          }
 
-          ol_R_free (R);
+          ol_R_free (&R);
           ol_set_free (&OSet);
         }
 
         // standard orientation
         else
-        {
-          (*ppts) = ut_realloc_2d_addline (*ppts, (*pptqty) + 1, 3);
-          (*pptcells) = ut_realloc_1d_int (*pptcells, (*pptqty) + 1);
-          (*pptwgts) = ut_realloc_1d (*pptwgts, (*pptqty) + 1);
+          for (s = 0; s < symqty; s++)
+          {
+            (*ppts) = ut_realloc_2d_addline (*ppts, (*pptqty) + 1, 3);
+            (*pptcells) = ut_realloc_1d_int (*pptcells, (*pptqty) + 1);
+            (*pptwgts) = ut_realloc_1d (*pptwgts, (*pptqty) + 1);
 
-          ol_q_R (Set.q[i], (*ppts)[*pptqty]);
-          ol_R_Rcrysym ((*ppts)[*pptqty], (*pOri).crysym, (*ppts)[*pptqty]);
+            neut_ori_sym_q ((*pOri).sym, s, Set.q[i], qs);
+            ol_q_R (qs, (*ppts)[*pptqty]);
+            ol_R_Rcrysym ((*ppts)[*pptqty], (*pOri).crysym, (*ppts)[*pptqty]);
 
-          (*pptcells)[(*pptqty)] = i + 1;
-          (*pptwgts)[(*pptqty)] = Set.weight[i];
-          (*pptqty)++;
-        }
+            (*pptcells)[(*pptqty)] = i + 1;
+            (*pptwgts)[(*pptqty)] = Set.weight[i];
+            (*pptqty)++;
+          }
       }
     }
 
-  ol_q_free (qref);
+  ol_q_free (&qref);
+  ol_q_free (&qs);
 
   return;
 }

@@ -73,10 +73,10 @@ neut_tess_fprintf_gmsh (FILE * file, struct TESS Tess)
     if (!Tess.FaceState || Tess.FaceState[i] != -1)
     {
       fprintf (file, "Line Loop (%d) = {", i);
-      for (j = 1; j <= Tess.FaceVerQty[i]; j++)
+      for (j = 1; j <= Tess.FaceEdgeQty[i]; j++)
       {
         fprintf (file, "%d%s", Tess.FaceEdgeNb[i][j] * Tess.FaceEdgeOri[i][j],
-                 (j < Tess.FaceVerQty[i]) ? "," : "");
+                 (j < Tess.FaceEdgeQty[i]) ? "," : "");
       }
       fprintf (file, "};\n");
       fprintf (file, "Plane Surface (%d) = {%d}; ", i, i);
@@ -269,7 +269,7 @@ neut_tess_fprintf_fe (FILE * file, struct TESS Tess)
   for (i = 1; i <= Tess.FaceQty; i++)
   {
     fprintf (file, "%d", i);
-    for (j = 1; j <= Tess.FaceVerQty[i]; j++)
+    for (j = 1; j <= Tess.FaceEdgeQty[i]; j++)
       fprintf (file, " %d", Tess.FaceEdgeNb[i][j] * Tess.FaceEdgeOri[i][j]);
     fprintf (file, "\n");
   }
@@ -494,8 +494,8 @@ neut_tess_fprintf_ovm (FILE *file, struct TESS Tess)
   fprintf (file, "%d\n", Tess.FaceQty);
   for (int i = 1; i <= Tess.FaceQty; i++)
   {
-    fprintf (file, "%d", Tess.FaceVerQty[i]);
-    for (int j = 1; j <= Tess.FaceVerQty[i]; j++)
+    fprintf (file, "%d", Tess.FaceEdgeQty[i]);
+    for (int j = 1; j <= Tess.FaceEdgeQty[i]; j++)
       fprintf (file, " %d", (Tess.FaceEdgeNb[i][j] - 1) * 2);
     fprintf (file, "\n");
   }

@@ -16,6 +16,7 @@ net_tess_opt_post_modes (struct TOPT TOpt, struct TESS *Tess, int tessid)
   int *mode = ut_alloc_1d_int (TOpt.CellQty);
   double *tmpval = NULL;
 
+  ut_free_1d_int (&Tess[tessid].CellModeId);
   Tess[tessid].CellModeId = ut_alloc_1d_int (Tess[tessid].CellQty + 1);
 
   tar = -1;
@@ -99,6 +100,7 @@ net_tess_opt_post_modes (struct TOPT TOpt, struct TESS *Tess, int tessid)
 
   ut_free_1d (&val);
   ut_free_1d_int (&id);
+  ut_free_1d_int (&mode);
   ut_free_1d (&x);
 
   return;

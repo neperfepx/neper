@@ -23,9 +23,6 @@ jobs:
       - name: Trust system Homebrew taps
         run: brew trust aws/tap azure/bicep
 
-      - name: Install GNU Scientific Library
-        run: brew install gsl
-
       - name: Install OpenMP
         run: brew install libomp
 

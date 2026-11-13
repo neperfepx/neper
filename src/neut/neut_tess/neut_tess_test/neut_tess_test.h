@@ -16,6 +16,10 @@ extern "C"
   extern int neut_tess_test_face_normal (struct TESS, int, int);
   extern int neut_tess_test_dom (struct TESS, int);
 
+/// \brief Test the periodicity of a (periodic) tessellation
+/// \return 0 if valid, -1 otherwise
+  extern int neut_tess_test_per (struct TESS, int);
+
 #endif				/* NEUT_TESS_TEST_H */
 
 #ifdef __cplusplus

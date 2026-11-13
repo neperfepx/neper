@@ -4,12 +4,11 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 #include"ut.h"
 #include"neut_t.h"
 
 #include"neper_config.h"
 
-#ifdef HAVE_NLOPT
 #include"net_tess_opt_comp_post.h"
-#endif

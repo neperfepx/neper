@@ -204,6 +204,7 @@ extern "C"
 ///
   extern void neut_tess_init_domain_label (struct TESS *pTess);
   extern void neut_tess_init_domain_label_3d (struct TESS *pTess);
+  extern void neut_tess_init_domain_label_3d_edgever (struct TESS *pTess);
   extern void neut_tess_init_domain_label_2d (struct TESS *pTess);
   extern void neut_tess_init_domain_label_1d (struct TESS *pTess);
 
@@ -220,6 +221,8 @@ extern "C"
   extern int neut_tess_adddomver (struct TESS *pTess, double *coo);
   extern int neut_tess_adddomedge (struct TESS *pTess, int, int);
   extern int neut_tess_adddomface_alloc (struct TESS *pTess);
+  extern void neut_tess_adddomface_prim (struct TESS *pTess, struct PRIM Prim, char *label);
+  extern void neut_tess_setdomface_prim (struct TESS *pTess, int domface, struct PRIM Prim, char *label);
   extern void neut_tess_face_addeq (struct TESS *pTess, int face, double *eq);
   extern void neut_tess_face_addedge (struct TESS *pTess, int face, int
 				      edge, int ori);
@@ -281,6 +284,8 @@ extern "C"
   extern void neut_tess_init_edges_fromversandfaces (struct TESS *pTess);
 
   extern int neut_tess_compress_facedom (struct TESS *pTess);
+
+  extern void neut_tess_init_domedgesandvers (struct TESS *pTess);
 
 #endif				/* NEUT_TESS_OP_H */
 

@@ -44,8 +44,8 @@ nev_print_pf_file_data_ori_preipf (int input,
       abort ();
   }
 
-  ol_q_free (qs);
-  ol_r_free (p);
+  ol_q_free (&qs);
+  ol_r_free (&p);
 
   return;
 }
@@ -93,9 +93,9 @@ nev_print_pf_file_data_vect_preipf (int input,
       abort ();
   }
 
-  ol_g_free (gs);
-  ol_g_free (I);
-  ol_r_free (p);
+  ol_g_free (&gs);
+  ol_g_free (&I);
+  ol_r_free (&p);
 
   return;
 }

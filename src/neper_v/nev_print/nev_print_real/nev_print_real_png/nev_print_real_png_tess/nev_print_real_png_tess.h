@@ -4,3 +4,4 @@
 
 extern void nev_print_real_png_tess (FILE *, struct PRINT, struct TESS,
 			    struct DATA*);
+extern void nev_print_real_png_tess_domain (FILE *, struct PRINT, struct TESS);

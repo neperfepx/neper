@@ -24,15 +24,6 @@ nev_print_pf_file_data_ori (int input, struct PF *pPf, double **q,
     Set.weight[i] = weights ? weights[i] : 1;
   }
 
-  /*
-  else if (! strcmp (InPF.SamplingType, "rel"))
-    ol_set_fscanf_sample (in, InPF.Sampling[id], &Set, NULL);
-  else if (! strcmp (InPF.SamplingType, "abs"))
-    ol_set_fscanf_sample_nb (in, InPF.Sampling[id], &Set, NULL);
-  else
-    abort ();
-  */
-
   if (!strcmp ((*pPf).space, "ipf") && !(*pPf).inputcellpole[input])
     nev_print_pf_file_data_ori_preipf (input, Set, (*pPf).pfpoles[1], pPf);
 
@@ -94,14 +85,18 @@ nev_print_pf_file_data_ori (int input, struct PF *pPf, double **q,
 
         ut_free_1d (&misori);
         ut_free_2d (&qs, eqqty + 1);
-        ol_q_free (q);
+        ol_q_free (&q);
       }
 
       else
         abort ();
     }
 
-  ol_q_free (qref);
+  // only *pptqty points are recorded
+  (*ppts) = ut_realloc_2d_delline (*ppts, qty * (*pPf).pfpoleqty, *pptqty);
+
+  ol_set_free (&Set);
+  ol_q_free (&qref);
 
   return;
 }
@@ -188,9 +183,9 @@ nev_print_pf_file_data_vect (int input, struct PF *pPf,
 
         ut_free_1d (&misori);
         ut_free_2d (&qs, eqqty + 1);
-        ol_q_free (q);
-        ol_g_free (gs);
-        ol_vect_free (v);
+        ol_q_free (&q);
+        ol_g_free (&gs);
+        ol_vect_free (&v);
       }
     }
 
@@ -220,6 +215,9 @@ nev_print_pf_file_data_vect (int input, struct PF *pPf,
         abort ();
     }
     */
+
+  // only *pptqty points are recorded
+  (*ppts) = ut_realloc_2d_delline (*ppts, qty, *pptqty);
 
   ut_free_1d (&vect);
 
@@ -310,10 +308,10 @@ nev_print_pf_file_data_crysym (struct PF Pf, double ***ppts, double **pptwgts,
     }
   }
 
-  ol_g_free (I);
-  ol_g_free (gs);
-  ol_r_free (v0);
-  ol_r_free (v);
+  ol_g_free (&I);
+  ol_g_free (&gs);
+  ol_r_free (&v0);
+  ol_r_free (&v);
 
   return;
 }

@@ -8,6 +8,7 @@
 
 #include"ut.h"
 #include"neut_v.h"
+#include "../nev_print_utils/nev_print_utils.h"
 
 #include "nev_print_init.h"
 
@@ -19,12 +20,13 @@ extern void nev_print_init_data (struct IN_V In, struct PRINT, struct TESS, stru
                                  int, struct DATA *, struct DATA **,
                                  struct DATA *, struct DATA *, char **);
 
-extern void nev_print_init_data_csys (struct IN_V In, char *crysym, struct PRINT Print, struct DATA *);
-extern void nev_print_init_data_nodes (struct IN_V In, struct PRINT Print, struct NODES Nodes, char *crysym, int Qty, struct DATA *pData);
-extern void nev_print_init_data_mesh (struct IN_V In, struct PRINT Print, struct NODES Nodes, struct MESH, char *crysym, double size, int Qty,
+extern void nev_print_init_crysym (struct IN_V In, struct TESS Tess, struct TESR Tesr, struct POINT *Points, int PointQty, int verbose, char **pcrysym);
+extern void nev_print_init_data_csys (struct IN_V In, char *crysym, struct DATA *);
+extern void nev_print_init_data_nodes (struct IN_V In, struct NODES Nodes, char *crysym, int Qty, struct DATA *pData);
+extern void nev_print_init_data_mesh (struct IN_V In, struct NODES Nodes, struct MESH, char *crysym, double size, int Qty,
                                       char *entity, int dim, struct DATA *);
 extern void nev_print_init_data_tesr (struct IN_V In, struct TESR, struct DATA *);
-extern void nev_print_init_data_tess (struct IN_V In, struct PRINT Print, struct TESS, struct DATA *);
+extern void nev_print_init_data_tess (struct IN_V In, struct TESS, struct DATA *);
 extern void nev_print_init_data_points (struct IN_V In, struct POINT, char *crysym, struct DATA *);
 extern void nev_print_init_data_crystal (struct PRINT Print, struct POINT, struct DATA *);
 
@@ -60,4 +62,4 @@ extern void nev_print_init_camera_sky (char *expr, int dim, double *coo);
 extern void nev_print_init_light (struct IN_V In, struct TESS Tess, struct TESR Tesr, struct MESH *Mesh, struct PRINT *pPrint);
 
 extern void nev_print_init_pf (struct IN_V In, struct TESS Tess, struct TESR Tesr, struct POINT *Points, int PointQty, struct PF *pPf);
-extern void nev_print_init_ori (struct IN_V In, struct TESS Tess, struct TESR Tesr, struct SIM *pSim, struct ORI *pOri);
+extern void nev_print_init_ori (struct IN_V In, struct TESS Tess, struct TESR Tesr, struct POINT *Points, int PointQty, struct SIM *pSim, struct ORI *pOri);

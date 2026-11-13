@@ -36,7 +36,6 @@ nem_meshing_2d_face_mesh (struct IN_M In, struct MESHPARA MeshPara,
     status =
       nem_meshing_2d_face_mesh_gmsh (Tess, RNodes, RMesh, face, MeshPara,
                                      Nodes, Mesh, MeshPara.face_cl[face],
-                                     In.gmsh, In.tmp,
                                      (*pMultim).algos[algo][0], rnd,
                                      *pallowed_t, pN, pM, pbnodes, plbnodes,
                                      pbnodeqty, pmOsize, pctrlc_t,
@@ -62,8 +61,8 @@ nem_meshing_2d_face_mesh (struct IN_M In, struct MESHPARA MeshPara,
   {
     neut_mesh_Odis (*pN, *pM, In.meshqualdisexpr,
                     &((*pMultim).mOdis[face][algo]));
-    neut_mesh_Osize (*pN, *pM, MeshPara.face_cl[face],
-                     &((*pMultim).mOsize[face][algo]));
+    // size quality, for the mesh size map (see nem_meshing_2d_face_mesh_gmsh)
+    (*pMultim).mOsize[face][algo] = (*pmOsize);
 
     if (!strcmp (In.meshqualexpr, "Odis^0.8*Osize^0.2"))
       (*pMultim).mO[face][algo] =
@@ -133,7 +132,7 @@ nem_meshing_2d_face_record_nodes (struct TESS Tess, int face, struct NODES N,
   for (i = 1; i <= N.NodeQty; i++)
     if (N_global_id[face][i] > bak)
     {
-      neut_nodes_addnode (pNodes, N.NodeCoo[i], -1);
+      neut_nodes_addnode (pNodes, N.NodeCoo[i], N.NodeCl ? N.NodeCl[i] : -1);
 
       if (master_id)
         neut_nodes_markasslave (pNodes, (*pNodes).NodeQty,
@@ -151,10 +150,11 @@ nem_meshing_2d_face_record_elts (int face, struct MESH M, int *N_global_id,
                                  struct MESH *Mesh)
 {
   int i, j, *elt_nbs = NULL;
+  int eltnodeqty = neut_elt_nodeqty (M.EltType, 2, 1);
 
   /* renumbering mesh nodes to match global nodes */
   for (i = 1; i <= M.EltQty; i++)
-    for (j = 0; j < 3; j++)
+    for (j = 0; j < eltnodeqty; j++)
       M.EltNodes[i][j] = N_global_id[M.EltNodes[i][j]];
 
   /* renumbering mesh elts */
@@ -186,7 +186,7 @@ nem_meshing_2d_face_per_rodrigues (struct TESS Tess, struct NODES *N, int face, 
   double phi;
   double *center = ut_alloc_1d (3);
   double *center2 = ut_alloc_1d (3);
-  double *n = ut_alloc_1d (3);
+  double *n = ut_alloc_1d (4);   // rtheta for ol_rtheta_g_rad
   double **I = ol_g_alloc ();
   double **nxn = ol_g_alloc ();
   double **I2nxn = ol_g_alloc ();
@@ -222,7 +222,8 @@ nem_meshing_2d_face_per_rodrigues (struct TESS Tess, struct NODES *N, int face, 
     for (j = 0; j < 3; j++)
       phi2n[j] = phi / 2 * n[j];
 
-    ol_rtheta_g_rad (n, - phi / 2, R);
+    n[3] = - phi / 2;
+    ol_rtheta_g_rad (n, R);
 
     ol_g_g_g_ref (R, I2nxn, tmp2);
 
@@ -239,18 +240,18 @@ nem_meshing_2d_face_per_rodrigues (struct TESS Tess, struct NODES *N, int face, 
     if (disori > 1)
       abort ();
 
-    ol_q_free (q1);
-    ol_q_free (q2);
+    ol_q_free (&q1);
+    ol_q_free (&q2);
   }
 
   ut_free_1d (&center);
   ut_free_1d (&center2);
   ut_free_1d (&n);
-  ol_g_free (I);
-  ol_g_free (nxn);
-  ol_g_free (I2nxn);
-  ol_g_free (R);
-  ol_g_free (tmp2);
+  ol_g_free (&I);
+  ol_g_free (&nxn);
+  ol_g_free (&I2nxn);
+  ol_g_free (&R);
+  ol_g_free (&tmp2);
   ut_free_1d (&phi2n);
   ut_free_1d_char (&crysym);
 

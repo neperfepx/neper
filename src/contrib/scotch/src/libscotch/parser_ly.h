@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -31,51 +31,47 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
-#ifndef YY_SCOTCHYY_Y_TAB_H_INCLUDED
-# define YY_SCOTCHYY_Y_TAB_H_INCLUDED
+#ifndef YY__SCOTCHYY_PARSER_LY_H_INCLUDED
+# define YY__SCOTCHYY_PARSER_LY_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
 #if YYDEBUG
-extern int scotchyydebug;
+extern int _SCOTCHyydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    METHODNAME = 258,
-    PARAMNAME = 259,
-    VALCASE = 260,
-    VALDOUBLE = 261,
-    VALINT = 262,
-    VALSTRING = 263,
-    VALSTRAT = 264,
-    VALPARAM = 265,
-    VALTEST = 266
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    METHODNAME = 258,              /* METHODNAME  */
+    PARAMNAME = 259,               /* PARAMNAME  */
+    VALCASE = 260,                 /* VALCASE  */
+    VALDOUBLE = 261,               /* VALDOUBLE  */
+    VALINT = 262,                  /* VALINT  */
+    VALSTRING = 263,               /* VALSTRING  */
+    VALSTRAT = 264,                /* VALSTRAT  */
+    VALPARAM = 265,                /* VALPARAM  */
+    VALTEST = 266                  /* VALTEST  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
-#define METHODNAME 258
-#define PARAMNAME 259
-#define VALCASE 260
-#define VALDOUBLE 261
-#define VALINT 262
-#define VALSTRING 263
-#define VALSTRAT 264
-#define VALPARAM 265
-#define VALTEST 266
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 92 "parser_yy.y"
+#line 108 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
 
   char                      CASEVAL;              /* Case value          */
   StratTest *               TEST;                 /* Test type           */
@@ -86,11 +82,11 @@ union YYSTYPE
   struct {
     const StratTab *        tabl;                 /* Current tables    */
     Strat *                 strat;                /* Current method    */
-    StratParamTab *         param;                /* Current parameter */
+    const StratParamTab *   param;                /* Current parameter */
   } SAVE;                                         /* Parameter type    */
   Strat *                   STRAT;                /* Strategy tree     */
 
-#line 94 "y.tab.h"
+#line 90 "parser_ly.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -98,9 +94,24 @@ typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
+/* Location type.  */
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
+typedef struct YYLTYPE YYLTYPE;
+struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+};
+# define YYLTYPE_IS_DECLARED 1
+# define YYLTYPE_IS_TRIVIAL 1
+#endif
 
-extern YYSTYPE scotchyylval;
 
-int scotchyyparse (void);
 
-#endif /* !YY_SCOTCHYY_Y_TAB_H_INCLUDED  */
+
+int _SCOTCHyyparse (void * scanptr, ParserEnv * penvptr);
+
+
+#endif /* !YY__SCOTCHYY_PARSER_LY_H_INCLUDED  */

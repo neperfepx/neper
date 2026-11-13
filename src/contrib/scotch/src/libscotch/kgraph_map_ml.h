@@ -1,4 +1,4 @@
-/* Copyright 2010,2011,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2010,2011,2014,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,6 +44,8 @@
 /**                                 to   : 10 jul 2010     **/
 /**                # Version 6.0  : from : 03 mar 2011     **/
 /**                                 to   : 07 jun 2018     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -65,10 +67,10 @@ typedef struct KgraphMapMlParam_ {
 **  The function prototypes.
 */
 
-#ifdef KGRAPH_MAP_ML
+#ifdef SCOTCH_KGRAPH_MAP_ML
 static int                  kgraphMapMlCoarsen  (Kgraph * const, Kgraph * restrict const, GraphCoarsenMulti * restrict * const, const KgraphMapMlParam * const);
 static int                  kgraphMapMlUncoarsen (Kgraph * restrict const, Kgraph * const, const GraphCoarsenMulti * const);
 static int                  kgraphMapMl2        (Kgraph * restrict const, const KgraphMapMlParam * const);
-#endif /* KGRAPH_MAP_ML */
+#endif /* SCOTCH_KGRAPH_MAP_ML */
 
 int                         kgraphMapMl         (Kgraph * restrict const, const KgraphMapMlParam * const);

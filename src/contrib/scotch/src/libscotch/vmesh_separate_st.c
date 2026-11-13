@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,14 +44,14 @@
 /**                                 to   : 04 aug 2007     **/
 /**                # Version 6.0  : from : 06 jun 2018     **/
 /**                                 to   : 06 jun 2018     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define VMESH_SEPARATE_ST
 
 #include "module.h"
 #include "common.h"
@@ -99,14 +99,14 @@ static union {
 } vmeshseparatedefaultml = { { 1000, 0.8L, MESHCOARSENNGB, &stratdummy, &stratdummy } };
 
 static StratMethodTab       vmeshseparatestmethtab[] = { /* Mesh separation methods array */
-                              { VMESHSEPASTMETHFM, "f",  vmeshSeparateFm, &vmeshseparatedefaultfm },
-                              { VMESHSEPASTMETHGG, "h",  vmeshSeparateGg, &vmeshseparatedefaultgg },
+                              { VMESHSEPASTMETHFM, "f",  (StratMethodFunc) vmeshSeparateFm, &vmeshseparatedefaultfm },
+                              { VMESHSEPASTMETHGG, "h",  (StratMethodFunc) vmeshSeparateGg, &vmeshseparatedefaultgg },
 #ifdef SCOTCH_DEBUG_VMESH2
-                              { VMESHSEPASTMETHGR, "v",  vmeshSeparateGr, &vmeshseparatedefaultgr },
+                              { VMESHSEPASTMETHGR, "v",  (StratMethodFunc) vmeshSeparateGr, &vmeshseparatedefaultgr },
 #endif /* SCOTCH_DEBUG_VMESH2 */
-                              { VMESHSEPASTMETHML, "m",  vmeshSeparateMl, &vmeshseparatedefaultml },
-                              { VMESHSEPASTMETHZR, "z",  vmeshSeparateZr, NULL },
-                              { -1,                NULL, NULL,            NULL } };
+                              { VMESHSEPASTMETHML, "m",  (StratMethodFunc) vmeshSeparateMl, &vmeshseparatedefaultml },
+                              { VMESHSEPASTMETHZR, "z",  (StratMethodFunc) vmeshSeparateZr, NULL },
+                              { -1,                NULL, (StratMethodFunc) NULL,            NULL } };
 
 static StratParamTab        vmeshseparatestparatab[] = { /* Mesh separation method parameter list */
                               { VMESHSEPASTMETHFM,  STRATPARAMINT,    "move",
@@ -200,92 +200,93 @@ StratTab                      vmeshseparateststratab = { /* Strategy tables for 
 int
 vmeshSeparateSt (
 Vmesh * restrict const        meshptr,            /*+ Separation mesh     +*/
-const Strat * restrict const  strat)              /*+ Separation strategy +*/
+const Strat * restrict const  straptr)            /*+ Separation strategy +*/
 {
-  StratTest           val;
-  VmeshStore          save[2];                    /* Results of the two strategies */
+  StratTest           testdat;
+  VmeshStore          savetab[2];                 /* Results of the two strategies */
   int                 o;
 
 #ifdef SCOTCH_DEBUG_VMESH2
   if (sizeof (Gnum) != sizeof (INT)) {
     errorPrint ("vmeshSeparateSt: invalid type specification for parser variables");
-    return     (1);
+    return (1);
   }
   if ((sizeof (VmeshSeparateFmParam) > sizeof (StratNodeMethodData)) ||
       (sizeof (VmeshSeparateGgParam) > sizeof (StratNodeMethodData)) ||
       (sizeof (VmeshSeparateGrParam) > sizeof (StratNodeMethodData)) ||
       (sizeof (VmeshSeparateMlParam) > sizeof (StratNodeMethodData))) {
     errorPrint ("vmeshSeparateSt: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VMESH2 */
 #ifdef SCOTCH_DEBUG_VMESH1
-  if (strat->tabl != &vmeshseparateststratab) {
+  if (straptr->tablptr != &vmeshseparateststratab) {
     errorPrint ("vmeshSeparateSt: invalid parameter (1)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VMESH1 */
 
   o = 0;
-  switch (strat->type) {
+  switch (straptr->typeval) {
     case STRATNODECONCAT :
-      o = vmeshSeparateSt (meshptr, strat->data.concat.strat[0]); /* Apply first strategy          */
-      if (o == 0)                                 /* If it worked all right                        */
-        o |= vmeshSeparateSt (meshptr, strat->data.concat.strat[1]); /* Then apply second strategy */
+      o = vmeshSeparateSt (meshptr, straptr->data.concdat.stratab[0]); /* Apply first strategy          */
+      if (o == 0)                                 /* If it worked all right                             */
+        o |= vmeshSeparateSt (meshptr, straptr->data.concdat.stratab[1]); /* Then apply second strategy */
       break;
     case STRATNODECOND :
-      o = stratTestEval (strat->data.cond.test, &val, (void *) meshptr); /* Evaluate expression */
-      if (o == 0) {                               /* If evaluation was correct                  */
+      o = stratTestEval (straptr->data.conddat.testptr, &testdat, (void *) meshptr); /* Evaluate expression */
+      if (o == 0) {                               /* If evaluation was correct */
 #ifdef SCOTCH_DEBUG_VMESH2
-        if ((val.typetest != STRATTESTVAL) &&
-            (val.typenode != STRATPARAMLOG)) {
+        if ((testdat.testval != STRATTESTVAL) &&
+            (testdat.nodeval != STRATPARAMLOG)) {
           errorPrint ("vmeshSeparateSt: invalid test result");
           o = 1;
           break;
         }
 #endif /* SCOTCH_DEBUG_VMESH2 */
-        if (val.data.val.vallog == 1)             /* If expression is true                     */
-          o = vmeshSeparateSt (meshptr, strat->data.cond.strat[0]); /* Apply first strategy    */
-        else {                                    /* Else if expression is false               */
-          if (strat->data.cond.strat[1] != NULL)  /* And if there is an else statement         */
-            o = vmeshSeparateSt (meshptr, strat->data.cond.strat[1]); /* Apply second strategy */
+        if (testdat.data.val.vallog == 1)         /* If expression is true                            */
+          o = vmeshSeparateSt (meshptr, straptr->data.conddat.stratab[0]); /* Apply first strategy    */
+        else {                                    /* Else if expression is false                      */
+          if (straptr->data.conddat.stratab[1] != NULL) /* And if there is an else statement          */
+            o = vmeshSeparateSt (meshptr, straptr->data.conddat.stratab[1]); /* Apply second strategy */
         }
       }
       break;
     case STRATNODEEMPTY :
       break;
     case STRATNODESELECT :
-      if (((vmeshStoreInit (meshptr, &save[0])) != 0) || /* Allocate save areas */
-          ((vmeshStoreInit (meshptr, &save[1])) != 0)) {
+      if (((vmeshStoreInit (meshptr, &savetab[0])) != 0) || /* Allocate save areas */
+          ((vmeshStoreInit (meshptr, &savetab[1])) != 0)) {
         errorPrint     ("vmeshSeparateSt: out of memory");
-        vmeshStoreExit (&save[0]);
-        return         (1);
+        vmeshStoreExit (&savetab[0]);
+        return (1);
       }
 
-      vmeshStoreSave  (meshptr, &save[1]);        /* Save initial bipartition          */
-      vmeshSeparateSt (meshptr, strat->data.select.strat[0]); /* Apply first strategy  */
-      vmeshStoreSave  (meshptr, &save[0]);        /* Save its result                   */
-      vmeshStoreUpdt  (meshptr, &save[1]);        /* Restore initial bipartition       */
-      vmeshSeparateSt (meshptr, strat->data.select.strat[1]); /* Apply second strategy */
+      vmeshStoreSave  (meshptr, &savetab[1]);     /* Save initial bipartition               */
+      vmeshSeparateSt (meshptr, straptr->data.seledat.stratab[0]); /* Apply first strategy  */
+      vmeshStoreSave  (meshptr, &savetab[0]);     /* Save its result                        */
+      vmeshStoreUpdt  (meshptr, &savetab[1]);     /* Restore initial bipartition            */
+      vmeshSeparateSt (meshptr, straptr->data.seledat.stratab[1]); /* Apply second strategy */
 
-      if ( (save[0].fronnbr <  meshptr->fronnbr) || /* If first strategy is better */
-          ((save[0].fronnbr == meshptr->fronnbr) &&
-           (abs (save[0].ncmploaddlt) < abs (meshptr->ncmploaddlt))))
-        vmeshStoreUpdt (meshptr, &save[0]);       /* Restore its result */
+      if ( (savetab[0].fronnbr <  meshptr->fronnbr) || /* If first strategy is better */
+          ((savetab[0].fronnbr == meshptr->fronnbr) &&
+           (ABS (savetab[0].ncmploaddlt) < ABS (meshptr->ncmploaddlt))))
+        vmeshStoreUpdt (meshptr, &savetab[0]);    /* Restore its result */
 
-      vmeshStoreExit (&save[0]);                  /* Free both save areas */
-      vmeshStoreExit (&save[1]);
+      vmeshStoreExit (&savetab[0]);               /* Free both save areas */
+      vmeshStoreExit (&savetab[1]);
       break;
 #ifdef SCOTCH_DEBUG_VMESH1
     case STRATNODEMETHOD :
 #else /* SCOTCH_DEBUG_VMESH1 */
     default :
 #endif /* SCOTCH_DEBUG_VMESH1 */
-      return (strat->tabl->methtab[strat->data.method.meth].func (meshptr, (void *) &strat->data.method.data));
+      return (((VmeshSeparateFunc) straptr->tablptr->methtab[straptr->data.methdat.methnum].funcptr)
+              (meshptr, (const void * const) &straptr->data.methdat.datadat));
 #ifdef SCOTCH_DEBUG_VMESH1
     default :
       errorPrint ("vmeshSeparateSt: invalid parameter (2)");
-      return     (1);
+      return (1);
 #endif /* SCOTCH_DEBUG_VMESH1 */
   }
   return (o);

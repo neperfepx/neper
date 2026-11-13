@@ -53,9 +53,6 @@ extern "C"
 /// \return 0
   extern int ut_math_vars (char *expr, char ***pvars, int *pvarqty);
 
-  extern int ut_math_derivative_onesided (double *v, int order_acc,
-                                          double *pres);
-
   extern int ut_math_eval_exprislogical (char *string);
 
 #endif                          /* UT_MATH_H */

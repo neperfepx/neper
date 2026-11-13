@@ -1,4 +1,4 @@
-/* Copyright 2016,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2016,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -40,6 +40,8 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 28 dec 2016     **/
 /**                                 to   : 31 may 2018     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /**   NOTES      : # This code derives from that of        **/
 /**                  arch_build.c.                         **/
@@ -49,8 +51,6 @@
 /*
 **  The defines and includes.
 */
-
-#define GRAPH
 
 #include "module.h"
 #include "common.h"

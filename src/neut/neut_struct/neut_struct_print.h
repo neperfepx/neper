@@ -19,6 +19,7 @@ extern "C"
     int showslice;
     int showsliceelt1d;
     int showcsys;
+    int showdomain;
     int showscale;
     int showscalemin;
     int showscalemax;
@@ -35,6 +36,8 @@ extern "C"
     int *showelt2d;
     int *showelt1d;
     int *showelt0d;
+    int *showelsetco;
+    int *showeltco;
 
     int *showseed;
     int *showver;
@@ -50,7 +53,10 @@ extern "C"
     int **showpoint;
     int *showcrystal;
 
-    char *colormode;
+    // domain (wireframe) ------------------------------------------------------
+    double domainrad;           // -1 for default
+    int *domaincol;             // NULL for default (black)
+
 
     // background --------------------------------------------------------------
     char *background;

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2009 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2009,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -49,14 +49,14 @@
 /**                                 to   : 10 sep 2007     **/
 /**                # Version 5.1  : from : 01 oct 2009     **/
 /**                                 to   : 01 oct 2009     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HGRAPH_ORDER_GP
 
 #include "module.h"
 #include "common.h"
@@ -79,7 +79,7 @@
 
 int
 hgraphOrderGp (
-const Hgraph * restrict const             grafptr,
+Hgraph * restrict const                   grafptr,
 Order * restrict const                    ordeptr,
 const Gnum                                ordenum,
 OrderCblk * restrict const                cblkptr, /*+ Single column-block +*/
@@ -107,7 +107,7 @@ const HgraphOrderGpParam * restrict const paraptr)
                      &queudat.qtab, (size_t) (grafptr->vnohnbr * sizeof (Gnum)),
                      &vexxtax,      (size_t) (grafptr->vnohnbr * sizeof (HgraphOrderGpVertex)), NULL) == NULL) {
     errorPrint ("hgraphOrderGp: out of memory");
-    return     (1);
+    return (1);
   }
   memSet (vexxtax, 0, grafptr->vnohnbr * sizeof (HgraphOrderGpVertex)); /* Initialize pass numbers */
   vexxtax -= grafptr->s.baseval;
@@ -125,7 +125,7 @@ const HgraphOrderGpParam * restrict const paraptr)
       if (rootnum >= grafptr->vnohnnd) {
         errorPrint ("hgraphOrderGp: internal error (1)");
         memFree    (queudat.qtab);                /* Free group leader */
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_ORDER2 */
     }
@@ -148,7 +148,7 @@ const HgraphOrderGpParam * restrict const paraptr)
         if ((vertnum < grafptr->s.baseval) || (vertnum >= grafptr->vnohnnd)) {
           errorPrint ("hgraphOrderGp: internal error (2)");
           memFree    (queudat.qtab);              /* Free group leader */
-          return     (1);
+          return (1);
         }
 #endif /* SCOTCH_DEBUG_ORDER2 */
         vertdist = vexxtax[vertnum].vertdist;     /* Get vertex distance */
@@ -171,7 +171,7 @@ const HgraphOrderGpParam * restrict const paraptr)
           if ((vertend < grafptr->s.baseval) || (vertend >= grafptr->vnohnnd)) {
             errorPrint ("hgraphOrderGp: internal error (3)");
             memFree    (queudat.qtab);              /* Free group leader */
-            return     (1);
+            return (1);
           }
 #endif /* SCOTCH_DEBUG_ORDER2 */
 
@@ -237,7 +237,7 @@ const HgraphOrderGpParam * restrict const paraptr)
     if (ordeptr->peritab[ordeval] == ~0) {
       errorPrint ("hgraphOrderGp: internal error (4)");
       memFree    (queudat.qtab);                  /* Free group leader */
-      return     (1);
+      return (1);
     }
   }
 #endif /* SCOTCH_DEBUG_ORDER2 */

@@ -27,11 +27,7 @@ nev_print_png_scale (struct IN_V In, FILE * file, struct PRINT Print, struct DAT
   double *basecol = ut_alloc_1d (3);
   char *texture = ut_alloc_1d_char (1000);
 
-  if (!strcmp (Print.colormode, "bright"))
-    ut_string_string ("texture {pigment{rgb<0,0,0>}}", &texture);
-  else if (!strcmp (Print.colormode, "dark"))
-    sprintf (texture, "texture { pigment { rgbt <1,1,1,0.> } finish {ambient %f diffuse %f reflection %f} }",
-            Print.lightambient, Print.lightdiffuse, Print.lightreflection);
+  ut_string_string ("texture {pigment{rgb<0,0,0>}}", &texture);
 
   neut_nodes_set_zero (&N);
   neut_mesh_set_zero (&M);
@@ -176,6 +172,8 @@ nev_print_png_scale (struct IN_V In, FILE * file, struct PRINT Print, struct DAT
   ut_free_1d_char (&tmp);
   ut_free_1d_char (&tickformat);
   neut_data_free (&Data2);
+  neut_print_free (&Print2);
+  ut_free_2d (&data, 2 * (binqty + 1) + 1);
   ut_free_1d (&tickvals);
   ut_free_1d (&basecol);
   ut_free_1d_char (&texture);

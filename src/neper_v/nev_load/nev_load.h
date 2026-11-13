@@ -4,6 +4,6 @@
 
 extern void nev_load (char *string, struct SIM *pSim, struct TESS *pTess,
                       struct TESR *pTesr, struct NODES *pNodes, struct MESH
-                      *Mesh, struct POINT **pPoints, int *pPointQty, struct DATA *TessData,
+                      *Mesh, struct NSET *pNSet, struct POINT **pPoints, int *pPointQty, struct DATA *TessData,
                       struct DATA *TesrData, struct DATA *pData, struct DATA
                       **MeshData, struct DATA **pPointData);

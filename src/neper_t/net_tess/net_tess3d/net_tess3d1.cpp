@@ -5,11 +5,10 @@
 #include "net_tess3d_.h"
 #include"neut_struct_nfcloud.hpp"
 
-extern void net_polycomp (struct POLY Domain, struct SEEDSET SeedSet,
-                          NFCLOUD * pnf_cloud, NFTREE ** pnf_index,
-                          int **pptid_seedid, int **pseedid_ptid,
-                          struct POLY **pPoly, int *seed_changed,
-                          int seed_changedqty, struct TDYN *);
+extern void net_tess3d_polycomp (struct POLY Domain, struct SEEDSET SeedSet, NFCLOUD * pnf_cloud,
+                                 NFTREE ** pnf_index, int **pptid_seedid, int **pseedid_ptid,
+                                 struct POLY **pPoly, int *seed_changed, int seed_changedqty,
+                                 struct TDYN *);
 
 int
 net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
@@ -36,10 +35,10 @@ net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
       DomPoly.FacePoly[i] = -i;
   }
 
-  net_polycomp (DomPoly, SSet, &nf_cloud, &nf_index, &ptid_seedid,
-                &seedid_ptid, &Poly, NULL, -1, &TD);
+  net_tess3d_polycomp (DomPoly, SSet, &nf_cloud, &nf_index, &ptid_seedid, &seedid_ptid, &Poly, NULL,
+                       -1, &TD);
 
-  net_polys_tess (PTess.Level + 1, SSet, TessId, Poly, pTess);
+  net_tess3d_tess (PTess.Level + 1, SSet, TessId, Poly, pTess);
 
   net_tess3d_domain (PTess, poly, TessId, pMTess, pTess);
 

@@ -9,28 +9,9 @@ net_tess_onecell (struct IN_T In, struct MTESS *pMTess,
                struct TESS *Tess,
                int dtess, int dcell, int TessId, struct SEEDSET *SSet)
 {
-  int i;
-  double *O = ut_alloc_1d (4);
-
   neut_tess_poly_tess (Tess[dtess], dcell, Tess + TessId);
 
   Tess[TessId].Level = Tess[dtess].Level + 1;
-
-  for (i = 1; i <= Tess[TessId].FaceQty; i++)
-    if (ut_space_point_plane_side (O, Tess[TessId].FaceEq[i]) > 0)
-    {
-      ut_array_1d_int_reverseelts (Tess[TessId].FaceEdgeNb[i] + 2,
-                                   Tess[TessId].FaceVerQty[i] - 1);
-      ut_array_1d_int_reverseelts (Tess[TessId].FaceVerNb[i] + 2,
-                                   Tess[TessId].FaceVerQty[i] - 1);
-      ut_array_1d_int_reverseelts (Tess[TessId].FaceEdgeOri[i] + 2,
-                                   Tess[TessId].FaceVerQty[i] - 1);
-      ut_array_1d_int_scale (Tess[TessId].FaceEdgeOri[i] + 1,
-                             Tess[TessId].FaceVerQty[i], -1);
-
-      neut_tess_face_fixorifromedges (Tess[TessId], i, Tess[TessId].FaceEq[i]);
-      Tess[TessId].PolyFaceOri[1][1 + ut_array_1d_int_eltpos (Tess[TessId].PolyFaceNb[1] + 1, Tess[TessId].PolyFaceQty[1], i)] *= -1;
-    }
 
   SSet[TessId].Dim = Tess[TessId].Dim;
   SSet[TessId].N = 1;
@@ -55,8 +36,6 @@ net_tess_onecell (struct IN_T In, struct MTESS *pMTess,
     net_tess3d_periodic (Tess + TessId);
 
   ut_string_string ("triclinic", &(Tess[TessId].CellCrySym));
-
-  ut_free_1d (&O);
 
   return 0;
 }

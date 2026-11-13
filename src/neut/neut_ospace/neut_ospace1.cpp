@@ -46,14 +46,15 @@ neut_ospace_fnscanf (char *crysym, char *space, char *fr, struct OSPACE *pOSpace
   if (strcmp (space, "rodrigues"))
     ut_print_message (2, 2, "Unknown space `%s'.\n", space);
 
+  // keeping track of the prerecorded pqcloud and pqtree
+  pqcloud = (QCLOUD *) (*pOSpace).pqcloud;
+  pqtree = (my_kd_tree_t **) (*pOSpace).pqtree;
+
+  neut_orispace_free (pOSpace);
   neut_ospace_set_zero (pOSpace);
   ut_string_string (crysym, &(*pOSpace).crysym);
   ut_string_string (space, &(*pOSpace).space);
   ut_string_string (fr, &(*pOSpace).fr);
-
-  // keeping track of the prerecorded pqcloud and pqtree
-  pqcloud = (QCLOUD *) (*pOSpace).pqcloud;
-  pqtree = (my_kd_tree_t **) (*pOSpace).pqtree;
 
   if (pqcloud)
     (*pOSpace).pqcloud = pqcloud;
@@ -123,8 +124,13 @@ neut_orispace_free (struct OSPACE *pOSpace)
 
   neut_tess_free (&(*pOSpace).Tess);
   neut_nodes_free (&(*pOSpace).Nodes);
-  for (i = 0; i <= 3; i++)
-    neut_mesh_free ((*pOSpace).Mesh + i);
+  if ((*pOSpace).Mesh)
+  {
+    for (i = 0; i <= 3; i++)
+      neut_mesh_free ((*pOSpace).Mesh + i);
+    free ((*pOSpace).Mesh);
+    (*pOSpace).Mesh = NULL;
+  }
 
   ut_fct_free (&((*pOSpace).hfct));
   ut_fct_free (&((*pOSpace).thetafct));

@@ -9,7 +9,7 @@ neut_tess_fprintf_head (struct TESS Tess, FILE * file)
 {
   fprintf (file, "***tess\n");
   fprintf (file, " **format\n");
-  fprintf (file, "   3.5\n");
+  fprintf (file, "   3.6\n");
   fprintf (file, " **general\n");
   fprintf (file, "   %d %s\n", Tess.Dim, Tess.Type);
 
@@ -110,7 +110,7 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
       fprintf (file, "   " REAL_PRINT_FORMAT "\n", Tess.CellWeight[i]);
   }
 
-  ol_e_free (e);
+  ol_e_free (&e);
 
   return;
 }
@@ -168,8 +168,9 @@ neut_tess_fprintf_face (struct TESS Tess, FILE * file)
     ut_array_1d_int_fprintf (file, Tess.FaceVerNb[i] + 1, Tess.FaceVerQty[i],
                              "%d");
 
-    fprintf (file, "     %d", Tess.FaceVerQty[i]);
-    for (j = 1; j <= Tess.FaceVerQty[i]; j++)
+    fprintf (file, "     %d", Tess.FaceEdgeQty[i]);
+    for (j = 1; j <= Tess.FaceEdgeQty[i]; j++)
+
       fprintf (file, " %d", Tess.FaceEdgeOri[i][j] * Tess.FaceEdgeNb[i][j]);
     fprintf (file, "\n");
 
@@ -209,7 +210,7 @@ neut_tess_fprintf_dom (struct TESS Tess, FILE * file)
 {
   int i;
 
-  if (Tess.Level == 0)
+  if (Tess.Level == 0 || !Tess.DomType)
     return;
 
   fprintf (file, " **domain\n");

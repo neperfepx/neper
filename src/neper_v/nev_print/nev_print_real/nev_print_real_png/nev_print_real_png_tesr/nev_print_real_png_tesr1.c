@@ -34,7 +34,7 @@ nev_print_real_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
     neut_data_set_default (MeshData[i] + j);
   neut_data_set_default (&NodeData);
 
-  neut_mesh_str (dim, Tesr.size, NULL, &Nodes, Mesh + dim, NULL);
+  neut_mesh_str (dim, Tesr.size, NULL, &Nodes, Mesh + dim, NULL, NULL);
   neut_nodes_scale (&Nodes, size[0], size[1], size[2]);
   neut_nodes_shift (&Nodes, Tesr.Origin[0], Tesr.Origin[1], Tesr.Origin[2]);
 
@@ -162,6 +162,12 @@ nev_print_real_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   else if (dim == 3)
     nev_print_real_png_mesh_3d (file, Print, Nodes, Mesh, NodeData, MeshData, &tmp);
 
+  // Print is a copy, showelt[23]d were allocated above
+  if (dim == 2)
+    ut_free_1d_int (&Print.showelt2d);
+  else if (dim == 3)
+    ut_free_1d_int (&Print.showelt3d);
+  ut_free_2d_int (&tmp, Mesh[3].EltQty + 1);
   ut_free_1d (&size);
 
   neut_nodes_free (&Nodes);

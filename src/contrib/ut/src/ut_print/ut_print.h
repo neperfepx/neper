@@ -28,7 +28,7 @@ extern "C"
 /// \param incr: current increment
 /// \param incrf: final increment
 /// \note if \c incrf <= 0, then only the increment number is printed
-  extern void ut_print_incr (int incr, int incrf);
+  extern void ut_print_increment (int incr, int incrf);
 
 /// \brief Print a message
 /// \param head: type of header
@@ -44,7 +44,7 @@ extern "C"
 /// \param incr: current increment
 /// \param incrf: final increment
 /// \param message: message (can be multiple arguments)
-/// \see ut_print_lineheader, ut_print_level, ut_print_incr
+/// \see ut_print_lineheader, ut_print_level, ut_print_increment
   extern void ut_print_message_incr (int head, int level, int incr, int
                                      incrf, const char *message, ...);
 
@@ -121,12 +121,12 @@ extern "C"
 
 /// \brief Print a module header
 /// \param module: module
-/// \param fargv: argv from the initialization file
 /// \param fargc: argc from the initialization file
-/// \param argv: argv from the command line
+/// \param fargv: argv from the initialization file
 /// \param argc: argc from the command line
-  extern void ut_print_moduleheader (const char *module, int fargv,
-                                     char **fargc, int argv, char **argc);
+/// \param argv: argv from the command line
+  extern void ut_print_moduleheader (const char *module, int fargc,
+                                     char **fargv, int argc, char **argv);
 
 /// \brief Print progress information (percentage) and linebreak
 /// \param file: output stream (usually \c stdout)

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2011,2014,2016,2018,2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2011,2014,2016,2018,2019,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -46,14 +46,14 @@
 /**                                 to   : 26 mar 2011     **/
 /**                # Version 6.0  : from : 07 nov 2011     **/
 /**                                 to   : 31 aug 2019     **/
+/**                # Version 7.0  : from : 28 aug 2019     **/
+/**                                 to   : 17 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define BGRAPH_BIPART_BD
 
 #include "module.h"
 #include "common.h"
@@ -482,6 +482,7 @@ const BgraphBipartBdParam * const paraptr)        /*+ Method parameters +*/
   bndgrafdat.vfixload[1]   = orggrafptr->vfixload[1];
   bndgrafdat.bbalval       = orggrafptr->bbalval;
   bndgrafdat.levlnum       = orggrafptr->levlnum;
+  bndgrafdat.contptr       = orggrafptr->contptr;
 
 #ifdef SCOTCH_DEBUG_BGRAPH2
   if ((graphCheck (&bndgrafdat.s) != 0) ||        /* Check band graph consistency */

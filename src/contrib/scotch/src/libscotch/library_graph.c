@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2018,2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2018,2019,2021,2023,2025,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -51,6 +51,10 @@
 /**                                 to   : 17 nov 2010     **/
 /**                # Version 6.0  : from : 04 dec 2012     **/
 /**                                 to   : 24 jul 2019     **/
+/**                # Version 6.1  : from : 15 mar 2021     **/
+/**                                 to   : 31 may 2021     **/
+/**                # Version 7.0  : from : 07 may 2019     **/
+/**                                 to   : 06 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -58,10 +62,9 @@
 **  The defines and includes.
 */
 
-#define LIBRARY
-
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "graph.h"
 #include "graph_io.h"
 #include "scotch.h"
@@ -73,27 +76,39 @@
 /*                                  */
 /************************************/
 
-/*+ This routine reserves a memory area
-*** of a size sufficient to store a
-*** centralized graph structure.
-*** It returns:
-*** - !NULL  : if the initialization succeeded.
-*** - NULL   : on error.
-+*/
+/* This routine reserves a memory area
+** of a size sufficient to store a
+** SCOTCH_Graph structure.
+** It returns:
+** - !NULL  : if the allocation succeeded.
+** - NULL   : on error.
+*/
 
 SCOTCH_Graph *
-SCOTCH_graphAlloc ()
+SCOTCH_graphAlloc (void)
 {
   return ((SCOTCH_Graph *) memAlloc (sizeof (SCOTCH_Graph)));
 }
 
-/*+ This routine initializes the opaque
-*** graph structure used to handle graphs
-*** in the Scotch library.
-*** It returns:
-*** - 0   : if the initialization succeeded.
-*** - !0  : on error.
-+*/
+/* This routine returns the size, in bytes,
+** of a SCOTCH_Graph structure.
+** It returns:
+** - > 0  : in all cases.
+*/
+
+int
+SCOTCH_graphSizeof (void)
+{
+  return (sizeof (SCOTCH_Graph));
+}
+
+/* This routine initializes the opaque
+** graph structure used to handle graphs
+** in the Scotch library.
+** It returns:
+** - 0   : if the initialization succeeded.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphInit (
@@ -101,54 +116,56 @@ SCOTCH_Graph * const        grafptr)
 {
   if (sizeof (SCOTCH_Num) != sizeof (Gnum)) {
     errorPrint (STRINGIFY (SCOTCH_graphInit) ": internal error (1)");
-    return     (1);
+    return (1);
   }
   if (sizeof (SCOTCH_Graph) < sizeof (Graph)) {
     errorPrint (STRINGIFY (SCOTCH_graphInit) ": internal error (2)");
-    return     (1);
+    return (1);
   }
 
   return (graphInit ((Graph *) grafptr));
 }
 
-/*+ This routine frees the contents of the
-*** given opaque graph structure.
-*** It returns:
-*** - VOID  : in all cases.
-+*/
+/* This routine frees the contents of the
+** given opaque graph structure.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_graphExit (
 SCOTCH_Graph * const        grafptr)
 {
-  graphExit ((Graph *) grafptr);
+  if (! contextContainerTrue (grafptr))
+    graphExit ((Graph *) grafptr);
 }
 
-/*+ This routine frees the contents of the
-*** given opaque graph structure.
-*** It returns:
-*** - VOID  : in all cases.
-+*/
+/* This routine frees the contents of the
+** given opaque graph structure.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_graphFree (
 SCOTCH_Graph * const        grafptr)
 {
-  graphFree ((Graph *) grafptr);
+  if (! contextContainerTrue (grafptr))
+    graphFree ((Graph *) grafptr);
 }
 
-/*+ This routine loads the given opaque graph
-*** structure with the data of the given stream.
-*** The base value allows the user to set the
-*** graph base to 0 or 1, or to the base value
-*** of the stream if the base value is equal
-*** to -1. On input, vertex loads are discarded if
-*** flagval is 1, edge loads are discarded if flagval
-*** is 2, and both if flagval is set to 3.
-*** It returns:
-*** - 0   : if the loading succeeded.
-*** - !0  : on error.
-+*/
+/* This routine loads the given opaque graph
+** structure with the data of the given stream.
+** The base value allows the user to set the
+** graph base to 0 or 1, or to the base value
+** of the stream if the base value is equal
+** to -1. On input, vertex loads are discarded if
+** flagval is 1, edge loads are discarded if flagval
+** is 2, and both if flagval is set to 3.
+** It returns:
+** - 0   : if the loading succeeded.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphLoad (
@@ -157,46 +174,46 @@ FILE * const                stream,
 const SCOTCH_Num            baseval,
 const SCOTCH_Num            flagval)
 {
-  GraphFlag           srcgrafflag;                /* Graph flags */
+  GraphLoadFlag       flagtmp;                    /* Graph load flags */
 
-  if ((baseval < -1) || (baseval > 1)) {
-    errorPrint (STRINGIFY (SCOTCH_graphLoad) ": invalid base parameter");
-    return     (1);
-  }
   if ((flagval < 0) || (flagval > 3)) {
     errorPrint (STRINGIFY (SCOTCH_graphLoad) ": invalid flag parameter");
-    return     (1);
+    return (1);
+  }
+  if (baseval < -1) {
+    errorPrint (STRINGIFY (SCOTCH_graphLoad) ": invalid base parameter");
+    return (1);
   }
 
-  srcgrafflag = (((flagval & 1) != 0) ? GRAPHIONOLOADVERT : 0) +
-                (((flagval & 2) != 0) ? GRAPHIONOLOADEDGE : 0);
+  flagtmp = (((flagval & 1) != 0) ? GRAPHIONOLOADVERT : 0) +
+            (((flagval & 2) != 0) ? GRAPHIONOLOADEDGE : 0);
 
-  return (graphLoad ((Graph * const) grafptr, stream, (Gnum) baseval, srcgrafflag));
+  return (graphLoad ((Graph * const) CONTEXTOBJECT (grafptr), stream, (Gnum) baseval, flagtmp));
 }
 
-/*+ This routine saves the contents of the given
-*** opaque graph structure to the given stream.
-*** It returns:
-*** - 0   : if the saving succeeded.
-*** - !0  : on error.
-+*/
+/* This routine saves the contents of the given
+** opaque graph structure to the given stream.
+** It returns:
+** - 0   : if the saving succeeded.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphSave (
 const SCOTCH_Graph * const  grafptr,
 FILE * const                stream)
 {
-  return (graphSave ((const Graph * const) grafptr, stream));
+  return (graphSave ((const Graph * const) CONTEXTOBJECT (grafptr), stream));
 }
 
-/*+ This routine fills the contents of the given
-*** opaque graph structure with the data provided
-*** by the user. The base value allows the user to
-*** set the graph base to 0 or 1.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine fills the contents of the given
+** opaque graph structure with the data provided
+** by the user. The base value allows the user to
+** set the graph base to 0 or 1.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphBuild (
@@ -218,15 +235,11 @@ const SCOTCH_Num * const    edlotab)              /* Edge load array            
 #ifdef SCOTCH_DEBUG_LIBRARY1
   if (sizeof (SCOTCH_Graph) < sizeof (Graph)) {
     errorPrint (STRINGIFY (SCOTCH_graphBuild) ": internal error");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_LIBRARY1 */
-  if ((baseval < 0) || (baseval > 1)) {
-    errorPrint (STRINGIFY (SCOTCH_graphBuild) ": invalid base parameter");
-    return     (1);
-  }
 
-  srcgrafptr = (Graph *) grafptr;                 /* Use structure as source graph */
+  srcgrafptr = (Graph *) CONTEXTOBJECT (grafptr); /* Use structure as source graph */
   srcgrafptr->flagval = GRAPHNONE;
   srcgrafptr->baseval = baseval;
   srcgrafptr->vertnbr = vertnbr;
@@ -283,12 +296,12 @@ const SCOTCH_Num * const    edlotab)              /* Edge load array            
   return (0);
 }
 
-/*+ This routine accesses graph size data.
-*** NULL pointers on input indicate unwanted
-*** data.
-*** It returns:
-*** - VOID  : in all cases.
-+*/
+/* This routine accesses graph size data.
+** NULL pointers on input indicate unwanted
+** data.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_graphSize (
@@ -298,7 +311,7 @@ SCOTCH_Num * const          edgenbr)
 {
   const Graph *       srcgrafptr;
 
-  srcgrafptr = (Graph *) grafptr;
+  srcgrafptr = (Graph *) CONTEXTOBJECT (grafptr);
 
   if (vertnbr != NULL)
     *vertnbr = (SCOTCH_Num) (srcgrafptr->vertnbr);
@@ -306,13 +319,13 @@ SCOTCH_Num * const          edgenbr)
     *edgenbr = (SCOTCH_Num) srcgrafptr->edgenbr;
 }
 
-/*+ This routine accesses all of the graph data.
-*** NULL pointers on input indicate unwanted
-*** data. NULL pointers on output indicate
-*** unexisting arrays.
-*** It returns:
-*** - VOID  : in all cases.
-+*/
+/* This routine accesses all of the graph data.
+** NULL pointers on input indicate unwanted
+** data. NULL pointers on output indicate
+** unexisting arrays.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_graphData (
@@ -329,7 +342,7 @@ SCOTCH_Num ** const         edlotab)              /* Edge load array          */
 {
   const Graph *       srcgrafptr;                 /* Pointer to source graph structure */
 
-  srcgrafptr = (const Graph *) grafptr;
+  srcgrafptr = (const Graph *) CONTEXTOBJECT (grafptr);
 
   if (baseptr != NULL)
     *baseptr = srcgrafptr->baseval;
@@ -351,11 +364,11 @@ SCOTCH_Num ** const         edlotab)              /* Edge load array          */
     *edlotab = (srcgrafptr->edlotax != NULL) ? srcgrafptr->edlotax + srcgrafptr->baseval : NULL;
 }
 
-/*+ This routine computes statistics
-*** on the given graph.
-*** It returns:
-*** - VOID  : in all cases.
-+*/
+/* This routine computes statistics
+** on the given graph.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_graphStat (
@@ -394,7 +407,7 @@ double *                    edlodltptr)
   double              edloavg;
   double              edlodlt;
 
-  srcgrafptr = (Graph *) grafptr;
+  srcgrafptr = (Graph *) CONTEXTOBJECT (grafptr);
 
   vertnbr = srcgrafptr->vertnnd - srcgrafptr->baseval;
 

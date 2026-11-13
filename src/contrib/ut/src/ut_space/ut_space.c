@@ -6,12 +6,14 @@
 #include<math.h>
 #include<string.h>
 #include<float.h>
+#include"ut.h"
+#include"ut_space_ellipse/ut_space_ellipse.h"
+// after ut.h, which defines HAVE_GSL
 #ifdef HAVE_GSL
 #include<gsl/gsl_rng.h>
 #include<gsl/gsl_randist.h>
+#include<gsl/gsl_poly.h>
 #endif
-#include"ut.h"
-#include"ut_space_ellipse/ut_space_ellipse.h"
 
 double
 ut_space_dist_2d (double *a, double *b)
@@ -22,7 +24,9 @@ ut_space_dist_2d (double *a, double *b)
 double
 ut_space_dist2 (double *a, double *b)
 {
-  return pow (b[0] - a[0], 2) + pow (b[1] - a[1], 2) + pow (b[2] - a[2], 2);
+  double d0 = b[0] - a[0], d1 = b[1] - a[1], d2 = b[2] - a[2];
+
+  return d0 * d0 + d1 * d1 + d2 * d2;
 }
 
 double
@@ -437,11 +441,7 @@ ut_space_point_dir_plane_proj (double *coo, double *n, double *plane,
                                double *projpt)
 {
   int i;
-  int s;
-  gsl_matrix *A = gsl_matrix_alloc (4, 4);
-  gsl_vector *B = gsl_vector_alloc (4);
-  gsl_vector *X = gsl_vector_alloc (4);
-  gsl_permutation *p = gsl_permutation_alloc (4);
+  double an, k;
 
   /* Projection of any point M (X,Y,Z) along n(a',b',c') onto
    * plane P (ax+by+cz-d=0), denoted as M' (X',Y',Z') is given
@@ -452,50 +452,24 @@ ut_space_point_dir_plane_proj (double *coo, double *n, double *plane,
    *     | 0 1 0 b' |      |Y'|      |Y|  the 3 first lines means M'M
    *     | 0 0 1 c' |      |Z'|      |Z|  the 4th one means M' belongs to P.
    *     | a b c 0  |      |k |      |d|
+   *
+   * whose solution is k = (a.M - d) / (a.n) and M' = M - k n.  The
+   * determinant of A is -a.n. */
 
-   * recording A, which does no depend upon ver, but which is modified by
-   * gsl_linalg_LU_... . */
-  gsl_matrix_set (A, 0, 0, 1);
-  gsl_matrix_set (A, 0, 1, 0);
-  gsl_matrix_set (A, 0, 2, 0);
-  gsl_matrix_set (A, 0, 3, n[0]);
-  gsl_vector_set (B, 0, coo[0]);
+  an = plane[1] * n[0] + plane[2] * n[1] + plane[3] * n[2];
 
-  gsl_matrix_set (A, 1, 0, 0);
-  gsl_matrix_set (A, 1, 1, 1);
-  gsl_matrix_set (A, 1, 2, 0);
-  gsl_matrix_set (A, 1, 3, n[1]);
-  gsl_vector_set (B, 1, coo[1]);
-
-  gsl_matrix_set (A, 2, 0, 0);
-  gsl_matrix_set (A, 2, 1, 0);
-  gsl_matrix_set (A, 2, 2, 1);
-  gsl_matrix_set (A, 2, 3, n[2]);
-  gsl_vector_set (B, 2, coo[2]);
-
-  gsl_matrix_set (A, 3, 3, 0);
-  gsl_matrix_set (A, 3, 0, plane[1]);
-  gsl_matrix_set (A, 3, 1, plane[2]);
-  gsl_matrix_set (A, 3, 2, plane[3]);
-  gsl_vector_set (B, 3, plane[0]);
-
-  gsl_linalg_LU_decomp (A, p, &s);
-  if (fabs (gsl_linalg_LU_det (A, s)) < 1e-15)
+  if (fabs (an) < 1e-15)
   {
-    printf ("det=%.20f\n", gsl_linalg_LU_det (A, s));
+    printf ("det=%.20f\n", -an);
     printf ("ProjectPointAlongOnto: det=0\n");
     abort ();
   }
 
-  gsl_linalg_LU_solve (A, p, B, X);
+  k = (plane[1] * coo[0] + plane[2] * coo[1] + plane[3] * coo[2]
+       - plane[0]) / an;
 
-  for (i = 0; i <= 2; i++)
-    projpt[i] = gsl_vector_get (X, i);
-
-  gsl_matrix_free (A);
-  gsl_vector_free (B);
-  gsl_vector_free (X);
-  gsl_permutation_free (p);
+  for (i = 0; i < 3; i++)
+    projpt[i] = coo[i] - k * n[i];
 
   return;
 }
@@ -596,10 +570,11 @@ ut_space_points_invect_plane_new (double *p1, double *p2, double *invect,
 
   ut_vector_vectprod (invect, v, eq + 1);
   norm = ut_vector_norm (eq + 1);
-  ut_array_1d_scale (eq + 1, 3, norm);
+  ut_array_1d_scale (eq + 1, 3, 1. / norm);
 
-  // determining constant by using the first point
-  eq[0] = -(p1[0] * eq[0] + p1[1] * eq[1] + p1[2] * eq[2]);
+  // determining constant by using the first point (as in
+  // ut_space_points_plane, eq[1] * x + eq[2] * y + eq[3] * z = eq[0])
+  eq[0] = ut_vector_scalprod (p1, eq + 1);
 
   ut_free_1d (&v);
 
@@ -669,9 +644,11 @@ ut_space_tet_point_in (double *p1, double *p2, double *p3, double *p4,
     res = 1;
   // testing edges
   else if (ut_space_segment_point_in (p1, p2, P) == 1
+           || ut_space_segment_point_in (p1, p3, P) == 1
+           || ut_space_segment_point_in (p1, p4, P) == 1
            || ut_space_segment_point_in (p2, p3, P) == 1
-           || ut_space_segment_point_in (p3, p4, P) == 1
-           || ut_space_segment_point_in (p1, p4, P) == 1)
+           || ut_space_segment_point_in (p2, p4, P) == 1
+           || ut_space_segment_point_in (p3, p4, P) == 1)
     res = 1;
   // testing body
   else
@@ -1175,6 +1152,18 @@ ut_space_points_convexhull_2d (double **coo, int qty, int **phids, int *phqty)
   double *tmp = ut_alloc_1d (qty);
   int id;
 
+  if (qty < 3)
+  {
+    (*phqty) = qty;
+    (*phids) = ut_alloc_1d_int (qty);
+    ut_array_1d_int_set_id (*phids, qty);
+    ut_free_1d (&tmp);
+    ut_free_1d_int (&idx);
+    ut_free_1d_int (&L);
+    ut_free_1d_int (&U);
+    return;
+  }
+
   for (i = 0; i < qty; i++)
     tmp[i] = coo[i][0];
   ut_array_1d_sort_index (tmp, qty, idx);
@@ -1274,7 +1263,7 @@ ut_space_points_bisplane_power (double *A, double *B, double wA, double wB,
   for (i = 0; i < 3; i++)
     plane[0] += (pow (B[i], 2) - pow (A[i], 2));
 
-  plane[0] -= pow (wB, 2) - pow (wA, 2);
+  plane[0] -= wB - wA;
 
   ut_array_1d_scale (plane, 4, 1. / ut_vector_norm (plane + 1));
 
@@ -1378,6 +1367,47 @@ ut_space_polypts_point_dist (double **ptcoos0, int ptqty, double *ptcoo,
 #endif
 }
 
+// Distance between the convex hulls of two sets of points (0 if they
+// intersect).  Without openGJK, the distance is approximated by the minimum
+// distance between a point of a set and the convex hull of the other set
+// (which is exact if the closest points include a point of a set).
+int
+ut_space_polypts_polypts_dist (double **ptcoos1, int ptqty1,
+                               double **ptcoos2, int ptqty2, double *pdist)
+{
+#ifdef openGJK
+  struct bd bd1;
+  struct bd bd2;
+  struct simplex s;
+
+  bd1.coord = ptcoos1;
+  bd1.numpoints = ptqty1;
+
+  bd2.coord = ptcoos2;
+  bd2.numpoints = ptqty2;
+
+  s.nvrtx = 0;
+  *pdist = gjk (bd1, bd2, &s);
+#else
+  int i;
+  double dist;
+
+  *pdist = DBL_MAX;
+  for (i = 0; i < ptqty1; i++)
+  {
+    ut_space_polypts_point_dist_verbosity (ptcoos2, ptqty2, ptcoos1[i], &dist, 0);
+    *pdist = ut_num_min (*pdist, dist);
+  }
+  for (i = 0; i < ptqty2; i++)
+  {
+    ut_space_polypts_point_dist_verbosity (ptcoos1, ptqty1, ptcoos2[i], &dist, 0);
+    *pdist = ut_num_min (*pdist, dist);
+  }
+#endif
+
+  return 0;
+}
+
 // Guy with the cap's method... http://mollyrocket.com/849
 int
 ut_space_polypts_point_dist_verbosity (double **ptcoos0, int ptqty,
@@ -1404,7 +1434,7 @@ ut_space_polypts_point_dist_verbosity (double **ptcoos0, int ptqty,
     for (i = 0; i < ptqty; i++)
       fprintf (fp, "Point (%d) = {" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "};\n", i, ptcoos0[i][0],
                ptcoos0[i][1], ptcoos0[i][2]);
-    ut_file_close (fp, "ut_space_polypts_point_dist_verbosity.geo", "w");
+    ut_file_close (fp, "poly.geo", "w");
   }
 
   if (verbosity)
@@ -1548,11 +1578,7 @@ ut_space_polypts_point_dist_verbosity (double **ptcoos0, int ptqty,
   }
 
   if (status == 1 || (pdist && isnan (*pdist)))
-  {
-    if (verbosity == 0)
-      ut_space_polypts_point_dist_verbosity (ptcoos0, ptqty, ptcoo, pdist, 0);
     error = 1;
-  }
 
   if (verbosity)
   {
@@ -2569,7 +2595,7 @@ ut_space_point_normal_plane (double *C, double *N, double *plane)
 {
   ut_array_1d_memcpy (N, 3, plane + 1);
   ut_array_1d_normalize (plane + 1, 3);
-  plane[0] = ut_vector_scalprod (C, N);
+  plane[0] = ut_vector_scalprod (C, plane + 1);
 
   return;
 }
@@ -2683,6 +2709,7 @@ ut_space_point_ellipse_dist (double *P0, double *C, double *d3, double *d1,
   ut_free_1d (&P);
   ut_free_1d (&Psgn);
   ut_free_2d (&g, 3);
+  ut_free_2d (&ginv, 3);
   ut_free_1d (&tmp);
   ut_free_1d (&PP0);
 
@@ -2768,6 +2795,7 @@ ut_space_point_ecyl_mirror (double *point, double *basis, double *axis,
   return;
 }
 
+#ifdef HAVE_GSL
 // https://vcg.isti.cnr.it/activities/OLD/geometryegraphics/pointintetraedro.html
 // https://www.tandfonline.com/doi/abs/10.1080/10867651.2000.10487528
 void
@@ -2804,6 +2832,7 @@ ut_space_tet_randompt (double *v0, double *v1, double *v2, double *v3, gsl_rng *
 
   return;
 }
+#endif
 
 int
 ut_space_point_cyl_side (double *coo, double *A, double *v, double rad)
@@ -3292,4 +3321,493 @@ ut_space_point_cube_mirror (double *point, double *parms, double *mirror)
   ut_free_1d (&plane);
 
   return;
+}
+
+// P1 and P2 are assumed to bracket the sphere
+int
+ut_space_segment_sphere_intersect (double *P1, double *P2, double *C, double R, double *I)
+{
+  int i, status = 0;
+  double A, B, C0, delta, t, sqrt_delta, t1, t2;
+  double D[3], Q[3];
+
+  for (i = 0; i < 3; i++)
+  {
+    D[i] = P2[i] - P1[i];
+    Q[i] = P1[i] - C[i];
+  }
+
+  A = ut_vector_norm_squared (D);
+  B = 2. * ut_vector_scalprod (Q, D);
+  C0 = ut_vector_norm_squared (Q) - R * R;
+
+  delta = B * B - 4. * A * C0;
+
+  // P1 and P2 are assumed to bracket the sphere, so delta should be positive
+  if (delta < 0.)
+    abort ();
+
+  // Select the root lying on the segment
+  sqrt_delta = sqrt (delta);
+  t1 = (-B - sqrt_delta) / (2. * A);
+  t2 = (-B + sqrt_delta) / (2. * A);
+
+  if (t1 >= 0. && t1 <= 1.)
+    t = t1;
+  else if (t2 >= 0. && t2 <= 1.)
+    t = t2;
+  else
+    status = -1;
+
+  if (status == 0)
+    for (i = 0; i < 3; i++)
+      I[i] = P1[i] + t * D[i];
+
+  return status;
+}
+
+// P1 and P2 are assumed to bracket the sphere
+int
+ut_space_segment_cylinder_intersect (double *P1, double *P2, double *basis, double *axis, double R, double *I)
+{
+  int i, status = 0;
+  double A, B, C0, delta, t, sqrt_delta, t1, t2;
+  double D[3], Q[3], Dp[3], Qp[3];
+  double axis_norm2, proj;
+
+  ut_array_1d_sub (P1, P2, 3, D);
+  ut_array_1d_sub (basis, P1, 3, Q);
+
+  // Project D and Q onto the plane perpendicular to the cylinder axis
+  axis_norm2 = ut_vector_norm_squared (axis);
+
+  proj = ut_vector_scalprod (D, axis) / axis_norm2;
+  for (i = 0; i < 3; i++)
+    Dp[i] = D[i] - proj * axis[i];
+
+  proj = ut_vector_scalprod (Q, axis) / axis_norm2;
+  for (i = 0; i < 3; i++)
+    Qp[i] = Q[i] - proj * axis[i];
+
+  // |Qp + t Dp|^2 = R^2
+  A = ut_vector_norm_squared (Dp);
+  B = 2. * ut_vector_scalprod (Qp, Dp);
+  C0 = ut_vector_norm_squared (Qp) - R * R;
+
+  delta = B * B - 4. * A * C0;
+
+  // P1 and P2 are assumed to bracket the cylinder, so delta should be positive
+  if (delta < 0.)
+    abort ();
+
+  // Select the root lying on the segment
+  sqrt_delta = sqrt (delta);
+  t1 = (-B - sqrt_delta) / (2. * A);
+  t2 = (-B + sqrt_delta) / (2. * A);
+
+  if (t1 >= 0. && t1 <= 1.)
+    t = t1;
+  else if (t2 >= 0. && t2 <= 1.)
+    t = t2;
+  else
+    status = -1;
+
+  if (status == 0)
+    for (i = 0; i < 3; i++)
+      I[i] = P1[i] + t * D[i];
+
+  return status;
+}
+
+#ifdef HAVE_GSL
+int
+ut_space_segment_torus_intersect (double *P1, double *P2,
+                                  double *basis, double *axis,
+                                  double R, double Rs, double *I)
+{
+  int i, status = -1;
+  double D[3], X[3];
+  double axis_norm2;
+  double XD, DD;
+  double XA, DA;
+  double s0, s1, s2;
+  double r0, r1, r2;
+  double q0, q1, q2;
+  double p0, p1, p2, p3, p4;
+  double z[8];
+  double t = 2.;
+  gsl_poly_complex_workspace *w;
+
+  // R = 0: the torus degenerates to a sphere.
+  if (R == 0.)
+    return ut_space_segment_sphere_intersect (P1, P2, basis, Rs, I);
+
+  for (i = 0; i < 3; i++)
+  {
+    D[i] = P2[i] - P1[i];
+    X[i] = P1[i] - basis[i];
+  }
+
+  axis_norm2 = ut_vector_norm_squared (axis);
+
+  if (axis_norm2 == 0.)
+    abort ();
+
+  XD = ut_vector_scalprod (X, D);
+  DD = ut_vector_norm_squared (D);
+
+  XA = ut_vector_scalprod (X, axis);
+  DA = ut_vector_scalprod (D, axis);
+
+  // s(t) = |X + t D|^2
+  s0 = ut_vector_norm_squared (X);
+  s1 = 2. * XD;
+  s2 = DD;
+
+  // r(t) = |(X + t D)_perp|^2
+  //
+  //      = |X + t D|^2
+  //        - ((X + t D).axis)^2 / |axis|^2
+  r0 = s0 - XA * XA / axis_norm2;
+  r1 = s1 - 2. * XA * DA / axis_norm2;
+  r2 = s2 - DA * DA / axis_norm2;
+
+  // q(t) = s(t) + R^2 - Rs^2
+  q0 = s0 + R * R - Rs * Rs;
+  q1 = s1;
+  q2 = s2;
+
+  //
+  // q(t)² - 4 R² r(t) = 0
+  //
+  p0 = q0 * q0 - 4. * R * R * r0;
+  p1 = 2. * q0 * q1 - 4. * R * R * r1;
+  p2 = q1 * q1 + 2. * q0 * q2 - 4. * R * R * r2;
+  p3 = 2. * q1 * q2;
+  p4 = q2 * q2;
+
+  w = gsl_poly_complex_workspace_alloc (5);
+
+  if (gsl_poly_complex_solve ((double[]) {p0, p1, p2, p3, p4},
+                              5, w, z) != GSL_SUCCESS)
+    abort ();
+
+  gsl_poly_complex_workspace_free (w);
+
+  for (i = 0; i < 4; i++)
+  {
+    double ti = z[2 * i];
+    double imag = z[2 * i + 1];
+    double qt;
+
+    if (fabs (imag) > 1.e-10 || ti < 0. || ti > 1. || ti >= t)
+      continue;
+
+    qt = q0 + q1 * ti + q2 * ti * ti;
+
+    if (qt < -1.e-9)
+      continue;
+
+    t = ti;
+    status = 0;
+  }
+
+  if (status == 0)
+    for (i = 0; i < 3; i++)
+      I[i] = P1[i] + t * D[i];
+
+  return status;
+}
+#endif
+
+int
+ut_space_point_intorus (double *P, double *C, double *axis,
+                        double R, double Rs)
+{
+  int i;
+  double Q[3];
+  double axis_norm2, z, r2, d;
+
+  axis_norm2 = ut_vector_norm_squared (axis);
+
+  if (axis_norm2 == 0.)
+    abort ();
+
+  for (i = 0; i < 3; i++)
+    Q[i] = P[i] - C[i];
+
+  z = ut_vector_scalprod (Q, axis) / sqrt (axis_norm2);
+
+  r2 = ut_vector_norm_squared (Q) - z * z;
+
+  d = sqrt (r2) - R;
+
+  return (d * d + z * z <= Rs * Rs);
+}
+
+int
+ut_space_segment_ecylinder_intersect (double *P1, double *P2, double *basis, double *axis,
+                                       double *section_axis1, double *section_axis2,
+                                       double section_rad1, double section_rad2, double *I)
+{
+  int i, status = 0;
+  double D[3], Q[3], e1[3], e2[3];
+  double e1_norm, e2_norm;
+  double alpha0, alphaD, beta0, betaD;
+  double A, B, C0, delta, t, sqrt_delta, t1, t2;
+  (void) axis;
+
+  e1_norm = ut_vector_norm (section_axis1);
+  e2_norm = ut_vector_norm (section_axis2);
+
+  if (e1_norm == 0. || e2_norm == 0.)
+    abort ();
+
+  for (i = 0; i < 3; i++)
+  {
+    e1[i] = section_axis1[i] / e1_norm;
+    e2[i] = section_axis2[i] / e2_norm;
+  }
+
+  ut_array_1d_sub (P1, P2, 3, D);
+  ut_array_1d_sub (basis, P1, 3, Q);
+
+  alpha0 = ut_vector_scalprod (Q, e1);
+  alphaD = ut_vector_scalprod (D, e1);
+
+  beta0 = ut_vector_scalprod (Q, e2);
+  betaD = ut_vector_scalprod (D, e2);
+
+  // (alpha(t) / section_rad1)^2 + (beta(t) / section_rad2)^2 = 1
+  A = (alphaD * alphaD) / (section_rad1 * section_rad1)
+      + (betaD * betaD) / (section_rad2 * section_rad2);
+  B = 2. * (alpha0 * alphaD) / (section_rad1 * section_rad1)
+      + 2. * (beta0 * betaD) / (section_rad2 * section_rad2);
+  C0 = (alpha0 * alpha0) / (section_rad1 * section_rad1)
+       + (beta0 * beta0) / (section_rad2 * section_rad2) - 1.;
+
+  delta = B * B - 4. * A * C0;
+
+  // P1 and P2 are assumed to bracket the ecylinder, so delta should be positive
+  if (delta < 0.)
+    abort ();
+
+  // Select the root lying on the segment
+  sqrt_delta = sqrt (delta);
+  t1 = (-B - sqrt_delta) / (2. * A);
+  t2 = (-B + sqrt_delta) / (2. * A);
+
+  if (t1 >= 0. && t1 <= 1.)
+    t = t1;
+  else if (t2 >= 0. && t2 <= 1.)
+    t = t2;
+  else
+    status = -1;
+
+  if (status == 0)
+    for (i = 0; i < 3; i++)
+      I[i] = P1[i] + t * D[i];
+
+  return status;
+}
+
+// P1 and P2 are assumed to bracket the rounded cube
+int
+ut_space_segment_cube_intersect (double *P1, double *P2,
+                                 double xmin, double xmax,
+                                 double ymin, double ymax,
+                                 double zmin, double zmax,
+                                 double rad, double *I)
+{
+  int i, status = -1;
+  double D[3];
+  double mn[3], mx[3], imn[3], imx[3];
+  double best_t = 2.;
+
+  if (rad < 0.)
+    abort ();
+
+  mn[0] = xmin; mn[1] = ymin; mn[2] = zmin;
+  mx[0] = xmax; mx[1] = ymax; mx[2] = zmax;
+
+  for (i = 0; i < 3; i++)
+  {
+    D[i] = P2[i] - P1[i];
+    imn[i] = mn[i] + rad;
+    imx[i] = mx[i] - rad;
+
+    // rad too large for this box along this axis: unsupported shape
+    if (imn[i] > imx[i])
+      abort ();
+  }
+
+  /*
+   * Flat faces: for each axis a, planes at mn[a] and mx[a], restricted
+   * to the inset rectangle spanned by the inner box in the other two
+   * axes b, c.
+   */
+  for (i = 0; i < 3; i++)
+  {
+    int a = i, b = (i + 1) % 3, c = (i + 2) % 3;
+    int s;
+
+    for (s = 0; s < 2; s++)
+    {
+      double value = (s == 0) ? mn[a] : mx[a];
+      double t, pb, pc;
+
+      if (fabs (D[a]) < 1e-9)
+        continue;
+
+      t = (value - P1[a]) / D[a];
+
+      if (t < 0. || t > 1. || t >= best_t)
+        continue;
+
+      pb = P1[b] + t * D[b];
+      pc = P1[c] + t * D[c];
+
+      if (pb >= imn[b] - 1e-9 && pb <= imx[b] + 1e-9 &&
+          pc >= imn[c] - 1e-9 && pc <= imx[c] + 1e-9)
+      {
+        best_t = t;
+        status = 0;
+      }
+    }
+  }
+
+  /*
+   * Edges: for each axis a (running direction) and each corner (sb, sc)
+   * of the inner box in the other two axes b, c, a quarter-cylinder of
+   * radius rad, bounded along a to [imn[a], imx[a]].
+   */
+  for (i = 0; i < 3; i++)
+  {
+    int a = i, b = (i + 1) % 3, c = (i + 2) % 3;
+    int sb, sc;
+
+    for (sb = 0; sb < 2; sb++)
+    for (sc = 0; sc < 2; sc++)
+    {
+      double sign_b = (sb == 0) ? 1. : -1.;
+      double sign_c = (sc == 0) ? 1. : -1.;
+      double fixed_b = (sb == 0) ? imn[b] : imx[b];
+      double fixed_c = (sc == 0) ? imn[c] : imx[c];
+      double Qb = P1[b] - fixed_b;
+      double Qc = P1[c] - fixed_c;
+      double A = D[b] * D[b] + D[c] * D[c];
+      double B = 2. * (Qb * D[b] + Qc * D[c]);
+      double C0 = Qb * Qb + Qc * Qc - rad * rad;
+      double delta, sqrt_delta, troot[2];
+      int k;
+
+      if (A < 1e-9)
+        continue;
+
+      delta = B * B - 4. * A * C0;
+
+      if (delta < 0.)
+        continue;
+
+      sqrt_delta = sqrt (delta);
+      troot[0] = (-B - sqrt_delta) / (2. * A);
+      troot[1] = (-B + sqrt_delta) / (2. * A);
+
+      for (k = 0; k < 2; k++)
+      {
+        double t = troot[k];
+        double pa, pb, pc;
+
+        if (t < 0. || t > 1. || t >= best_t)
+          continue;
+
+        pa = P1[a] + t * D[a];
+        pb = P1[b] + t * D[b];
+        pc = P1[c] + t * D[c];
+
+        if (pa < imn[a] - 1e-9 || pa > imx[a] + 1e-9)
+          continue;
+
+        if (sign_b * (pb - fixed_b) > 1e-9 ||
+            sign_c * (pc - fixed_c) > 1e-9)
+          continue;
+
+        best_t = t;
+        status = 0;
+      }
+    }
+  }
+
+  /*
+   * Corners: for each of the 8 corners of the inner box, an
+   * eighth-sphere of radius rad.
+   */
+  {
+    int sx, sy, sz;
+
+    for (sx = 0; sx < 2; sx++)
+    for (sy = 0; sy < 2; sy++)
+    for (sz = 0; sz < 2; sz++)
+    {
+      double sign[3], fixed[3], Q[3];
+      double A, B, C0, delta, sqrt_delta, troot[2];
+      int k, j;
+
+      sign[0] = (sx == 0) ? 1. : -1.;
+      sign[1] = (sy == 0) ? 1. : -1.;
+      sign[2] = (sz == 0) ? 1. : -1.;
+
+      fixed[0] = (sx == 0) ? imn[0] : imx[0];
+      fixed[1] = (sy == 0) ? imn[1] : imx[1];
+      fixed[2] = (sz == 0) ? imn[2] : imx[2];
+
+      for (j = 0; j < 3; j++)
+        Q[j] = P1[j] - fixed[j];
+
+      A = ut_vector_norm_squared (D);
+      B = 2. * ut_vector_scalprod (Q, D);
+      C0 = ut_vector_norm_squared (Q) - rad * rad;
+
+      delta = B * B - 4. * A * C0;
+
+      if (delta < 0.)
+        continue;
+
+      sqrt_delta = sqrt (delta);
+      troot[0] = (-B - sqrt_delta) / (2. * A);
+      troot[1] = (-B + sqrt_delta) / (2. * A);
+
+      for (k = 0; k < 2; k++)
+      {
+        double t = troot[k];
+        double P[3];
+        int ok = 1;
+
+        if (t < 0. || t > 1. || t >= best_t)
+          continue;
+
+        for (j = 0; j < 3; j++)
+          P[j] = P1[j] + t * D[j];
+
+        for (j = 0; j < 3; j++)
+          if (sign[j] * (P[j] - fixed[j]) > 1e-9)
+          {
+            ok = 0;
+            break;
+          }
+
+        if (!ok)
+          continue;
+
+        best_t = t;
+        status = 0;
+      }
+    }
+  }
+
+  if (status == 0)
+    for (i = 0; i < 3; i++)
+      I[i] = P1[i] + best_t * D[i];
+
+  return status;
 }

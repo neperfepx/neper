@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010-2012,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010-2012,2014,2018,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -65,6 +65,8 @@
 /**                                 to   : 04 nov 2010     **/
 /**                # Version 6.0  : from : 03 mar 2011     **/
 /**                                 to   : 06 jun 2018     **/
+/**                # Version 7.0  : from : 19 jul 2021     **/
+/**                                 to   : 17 jul 2024     **/
 /**                                                        **/
 /**   NOTES      : # While Anum and Gnum are different     **/
 /**                  types, because architectures are      **/
@@ -92,8 +94,9 @@
 
 #define MAPPINGNONE                 0x0000        /* No options set */
 
-#define MAPPINGFREEPART             0x0001        /* Free partition array */
+#define MAPPINGINCOMPLETE           0x0001        /* Incomplete mapping   */
 #define MAPPINGFREEDOMN             0x0002        /* Free domain array    */
+#define MAPPINGFREEPART             0x0004        /* Free partition array */
 
 /*
 **  The type definitions.
@@ -111,7 +114,9 @@ typedef struct Mapping_ {
   ArchDom *                 domntab;              /*+ Array of domains [domnmax] +*/
   Anum                      domnnbr;              /*+ Current number of domains  +*/
   Anum                      domnmax;              /*+ Maximum number of domains  +*/
-  ArchDom                   domnorg;              /*+ Initial (sub)domain        +*/
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_t           mutedat;              /*+ Local mutex for updates    +*/
+#endif /* SCOTCH_PTHREAD */
 } Mapping;
 
 /*+ The target architecture sort structure, used
@@ -135,14 +140,14 @@ typedef struct MappingSort_ {
 */
 
 void                        mapInit             (Mapping * restrict const, const Graph * restrict const, const Arch * restrict const, const ArchDom * restrict const);
-void                        mapInit2            (Mapping * restrict const, const Graph * restrict const, const Arch * restrict const, const ArchDom * restrict const, const Anum, const Anum);
+void                        mapInit2            (Mapping * restrict const, const Graph * restrict const, const Arch * restrict const, const Anum, const Anum);
 void                        mapExit             (Mapping * const);
 int                         mapAlloc            (Mapping * const);
 void                        mapFree             (Mapping * const);
 int                         mapResize           (Mapping * restrict const, const Anum);
-int                         mapResize2          (Mapping * restrict const, const Anum);
+int                         mapCheck            (const Mapping * const);
 int                         mapCopy             (Mapping * const, const Mapping * const);
-void                        mapFrst             (Mapping * const);
+void                        mapFrst             (Mapping * const, const ArchDom * const domnptr);
 int                         mapBuild            (Mapping * restrict const, const Anum * restrict const);
 int                         mapMerge            (Mapping * restrict const, const Anum * restrict const);
 void                        mapTerm             (const Mapping * restrict const, Anum * restrict const);

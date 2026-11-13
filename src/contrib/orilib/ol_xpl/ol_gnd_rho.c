@@ -62,11 +62,7 @@ ol_gnd_nye_rho (struct OL_CRYS Crys, double **nye, double *rho)
   }
   else if (!strcmp (Crys.rho_min, "L3"))
   {
-#ifdef HAVE_NLOPT
-    ol_gnd_nye_rho_norm (Crys, A, nyev, rho);
-#else
-    printf ("Arbitrary norm not available (no NLOPT support)\n");
-#endif
+    printf ("Arbitrary norm not available\n");
   }
 
   ut_free_1d (&nyev);
@@ -83,7 +79,7 @@ ol_gnd_nye_rho_log (struct OL_CRYS Crys, double **nye, double *rho)
 
   status = ol_gnd_nye_rho (Crys, nye, rho);
   for (k = 0; k < Crys.gnd_size; k++)
-    rho[k] = log (ut_num_max (1, rho[k]) / log (10));
+    rho[k] = log (ut_num_max (1, rho[k])) / log (10);
 
   return status;
 }

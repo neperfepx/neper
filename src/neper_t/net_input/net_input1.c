@@ -19,6 +19,27 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
       ut_string_string ("tess", &(*pIn).format);
   }
 
+  // checking the formats (an unknown format was ignored, and so nothing
+  // written)
+  {
+    int j, k, qty, valid;
+    char **formats = NULL;
+    const char *valids[] = { "tess", "geo", "mgeo", "3dec", "fe", "ply", "stl", "stl:bycell",
+                             "obj", "ovm", "tesr", "raw", "vtk", "ori", "sim", "debug" };
+
+    ut_list_break ((*pIn).format, NEUT_SEP_NODEP, &formats, &qty);
+    for (j = 0; j < qty; j++)
+    {
+      valid = !strncmp (formats[j], "svg", 3);
+      for (k = 0; !valid && k < (int) (sizeof (valids) / sizeof (valids[0])); k++)
+        if (!strcmp (formats[j], valids[k]))
+          valid = 1;
+      if (!valid)
+        ut_print_message (2, 0, "Unknown format `%s' (option -format).\n", formats[j]);
+    }
+    ut_free_2d_char (&formats, qty);
+  }
+
   tess_out = 0;
   tesr_out = 0;
   ori_out = 0;
@@ -55,12 +76,9 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
   // if loading from a file, setting mode to its format
   if (strcmp ((*pIn).load, "none"))
   {
-    int PartQty;
-    char **parts = NULL;
-    ut_list_break ((*pIn).load, NEUT_SEP_DEP, &parts, &PartQty);
-    if (!ut_file_exist (parts[0]))
-      ut_print_message (2, 0, "%s: no such file.\n", parts[0]);
-    ut_file_format (parts[0], &(*pIn).mode);
+    if (!ut_file_exist ((*pIn).load))
+      ut_print_message (2, 0, "%s: no such file.\n", (*pIn).load);
+    ut_file_format ((*pIn).load, &(*pIn).mode);
   }
 
   // otherwise, tessellations are built in tess mode
@@ -72,6 +90,9 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
 
   if (!strcmp ((*pIn).mode, "obj") || !strcmp ((*pIn).mode, "ovm"))
     ut_string_string ("tess", &(*pIn).mode);
+
+  net_input_orioptiini_check (*pIn);
+  net_input_orisampling_check (*pIn);
 
   return;
 }

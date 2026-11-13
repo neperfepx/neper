@@ -4,21 +4,32 @@
 
 #include"neper_.h"
 #include"neper_config.h"
+#include"neper_build_info.h"
 
+void neper_version (char *);
 void neper_head (char *);
 void neper_foot (void);
 void neper_info (void);
 int neper_diff (int argc, char **argv);
+extern int nem_gmsh_worker (void);
 
 int
 main (int argc, char **argv)
 {
-  int modqty, status, fargc = 0;
+  int modqty, status, fargc = 0, res = EXIT_SUCCESS;
   double t;
   char **modlist = NULL, *mod = NULL, **fargv = NULL, *rcfile = NULL;
   struct timeval beg_time, end_time;
 
+  // Gmsh worker process (see nem_mesh_gmsh_lib)
+  if (argc == 2 && !strcmp (argv[1], "--gmsh-worker"))
+    return nem_gmsh_worker ();
+
   gettimeofday (&beg_time, NULL);
+
+  // line-buffering stdout, so that the messages printed before an abort
+  // (error) are not lost when stdout is a pipe or a file
+  setvbuf (stdout, NULL, _IOLBF, 0);
 
   // Module list -------------------------------------------------------
 
@@ -57,21 +68,29 @@ main (int argc, char **argv)
 
   // Processing input --------------------------------------------------
 
+  char version[1000];
+  neper_version (version);
+
   if (argc == 1 || (argc >= 2 && !strcmp (mod, "--help")))
   {
-    neper_head (NEPER_VERSION);
+    neper_head (version);
     neper_info ();
     neper_foot ();
   }
 
   else if (argc >= 2 && !strcmp (mod, "--version"))
-    printf ("%s\n", NEPER_VERSION);
+    printf ("%s\n", version);
 
   else if (argc >= 2 && !strcmp (mod, "--data"))
   {
     char *data = NULL;
-    neut_sys_data (&data, 0);
-    printf ("%s\n", data);
+    if (neut_sys_data (&data, 0))
+    {
+      fprintf (stderr, "Data files not found (see NEPER_DATA_DIR).\n");
+      res = EXIT_FAILURE;
+    }
+    else
+      printf ("%s\n", data);
     ut_free_1d_char (&data);
   }
 
@@ -79,11 +98,11 @@ main (int argc, char **argv)
     ut_print_gplv3 (stdout);
 
   else if (argc >= 2 && !strcmp (mod, "--diff"))
-    return neper_diff (argc, argv);
+    res = neper_diff (argc, argv);
 
   else
   {
-    neper_head (NEPER_VERSION);
+    neper_head (version);
     neper_info ();
 
     // Rc file ---
@@ -138,18 +157,34 @@ main (int argc, char **argv)
     neper_foot ();
   }
 
-  ut_free_2d_char (&modlist, 10);
+  ut_free_2d_char (&modlist, 11);
   ut_free_1d_char (&mod);
   ut_free_2d_char (&fargv, fargc + 1);
   ut_free_1d_char (&rcfile);
 
-  return EXIT_SUCCESS;
+  return res;
+}
+
+// Version of Neper (neper_build_info.h): the version alone for a release (e.g. "5.0.1"), and
+// otherwise with the git hash and the commit date of the sources when known, e.g.
+// "5.0.1+3 (git 9f8e7d6c, 2026-11-20)" (main after a release) or "5.0.2-dev (git 364c76cb,
+// 2026-11-13)" (devel)
+void
+neper_version (char *version)
+{
+  if (strlen (NEPER_GIT_HASH) > 0)
+    sprintf (version, "%s (git %s, %s)", NEPER_BUILD_VERSION, NEPER_GIT_HASH, NEPER_GIT_DATE);
+  else
+    strcpy (version, NEPER_BUILD_VERSION);
+
+  return;
 }
 
 void
 neper_head (char *neper_version)
 {
-  int comma = 0, alldeps = 1;
+  int alldeps = 1;
+  char deps[1000] = "";
 
   printf
     ("\n========================    N   e   p   e   r    =======================\n");
@@ -159,47 +194,36 @@ neper_head (char *neper_version)
 
   ut_print_message (0, 0, "Version %s\n", neper_version);
 
-  ut_print_message (0, 0, "Built with: ");
-
 #ifdef HAVE_GSL
-  printf ("%sgsl", comma ? "|" : "");
-  comma = 1;
+  strcat (deps, "|gsl");
 #else
   alldeps = 0;
 #endif
 
+  strcat (deps, "|libgmsh");
+
 #ifdef HAVE_MUPARSER
-  printf ("%smuparser", comma ? "|" : "");
-  comma = 1;
+  strcat (deps, "|muparser");
 #else
   alldeps = 0;
 #endif
 
 #ifdef HAVE_OPENGJK
-  printf ("%sopengjk", comma ? "|" : ":");
-  comma = 1;
+  strcat (deps, "|opengjk");
 #else
   alldeps = 0;
 #endif
 
 #ifdef HAVE_OPENMP
-  printf ("%sopenmp", comma ? "|" : ":");
-  comma = 1;
+  strcat (deps, "|openmp");
 #else
   alldeps = 0;
 #endif
 
-#ifdef HAVE_NLOPT
-  printf ("%snlopt", comma ? "|" : ":");
-  comma = 1;
-#else
-  alldeps = 0;
-#endif
+  strcat (deps, "|libscotch");
 
-  printf ("%slibscotch", comma ? "|" : ":");
-  comma = 1;
-
-  printf ("%s\n", alldeps ? " (full)" : "");
+  ut_print_message (0, 0, "Built with: %s%s\n", deps + 1,
+                    alldeps ? " (full)" : "");
 
 #ifdef HAVE_OPENMP
 #pragma omp parallel

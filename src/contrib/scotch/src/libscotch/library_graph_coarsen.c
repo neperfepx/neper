@@ -1,4 +1,4 @@
-/* Copyright 2011,2012,2014,2015,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2011,2012,2014,2015,2018,2019,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,6 +43,8 @@
 /**                                 to   : 07 aug 2011     **/
 /**                # Version 6.0  : from : 06 sep 2011     **/
 /**                                 to   : 23 apr 2018     **/
+/**                # Version 7.0  : from : 03 may 2019     **/
+/**                                 to   : 21 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -50,10 +52,9 @@
 **  The defines and includes.
 */
 
-#define LIBRARY
-
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "arch.h"
 #include "graph.h"
 #include "graph_coarsen.h"
@@ -66,20 +67,20 @@
 /*                               */
 /*********************************/
 
-/*+ This routine creates a coarse graph from the
-*** given fine graph, unless the coarse graph is
-*** smaller than some threshold size or the
-*** coarsening ratio is above some other threshold.
-*** If the coarse graph is created, a coarse-to-fine
-*** vertex array is created, that contains a pair of
-*** fine indices for each coarse index. The contents
-*** of the Scotch internal array are copied to the
-*** array provided by the user.
-*** It returns:
-*** - 0  : if the graph has been coarsened.
-*** - 1  : if the graph could not be coarsened.
-*** - 2  : on error.
-+*/
+/* This routine creates a coarse graph from the
+** given fine graph, unless the coarse graph is
+** smaller than some threshold size or the
+** coarsening ratio is above some other threshold.
+** If the coarse graph is created, a coarse-to-fine
+** vertex array is created, that contains a pair of
+** fine indices for each coarse index. The contents
+** of the Scotch internal array are copied to the
+** array provided by the user.
+** It returns:
+** - 0  : if the graph has been coarsened.
+** - 1  : if the graph could not be coarsened.
+** - 2  : on error.
+*/
 
 int
 SCOTCH_graphCoarsen (
@@ -91,25 +92,34 @@ SCOTCH_Graph * restrict const       coargrafptr,  /* Coarse graph               
 SCOTCH_Num * restrict const         coarmulttab)  /* Pointer to multinode array to fill */
 {
   GraphCoarsenMulti * restrict  coarmultptr;      /* Un-based pointer to created, grouped multinode array */
+  CONTEXTDECL                  (finegrafptr);
+  int                           o;
 
-  intRandInit ();                                 /* Check that random number generator is initialized */
-  coarmultptr = (GraphCoarsenMulti *) coarmulttab; /* Indicate multinode array is user-provided        */
-  return (graphCoarsen ((const Graph * restrict const) finegrafptr, (Graph * restrict const) coargrafptr,
-                        NULL, &coarmultptr, coarvertnbr, coarval, flagval & GRAPHCOARSENNOMERGE,
-                        NULL, NULL, 0, NULL));
+  if (CONTEXTINIT (finegrafptr) != 0) {
+    errorPrint (STRINGIFY (SCOTCH_graphCoarsen) ": cannot initialize context");
+    return (1);
+  }
+
+  coarmultptr = (GraphCoarsenMulti *) coarmulttab; /* Indicate multinode array is user-provided */
+  o = graphCoarsen ((const Graph * restrict const) CONTEXTGETOBJECT (finegrafptr), (Graph * restrict const) coargrafptr,
+                    NULL, &coarmultptr, coarvertnbr, coarval, flagval & GRAPHCOARSENNOMERGE,
+                    NULL, NULL, 0, CONTEXTGETDATA (finegrafptr));
+
+  CONTEXTEXIT (finegrafptr);
+  return (o);
 }
 
-/*+ This routine computes a matching of a (coarse)
-*** graph, unless the would-be coarse graph is smaller
-*** than some threshold size or the coarsening ratio is
-*** above some other threshold.
-*** If the matching is computed, both a multinode and
-*** a coarse-to-fine vertex arrays are created.
-*** It returns:
-*** - 0  : if the matching has been coarsened.
-*** - 1  : if the graph could not be matched.
-*** - 2  : on error.
-+*/
+/* This routine computes a matching of a (coarse)
+** graph, unless the would-be coarse graph is smaller
+** than some threshold size or the coarsening ratio is
+** above some other threshold.
+** If the matching is computed, both a multinode and
+** a coarse-to-fine vertex arrays are created.
+** It returns:
+** - 0  : if the matching has been coarsened.
+** - 1  : if the graph could not be matched.
+** - 2  : on error.
+*/
 
 int
 SCOTCH_graphCoarsenMatch (
@@ -120,21 +130,30 @@ const SCOTCH_Num                        flagval,  /* Flag value                 
 SCOTCH_Num * restrict const             finematetab) /* Mating array to fill              */
 {
   Gnum * restrict     finemateptr;
+  CONTEXTDECL        (finegrafptr);
+  int                 o;
 
-  intRandInit ();                                 /* Check that random number generator is initialized             */
+  if (CONTEXTINIT (finegrafptr) != 0) {
+    errorPrint (STRINGIFY (SCOTCH_graphCoarsenMatch) ": cannot initialize context");
+    return (1);
+  }
+
   finemateptr = finematetab;                      /* Slot will not be modified but preserve "const" of finematetab */
-  return (graphCoarsenMatch ((const Graph * restrict const) finegrafptr, &finemateptr,
-                             coarvertptr, coarval, flagval & GRAPHCOARSENNOMERGE,
-                             NULL, NULL, 0, NULL));
+  o = graphCoarsenMatch ((const Graph * restrict const) CONTEXTGETOBJECT (finegrafptr), &finemateptr,
+                         coarvertptr, coarval, flagval & GRAPHCOARSENNOMERGE,
+                         NULL, NULL, 0, CONTEXTGETDATA (finegrafptr));
+
+  CONTEXTEXIT (finegrafptr);
+  return (o);
 }
 
-/*+ This routine creates a coarse graph from the
-*** given fine graph and the provided multinode
-*** array.
-*** It returns:
-*** - 0  : if the graph has been coarsened.
-*** - 1  : on error.
-+*/
+/* This routine creates a coarse graph from the
+** given fine graph and the provided multinode
+** array.
+** It returns:
+** - 0  : if the graph has been coarsened.
+** - 1  : on error.
+*/
 
 int
 SCOTCH_graphCoarsenBuild (
@@ -145,9 +164,18 @@ SCOTCH_Graph * restrict const       coargrafptr,  /* Coarse graph               
 SCOTCH_Num * restrict const         coarmulttab)  /* Pointer to user-provided multinode array */
 {
   GraphCoarsenMulti * restrict  coarmultptr;      /* Un-based pointer to created, grouped multinode array */
+  CONTEXTDECL                  (finegrafptr);
+  int                           o;
 
-  intRandInit ();                                 /* Check that random number generator is initialized */
-  coarmultptr = (GraphCoarsenMulti *) coarmulttab; /* Indicate multinode array is user-provided        */
-  return (graphCoarsenBuild ((const Graph * restrict const) finegrafptr, (Graph * restrict const) coargrafptr,
-                             finematetab, &coarmultptr, coarvertnbr));
+  if (CONTEXTINIT (finegrafptr)) {
+    errorPrint (STRINGIFY (SCOTCH_graphCoarsenBuild) ": cannot initialize context");
+    return (1);
+  }
+
+  coarmultptr = (GraphCoarsenMulti *) coarmulttab; /* Indicate multinode array is user-provided */
+  o = (graphCoarsenBuild ((const Graph * restrict const) CONTEXTGETOBJECT (finegrafptr), (Graph * restrict const) coargrafptr,
+                          finematetab, &coarmultptr, coarvertnbr, CONTEXTGETDATA (finegrafptr)));
+
+  CONTEXTEXIT (finegrafptr);
+  return (o);
 }

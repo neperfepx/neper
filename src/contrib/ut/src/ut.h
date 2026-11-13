@@ -6,6 +6,7 @@
 /// \author Romain Quey
 /// \bug No known bugs
 
+#include <stdio.h>
 #include "ut_config.h"
 #include "ut_alloc/ut_alloc.h"
 #include "ut_arg/ut_arg.h"
@@ -30,6 +31,3 @@
 #include "ut_time/ut_time.h"
 #include "ut_vector/ut_vector.h"
 #include "ut_xfig/ut_xfig.h"
-#ifdef HAVE_NLOPT
-#include "ut_nlopt/ut_nlopt.h"
-#endif

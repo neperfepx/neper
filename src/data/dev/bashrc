@@ -3,7 +3,7 @@
 export NEPERROOT=/path/to/neper (*REPLACE BY YOUR OWN PATH*)
 export NEPER=$NEPERROOT/src
 export NEPERDOC=$NEPERROOT/doc
-export NEPERDOCDEV=$NEPERROOT/doc-dev
+export NEPERDOCDEV=$NEPERROOT/dev
 
 # Custom terminal prompt including the git branch
 
@@ -16,10 +16,9 @@ PS1="\h:\W\[\033[0;33m\]\$(parse_git_branch)\[\033[0m\]\$ "
 
 export PATH="$HOME/.local/bin/nepertools:$PATH"
 
-# Alias to override the git command by neper's git.  This is transparent to
-# other project, and the system git can still be called using \git.
+# Alias to run Asymptote through Neper's wrapper
 
-alias git="$HOME/.local/bin/nepertools/neperfepx-git"
+alias asy="$HOME/.local/bin/nepertools/neperfepx-asy"
 
 # m aliases
 

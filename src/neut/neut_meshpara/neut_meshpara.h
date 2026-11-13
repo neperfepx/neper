@@ -17,6 +17,8 @@ extern "C"
 
   extern void neut_meshpara_set_zero (struct MESHPARA *);
   extern void neut_meshpara_free (struct MESHPARA *);
+  extern void neut_meshpara_cl_scale (struct MESHPARA *pMeshPara, struct TESS Tess,
+                                      double fact);
 
 #endif				/* NEUT_MESHPARA_H */
 

@@ -35,7 +35,7 @@ neut_oset_clustering (struct OL_SET OSet, struct OL_SET Grid, char *method, stru
 
     for (i = 0; i < (int) OSet.size; i++)
     {
-      nano_index->knnSearch (OSet.q[i], num_results, &ret_index[0], &out_dist_sqr[0]);
+      (*nano_index).knnSearch (OSet.q[i], num_results, &ret_index[0], &out_dist_sqr[0]);
 
       id = ret_index[0] % Grid.size;
 

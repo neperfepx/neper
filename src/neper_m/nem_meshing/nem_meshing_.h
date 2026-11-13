@@ -17,6 +17,8 @@
 #include "nem_meshing_3d/nem_meshing_3d.h"
 #include "nem_meshing_pinching/nem_meshing_pinching.h"
 
+#include"../nem_split/nem_split.h"
+
 #include"nem_meshing.h"
 
 extern void nem_meshing_post (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh);

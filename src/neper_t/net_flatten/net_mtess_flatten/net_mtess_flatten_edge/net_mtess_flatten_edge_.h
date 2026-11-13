@@ -61,6 +61,7 @@ extern void net_mtess_flatten_edge_domedge_linkedge (int fedge, struct TESSE *Te
 
 extern void net_mtess_flatten_edge_init_fedgetessedge (struct TESS *Tess,
 						 int *tessids, int tessqty,
+						 int *vtessids, int vtessqty,
 						 struct TESS *pFTess,
 						 struct TESSE *TessE,
 						 struct FLATTEN *pFlatten);

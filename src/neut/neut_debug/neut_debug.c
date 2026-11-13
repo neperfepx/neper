@@ -385,31 +385,31 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       }
 
     fprintf (file, "[id] FaceEdgeQty then FaceEdgeNb =\n");
-    if (Tess.FaceVerQty == NULL || Tess.FaceEdgeNb == NULL)
+    if (Tess.FaceEdgeQty == NULL || Tess.FaceEdgeNb == NULL)
       fprintf (file, "one is NULL\n");
     else
       for (i = 1; i <= Tess.FaceQty; i++)
       {
-        fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
+        fprintf (file, "%d %d ", i, Tess.FaceEdgeQty[i]);
         if (!Tess.FaceEdgeNb[i])
           fprintf (file, "NULL\n");
         else
           ut_array_1d_int_fprintf (file, Tess.FaceEdgeNb[i] + 1,
-                                   Tess.FaceVerQty[i], "%d");
+                                   Tess.FaceEdgeQty[i], "%d");
       }
 
     fprintf (file, "[id] FaceEdgeQty then Ori =\n");
-    if (Tess.FaceVerQty == NULL || Tess.FaceEdgeOri == NULL)
+    if (Tess.FaceEdgeQty == NULL || Tess.FaceEdgeOri == NULL)
       fprintf (file, "one is NULL\n");
     else
       for (i = 1; i <= Tess.FaceQty; i++)
       {
-        fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
+        fprintf (file, "%d %d ", i, Tess.FaceEdgeQty[i]);
         if (!Tess.FaceEdgeOri[i])
           fprintf (file, "NULL\n");
         else
           ut_array_1d_int_fprintf (file, Tess.FaceEdgeOri[i] + 1,
-                                   Tess.FaceVerQty[i], "%d");
+                                   Tess.FaceEdgeQty[i], "%d");
       }
 
     fprintf (file, "[id] FaceEq =\n");
@@ -622,6 +622,17 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     fprintf (file, "is NULL\n");
   fflush (file);
 
+  fprintf (file, "DomFaceParmQty: DomFaceParms =\n");
+  if (Tess.DomFaceParms)
+    for (i = 1; i <= Tess.DomFaceQty; i++)
+    {
+      fprintf (file, "%d: ", Tess.DomFaceParmQty[i]);
+      ut_array_1d_fprintf (file, Tess.DomFaceParms[i], Tess.DomFaceParmQty[i], REAL_PRINT_FORMAT);
+    }
+  else
+    fprintf (file, "is NULL\n");
+  fflush (file);
+
   fprintf (file, "[id] DomFaceVerQty then DomFaceVerNb =\n");
   if (Tess.DomFaceVerQty != NULL && Tess.DomFaceVerNb != NULL)
     for (i = 1; i <= Tess.DomFaceQty; i++)
@@ -647,7 +658,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
   fflush (file);
 
   fprintf (file, "[id] DomTessFaceQty then DomTessFaceNb =\n");
-  if (Tess.DomTessFaceQty != NULL)
+  if (Tess.DomTessFaceQty)
     for (i = 1; i <= Tess.DomFaceQty; i++)
     {
       fprintf (file, "%d %d ", i, Tess.DomTessFaceQty[i]);
@@ -665,7 +676,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
   fprintf (file, "ScaleCellId =\n");
 
   if (Tess.ScaleCellId)
-    ut_array_2d_int_fprintf (stdout, Tess.ScaleCellId + 1, Tess.CellQty, Tess.ScaleQty + 1, "%d");
+    ut_array_2d_int_fprintf (file, Tess.ScaleCellId + 1, Tess.CellQty, Tess.ScaleQty + 1, "%d");
   else
     fprintf (file, "NULL\n");
 
@@ -919,60 +930,6 @@ neut_debug_poly_name (char *filename, struct POLY Poly)
 {
   FILE *file = ut_file_open (filename, "w");
   neut_debug_poly (file, Poly);
-  ut_file_close (file, filename, "w");
-
-  return;
-}
-
-void
-neut_debug_polymod (FILE * file, struct POLYMOD Polymod)
-{
-  int i;
-
-  fprintf (file,
-           "====== Beginning of Polymod =============================\n");
-
-  fprintf (file, "VerQty = %d\n", Polymod.VerQty);
-  fprintf (file, "FaceQty = %d\n", Polymod.FaceQty);
-
-  fprintf (file, "VerUse = \n");
-  ut_array_1d_int_fprintf (file, Polymod.VerUse + 1, Polymod.VerQty, "%d");
-
-  fprintf (file, "VerCoo = \n");
-  ut_array_2d_fprintf (file, Polymod.VerCoo + 1, Polymod.VerQty, 3, REAL_PRINT_FORMAT);
-
-  fprintf (file, "VerFace = \n");
-  ut_array_2d_int_fprintf (file, Polymod.VerFace + 1, Polymod.VerQty, 3,
-                           "%d");
-
-  fprintf (file, "FaceUse = \n");
-  ut_array_1d_int_fprintf (file, Polymod.FaceUse + 1, Polymod.FaceQty, "%d");
-
-  fprintf (file, "FacePoly = \n");
-  ut_array_1d_int_fprintf (file, Polymod.FacePoly + 1, Polymod.FaceQty, "%d");
-
-  fprintf (file, "FaceEq = \n");
-  ut_array_2d_fprintf (file, Polymod.FaceEq + 1, Polymod.FaceQty, 4, REAL_PRINT_FORMAT);
-
-  fprintf (file, "FaceVerQty: FaceVerNb = \n");
-  for (i = 1; i <= Polymod.FaceQty; i++)
-  {
-    fprintf (file, "%d: ", Polymod.FaceVerQty[i]);
-    ut_array_1d_int_fprintf (file, Polymod.FaceVerNb[i] + 1,
-                             Polymod.FaceVerQty[i], "%d");
-  }
-
-  fprintf (file,
-           "====== End of Polymod ===================================\n");
-
-  return;
-}
-
-void
-neut_debug_polymod_name (char *filename, struct POLYMOD Polymod)
-{
-  FILE *file = ut_file_open (filename, "w");
-  neut_debug_polymod (file, Polymod);
   ut_file_close (file, filename, "w");
 
   return;

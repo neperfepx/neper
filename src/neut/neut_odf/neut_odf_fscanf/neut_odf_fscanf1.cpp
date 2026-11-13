@@ -38,7 +38,15 @@ neut_odf_fscanf (FILE *file, struct ODF *pOdf)
   char *version = NULL;
   char *string = ut_alloc_1d_char (1000);
 
+  // keeping track of the prerecorded pqcloud and pqtree
+  void *pqcloud = (*pOdf).Sp.pqcloud;
+  void *pqtree = (*pOdf).Sp.pqtree;
+
+  neut_odf_free (pOdf);
   neut_odf_set_zero (pOdf);
+
+  (*pOdf).Sp.pqcloud = pqcloud;
+  (*pOdf).Sp.pqtree = pqtree;
 
   neut_odf_fscanf_head (file, &version);
 

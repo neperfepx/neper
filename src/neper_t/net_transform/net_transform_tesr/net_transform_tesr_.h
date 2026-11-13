@@ -8,7 +8,6 @@
 #include"neut_t.h"
 
 #include"net_transform_tesr.h"
-#include"net_transform_tesr_tesrtranslate/net_transform_tesr_tesrtranslate.h"
 #include"net_transform_tesr_tesrmerge/net_transform_tesr_tesrmerge.h"
 #include"net_ori/net_ori.h"
 

@@ -75,7 +75,6 @@ net_input_options_default (struct IN_T *pIn)
 
   // end new -------------
 
-  ut_string_string ("max(varnb,1000)", &(*pIn).optialgomaxiterstring);
   ut_string_string ("default", &(*pIn).optiobjectivestring);
   ut_string_string ("default", &(*pIn).optigridstring);
   ut_string_string ("default", &(*pIn).optismoothstring);
@@ -90,6 +89,7 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("1", &((*pIn).selstring));
   (*pIn).mloop = 2;
   (*pIn).maxedgedelqty = INT_MAX;
+  (*pIn).delcell = 0;
   ut_string_string ("none", &(*pIn).sortstring);        // to change into sort
   ut_string_string ("none", &(*pIn).transform);
   (*pIn).checktess = 0;
@@ -167,9 +167,6 @@ net_input_options_default (struct IN_T *pIn)
 
   // end new --------
 
-  (*pIn).optialgomaxiter = ut_alloc_1d_pchar (1);
-  ut_string_string ((*pIn).optialgomaxiterstring,
-                    (*pIn).optialgomaxiter);
   (*pIn).optiobjective = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).optiobjectivestring,
                     (*pIn).optiobjective);
@@ -204,9 +201,14 @@ net_input_options_default (struct IN_T *pIn)
 void
 net_input_options_set (struct IN_T *pIn, int argc, char **argv)
 {
-  int i, ArgQty, Res;
+  int i, j, ArgQty, Res;
   char **ArgList = ut_alloc_2d_char (101, 101);
   char *Arg = NULL;
+  // deprecated option names and their new names
+  const char *oldnames[6] = { "-regularization", "-fmax", "-sel", "-rsel",
+                              "-mloop", "-maxedgedelqty" };
+  const char *newnames[6] = { "-reg", "-regfmax", "-regsel", "-regrsel",
+                              "-regloop", "-regedgedelmax" };
 
   // Argument list =====================================================
 
@@ -218,11 +220,10 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-ori");
 
   for (i = 0; i < (*pIn).optiqty; i++)
-    strcpy (ArgList[++ArgQty], ut_string_paste3 ("-", (*pIn).optitype[i], "optialgo"));
+    sprintf (ArgList[++ArgQty], "-%soptialgo", (*pIn).optitype[i]);
 
   strcpy (ArgList[++ArgQty], "-morphooptiini");
   strcpy (ArgList[++ArgQty], "-morphooptialgoini");
-  strcpy (ArgList[++ArgQty], "-morphooptialgomaxiter");
   strcpy (ArgList[++ArgQty], "-morphooptiobjective");
   strcpy (ArgList[++ArgQty], "-morphooptigrid");
   strcpy (ArgList[++ArgQty], "-morphooptismooth");
@@ -270,6 +271,14 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-transform");
   strcpy (ArgList[++ArgQty], "-group");
   // Regularization options --------------------------------------------
+  strcpy (ArgList[++ArgQty], "-reg");
+  strcpy (ArgList[++ArgQty], "-regfmax");
+  strcpy (ArgList[++ArgQty], "-regsel");
+  strcpy (ArgList[++ArgQty], "-regrsel");
+  strcpy (ArgList[++ArgQty], "-regloop");
+  strcpy (ArgList[++ArgQty], "-regedgedelmax");
+  strcpy (ArgList[++ArgQty], "-regdelcell");
+  // (deprecated names)
   strcpy (ArgList[++ArgQty], "-regularization");
   strcpy (ArgList[++ArgQty], "-fmax");
   strcpy (ArgList[++ArgQty], "-sel");
@@ -331,6 +340,17 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_badarg ();
     }
 
+    // deprecated option names, replaced by their new names
+    for (j = 0; j < 6; j++)
+      if (!strcmp (Arg, oldnames[j]))
+      {
+        ut_print_message (1, 2,
+                          "Option `%s' is deprecated and may vanish in future versions; use `%s' instead.\n",
+                          Arg, newnames[j]);
+        ut_string_string (newnames[j], &Arg);
+        break;
+      }
+
 /*----------------------------------------------------------------------
 * input data */
     if (!strcmp (Arg, "-n") && i < argc - 1)
@@ -359,8 +379,6 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_nextasstring (argv, &i, Arg, (*pIn).optiinistring);
     else if (!strcmp (Arg, "-morphooptialgo"))
       ut_arg_nextasstring (argv, &i, Arg, (*pIn).optialgostring);
-    else if (!strcmp (Arg, "-morphooptialgomaxiter"))
-      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).optialgomaxiterstring));
     else if (!strcmp (Arg, "-morphooptiobjective"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).optiobjectivestring));
     else if (!strcmp (Arg, "-morphooptigrid"))
@@ -417,24 +435,26 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
 
 /*----------------------------------------------------------------------
 * regularization options */
-    else if (!strcmp (Arg, "-regularization"))
+    else if (!strcmp (Arg, "-reg"))
       ut_arg_nextasint (argv, &i, Arg, 0, 1, &(*pIn).reg);
-    else if (!strcmp (Arg, "-fmax"))
+    else if (!strcmp (Arg, "-regfmax"))
       ut_arg_nextasreal (argv, &i, Arg, 0, 180, &(*pIn).fmax);
-    else if (!strcmp (Arg, "-sel"))
+    else if (!strcmp (Arg, "-regsel"))
     {
       strcpy ((*pIn).seltype, "abs");
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).selstring));
     }
-    else if (!strcmp (Arg, "-rsel"))
+    else if (!strcmp (Arg, "-regrsel"))
     {
       strcpy ((*pIn).seltype, "rel");
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).selstring));
     }
-    else if (!strcmp (Arg, "-mloop"))
+    else if (!strcmp (Arg, "-regloop"))
       ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).mloop));
-    else if (!strcmp (Arg, "-maxedgedelqty"))
+    else if (!strcmp (Arg, "-regedgedelmax"))
       ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).maxedgedelqty));
+    else if (!strcmp (Arg, "-regdelcell"))
+      ut_arg_nextasint (argv, &i, Arg, 0, 1, &((*pIn).delcell));
 
 /*----------------------------------------------------------------------
  * orientation options */
@@ -551,10 +571,10 @@ net_input_treatargs_multiscale (char *option, char **pargstring, int scaleqty,
   char **args = NULL;
   char *def = NULL;
 
-  ut_string_string ((*pvals)[0], &def);
-
   if (!*pargstring && scaleqty <= 0)
     return 0;
+
+  ut_string_string ((*pvals)[0], &def);
 
   ut_list_break (*pargstring, NEUT_SEP_FRAC, &args, &argqty);
 
@@ -592,4 +612,63 @@ net_input_treatargs_multiscale (char *option, char **pargstring, int scaleqty,
   ut_free_1d_char (&def);
 
   return argqty;
+}
+
+// net_input_ternary_map sets *pres to valmatch if string matches one of the
+// patterns (a comma-separated list, where a trailing `*' stands for any
+// characters) and to valnomatch otherwise.  If string is a string ternary,
+// *pres is the same ternary, with each of its strings mapped.
+void
+net_input_ternary_map (char *string, char *patterns, char *valmatch,
+                       char *valnomatch, char **pres)
+{
+  int i, quoted, length, patternqty, match;
+  char **pattern = NULL;
+  char *cond = NULL, *strue = NULL, *sfalse = NULL;
+  char *restrue = NULL, *resfalse = NULL, *val = NULL;
+
+  if (!ut_string_ternary (string, &cond, &strue, &sfalse))
+  {
+    net_input_ternary_map (strue, patterns, valmatch, valnomatch, &restrue);
+    net_input_ternary_map (sfalse, patterns, valmatch, valnomatch, &resfalse);
+
+    ut_free_1d_char (pres);
+    (*pres) = ut_alloc_1d_char (strlen (cond) + strlen (restrue)
+                                + strlen (resfalse) + 9);
+    sprintf (*pres, "(%s)?(%s):(%s)", cond, restrue, resfalse);
+  }
+
+  else
+  {
+    quoted = ut_string_isquoted (string);
+    ut_string_string (string + quoted, &val);
+    val[strlen (val) - quoted] = '\0';
+
+    ut_list_break (patterns, NEUT_SEP_NODEP, &pattern, &patternqty);
+
+    match = 0;
+    for (i = 0; i < patternqty && !match; i++)
+    {
+      length = strlen (pattern[i]);
+      if (pattern[i][length - 1] == '*')
+        match = !strncmp (val, pattern[i], length - 1);
+      else
+        match = !strcmp (val, pattern[i]);
+    }
+
+    ut_free_1d_char (pres);
+    (*pres) = ut_alloc_1d_char (strlen (match ? valmatch : valnomatch) + 3);
+    sprintf (*pres, quoted ? "\"%s\"" : "%s", match ? valmatch : valnomatch);
+
+    ut_free_2d_char (&pattern, patternqty);
+    ut_free_1d_char (&val);
+  }
+
+  ut_free_1d_char (&cond);
+  ut_free_1d_char (&strue);
+  ut_free_1d_char (&sfalse);
+  ut_free_1d_char (&restrue);
+  ut_free_1d_char (&resfalse);
+
+  return;
 }

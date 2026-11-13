@@ -23,7 +23,6 @@ extern "C"
   extern void neut_debug_tess (FILE *, struct TESS);
   extern void neut_debug_seedset (FILE *, struct SEEDSET);
   extern void neut_debug_poly (FILE *, struct POLY);
-  extern void neut_debug_polymod (FILE *, struct POLYMOD);
 
   extern void neut_debug_nodes_name (char *, struct NODES);
   extern void neut_debug_mesh_name (char *, struct MESH);
@@ -31,7 +30,6 @@ extern "C"
   extern void neut_debug_tess_name (char *, struct TESS);
   extern void neut_debug_seedset_name (char *, struct SEEDSET);
   extern void neut_debug_poly_name (char *, struct POLY);
-  extern void neut_debug_polymod_name (char *, struct POLYMOD);
 
   extern void neut_debug_data (FILE * file, struct DATA Data);
   extern void neut_debug_data_name (char *filename, struct DATA

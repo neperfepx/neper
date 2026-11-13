@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2019,2023,2025 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -45,6 +45,8 @@
 /**                                 to   : 01 nov 2001     **/
 /**                # Version 4.0  : from : 11 dec 2001     **/
 /**                                 to   : 22 apr 2004     **/
+/**                # Version 7.0  : from : 07 may 2019     **/
+/**                                 to   : 15 oct 2025     **/
 /**                                                        **/
 /************************************************************/
 
@@ -52,10 +54,9 @@
 **  The defines and includes.
 */
 
-#define LIBRARY
-
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "graph.h"
 #include "scotch.h"
 
@@ -66,16 +67,23 @@
 /*                                  */
 /************************************/
 
-/*+ This routine checks the consistency
-*** of the given graph.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine checks the consistency
+** of the given graph.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphCheck (
 const SCOTCH_Graph * const  grafptr)
 {
-  return (graphCheck ((const Graph * const) grafptr));
+  const Graph * const srcgrafptr = (Graph *) CONTEXTOBJECT (grafptr);
+
+  if (srcgrafptr->vnumtax != NULL) {
+    errorPrint (STRINGIFY (SCOTCH_graphCheck) ": vertex number array should not be defined");
+    return (1);
+  }
+
+  return (graphCheck (srcgrafptr));
 }

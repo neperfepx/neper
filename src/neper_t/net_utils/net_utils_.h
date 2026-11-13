@@ -11,8 +11,8 @@
 #include"ut.h"
 #include"neut_t.h"
 #include "../net_tess/net_tess.h"
-#include "../net_tess/net_tess3d/net_polycomp/net_polycomp_poly/net_polycomp_poly.h"
-#include "../net_tess/net_tess3d/net_tesl/net_tesl.h"
+#include "../net_tess/net_tess3d/net_tess3d_polycomp/net_tess3d_polycomp_poly/net_tess3d_polycomp_poly.h"
+#include "../net_tess/net_tess3d/net_tess3d_tess/net_tess3d_tess.h"
 #include "../net_domain/net_domain_cube/net_domain_cube.h"
 
 #include"net_utils.h"

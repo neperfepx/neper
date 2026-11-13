@@ -54,11 +54,9 @@ nev_print_ori_ptsprint_density (struct IN_V In, char *layout, char *filename, FI
     MeshData[1][0].Rad = ut_alloc_1d (MeshData[1][0].Qty + 1);
   }
 
-  if (Data.Scale)
-  {
-    ut_string_string (Data.Scale, &NodeData.Scale);
-    ut_string_string (Data.Scale, &(MeshData[3][0].Scale));
-  }
+  // ODF: full data range by default
+  ut_string_string (Data.Scale ? Data.Scale : "min:max", &NodeData.Scale);
+  ut_string_string (Data.Scale ? Data.Scale : "min:max", &(MeshData[3][0].Scale));
 
   if (Data.ScaleTitle)
   {
@@ -76,7 +74,17 @@ nev_print_ori_ptsprint_density (struct IN_V In, char *layout, char *filename, FI
   {
     neut_odf_setsigma (&Odf, (char *) "avthetaeq", (*pOSet).size, (*pOSet).crysym);
 
-    neut_odf_comp ("node", (char *) "5", pOSet, &Odf, 0);
+    // applied after setting sigma, as it does not add independent orientations
+    if (neut_ori_sym_qty ((*pOri).sym) > 1)
+    {
+      struct OL_SET OSet2;
+
+      neut_ori_sym_oset ((*pOri).sym, *pOSet, &OSet2);
+      neut_odf_comp ("node", (char *) "5", &OSet2, &Odf, 0);
+      ol_set_free (&OSet2);
+    }
+    else
+      neut_odf_comp ("node", (char *) "5", pOSet, &Odf, 0);
     double index;
     neut_odfn_index (&Odf, &index);
     ut_print_message (0, 3, "ODF index = %f\n", index);

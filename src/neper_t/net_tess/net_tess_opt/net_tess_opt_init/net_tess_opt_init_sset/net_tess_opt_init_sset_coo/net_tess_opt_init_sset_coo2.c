@@ -9,6 +9,7 @@ net_tess_opt_init_sset_coo_cluster (int dim, int *activedim, gsl_rng * r2,
                                     int qty, double dist, double rad,
                                     struct POINT *pPoint)
 {
+  neut_point_free (pPoint);
   neut_point_set_zero (pPoint);
   (*pPoint).Dim = dim;
 
@@ -140,7 +141,7 @@ net_tess_opt_init_sset_coo_record (struct TOPT *pTOpt, int cell,
     neut_point_addpoint (pPoint, (*pPoint2).Coo[i],
                          (*pPoint2).Rad[i]);
     neut_topt_seed_subcell_add (pTOpt, (*pPoint2).Coo[i],
-                                (*pPoint2).Rad[i], cell);
+                                pow ((*pPoint2).Rad[i], 2), cell);
   }
 
   return;

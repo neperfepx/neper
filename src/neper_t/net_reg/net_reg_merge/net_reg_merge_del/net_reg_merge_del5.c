@@ -4,7 +4,9 @@
 
 #include"net_reg_merge_del_.h"
 
-void
+// Returns 0 on success and -1 if the face is not in one of its polys
+// (inconsistent tessellation)
+int
 DeleteFaceFromItsPoly (struct TESS *pTess, int face)
 {
   int i;
@@ -15,11 +17,16 @@ DeleteFaceFromItsPoly (struct TESS *pTess, int face)
 
   /*ut_print_lineheader(-1); printf("    Deleting face from its parent polyhedra: "); */
 
+  // (in 2D, the face is a cell)
+  if ((*pTess).Dim == 2)
+    return 0;
+
   /* it is removed from its one/two parent polyhedron/a. */
   for (i = 0; i <= 1; i++)
   {
     tmppoly = (*pTess).FacePoly[face][i];
-    if (tmppoly >= 1)           /* ie real tmppoly */
+    // real tmppoly (not a domain face or a periodic seed)
+    if (tmppoly >= 1 && tmppoly <= (*pTess).PolyQty)
     {
       /* printf("%d ",tmppoly); */
 
@@ -37,15 +44,11 @@ DeleteFaceFromItsPoly (struct TESS *pTess, int face)
       (*pTess).PolyFaceQty[tmppoly]--;
 
       if (qty != 1)
-      {
-        ut_print_lineheader (2);
-        printf ("face %d not found in poly %d!\n", face, tmppoly);
-        abort ();
-      }
+        return -1;
     }
   }
 
-  return;
+  return 0;
 }
 
 void

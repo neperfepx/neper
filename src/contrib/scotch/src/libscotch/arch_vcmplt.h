@@ -55,6 +55,8 @@
 /**                                 to   : 21 jan 2008     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 28 may 2018     **/
+/**                # Version 7.0  : from : 19 feb 2018     **/
+/**                                 to   : 19 feb 2018     **/
 /**                                                        **/
 /************************************************************/
 
@@ -104,9 +106,6 @@ int                         archVcmpltDomLoad   (const ArchVcmplt * const, ArchV
 int                         archVcmpltDomSave   (const ArchVcmplt * const, const ArchVcmpltDom * const, FILE * const);
 int                         archVcmpltDomBipart (const ArchVcmplt * const, const ArchVcmpltDom * const, ArchVcmpltDom * restrict const, ArchVcmpltDom * restrict const);
 int                         archVcmpltDomIncl   (const ArchVcmplt * const, const ArchVcmpltDom * const, const ArchVcmpltDom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archVcmpltDomMpiType (const ArchVcmplt * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 #endif /* ARCH_VCMPLT_H_PROTO */
 #endif /* ARCH_NOPROTO        */

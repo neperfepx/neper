@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2018,2019,2021,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -34,7 +34,7 @@
 /**   NAME       : vgraph_separate_bd.c                    **/
 /**                                                        **/
 /**   AUTHOR     : Francois PELLEGRINI                     **/
-/**                Cedric CHEVALIER                        **/
+/**                Cedric CHEVALIER (v5.0)                 **/
 /**                                                        **/
 /**   FUNCTION   : This module builds a band graph around  **/
 /**                the frontier in order to decrease       **/
@@ -47,15 +47,16 @@
 /**                                 to   : 09 nov 2008     **/
 /**                # Version 6.0  : from : 31 may 2018     **/
 /**                                 to   : 31 may 2018     **/
+/**                # Version 6.1  : from : 02 nov 2021     **/
+/**                                 to   : 21 nov 2021     **/
+/**                # Version 7.0  : from : 05 may 2019     **/
+/**                                 to   : 09 aug 2024     **/
 /**                                                        **/
 /************************************************************/
-
 
 /*
 **  The defines and includes.
 */
-
-#define VGRAPH_SEPARATE_BD
 
 #include "module.h"
 #include "common.h"
@@ -113,7 +114,7 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
                      &queudat.qtab, (size_t) (orggrafptr->s.vertnbr * sizeof (Gnum)), /* TRICK: no need of "+ 2" for anchor vertices (see below) */
                      &orgdisttax,   (size_t) (orggrafptr->s.vertnbr * sizeof (Gnum)), NULL) == NULL) {
     errorPrint ("vgraphSeparateBd: out of memory (1)");
-    return     (1);
+    return (1);
   }
   memSet (orgdisttax, ~0, orggrafptr->s.vertnbr * sizeof (Gnum)); /* Initialize distance array */
   orgdisttax -= orggrafptr->s.baseval;
@@ -129,17 +130,17 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
     if ((orgvertnum < orggrafptr->s.baseval) || (orgvertnum >= orggrafptr->s.vertnnd)) {
       errorPrint ("vgraphSeparateBd: internal error (1)");
       memFree    (queudat.qtab);                  /* Free group leader */
-      return     (1);
+      return (1);
     }
     if (orgdisttax[orgvertnum] != ~0) {
       errorPrint ("vgraphSeparateBd: internal error (2)");
       memFree    (queudat.qtab);                  /* Free group leader */
-      return     (1);
+      return (1);
     }
     if (orggrafptr->parttax[orgvertnum] != 2) {
       errorPrint ("vgraphSeparateBd: internal error (3)");
       memFree    (queudat.qtab);                  /* Free group leader */
-      return     (1);
+      return (1);
     }
 #endif /* SCOTCH_DEBUG_VGRAPH2 */
     orgdisttax[orgvertnum] = 0;
@@ -160,7 +161,7 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
     if ((orgvertnum < orggrafptr->s.baseval) || (orgvertnum >= orggrafptr->s.vertnnd)) {
       errorPrint ("vgraphSeparateBd: internal error (4)");
       memFree    (queudat.qtab);                  /* Free group leader */
-      return     (1);
+      return (1);
     }
 #endif /* SCOTCH_DEBUG_VGRAPH2 */
     bndedgenbr += orgvendtax[orgvertnum] - orgverttax[orgvertnum]; /* Exact or upper bound on number of edges, including anchor edge(s) */
@@ -183,7 +184,7 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
         if (orggrafptr->parttax[orgvertend] > 1) {
           errorPrint ("vgraphSeparateBd: internal error (5)");
           memFree    (queudat.qtab);              /* Free group leader */
-          return     (1);
+          return (1);
         }
 #endif /* SCOTCH_DEBUG_VGRAPH2 */
         orgpartval1 = orggrafptr->parttax[orgvertend] & 1;
@@ -198,7 +199,7 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
     }
   } while (! vgraphSeparateBdQueueEmpty (&queudat)); /* As long as queue is not empty */
 
-  bndvertnbr = queudat.head - queudat.qtab;       /* Number of regular band graph vertices (withour anchors) is number of enqueued vertices */
+  bndvertnbr = (Gnum) (queudat.head - queudat.qtab); /* Number of regular band graph vertices (withour anchors) is number of enqueued vertices */
 
   if (orgvelotax == NULL) {
     bndvelosum   = bndvertnbr;
@@ -236,7 +237,7 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
                      &bndgrafdat.s.velotax, (size_t) ((bndvertnbr + 2) * sizeof (Gnum)), NULL) == NULL) {
     errorPrint ("vgraphSeparateBd: out of memory (2)");
     memFree    (queudat.qtab);
-    return     (1);
+    return (1);
   }
   bndgrafdat.s.verttax -= orggrafptr->s.baseval;  /* Adjust base of arrays   */
   bndgrafdat.s.vendtax  = bndgrafdat.s.verttax + 1; /* Band graph is compact */
@@ -252,9 +253,10 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
     errorPrint ("vgraphSeparateBd: out of memory (3)");
     graphExit  (&bndgrafdat.s);
     memFree    (queudat.qtab);
-    return     (1);
+    return (1);
   }
-  bndgrafdat.parttax -= orggrafptr->s.baseval;    /* From now on we should free a Vgraph and not a Graph */
+  bndgrafdat.parttax   -= orggrafptr->s.baseval;  /* From now on we should free a Vgraph and not a Graph */
+  bndgrafdat.s.flagval |= VGRAPHFREEPART;
   bndedgetax = bndgrafdat.s.edgetax;
 
   for (bndvertnum = bndedgenum = orggrafptr->s.baseval, bnddegrmax = 0; /* Fill index array for vertices not belonging to last level */
@@ -274,7 +276,7 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
         errorPrint ("vgraphSeparateBd: internal error (6)");
         vgraphExit (&bndgrafdat);
         memFree    (queudat.qtab);
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_VGRAPH2 */
       bndedgetax[bndedgenum] = orgindxtax[orgedgetax[orgedgenum]];
@@ -304,7 +306,7 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
         errorPrint ("vgraphSeparateBd: internal error (7)");
         vgraphExit (&bndgrafdat);
         memFree    (queudat.qtab);
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_VGRAPH2 */
       bndvertend = orgindxtax[orgedgetax[orgedgenum]];
@@ -332,7 +334,7 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
     errorPrint ("vgraphSeparateBd: internal error (8)");
     vgraphExit (&bndgrafdat);
     memFree    (queudat.qtab);
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VGRAPH2 */
   bndgrafdat.s.edgenbr =
@@ -358,7 +360,7 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
     errorPrint ("vgraphSeparateBd: internal error (9)");
     vgraphExit (&bndgrafdat);
     memFree    (queudat.qtab);
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VGRAPH2 */
   if (bnddegrmax < (bndgrafdat.s.verttax[bndvertnnd + 1] - bndgrafdat.s.verttax[bndvertnnd]))
@@ -373,14 +375,17 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
        fronnum < orggrafptr->fronnbr; fronnum ++, bndvertnum ++)
     bndgrafdat.frontab[fronnum] = bndvertnum;
 
+  bndgrafdat.fronnbr     = orggrafptr->fronnbr;
+  bndgrafdat.compsize[0] = bndvertnbr - bndcompsize1 - orggrafptr->fronnbr + 1; /* "+ 1" for anchor vertices */
+  bndgrafdat.compsize[1] = bndcompsize1 + 1;
   bndgrafdat.compload[0] = orggrafptr->compload[0];
   bndgrafdat.compload[1] = orggrafptr->compload[1];
   bndgrafdat.compload[2] = orggrafptr->compload[2];
   bndgrafdat.comploaddlt = orggrafptr->comploaddlt;
-  bndgrafdat.compsize[0] = bndvertnbr - bndcompsize1 - orggrafptr->fronnbr + 1; /* "+ 1" for anchor vertices */
-  bndgrafdat.compsize[1] = bndcompsize1 + 1;
-  bndgrafdat.fronnbr     = orggrafptr->fronnbr;
+  bndgrafdat.dwgttab[0]  = orggrafptr->dwgttab[0]; /* Preserve respective weights */
+  bndgrafdat.dwgttab[1]  = orggrafptr->dwgttab[1];
   bndgrafdat.levlnum     = orggrafptr->levlnum;
+  bndgrafdat.contptr     = orggrafptr->contptr;
 
 #ifdef SCOTCH_DEBUG_VGRAPH2
   if ((graphCheck (&bndgrafdat.s) != 0) ||        /* Check band graph consistency */
@@ -389,7 +394,7 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
     bndgrafdat.frontab = NULL;                    /* Do not free frontab as it is not allocated */
     vgraphExit (&bndgrafdat);
     memFree    (queudat.qtab);
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VGRAPH2 */
 
@@ -398,7 +403,7 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
     bndgrafdat.frontab = NULL;                    /* Do not free frontab as it is not allocated */
     vgraphExit (&bndgrafdat);
     memFree    (queudat.qtab);
-    return     (1);
+    return (1);
   }
   if ((bndgrafdat.parttax[bndvertnnd]     != 0) || /* If band graph was too small and anchors changed parts, apply strategy on full graph */
       (bndgrafdat.parttax[bndvertnnd + 1] != 1)) {
@@ -421,14 +426,13 @@ const VgraphSeparateBdParam * const paraptr)      /*+ Method parameters +*/
   for (fronnum = 0; fronnum < bndgrafdat.fronnbr; fronnum ++) /* Update frontier array of full graph */
     orggrafptr->frontab[fronnum] = bndgrafdat.s.vnumtax[bndgrafdat.frontab[fronnum]];
 
-  bndgrafdat.frontab = NULL;                      /* Do not free frontab as it is not allocated */
-  vgraphExit (&bndgrafdat);                       /* Free band graph structures                 */
+  vgraphExit (&bndgrafdat);                       /* Free band graph structures */
   memFree    (queudat.qtab);
 
 #ifdef SCOTCH_DEBUG_VGRAPH2
   if (vgraphCheck (orggrafptr) != 0) {
     errorPrint ("vgraphSeparateBd: inconsistent graph data");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VGRAPH2 */
 

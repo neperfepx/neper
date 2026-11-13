@@ -1,4 +1,4 @@
-/* Copyright 2010,2011,2016,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2010,2011,2016,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -42,6 +42,8 @@
 /**                                 to   : 12 may 2010     **/
 /**                # Version 6.0  : from : 22 oct 2011     **/
 /**                                 to   : 07 jun 2018     **/
+/**                # Version 7.0  : from : 18 jan 2023     **/
+/**                                 to   : 18 jan 2023     **/
 /**                                                        **/
 /**   NOTES      : # Since this module is to be used as    **/
 /**                  the gain keeping data structure for   **/
@@ -238,8 +240,8 @@ FiboNode *                  fiboHeapMin         (FiboHeap * const);
 #define fiboHeapMin              fiboHeapMinMacro
 #endif /* fiboHeapMinIsMacro */
 #ifdef SCOTCH_DEBUG_FIBO3
-#ifdef FIBO
+#ifdef SCOTCH_FIBO
 static int                  fiboHeapCheck2      (const FiboNode * const);
-#endif /* FIBO */
+#endif /* SCOTCH_FIBO */
 int                         fiboHeapCheck       (const FiboHeap * const);
 #endif /* SCOTCH_DEBUG_FIBO3 */

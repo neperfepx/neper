@@ -60,6 +60,7 @@ neut_mesh_alloc (int Dimension, char *EltType, int EltOrder, int EltQty,
 
   Mesh.ElsetQty = ElsetQty;
   Mesh.ElsetId = NULL;
+  Mesh.EltId = NULL;
 
   if (ElsetQty > 0)
     Mesh.Elsets = ut_alloc_2d_int (Mesh.ElsetQty + 1, 2);
@@ -88,6 +89,8 @@ neut_mesh_free (struct MESH *pMesh)
     ut_free_2d_int (&(*pMesh).EltNodes, (*pMesh).EltQty + 1);
 
   ut_free_1d_int (&(*pMesh).ElsetId);
+
+  ut_free_1d_int (&(*pMesh).EltId);
 
   ut_free_2d_int (&(*pMesh).Elsets, (*pMesh).ElsetQty + 1);
 
@@ -136,6 +139,7 @@ neut_mesh_set_zero (struct MESH *pMesh)
   (*pMesh).ElsetQty = 0;
   (*pMesh).CustomElsetQty = 0;
 
+  (*pMesh).EltId = NULL;
   (*pMesh).EltNodes = NULL;
 
   (*pMesh).ElsetId = NULL;
@@ -336,8 +340,17 @@ neut_mesh_scotchmesh (struct NODES Nodes, struct MESH Mesh, SCOTCH_Mesh * pSCMes
   }
   vers[verqty] = edgeqty + 1;
 
-  SCOTCH_meshBuild (pSCMesh, 1, Mesh.EltQty + 1, Mesh.EltQty, Nodes.NodeQty, vers,
-                    NULL, NULL, NULL, NULL, edgeqty, edges);
+  // SCOTCH_Num may be 32- or 64-bit, depending on the Scotch build; the
+  // arrays are referenced (not copied) by the Scotch mesh, so they are kept
+  SCOTCH_Num *scvers = (SCOTCH_Num *) calloc (verqty + 1, sizeof (SCOTCH_Num));
+  SCOTCH_Num *scedges = (SCOTCH_Num *) calloc (edgeqty, sizeof (SCOTCH_Num));
+  for (i = 0; i <= verqty; i++)
+    scvers[i] = vers[i];
+  for (i = 0; i < edgeqty; i++)
+    scedges[i] = edges[i];
+
+  SCOTCH_meshBuild (pSCMesh, 1, Mesh.EltQty + 1, Mesh.EltQty, Nodes.NodeQty, scvers,
+                    NULL, NULL, NULL, NULL, edgeqty, scedges);
   /*
      file = ut_file_open ("dd", "w");
      SCOTCH_meshSave (pSCMesh, file);
@@ -348,6 +361,11 @@ neut_mesh_scotchmesh (struct NODES Nodes, struct MESH Mesh, SCOTCH_Mesh * pSCMes
   if (status != 0)
     printf ("error");
 
+  ut_free_1d_int (&vers);
+  ut_free_1d_int (&edges);
+  ut_free_1d_int (&nodes);
+  ut_free_1d_int (&elts);
+
   return;
 }
 #endif /* HAVE_LIBSCOTCH */
@@ -356,7 +374,7 @@ neut_mesh_scotchmesh (struct NODES Nodes, struct MESH Mesh, SCOTCH_Mesh * pSCMes
 void
 neut_mesh_init_nodeelts (struct MESH *pMesh, int NodeQty)
 {
-  int i, j, eltnodeqty, node, nodemax;
+  int i, j, eltnodeqty, node, nodemax, *eltqty = NULL;
 
   if ((*pMesh).NodeElts)
     ut_free_2d_int (&(*pMesh).NodeElts, (*pMesh).NodeQty + 1);
@@ -373,28 +391,24 @@ neut_mesh_init_nodeelts (struct MESH *pMesh, int NodeQty)
       for (j = 0; j < eltnodeqty; j++)
         NodeQty = ut_num_max (NodeQty, (*pMesh).EltNodes[i][j]);
 
-  (*pMesh).NodeElts = ut_alloc_2d_int (NodeQty + 1, 1);
-  (*pMesh).NodeQty = NodeQty;
-
   /* first pass: recording, for each node, the quantity of elements */
+  eltqty = ut_alloc_1d_int (NodeQty + 1);
   for (i = 1; i <= (*pMesh).EltQty; i++)
     for (j = 0; j < eltnodeqty; j++)
-      (*pMesh).NodeElts[(*pMesh).EltNodes[i][j]][0]++;
+      eltqty[(*pMesh).EltNodes[i][j]]++;
 
   nodemax = 0;
-  for (i = 1; i <= (*pMesh).NodeQty; i++)
-    if ((*pMesh).NodeElts[i][0] > 0)
+  for (i = 1; i <= NodeQty; i++)
+    if (eltqty[i] > 0)
       nodemax = i;
 
+  /* allocation (up to the highest node of the elements) */
   (*pMesh).NodeQty = nodemax;
-  (*pMesh).NodeElts = ut_realloc_1d_pint ((*pMesh).NodeElts, (*pMesh).NodeQty + 1);
+  (*pMesh).NodeElts = ut_alloc_1d_pint ((*pMesh).NodeQty + 1);
+  for (i = 0; i <= (*pMesh).NodeQty; i++)
+    (*pMesh).NodeElts[i] = ut_alloc_1d_int (eltqty[i] + 1);
 
-  /* allocation */
-  for (i = 1; i <= (*pMesh).NodeQty; i++)
-    (*pMesh).NodeElts[i] =
-      ut_realloc_1d_int ((*pMesh).NodeElts[i], (*pMesh).NodeElts[i][0] + 1);
-
-  ut_array_2d_int_zero ((*pMesh).NodeElts + 1, (*pMesh).NodeQty, 1);
+  ut_free_1d_int (&eltqty);
 
   /* recording node elements */
   for (i = 1; i <= (*pMesh).EltQty; i++)
@@ -1558,7 +1572,8 @@ neut_mesh_elts_switch (struct MESH *pMesh, int *elt_nbs)
   {
     int NodeQty = (*pMesh).NodeQty;
     ut_free_2d_int (&(*pMesh).NodeElts, NodeQty + 1);
-    neut_mesh_init_nodeelts (pMesh, NodeQty);
+    // (node quantity from the elts, as nodes may have been renumbered)
+    neut_mesh_init_nodeelts (pMesh, 0);
 
     // the code below would be a little faster but does not work
     /*
@@ -2316,6 +2331,75 @@ neut_mesh_init_eltweight (struct NODES Nodes, struct MESH *pMesh)
 
   // we keep the weights as is, so that they represent the orientation volumes
   // ut_array_1d_scale ((*pOdf).EltWeight, (*pMesh).EltQty, 1. / ut_array_1d_mean ((*pOdf).EltWeight, (*pMesh).EltQty));
+
+  return;
+}
+
+void
+neut_mesh_fasetmesh (struct TESS Tess, struct MESH Mesh2D, struct MESH Mesh3D, struct MESH *pMesh)
+{
+  int i, j, k, face, elt2d;
+  int eltnodeqty = neut_elt_nodeqty (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder);
+
+  if (!neut_tess_isvoid (Tess) && neut_mesh_isvoid (Mesh2D))
+    abort ();
+
+  neut_mesh_set_zero (pMesh);
+
+  ut_string_string (Mesh2D.EltType, &(*pMesh).EltType);
+  (*pMesh).Dimension = Mesh2D.Dimension;
+  (*pMesh).EltOrder = Mesh2D.EltOrder;
+
+  // First pass to allocate memory
+
+  (*pMesh).ElsetQty = Tess.DomFaceQty;
+  (*pMesh).Elsets = ut_alloc_2d_int ((*pMesh).ElsetQty + 1, 1);
+  (*pMesh).ElsetLabels = ut_alloc_1d_pchar ((*pMesh).ElsetQty + 1);
+
+  (*pMesh).EltQty = 0;
+  for (i = 1; i <= Tess.DomFaceQty; i++)
+  {
+    for (j = 1; j <= Tess.DomTessFaceQty[i]; j++)
+      (*pMesh).Elsets[i][0] += Mesh2D.Elsets[Tess.DomTessFaceNb[i][j]][0];
+    (*pMesh).EltQty += (*pMesh).Elsets[i][0];
+  }
+
+  (*pMesh).EltNodes = ut_alloc_2d_int ((*pMesh).EltQty + 1, eltnodeqty);
+  (*pMesh).EltId = ut_alloc_1d_int ((*pMesh).EltQty + 1);
+
+  for (i = 1; i <= (*pMesh).ElsetQty; i++)
+    (*pMesh).Elsets[i] = ut_alloc_1d_int ((*pMesh).Elsets[i][0] + 1);
+
+  // Second pass to record values
+
+  (*pMesh).EltQty = 0;
+  ut_array_2d_int_zero ((*pMesh).Elsets + 1, (*pMesh).ElsetQty, 1);
+
+  for (i = 1; i <= Tess.DomFaceQty; i++)
+  {
+    for (j = 1; j <= Tess.DomTessFaceQty[i]; j++)
+    {
+      face = Tess.DomTessFaceNb[i][j];
+
+      for (k = 1; k <= Mesh2D.Elsets[face][0]; k++)
+      {
+        elt2d = Mesh2D.Elsets[face][k];
+
+        // recording new elt
+        (*pMesh).EltQty++;
+        ut_array_1d_int_memcpy (Mesh2D.EltNodes[elt2d], eltnodeqty, (*pMesh).EltNodes[(*pMesh).EltQty]);
+        if (neut_mesh_elt2d_elt3d (Mesh2D, elt2d, Mesh3D, (*pMesh).EltId + (*pMesh).EltQty) != 0)
+          abort ();
+
+        // adding new elt to elset
+        (*pMesh).Elsets[i][++(*pMesh).Elsets[i][0]] = (*pMesh).EltQty;
+      }
+    }
+
+    ut_string_string (Tess.DomFaceLabel[i], (*pMesh).ElsetLabels + i);
+  }
+
+  neut_mesh_init_nodeelts (pMesh, Mesh3D.NodeQty);
 
   return;
 }

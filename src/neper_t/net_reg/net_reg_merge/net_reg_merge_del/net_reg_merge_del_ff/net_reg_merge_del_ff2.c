@@ -33,8 +33,18 @@ net_reg_merge_del_ff_interpolate (struct TESS *pTess, int face)
     }
   }
 
-  (*pTess).FacePt[face] =
-    ut_array_1d_min_index (ff, (*pTess).FaceVerQty[face] + 1);
+  // the first point of minimal flatness fault is used, to a tolerance
+  // (in degrees), so that points of the same flatness fault up to
+  // round-off errors (which reach ~1e-6 for a flat face, because of acos)
+  // are considered in a deterministic order
+  minff = ut_array_1d_min (ff, (*pTess).FaceVerQty[face] + 1);
+  for (i = 0; i <= (*pTess).FaceVerQty[face]; i++)
+    if (ff[i] <= minff + 1e-5)
+    {
+      (*pTess).FacePt[face] = i;
+      break;
+    }
+
   if ((*pTess).FacePt[face] > 0)
     ut_array_1d_memcpy ((*pTess).
                         VerCoo[(*pTess).

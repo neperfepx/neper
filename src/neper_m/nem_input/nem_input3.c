@@ -55,6 +55,7 @@ nem_input_options_default (struct IN_M *pIn)
   ut_string_string ("rel", &(*pIn).cltype);
   ut_string_string ("1", &(*pIn).clstring);
   ut_string_string ("rel", &(*pIn).clfacetype);
+  ut_string_string ("default", &(*pIn).clpolystring);
   ut_string_string ("default", &(*pIn).clfacestring);
   ut_string_string ("rel", &(*pIn).cledgetype);
   ut_string_string ("default", &(*pIn).cledgestring);
@@ -64,6 +65,9 @@ nem_input_options_default (struct IN_M *pIn)
 
   (*pIn).clmin = 0;
   (*pIn).pl = 2;
+  ut_string_string ("default", &(*pIn).plpolystring);
+  ut_string_string ("default", &(*pIn).plfacestring);
+  ut_string_string ("default", &(*pIn).pledgestring);
 
   (*pIn).mesh2dalgo = ut_alloc_1d_char (100);
   (*pIn).mesh3dalgo = ut_alloc_1d_char (100);
@@ -72,6 +76,7 @@ nem_input_options_default (struct IN_M *pIn)
   ut_string_string ("all", &((*pIn).meshedge));
   ut_string_string ("all", &((*pIn).meshface));
   ut_string_string ("all", &((*pIn).meshpoly));
+  (*pIn).mesh2dclrepsstring = NULL;
   (*pIn).mesh3dclrepsstring = NULL;
 
   (*pIn).meshqualexpr = ut_alloc_1d_char (100);
@@ -85,15 +90,9 @@ nem_input_options_default (struct IN_M *pIn)
 
   ut_string_string ("continuous", &((*pIn).interface));
 
-  (*pIn).partmethod = ut_alloc_1d_char (10);
-  strcpy ((*pIn).partmethod, "scotch");
   (*pIn).partstring = NULL;
 
   ut_string_string ("none", &(*pIn).transform);
-
-  (*pIn).gmsh = ut_alloc_1d_char (5);
-  strcpy ((*pIn).gmsh, "gmsh");
-  ut_string_string (".", &(*pIn).tmp);
 
   (*pIn).mesh2dmaxtime = 10000;
   (*pIn).mesh2drmaxtime = 100;
@@ -101,6 +100,7 @@ nem_input_options_default (struct IN_M *pIn)
   (*pIn).mesh3dmaxtime = 10000;
   (*pIn).mesh3drmaxtime = 100;
   (*pIn).mesh3diter = 3;
+  ut_string_string ("0.02", &(*pIn).mesh2dclrepsstring);
   ut_string_string ("0.02", &(*pIn).mesh3dclrepsstring);
 
   /* Options for remeshing --------------------------------- */
@@ -135,13 +135,15 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   // General options ---------------------------------------------------
   strcpy (ArgList[++ArgQty], "-o");
   strcpy (ArgList[++ArgQty], "-v");
-  strcpy (ArgList[++ArgQty], "-gmsh");
-  strcpy (ArgList[++ArgQty], "-tmp");
+  strcpy (ArgList[++ArgQty], "-gmsh");  // obsolete
+  strcpy (ArgList[++ArgQty], "-tmp");   // obsolete
 
   // General meshing options -------------------------------------------
   strcpy (ArgList[++ArgQty], "-elttype");
   strcpy (ArgList[++ArgQty], "-cl");
   strcpy (ArgList[++ArgQty], "-rcl");
+  strcpy (ArgList[++ArgQty], "-clpoly");
+  strcpy (ArgList[++ArgQty], "-rclpoly");
   strcpy (ArgList[++ArgQty], "-clface");
   strcpy (ArgList[++ArgQty], "-rclface");
   strcpy (ArgList[++ArgQty], "-cledge");
@@ -150,6 +152,9 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-rclver");
   strcpy (ArgList[++ArgQty], "-clratio");
   strcpy (ArgList[++ArgQty], "-pl");
+  strcpy (ArgList[++ArgQty], "-plpoly");
+  strcpy (ArgList[++ArgQty], "-plface");
+  strcpy (ArgList[++ArgQty], "-pledge");
   strcpy (ArgList[++ArgQty], "-clmin");
   strcpy (ArgList[++ArgQty], "-order");
   strcpy (ArgList[++ArgQty], "-dim");
@@ -183,7 +188,6 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 
   // Mesh partitionning options ----------------------------------------
   strcpy (ArgList[++ArgQty], "-part");
-  strcpy (ArgList[++ArgQty], "-partmethod");
 
   // Output options ----------------------------------------------------
   strcpy (ArgList[++ArgQty], "-format");
@@ -221,6 +225,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-mesh3dmaxtime");
   strcpy (ArgList[++ArgQty], "-mesh3drmaxtime");
   strcpy (ArgList[++ArgQty], "-mesh3diter");
+  strcpy (ArgList[++ArgQty], "-mesh2dclreps");
   strcpy (ArgList[++ArgQty], "-mesh3dclreps");
 
   // Field transport ---------------------------------------------------
@@ -302,15 +307,14 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
         ut_arg_badarg ();
       }
 
-      /* Prerequisites ---------------------------------------------- */
-
-      if (!strcmp (Arg, "-gmsh"))
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).gmsh));
-
-      else if (!strcmp (Arg, "-tmp"))
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).tmp));
-
       /* General options ------------------------------------------------ */
+
+      // obsolete options, as Gmsh is called as a library
+      if (!strcmp (Arg, "-gmsh") || !strcmp (Arg, "-tmp"))
+      {
+        ut_arg_nextasstring (argv, &i, Arg, &tmpstring);
+        ut_print_message (1, 2, "Option `%s' is obsolete (Gmsh is called as a library) and is ignored.\n", Arg);
+      }
 
       else if (!strcmp (Arg, "-o"))
       {
@@ -329,6 +333,16 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
       {
         ut_string_string ("rel", &(*pIn).cltype);
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clstring));
+      }
+      else if (!strcmp (Arg, "-clpoly"))
+      {
+        ut_string_string ("abs", &(*pIn).cltype);
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clpolystring));
+      }
+      else if (!strcmp (Arg, "-rclpoly"))
+      {
+        ut_string_string ("rel", &(*pIn).cltype);
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clpolystring));
       }
       else if (!strcmp (Arg, "-clface"))
       {
@@ -366,6 +380,12 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
         ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX, &((*pIn).clmin));
       else if ((!strcmp (Arg, "-pl")))
         ut_arg_nextasreal (argv, &i, Arg, 1, DBL_MAX, &((*pIn).pl));
+      else if (!strcmp (Arg, "-plpoly"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).plpolystring));
+      else if (!strcmp (Arg, "-plface"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).plfacestring));
+      else if (!strcmp (Arg, "-pledge"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).pledgestring));
       else if (!strcmp (Arg, "-tesrsmooth"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).tesrsmooth));
       else if ((!strcmp (Arg, "-tesrsmoothfact")))
@@ -464,6 +484,8 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
                            &((*pIn).mesh3drmaxtime));
       else if (!strcmp (Arg, "-mesh3diter"))
         ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).mesh3diter));
+      else if (!strcmp (Arg, "-mesh2dclreps"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh2dclrepsstring));
       else if (!strcmp (Arg, "-mesh3dclreps"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dclrepsstring));
       else if (!strcmp (Arg, "-elset"))
@@ -491,8 +513,6 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).format));
       else if (!strcmp (Arg, "-part"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).partstring));
-      else if (!strcmp (Arg, "-partmethod"))
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).partmethod));
       else if (!strcmp (Arg, "-transform"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transform));
       else if (!strcmp (Arg, "-sortelt"))

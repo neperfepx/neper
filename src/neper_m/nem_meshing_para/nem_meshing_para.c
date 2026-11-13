@@ -18,8 +18,22 @@ nem_meshing_para (struct IN_M In, struct TESS *pTess, struct TESR *pTesr,
 
   nem_meshing_para_cl (In, pTess, pTesr, *pRNodes, RMesh, pMeshPara);
 
-  nem_meshing_para_mesh3dclreps (In.mesh3dclrepsstring, pTess, *pTesr,
-                                 pMeshPara);
+  nem_meshing_para_meshclreps (In, pTess, *pTesr, pMeshPara);
+
+  nem_meshing_para_pl (In, pTess, pMeshPara);
+
+  // split elts: the relative characteristic lengths are defined as for the
+  // (structured) quad elts (the characteristic lengths are those of the split
+  // elts, see nem_meshing)
+  if ((*pMeshPara).eltsplit && !strcmp ((*pMeshPara).cltype, "rel"))
+  {
+    double cltri, clquad, clmin = (*pMeshPara).clmin;
+
+    rcl2cl (1, (*pTess).Dim, (*pMeshPara).cellsize, 1, "tri", &cltri);
+    rcl2cl (1, (*pTess).Dim, (*pMeshPara).cellsize, 1, "quad", &clquad);
+    neut_meshpara_cl_scale (pMeshPara, *pTess, clquad / cltri);
+    (*pMeshPara).clmin = clmin;
+  }
 
   if ((*pTess).VerQty > 0)
   {

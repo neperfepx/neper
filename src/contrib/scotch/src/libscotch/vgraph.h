@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2018,2019,2021,2023 Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -48,11 +48,23 @@
 /**                                 to   : 04 nov 2010     **/
 /**                # Version 6.0  : from : 30 apr 2018     **/
 /**                                 to   : 30 apr 2018     **/
+/**                # Version 6.1  : from : 01 nov 2021     **/
+/**                                 to   : 21 nov 2021     **/
+/**                # Version 7.0  : from : 05 may 2019     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
-#define VGRAPH_H
+/*
+**  The defines.
+*/
 
+#define SCOTCH_VGRAPH_H
+
+/*+ Graph option flags. +*/
+
+#define VGRAPHFREEFRON              (GRAPHBITSNOTUSED) /* Free frontier array  */
+#define VGRAPHFREEPART              (GRAPHBITSNOTUSED << 1) /* Free part array */
 /*
 **  The type and structure definitions.
 */
@@ -62,12 +74,14 @@
 typedef struct Vgraph_ {
   Graph                     s;                    /*+ Source graph                                       +*/
   GraphPart *               parttax;              /*+ Based part array: 0,1: part; 2: separator          +*/
+  Gnum *                    frontab;              /*+ Array of frontier vertex numbers                   +*/
+  Gnum                      fronnbr;              /*+ Number of frontier vertices                        +*/
+  Gnum                      compsize[2];          /*+ Number of vertices in parts (separator is fronnbr) +*/
   Gnum                      compload[3];          /*+ Size of both parts and separator                   +*/
   Gnum                      comploaddlt;          /*+ Load difference between both parts                 +*/
-  Gnum                      compsize[2];          /*+ Number of vertices in parts (separator is fronnbr) +*/
-  Gnum                      fronnbr;              /*+ Number of frontier vertices; TRICK: compsize[2]    +*/
-  Gnum *                    frontab;              /*+ Array of frontier vertex numbers                   +*/
+  Gnum                      dwgttab[2];           /*+ Weights of the two subdomains                      +*/
   Gnum                      levlnum;              /*+ Nested dissection or coarsening level              +*/
+  Context *                 contptr;              /*+ Execution context                                  +*/
 } Vgraph;
 
 /*+ The graph separator storing structure. +*/

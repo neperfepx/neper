@@ -5,10 +5,11 @@
 #include"nem_sort_.h"
 
 void
-nem_sort (struct IN_M In, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh)
+nem_sort (struct IN_M In, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh,
+          struct NSET *NSet)
 {
   if (In.sortnode && strcmp (In.sortnode, "none"))
-    nem_sort_nodes (In, pTess, pNodes, Mesh);
+    nem_sort_nodes (In, pTess, pNodes, Mesh, NSet);
 
   if (In.sortelt && strcmp (In.sortelt, "none"))
     nem_sort_elts (In, pTess, pNodes, Mesh);

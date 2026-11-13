@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2012,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2012,2018,2019,2022,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -46,14 +46,16 @@
 /**                                 to   : 04 nov 2010     **/
 /**                # Version 6.0  : from : 17 oct 2012     **/
 /**                                 to   : 07 jun 2018     **/
+/**                # Version 7.0  : from : 05 may 2019     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
-
-#define HGRAPH_H
 
 /*
 **  The defines.
 */
+
+#define SCOTCH_HGRAPH_H
 
 /*+ Graph option flags. +*/
 
@@ -75,6 +77,7 @@ typedef struct Hgraph_ {
   Gnum                      enohnbr;              /*+ Number of non-halo edges                                       +*/
   Gnum                      enlosum;              /*+ Sum of non-halo edge loads                                     +*/
   Gnum                      levlnum;              /*+ Nested dissection level                                        +*/
+  Context *                 contptr;              /*+ Execution context                                              +*/
 } Hgraph;
 
 /*
@@ -88,3 +91,4 @@ Gnum                        hgraphBase          (Hgraph * const, const Gnum);
 int                         hgraphCheck         (const Hgraph *);
 int                         hgraphInduceList    (const Hgraph * restrict const, const Gnum, const Gnum * restrict const, const Gnum, Hgraph * restrict const);
 void                        hgraphUnhalo        (const Hgraph * const, Graph * const);
+void                        hgraphUnhalo2       (Hgraph * const);

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007-2013,2015,2016,2018-2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007-2013,2015,2016,2018-2021,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -65,6 +65,10 @@
 /**                                 to   : 25 jun 2010     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 24 aug 2020     **/
+/**                # Version 6.1  : from : 05 apr 2021     **/
+/**                                 to   : 05 apr 2021     **/
+/**                # Version 7.0  : from : 18 feb 2018     **/
+/**                                 to   : 07 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -95,23 +99,24 @@
 **  The static definitions.
 */
 
-static const ArchClass      archClassTab[] = { ARCHCLASSBLOCK ("cmplt",    Cmplt,  ARCHPART),
-                                               ARCHCLASSBLOCK ("cmpltw",   Cmpltw, ARCHPART),
-                                               ARCHCLASSBLOCK ("deco",     Deco,   ARCHNONE),
-                                               ARCHCLASSBLOCK ("deco",     Deco2,  ARCHNONE), /* Hidden, type-2 decomposition-defined architecture */
-                                               ARCHCLASSBLOCK ("dist",     Dist,   ARCHNONE),
-                                               ARCHCLASSBLOCK ("hcub",     Hcub,   ARCHNONE),
-                                               ARCHCLASSBLOCK ("tleaf",    Tleaf,  ARCHNONE),
-                                               ARCHCLASSBLOCK ("ltleaf",   Ltleaf, ARCHNONE),
-                                               ARCHCLASSBLOCK ("mesh2D",   Mesh2,  ARCHNONE),
-                                               ARCHCLASSBLOCK ("mesh3D",   Mesh3,  ARCHNONE),
-                                               ARCHCLASSBLOCK ("meshXD",   MeshX,  ARCHNONE),
-                                               ARCHCLASSBLOCK ("sub",      Sub,    ARCHNONE),
-                                               ARCHCLASSBLOCK ("torus2D",  Torus2, ARCHNONE),
-                                               ARCHCLASSBLOCK ("torus3D",  Torus3, ARCHNONE),
-                                               ARCHCLASSBLOCK ("torusXD",  TorusX, ARCHNONE),
-                                               ARCHCLASSBLOCK ("varcmplt", Vcmplt, ARCHPART | ARCHVAR),
-                                               ARCHCLASSBLOCK ("varhcub",  Vhcub,  ARCHVAR),
+static const ArchClass      archClassTab[] = { ARCHCLASSBLOCK (Cmplt,   "cmplt",    ARCHPART),
+                                               ARCHCLASSBLOCK (Cmpltw,  "cmpltw",   ARCHPART),
+                                               ARCHCLASSBLOCK (Cmpltws, "cmpltws",  ARCHPART),
+                                               ARCHCLASSBLOCK (Deco,    "deco",     ARCHNONE),
+                                               ARCHCLASSBLOCK (Deco2,   "deco",     ARCHNONE), /* Hidden, type-2 decomposition-defined architecture */
+                                               ARCHCLASSBLOCK (Dist,    "dist",     ARCHNONE),
+                                               ARCHCLASSBLOCK (Hcub,    "hcub",     ARCHNONE),
+                                               ARCHCLASSBLOCK (Tleaf,   "tleaf",    ARCHNONE),
+                                               ARCHCLASSBLOCK (Ltleaf,  "ltleaf",   ARCHNONE),
+                                               ARCHCLASSBLOCK (Mesh2,   "mesh2D",   ARCHNONE),
+                                               ARCHCLASSBLOCK (Mesh3,   "mesh3D",   ARCHNONE),
+                                               ARCHCLASSBLOCK (MeshX,   "meshXD",   ARCHNONE),
+                                               ARCHCLASSBLOCK (Sub,     "sub",      ARCHNONE),
+                                               ARCHCLASSBLOCK (Torus2,  "torus2D",  ARCHNONE),
+                                               ARCHCLASSBLOCK (Torus3,  "torus3D",  ARCHNONE),
+                                               ARCHCLASSBLOCK (TorusX,  "torusXD",  ARCHNONE),
+                                               ARCHCLASSBLOCK (Vcmplt,  "varcmplt", ARCHPART | ARCHVAR),
+                                               ARCHCLASSBLOCK (Vhcub,   "varhcub",  ARCHVAR),
                                                ARCHCLASSBLOCKNULL };
 
 /**************************************/
@@ -134,7 +139,7 @@ int
 archInit (
 Arch * restrict const       archptr)
 {
-  memSet (archptr, 0, sizeof (Arch));             /* Initialize architecture body (arch->class = NULL) */
+  memSet (archptr, 0, sizeof (Arch));             /* Initialize architecture body (arch->clasptr = NULL) */
 
   return (0);
 }
@@ -165,9 +170,9 @@ Arch * restrict const       archptr)
   int                 o;
 
   o = 0;                                          /* Assume everything will be all right */
-  if ((archptr->class           != NULL) &&
-      (archptr->class->archFree != NULL))         /* If there is a specific freeing routine                */
-    o = archptr->class->archFree (&archptr->data); /* Call it                                              */
+  if ((archptr->clasptr           != NULL) &&
+      (archptr->clasptr->archFree != NULL))       /* If there is a specific freeing routine */
+    o = archptr->clasptr->archFree (&archptr->data); /* Call it                             */
 
 #ifdef SCOTCH_DEBUG_GRAPH2
   memSet (archptr, ~0, sizeof (Arch));            /* Purge graph fields */
@@ -187,27 +192,28 @@ archLoad (
 Arch * restrict const       archptr,
 FILE * const                stream)
 {
-  const ArchClass * restrict  class;              /* Pointer to architecture class */
+  const ArchClass * restrict  clasptr;            /* Pointer to architecture class */
   char                        name[256];          /* Architecture name string      */
 
   if (fscanf (stream, "%255s", name) != 1) {      /* Read architecture name */
     errorPrint ("archLoad: cannot load architecture type");
-    return     (1);
+    return (1);
   }
   name[255] = '\0';                               /* Set end of string */
 
-  if ((class = archClass (name)) == NULL) {       /* Get class from its name */
+  if ((clasptr = archClass (name)) == NULL) {     /* Get class from its name */
     errorPrint ("archLoad: invalid architecture type");
-    return     (1);
+    return (1);
   }
 
-  archptr->class   = class;                       /* Set architecture class                                                       */
-  archptr->flagval = archptr->class->flagval | ARCHFREE; /* Copy architecture flag before it can be modified and set freeing flag */
+  archptr->clasptr = clasptr;                     /* Set architecture class                                                         */
+  archptr->flagval = archptr->clasptr->flagval | ARCHFREE; /* Copy architecture flag before it can be modified and set freeing flag */
 
-  if (class->archLoad != NULL) {                  /* If class has loading function */
-    if (class->archLoad (&archptr->data, stream) != 0) { /* Load class data        */
+  if (clasptr->archLoad != NULL) {                /* If class has loading function */
+    if (clasptr->archLoad (&archptr->data, stream) != 0) { /* Load class data      */
       errorPrint ("archLoad: cannot load architecture data");
-      class->archFree (&archptr->data);           /* Perform clean-up             */
+      if (clasptr->archFree != NULL)              /* If freeing function exists   */
+        clasptr->archFree (&archptr->data);       /* Perform clean-up             */
       memSet (archptr, 0, sizeof (Arch));         /* Initialize architecture body */
       return (1);
     }
@@ -229,13 +235,13 @@ FILE * restrict const       stream)
 {
   int                 o;
 
-  if (archptr->class == NULL)                     /* If no architecture type defined */
+  if (archptr->clasptr == NULL)                   /* If no architecture type defined */
     return (0);                                   /* Nothing to do                   */
 
   o = (fprintf (stream, "%s\n",                   /* Write architecture class */
-                archptr->class->archname) == EOF);
-  if (archptr->class->archSave != NULL)           /* If class has saving function      */
-    o |= archptr->class->archSave (&archptr->data, stream); /* Write architecture data */
+                archptr->clasptr->archname) == EOF);
+  if (archptr->clasptr->archSave != NULL)         /* If class has saving function        */
+    o |= archptr->clasptr->archSave (&archptr->data, stream); /* Write architecture data */
   if (o != 0)
     errorPrint ("archSave: bad output");
 
@@ -262,14 +268,28 @@ archClass2 (
 const char * const          name,
 const int                   num)
 {
-  const ArchClass * restrict  class;              /* Pointer to architecture class */
+  const ArchClass * restrict  clasptr;            /* Pointer to architecture class */
 
-  for (class = archClassTab; class->archname != NULL; class ++) { /* For all classes */
-    if (strcasecmp (name, class->archname) == 0)  /* If class names matches          */
-      return (class + num);                       /* Return proper class             */
+  for (clasptr = archClassTab; clasptr->archname != NULL; clasptr ++) { /* For all classes */
+    if (strcasecmp (name, clasptr->archname) == 0) /* If class names matches               */
+      return (clasptr + num);                     /* Return proper class                   */
   }
 
   return (NULL);                                  /* Class not found */
+}
+
+/* This routine returns the index of the
+** given class.
+** It returns:
+** - -1  : class is NULL.
+** - >0  : valid index.
+*/
+
+int
+archClassNum (
+const ArchClass * const     clasptr)
+{
+  return ((clasptr == NULL) ? -1 : (int) (clasptr - archClassTab));
 }
 
 /**************************************/
@@ -412,9 +432,7 @@ const Arch * const          archptr,
 ArchDom * const             domnptr,
 FILE * const                stream)
 {
-  return (archptr->class->domLoad (&archptr->data, /* Call proper routine */
-                                   &domnptr->data,
-                                   stream));
+  return (archptr->clasptr->domLoad (&archptr->data, &domnptr->data, stream)); /* Call proper routine */
 }
 
 /* This routine saves domain information
@@ -430,9 +448,7 @@ const Arch * const          archptr,
 const ArchDom * const       domnptr,
 FILE * const                stream)
 {
-  return (archptr->class->domSave (&archptr->data, /* Call proper routine */
-                                   &domnptr->data,
-                                   stream));
+  return (archptr->clasptr->domSave (&archptr->data, &domnptr->data, stream)); /* Call proper routine */
 }
 
 /* This function tries to split a domain into
@@ -479,38 +495,3 @@ const ArchDom * const       dom1ptr)
 }
 
 #endif /* SCOTCH_DEBUG_ARCH2 */
-
-/* This function creates the MPI_Datatype for
-** complete graph domains.
-** It returns:
-** - 0  : if type could be created.
-** - 1  : on error.
-*/
-
-#ifdef SCOTCH_PTSCOTCH
-
-int
-archDomMpiType (
-const Arch * const          archptr,
-MPI_Datatype * const        typeptr)
-{
-  int                 bloktab[2];
-  MPI_Aint            disptab[2];
-  MPI_Datatype        typetab[2];
-  int                 o;
-
-  bloktab[0] =                                    /* Build structured type to set up upper bound of domain datatype */
-  bloktab[1] = 1;
-  disptab[0] = 0;                                 /* Displacement of real datatype is base of array */
-  disptab[1] = sizeof (ArchDom);                  /* Displacement of upper bound is size of ArchDom */
-  typetab[1] = MPI_UB;
-  o = ((int (*) (const void * const, const void * const)) archptr->class->domMpiType) ((const void * const) &archptr->data, &typetab[0]);
-  if (o == 0)
-    o = (MPI_Type_struct (2, bloktab, disptab, typetab, typeptr) != MPI_SUCCESS);
-  if (o == 0)
-    o = (MPI_Type_commit (typeptr) != MPI_SUCCESS); /* Created MPI types have to be committed */
-
-  return (o);
-}
-
-#endif /* SCOTCH_PTSCOTCH */

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2011,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2011,2014,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -64,14 +64,16 @@
 /**                                 to   : 18 mar 2011     **/
 /**                # Version 6.0  : from : 03 mar 2011     **/
 /**                                 to   : 05 apr 2018     **/
+/**                # Version 7.0  : from : 08 jun 2018     **/
+/**                                 to   : 28 mar 2023     **/
 /**                                                        **/
 /************************************************************/
 
-#define BGRAPH_H
-
 /*
-**  The type and structure definitions.
+**  The defines.
 */
+
+#define SCOTCH_BGRAPH_H
 
 /*+ Graph option flags. +*/
 
@@ -79,6 +81,10 @@
 #define BGRAPHFREEPART              (GRAPHBITSNOTUSED << 1) /* Free part array              */
 #define BGRAPHFREEVEEX              (GRAPHBITSNOTUSED << 2) /* Free external gain array     */
 #define BGRAPHHASANCHORS            (GRAPHBITSNOTUSED << 3) /* If graph has anchor vertices */
+
+/*
+**  The type and structure definitions.
+*/
 
 /*+ The bipartition graph structure. +*/
 
@@ -103,6 +109,7 @@ typedef struct Bgraph_ {
   Gnum                      domnwght[2];          /*+ Weights of the two subdomains                      +*/
   Gnum                      vfixload[2];          /*+ Vertex load biases of the two subdomains           +*/
   INT                       levlnum;              /*+ Coarsening level                                   +*/
+  Context *                 contptr;              /*+ Execution context                                  +*/
 } Bgraph;
 
 /*+ The save graph structure. +*/
@@ -126,6 +133,8 @@ void                        bgraphExit          (Bgraph * restrict const);
 void                        bgraphSwal          (Bgraph * restrict const);
 void                        bgraphZero          (Bgraph * restrict const);
 int                         bgraphCheck         (const Bgraph * restrict const);
+void                        bgraphCost          (Bgraph * restrict const);
+void                        bgraphCost2         (const Bgraph * restrict const, const GraphPart * restrict const, Gnum * restrict const, Gnum * restrict const, Gnum * restrict const, Gnum * restrict const, Gnum * restrict const, Gnum * restrict const, Gnum * restrict const);
 
 int                         bgraphStoreInit     (const Bgraph * const, BgraphStore * const);
 void                        bgraphStoreExit     (BgraphStore * const);

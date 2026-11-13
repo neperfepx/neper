@@ -121,6 +121,17 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
             MTess.TessDom[MTess.TessQty][0] = ParentTessId;
             MTess.TessDom[MTess.TessQty][1] = cell;
 
+            // these lines are only set by net_tess_file (NULL otherwise)
+            MTess.TessDomVerNb =
+              ut_realloc_1d_pint_null (MTess.TessDomVerNb, MTess.TessQty + 1,
+                                       MTess.TessDomVerNb ? 1 : MTess.TessQty + 1);
+            MTess.TessDomEdgeNb =
+              ut_realloc_1d_pint_null (MTess.TessDomEdgeNb, MTess.TessQty + 1,
+                                       MTess.TessDomEdgeNb ? 1 : MTess.TessQty + 1);
+            MTess.TessDomFaceNb =
+              ut_realloc_1d_pint_null (MTess.TessDomFaceNb, MTess.TessQty + 1,
+                                       MTess.TessDomFaceNb ? 1 : MTess.TessQty + 1);
+
             Tess = realloc (Tess, (MTess.TessQty + 1) * sizeof (struct TESS));
             neut_tess_set_zero (Tess + MTess.TessQty);
 
@@ -212,6 +223,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
       else if (ut_file_testformat (In.load, "ovm"))
         neut_tess_fnscanf_ovm (In.load, Tess + 1);
 
+      net_domain_fromtess (Tess[1], Tess);
+
       // Sorting cells ###
       if (strcmp (In.sortstring, "none"))
       {
@@ -238,7 +251,14 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
         net_dim (2, &FTess);
     }
     else if (In.levelqty == 1 || strcmp (In.load, "none"))
+    {
       neut_tess_tess (Tess[1], &FTess);
+      FTess.ScaleQty = 1;
+
+      // cutting the tessellation to the actual domain (curved domain)
+      if (!strcmp (In.load, "none"))
+        net_domain_cut (Tess[0], &FTess);
+    }
 
     neut_ori_des_expand (In.orides, &FTess.CellOriDes);
   }
@@ -324,6 +344,11 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   if (strcmp (In.transform, "none") && (FTess.Dim > 0 || Tesr.Dim > 0))
   {
     ut_print_message (0, 1, "Transforming tessellation...\n");
+
+    // (no longer needed, and its size follows Tess[0], which can be updated)
+    if (MTess.DomTessFaceNb)
+      ut_free_2d_int (&MTess.DomTessFaceNb[0], Tess[0].FaceQty + 1);
+
     net_transform (In, Tess, &FTess, &Tesr);
   }
 

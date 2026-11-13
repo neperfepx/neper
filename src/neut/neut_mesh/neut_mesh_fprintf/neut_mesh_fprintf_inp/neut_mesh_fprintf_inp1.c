@@ -14,9 +14,11 @@ neut_mesh_fprintf_inp (FILE * file, char *dim, struct TESS Tess,
                        struct BOUNDARY Bound)
 {
   int i, j, meshdim;
-  int shift_elt1D = 0, shift_elt2D = 0, shift_elt3D = 0, shift_eltCo = 0;
+  int *shift = ut_alloc_1d_int (5);
 
-  if (Tess.Dim > 0)
+  if (Mesh3D.EltQty > 0)
+    meshdim = 3;
+  else if (Tess.Dim > 0)
     meshdim = Tess.Dim;
   else if (Nodes.NodeQty > 0)
     meshdim = neut_nodes_dim (Nodes);
@@ -43,68 +45,66 @@ neut_mesh_fprintf_inp (FILE * file, char *dim, struct TESS Tess,
   fprintf (file, "\n");
 
 /*----------------------------------------------------------------------
- * elements */
+ * elements (numbered contiguously over the dimensions, as in msh) */
+
+  neut_mesh_fprintf_inp_shift (dim, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo,
+                               shift);
+
+// 0D elts -------------------------------------------------------------
+
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "0") && Mesh0D.EltQty > 0)
+    neut_mesh_fprintf_inp_mesh0d (file, Mesh0D, shift[0]);
 
 // 1D elts -------------------------------------------------------------
 
-  shift_elt1D = 0;
   if (ut_list_testelt (dim, NEUT_SEP_NODEP, "1") && Mesh1D.EltQty > 0)
-    neut_mesh_fprintf_inp_mesh1d (file, Mesh1D, shift_elt1D, meshdim);
+    neut_mesh_fprintf_inp_mesh1d (file, Mesh1D, shift[1], meshdim);
 
 // 2D elts -------------------------------------------------------------
 
-  shift_elt2D = 0;
   if (ut_list_testelt (dim, NEUT_SEP_NODEP, "2") && Mesh2D.EltQty > 0)
-    neut_mesh_fprintf_inp_mesh2d (file, Mesh2D, shift_elt2D, "standard");
+    neut_mesh_fprintf_inp_mesh2d (file, Mesh2D, shift[2],
+                                  meshdim == 3 ? "surface" : "standard");
 
 // 3D elts -------------------------------------------------------------
 
-  shift_elt3D = 0;
-  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "2"))
-    shift_elt3D += Mesh2D.EltQty;
   if (ut_list_testelt (dim, NEUT_SEP_NODEP, "3") && Mesh3D.EltQty > 0)
-    neut_mesh_fprintf_inp_mesh3d (file, Mesh3D, shift_elt3D, "standard");
+    neut_mesh_fprintf_inp_mesh3d (file, Mesh3D, shift[3], "standard");
 
 // Cohesive elts -------------------------------------------------------
 
   if (MeshCo.EltQty > 0)
   {
-    shift_eltCo = 0;
     if (MeshCo.Dimension == 2)
-      shift_eltCo = shift_elt2D + Mesh2D.EltQty;
-    else if (MeshCo.Dimension == 3)
-      shift_eltCo = shift_elt3D + Mesh3D.EltQty;
-
-    if (MeshCo.Dimension == 2)
-      neut_mesh_fprintf_inp_mesh2d (file, MeshCo, shift_eltCo, "cohesive");
+      neut_mesh_fprintf_inp_mesh2d (file, MeshCo, shift[4], "cohesive");
     if (MeshCo.Dimension == 3)
-      neut_mesh_fprintf_inp_mesh3d (file, MeshCo, shift_eltCo, "cohesive");
+      neut_mesh_fprintf_inp_mesh3d (file, MeshCo, shift[4], "cohesive");
   }
 
 // 0D elsets -----------------------------------------------------------
 
   if (ut_list_testelt (dim, NEUT_SEP_NODEP, "0"))
-    neut_mesh_fprintf_inp_elsets (file, Mesh0D, 0);
+    neut_mesh_fprintf_inp_elsets (file, Mesh0D, shift[0]);
 
 // 1D elsets -----------------------------------------------------------
 
   if (ut_list_testelt (dim, NEUT_SEP_NODEP, "1"))
-    neut_mesh_fprintf_inp_elsets (file, Mesh1D, shift_elt1D);
+    neut_mesh_fprintf_inp_elsets (file, Mesh1D, shift[1]);
 
 // 2D elsets -----------------------------------------------------------
 
   if (ut_list_testelt (dim, NEUT_SEP_NODEP, "2"))
-    neut_mesh_fprintf_inp_elsets (file, Mesh2D, shift_elt2D);
+    neut_mesh_fprintf_inp_elsets (file, Mesh2D, shift[2]);
 
 // 3D elsets -----------------------------------------------------------
 
   if (ut_list_testelt (dim, NEUT_SEP_NODEP, "3"))
-    neut_mesh_fprintf_inp_elsets (file, Mesh3D, shift_elt3D);
+    neut_mesh_fprintf_inp_elsets (file, Mesh3D, shift[3]);
 
-// 3D elsets -----------------------------------------------------------
+// Cohesive elsets -----------------------------------------------------
 
   if (MeshCo.EltQty > 0)
-    neut_mesh_fprintf_inp_elsets (file, MeshCo, shift_eltCo);
+    neut_mesh_fprintf_inp_elsets (file, MeshCo, shift[4]);
 
 // node sets -----------------------------------------------------------
 
@@ -124,7 +124,8 @@ neut_mesh_fprintf_inp (FILE * file, char *dim, struct TESS Tess,
 // fasets --------------------------------------------------------------
 
   if (faset)
-    neut_mesh_fprintf_inp_fasets (file, Tess, Mesh2D, Mesh3D, Nodes, faset);
+    neut_mesh_fprintf_inp_fasets (file, Tess, Mesh2D, Mesh3D, Nodes, faset,
+                                  shift[meshdim]);
 
 // foot ----------------------------------------------------------------
 
@@ -133,10 +134,12 @@ neut_mesh_fprintf_inp (FILE * file, char *dim, struct TESS Tess,
 
   if (Bound.BoundQty > 0 && faset
       && ut_list_testelt (faset, NEUT_SEP_NODEP, "internal"))
-    neut_mesh_fprintf_inp_boundary (file, Bound);
+    neut_mesh_fprintf_inp_boundary (file, Bound, shift[meshdim]);
 
   if (Bound.BoundQty > 0)
     fprintf (file, "*End Assembly\n");
+
+  ut_free_1d_int (&shift);
 
   return;
 }

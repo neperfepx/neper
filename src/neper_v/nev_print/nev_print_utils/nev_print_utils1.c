@@ -63,7 +63,7 @@ nev_print_cube_expr_params (double rad, char *expr, double *params)
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -143,7 +143,7 @@ nev_print_cyl_expr_params (double rad, char *expr, double *params)
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
-  ol_vect_free (v);
+  ol_vect_free (&v);
 
   return;
 }
@@ -196,7 +196,7 @@ nev_print_arr_expr_params (double rad, char *expr, double *params)
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
-  ol_vect_free (v);
+  ol_vect_free (&v);
 
   return;
 }
@@ -247,7 +247,7 @@ nev_print_tor_expr_params (double rad, char *expr, double *params)
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
-  ol_vect_free (v);
+  ol_vect_free (&v);
 
   return;
 }
@@ -296,9 +296,9 @@ nev_print_ellipsoid_expr_params (double rad, char *expr, double *params)
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
-  ol_vect_free (v1);
-  ol_vect_free (v2);
-  ol_vect_free (v3);
+  ol_vect_free (&v1);
+  ol_vect_free (&v2);
+  ol_vect_free (&v3);
 
   return;
 }
@@ -333,7 +333,7 @@ nev_print_disc_expr_params (double rad, char *expr, double *params)
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
-  ol_vect_free (v);
+  ol_vect_free (&v);
 
   return;
 }
@@ -414,4 +414,178 @@ nev_print_scale_ticks (char *scale, double *pmin, double *pmax,
   ut_free_1d_char (&tmp);
 
   return;
+}
+
+// Default radius of vertex- and edge-like entities (vertices, edges, seeds, 0D
+// and 1D elements), scaled by the domain size and the number of cells, so
+// that tessellations and meshes of the same domain get the same values.
+double
+nev_print_defrad (double size, int cellqty, double fact)
+{
+  return pow (size, 1. / 3) * fact / pow (ut_num_max_int (cellqty, 1), 0.25);
+}
+
+int
+nev_print_tess_defrad (struct TESS Tess, int dim, double *prad)
+{
+  int status = 0;
+  double size;
+
+  neut_tess_size (Tess, &size);
+
+  if (dim == Tess.Dim)
+    (*prad) = 0.02;
+  else if (dim == 0)
+    (*prad) = nev_print_defrad (size, Tess.CellQty, NEV_DEFRAD_VER);
+  else if (dim == 1)
+    (*prad) = nev_print_defrad (size, Tess.CellQty, NEV_DEFRAD_EDGE);
+  else if (dim == 4)
+    (*prad) = nev_print_defrad (size, Tess.CellQty, NEV_DEFRAD_SEED);
+  else
+  {
+    (*prad) = -1;
+    status = -1;
+  }
+
+  return status;
+}
+
+void
+nev_print_mesh_size_cellqty (struct NODES Nodes, struct MESH *Mesh, double *psize,
+                             int *pcellqty)
+{
+  int meshdim = neut_mesh_array_dim (Mesh);
+
+  (*psize) = 1;
+  (*pcellqty) = 1;
+
+  if (meshdim > 0)
+  {
+    neut_mesh_size (Nodes, Mesh[meshdim], psize);
+    (*pcellqty) = Mesh[meshdim].ElsetQty;
+  }
+
+  return;
+}
+
+int
+nev_print_mesh_defrad (double size, int cellqty, int dim, double *prad)
+{
+  int status = 0;
+
+  if (dim == 0)
+    (*prad) = nev_print_defrad (size, cellqty, NEV_DEFRAD_VER);
+  else if (dim == 1)
+    (*prad) = nev_print_defrad (size, cellqty, NEV_DEFRAD_EDGE);
+  else if (dim == 2 || dim == 3) // used by pf
+    (*prad) = 0.02;
+  else
+  {
+    (*prad) = -1;
+    status = -1;
+  }
+
+  return status;
+}
+
+int
+nev_print_mesh_defedgerad (double size, int cellqty, int dim, char *space, double *prad)
+{
+  int status = 0, real = !space || !strcmp (space, "real");
+
+  if (dim == 0)
+    (*prad) = nev_print_defrad (size, cellqty, NEV_DEFRAD_VER);
+  else if (dim == 1)
+    (*prad) = nev_print_defrad (size, cellqty, NEV_DEFRAD_EDGE);
+  else if (dim == 2)
+    (*prad) = real ? nev_print_defrad (size, cellqty, NEV_DEFRAD_ELT2DEDGE) : 0.01;
+  else if (dim == 3)
+    (*prad) = real ? nev_print_defrad (size, cellqty, NEV_DEFRAD_ELT3DEDGE) : 0.01;
+  else
+  {
+    (*prad) = -1;
+    status = -1;
+  }
+
+  return status;
+}
+
+double
+nev_print_nodes_defrad (int nodeqty)
+{
+  return NEV_DEFRAD_NODE / pow (ut_num_max_int (nodeqty, 1), 0.25);
+}
+
+// Replaces the variable `default' of a radius expression by the default
+// radius (defrad < 0 if not available).
+void
+nev_print_rad_default (char *expr, double defrad, char **pexpr)
+{
+  char *var = (char *) "default";
+
+  nev_print_rad_vars (expr, 1, &var, &defrad, pexpr);
+
+  return;
+}
+
+// Replaces the variables of a radius expression (whole words) by their values
+// (val < 0 if not available).
+void
+nev_print_rad_vars (char *expr, int varqty, char **vars, double *vals, char **pexpr)
+{
+  int i, j, len;
+  char *val = ut_alloc_1d_char (100);
+
+  (*pexpr) = ut_alloc_1d_char (strlen (expr) * 100 + 1);
+
+  for (i = 0; expr[i] != '\0';)
+  {
+    for (j = 0; j < varqty; j++)
+    {
+      len = strlen (vars[j]);
+      if (!strncmp (expr + i, vars[j], len)
+          && (i == 0 || !(isalnum (expr[i - 1]) || expr[i - 1] == '_'))
+          && !(isalnum (expr[i + len]) || expr[i + len] == '_')
+          && strncmp (expr, "file(", 5))
+        break;
+    }
+
+    if (j < varqty)
+    {
+      if (vals[j] < 0)
+        ut_print_message (2, 3, "`%s' is not available for this radius.\n", vars[j]);
+
+      sprintf (val, "%.12g", vals[j]);
+      strcat (*pexpr, val);
+      i += strlen (vars[j]);
+    }
+    else
+    {
+      strncat (*pexpr, expr + i, 1);
+      i++;
+    }
+  }
+
+  (*pexpr) = ut_realloc_1d_char (*pexpr, strlen (*pexpr) + 1);
+
+  ut_free_1d_char (&val);
+
+  return;
+}
+
+// Default radius of the domain edges (-showdomain): twice the default radius
+// of the tessellation edges, so that the domain stands out from them
+double
+nev_print_domain_defrad (struct TESS Tess)
+{
+  int cellqty = 1;
+  double size = 1;
+
+  if (!neut_tess_isvoid (Tess))
+  {
+    neut_tess_size (Tess, &size);
+    cellqty = Tess.CellQty;
+  }
+
+  return NEV_DEFRAD_DOMAIN * nev_print_defrad (size, cellqty, NEV_DEFRAD_EDGE);
 }

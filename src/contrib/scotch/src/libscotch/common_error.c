@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,14 +43,14 @@
 /**                                                        **/
 /**   DATES      : # Version 0.0  : from : 08 may 1998     **/
 /**                                 to   : 02 oct 1998     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define COMMON_ERROR
 
 #include "common.h"
 
@@ -65,7 +65,7 @@ static char                 errorProgName[32] = "";
 /* This routine sets the program name for
 ** error reporting.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -104,7 +104,7 @@ const char * const          errstr,               /*+ printf-like variable argum
 ** a variable number of arguments, as printf ()
 ** does.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void

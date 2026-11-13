@@ -1,21 +1,23 @@
 .. _pole_figure:
 
-Plotting a Pole Figure
-======================
+Plotting a Pole Figure (-V)
+===========================
 
-.. important:: Read first: :ref:`visualize_tessellation`.
+.. note::
 
-A pole figure can be generated using the :ref:`neper_v`, by switching to pole figure space, using :option:`-space` :data:`pf`.  Pole figures can be generated from one or several inputs, among those of the :ref:`neper_v`, such as the orientations of a tessellation cells, an orientation file and/or a direction file, making it possible to produce advanced figures.
+  This tutorial presents the :option:`-space` option and the pole-figure-related options of the :ref:`neper_v`.  Read first: :ref:`visualize_tessellation`.
+
+A pole figure can be generated using the :ref:`neper_v`, by switching to pole figure space, using :option:`-space` :data:`pf`.  Pole figures can be generated from one or several inputs, among those of the :ref:`neper_v`, such as the orientations of the cells of a tessellation, an orientation file and/or a direction file, making it possible to produce advanced figures.
 
 .. note:: Inverse pole figures can be plotted just as pole figures, using :option:`-space` :data:`ipf` instead of :option:`-space` :data:`pf`.  Inverse pole figures are used in :ref:`orientation_trajectories`.
 
-Visualization in pole figure space works in the same way as visualization in standard, real space: the entity properties can be specified using the :option:`-data*` options, the entities to show can be specified using the :option:`-show*` options, etc.  A difference is that the list of entities reduces to :data:`cell` if the input is a tessellation, and :data:`<input>` (or the default :data:`point`) if the input is a custom input (orientations or directions).
+Visualization in pole figure space works in the same way as visualization in standard, real space: the entity properties can be specified using the :data:`-data*` options, the entities to show can be specified using the :data:`-show*` options, etc.  A difference is that the list of entities reduces to :data:`cell` if the input is a tessellation, and :data:`<input>` (or the default :data:`point`) if the input is a custom input (orientations or directions).
 
-In the following, and unless mentionned otherwise, a simple tessellation is used:
+In the following, and unless mentioned otherwise, a simple tessellation is used:
 
 .. code-block:: console
 
-  # $ neper -T -n 100 -morpho gg -oricrysym cubic -o n100
+  # $ neper -T -n 100 -morpho gg -crysym cubic -o n100
 
 The tessellation can be visualized as follows:
 
@@ -25,7 +27,7 @@ The tessellation can be visualized as follows:
 
 .. image:: pole_figure/img1.png
 
-To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :option:`--rcfile`)::
+To reproduce *exactly* the images below, add the following line to your :file:`$HOME/.neperrc` file (or to a local configuration file to be loaded with :data:`--rcfile`)::
 
     neper -V -imagesize 500:500
 
@@ -40,11 +42,11 @@ The tessellation orientations can be visualized using :option:`-space` :data:`pf
 
 .. image:: pole_figure/img2.png
 
-This generates a PNG image named :file:`img2.png`.  By default, a pole figure is plotted from the (four) {111} poles, using a stereographic projection in the 1--2 reference plane, and all cell orientations/poles are represented using symbols.  Orientations are colored from their (cell) ids, so that colors match between visualizations in real space an pole figure space (the two images above).
+This generates a PNG image named :file:`img2.png`.  By default, a pole figure is plotted from the (four) {111} poles, using a stereographic projection in the 1--2 reference plane, and all cell orientations/poles are represented using symbols.  Orientations are colored from their (cell) ids, so that colors match between visualizations in real space and pole figure space (the two images above).
 
-.. note:: Even if only orientations/poles are represented in pole figure space, :data:`cell` is used to represent a cell orientation, which makes it possible to use the same options, :option:`-showcell`, :option:`-datacellcol`, etc. in all spaces.
+.. note:: Even if only orientations/poles are represented in pole figure space, :data:`cell` is used to represent a cell orientation, which makes it possible to use the same options, :data:`-showcell`, :data:`-datacellcol`, etc. in all spaces.
 
-For pole figures, it is also possible to write the output file at a vectorial PDF format:
+For pole figures, it is also possible to write the output file in the (vector) PDF format:
 
 .. code-block:: console
 
@@ -52,9 +54,9 @@ For pole figures, it is also possible to write the output file at a vectorial PD
 
 :download:`img2.pdf <pole_figure/img2.pdf>`
 
-.. note:: The PDF format, as a vectorial format, provides an optimal quality/weight ratio and should be used when possible (for example, in LaTeX documents).
+.. note:: The PDF format, as a vector format, provides an optimal quality/weight ratio and should be used when possible (for example, in LaTeX documents).
 
-The pole family can be modified using :option:`-pfpole`:
+The pole family can be modified using :data:`-pfpole`:
 
 .. code-block:: console
 
@@ -63,7 +65,7 @@ The pole family can be modified using :option:`-pfpole`:
 .. image:: pole_figure/img3.png
 
 
-The projection type can be modified using :option:`-pfprojection`:
+The projection type can be modified using :data:`-pfprojection`:
 
 .. code-block:: console
 
@@ -71,7 +73,7 @@ The projection type can be modified using :option:`-pfprojection`:
 
 .. image:: pole_figure/img4.png
 
-The sample directions can be modified using :option:`-pfdir`, so as the actual axis labels, using :option:`-datacsyslabel`:
+The sample directions can be modified using :data:`-pfdir`, as well as the actual axis labels, using :option:`-datacsyslabel`:
 
 .. code-block:: console
 
@@ -100,7 +102,7 @@ It is even possible to superimpose the :data:`symbol` and :data:`density` repres
 
 .. image:: pole_figure/img7.png
 
-The visualization can be reduced to a selection of cells using :option:`-showcell` (as in real space).   For instance, to show only the cells larger than the average:
+The visualization can be reduced to a selection of cells using :data:`-showcell` (as in real space).  For instance, to show only the cells larger than the average:
 
 .. code-block:: console
 
@@ -119,8 +121,7 @@ Finally, it is possible to change the character font from the default :data:`Tim
 Configuring a Symbol Plot
 -------------------------
 
-For a tessellation, the way data are represented can be specified using options :option:`-datacell*`. The properties include the color (options :option:`-datacellcol` and :option:`-datacellcolscheme`),
-transparency (option :option:`-datacelltrs`), radius (or size) (option :option:`-datacellrad`) and symbol (option :option:`-datacellsymbol`).
+For a tessellation, the way data are represented can be specified using options :data:`-datacell*`. The properties include the color (options :data:`-datacellcol` and :data:`-datacellcolscheme`), transparency (option :data:`-datacelltrs`), radius (or size) (option :data:`-datacellrad`) and symbol (option :option:`-datacellsymbol`).
 
 The size of the poles can, for instance, be set to be proportional to the corresponding cell sizes, and their colors a function of the z cell positions:
 
@@ -137,9 +138,9 @@ The size of the poles can, for instance, be set to be proportional to the corres
 
 .. image:: pole_figure/img10.png
 
-This originally produces a PNG file named :file:`img10.png` for the map and a PNG file named :file:`img10-scale3.png` for the scale bar, which is pasted to :file:`img10.png` thanks to :program:`convert`.
+This originally produces a PNG file named :file:`img10.png` for the map and a PNG file named :file:`img10-scale3.png` for the scale bar, which is pasted into :file:`img10.png` thanks to :program:`convert`.
 
-The apparence of the symbol "edges" can also be specified, using options :option:`-datacelledgerad` and :option:`-datacelledgecol`.  For example:
+The appearance of the symbol "edges" can also be specified, using options :data:`-datacelledgerad` and :data:`-datacelledgecol`.  For example:
 
 .. code-block:: console
   :emphasize-lines: 6,7
@@ -168,7 +169,7 @@ The type of symbols can be specified using :option:`-datacellsymbol`.  For examp
 
 .. image:: pole_figure/img12.png
 
-When only the type of symbol is provided to :option:`-datacellsymbol`, the radius is taken from option :option:`-datacellrad` (either the provided value or the default value).  Alternatively, values can be provided in :option:`-datacellsymbol` itself, as well as an angle; different symbols can even be specified for the different cells, using a :ref:`data_file` (:download:`n100-symbols <pole_figure/n100-symbols>`), to produce a fully customized plot:
+When only the type of symbol is provided to :option:`-datacellsymbol`, the radius is taken from option :data:`-datacellrad` (either the provided value or the default value).  Alternatively, values can be provided in :option:`-datacellsymbol` itself, as well as an angle; different symbols can even be specified for the different cells, using a :ref:`data_file` (:download:`n100-symbols <pole_figure/n100-symbols>`), to produce a fully customized plot:
 
 .. code-block:: console
   :emphasize-lines: 2
@@ -184,7 +185,7 @@ Configuring a Density Field Plot
 
 A tessellation with typical rolling orientations is used in the following: :download:`n200-psc.tess <pole_figure/n200-psc.tess>`.
 
-The (default) symbol plot can be turned into a density field plot using :option:`-pfmode` :data:`density`.
+The (default) symbol plot can be turned into a density field plot using :data:`-pfmode` :data:`density`.
 
 .. code-block:: console
   :emphasize-lines: 2
@@ -197,7 +198,7 @@ The (default) symbol plot can be turned into a density field plot using :option:
 
 A density plot is plotted with a color field and contour lines that correspond to the scale ticks.
 
-The scale extent and ticks (and so the values of the contour lines) can be modified using :option:`-datacellscale`:
+The scale extent and ticks (and so the values of the contour lines) can be modified using :data:`-datacellscale`:
 
 .. code-block:: console
   :emphasize-lines: 3
@@ -209,7 +210,7 @@ The scale extent and ticks (and so the values of the contour lines) can be modif
 
 .. image:: pole_figure/img15.png
 
-A density field is computed by assigning a kernel to each pole, which is defined by :option:`-pfkernel` (default :data:`normal(theta=3)`).  A different value changes the intensity of the density field:
+A density field is computed by assigning a kernel to each pole, which is defined by :data:`-pfkernel` (default :data:`normal(theta=3)`).  A different value changes the intensity of the density field:
 
 .. code-block:: console
   :emphasize-lines: 3
@@ -222,7 +223,7 @@ A density field is computed by assigning a kernel to each pole, which is defined
 
 .. image:: pole_figure/img16.png
 
-Symmetry conditions in the reference coordinate system can be defined using :option:`-pfsym` (default :data:`monoclinic`).  It can be set to :data:`orthotropic`:
+Symmetry conditions in the reference coordinate system can be defined using :data:`-pfsym` (default :data:`monoclinic`).  It can be set to :data:`orthotropic`:
 
 .. code-block:: console
   :emphasize-lines: 4
@@ -236,7 +237,7 @@ Symmetry conditions in the reference coordinate system can be defined using :opt
 
 .. image:: pole_figure/img17.png
 
-In the case of orthotropic symmetry, the pole figure can be reduced to one quarter using :option:`-pfsym` :data:`quarter` (default :data:`full`):
+In the case of orthotropic symmetry, the pole figure can be reduced to one quarter using :option:`-pfshape` :data:`quarter` (default :data:`full`):
 
 .. code-block:: console
   :emphasize-lines: 5
@@ -251,7 +252,7 @@ In the case of orthotropic symmetry, the pole figure can be reduced to one quart
 
 .. image:: pole_figure/img18.png
 
-The density field is defined on a regular grid, whose dimensions can be modified using :option:`-pfgridsize`.  While the default value of :data:`200` provides a good balance between quality and computation time, the option can be used to speed up generation or, at the opposite, increase quality:
+The density field is defined on a regular grid, whose dimensions can be modified using :data:`-pfgridsize`.  While the default value of :data:`200` provides a good balance between quality and computation time, the option can be used to speed up generation or, conversely, increase quality:
 
 .. code-block:: console
   :emphasize-lines: 6,8
@@ -269,7 +270,7 @@ The density field is defined on a regular grid, whose dimensions can be modified
 .. image:: pole_figure/img19.png
 .. image:: pole_figure/img20.png
 
-It is possible to specify which color scheme to use for the density plot, using :option:`-datacellcolscheme` (see :ref:`color_map_for_real_values`):
+It is possible to specify which color scheme to use for the density plot, using :data:`-datacellcolscheme` (see :ref:`color_map_for_real_values`):
 
 .. code-block:: console
   :emphasize-lines: 6
@@ -291,7 +292,7 @@ A pole figure can be generated from an orientation file by loading it as a custo
 
 .. code-block:: console
 
-  $ neper -T -n 100 -for ori -o n100
+  $ neper -T -n 100 -format ori -o n100
 
 The file can be loaded to the :ref:`neper_v` and plotted as a pole figure as follows:
 
@@ -301,10 +302,10 @@ The file can be loaded to the :ref:`neper_v` and plotted as a pole figure as fol
 
 .. image:: pole_figure/img22.png
 
-.. note:: In :option:`-space` :data:`pf`, a custom input is interprated as an orientation file by default.
+.. note:: In :option:`-space` :data:`pf`, a custom input is interpreted as an orientation file by default.
           The command produces the same image as if the orientations were read from a tessellation with the same orientations.
 
-Since the orientations are not attached to cells, they are no longer called :data:`cell` but :data:`point` (by default) in options :option:`-data*` and :option:`-show*`.  For example, to specify symbol radii:
+Since the orientations are not attached to cells, they are no longer called :data:`cell` but :data:`point` (by default) in options :data:`-data*` and :data:`-show*`.  For example, to specify symbol radii:
 
 .. code-block:: console
 
@@ -323,7 +324,7 @@ A pole figure can be created from directions (instead of orientations) loaded as
 
 .. image:: pole_figure/img24.png
 
-The data are not called :data:`point` anymore but :data:`mydir` (or any other name defining the custom input), which defines new options, :option:`-datamydir*` and :option:`-showmydir`.
+The data are not called :data:`point` anymore but :data:`mydir` (or any other name defining the custom input), which defines new options, :data:`-datamydir*` and :data:`-showmydir`.
 
 .. code-block:: console
   :emphasize-lines: 2
@@ -339,7 +340,7 @@ Working From Multiple Inputs
 
 A pole figure can be created from multiple inputs loaded as custom inputs (see :ref:`neper_v_input_data`).  This can, for example, be used to plot a (lattice) rotation path associated with plastic deformation. In the following, file :download:`ini <pole_figure/ini>` contains an initial orientation, :download:`all <pole_figure/all>` its locations during plastic deformation, and :download:`fin <pole_figure/fin>` the final orientation, all written as Rodrigues vectors.
 
-.. important:: To plot lattice rotation paths, is it generally more efficient to use the method described in :ref:`orientation_trajectories` instead of what is described here.
+.. important:: To plot lattice rotation paths, it is generally more efficient to use the method described in :ref:`orientation_trajectories` instead of what is described here.
 
 The initial orientation, rotation path and final orientation can be visualized as follows:
 
@@ -355,7 +356,7 @@ The initial orientation, rotation path and final orientation can be visualized a
 
 .. image:: pole_figure/img26.png
 
-It is also possible to plot in :data:`density` mode, in which case the mode applies only to the first input.  This can be used, for example, to mimic an orientation spread at final state:
+It is also possible to plot in :data:`density` mode, in which case the mode applies only to the first input.  This can be used, for example, to mimic an orientation spread in the final state:
 
 .. code-block:: console
   :emphasize-lines: 6
@@ -373,4 +374,4 @@ It is also possible to plot in :data:`density` mode, in which case the mode appl
 
 .. image:: pole_figure/img27.png
 
-Of course, it is also possible to represent final state using a file containing several orientations.
+Of course, it is also possible to represent the final state using a file containing several orientations.

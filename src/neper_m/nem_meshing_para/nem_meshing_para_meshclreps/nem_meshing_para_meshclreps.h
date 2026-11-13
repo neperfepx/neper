@@ -1,0 +1,6 @@
+/* This file is part of the Neper software package. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
+/* See the COPYING file in the top-level directory. */
+
+extern int nem_meshing_para_meshclreps (struct IN_M In, struct TESS *pTess,
+                                        struct TESR Tesr, struct MESHPARA *pMeshPara);

@@ -75,6 +75,13 @@ extern "C"
 				     struct MESH Mesh3D, int **pelt3d,
 				     int *pelt3dqty);
 
+/// \brief Get the only 3D elt of a 2D elt.
+///
+///
+///
+  extern int neut_mesh_elt2d_elt3d (struct MESH Mesh2D, int elt2d,
+				     struct MESH Mesh3D, int *pelt3d);
+
 /// \brief Get the 3D elsets of a 2D elt.
 ///
 ///

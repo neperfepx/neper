@@ -15,17 +15,18 @@
 
 #include"nem_meshing_3d.h"
 
+extern void nem_meshing_3d_algos (struct IN_M In, char **plist);
 extern void nem_meshing_3d_progress (struct MULTIM Multim, int poly, int
 				     polyqty, char *message);
 extern void nem_meshing_3d_report_poly (struct MULTIM Multim, int poly);
-extern int nem_meshing_3d_poly (struct IN_M, double, double, struct MULTIM *,
+extern int nem_meshing_3d_poly (struct IN_M, double, double, double, struct MULTIM *,
 				struct timeval *pctrlc_t, double *,
 				double *, struct TESS, struct NODES *,
 				struct MESH *, struct NODES *pN, struct MESH *pM, int);
 extern void nem_meshing_3d_report_poly_algo (int poly, int a,
 					     struct NODES N, struct MESH M);
 
-extern void nem_meshing_3d_poly_algo (struct IN_M In, double cl, double mesh3dclreps,
+extern void nem_meshing_3d_poly_algo (struct IN_M In, double cl, double clgrad, double clreps,
 				      struct MULTIM *pMultim, int algo,
 				      struct timeval *pctrlc_t,
 				      double *pallowed_t,

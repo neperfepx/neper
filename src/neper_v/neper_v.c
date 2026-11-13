@@ -16,6 +16,7 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
   struct TESR Tesr;
   struct NODES Nodes;
   struct MESH *Mesh = NULL;
+  struct NSET NSet;
   struct POINT *Points = NULL;
   struct DATA *TessData = NULL;
   struct DATA *TesrData = NULL;
@@ -36,6 +37,7 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
   neut_tess_set_zero (&Tess);
   neut_tesr_set_zero (&Tesr);
   neut_nodes_set_zero (&Nodes);
+  neut_nset_set_zero (&NSet);
   for (i = 0; i < 5; i++)
     neut_mesh_set_zero (Mesh + i);
   for (i = 0; i < 6; i++)
@@ -68,29 +70,51 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
     run_id++;
 
     if (run_id == 1)
-      nev_load (In.input, &Sim, &Tess, &Tesr, &Nodes, Mesh, &Points,
+      nev_load (In.input, &Sim, &Tess, &Tesr, &Nodes, Mesh, &NSet, &Points,
                 &PointQty, TessData, TesrData, &NodeData, MeshData,
                 &PointData);
 
     nev_print (In, &Print, &Sim, &Tess, TessData, Tesr, TesrData, Nodes,
-               Mesh, &NodeData, MeshData, &CsysData, Points, PointQty, PointData);
+               Mesh, NSet, &NodeData, MeshData, &CsysData, Points, PointQty, PointData);
   }
 
+  nev_input_free (&In);
+  if (Print.showvox)
+    ut_free_3d_int (&Print.showvox, Tesr.size[0] + 1, Tesr.size[1] + 1);
   neut_print_free (&Print);
   neut_sim_free (&Sim);
   neut_tess_free (&Tess);
+  neut_tesr_free (&Tesr);
   neut_nodes_free (&Nodes);
+  neut_nset_free (&NSet);
   for (i = 0; i < 5; i++)
     neut_mesh_free (Mesh + i);
+  free (Mesh);
   for (i = 0; i < 5; i++)
+  {
     for (j = 0; j < 3; j++)
       neut_data_free (MeshData[i] + j);
+    free (MeshData[i]);
+  }
+  free (MeshData);
   for (i = 0; i < 6; i++)
     neut_data_free (TessData + i);
+  free (TessData);
+  for (i = 0; i <= 1; i++)
+    neut_data_free (TesrData + i);
+  free (TesrData);
   neut_data_free (&NodeData);
+  neut_data_free (&CsysData);
+  for (i = 0; i < PointQty; i++)
+  {
+    neut_point_free (Points + i);
+    neut_data_free (PointData + i);
+  }
+  free (Points);
+  free (PointData);
 
-  // ut_free_2d_char (&expargv, argc);
-  ut_free_2d_char (&tmp, qty);
+  ut_free_2d_char (&expargv, expargc + 1);
+  ut_free_2d_char (&tmp, qty + 1);
 
   return 0;
 }

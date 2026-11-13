@@ -27,8 +27,8 @@ net_stat_tess (FILE *file, char *entity, char *format, struct TESS *pTess)
     for (j = 0; j < invalqty; j++)
     {
       status =
-        neut_tess_var_val (pTess, NULL, NULL, NULL, entity, i, invar[j],
-                           &vals, &valqty, &type);
+        neut_tess_expr_val (pTess, NULL, NULL, NULL, entity, i, invar[j],
+                            &vals, &valqty, &type);
 
       if (!status)
         ut_array_1d_fprintf_nonl (file, vals, valqty,
@@ -70,8 +70,8 @@ net_stat_point (FILE *file, char *format, struct POINT Point,
     for (j = 0; j < invalqty; j++)
     {
       status =
-        neut_point_var_val (Point, i, Tess, Nodes, Mesh, invar[j], &vals,
-                            &valqty, &type);
+        neut_point_expr_val (Point, i, Tess, Nodes, Mesh, invar[j], &vals,
+                             &valqty, &type);
 
       if (!status)
         ut_array_1d_fprintf_nonl (file, vals, valqty,

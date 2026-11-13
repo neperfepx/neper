@@ -15,3 +15,9 @@
 #include"net_reg.h"
 
 extern void net_reg_init (struct IN_T In, struct TESS *pTess, struct REG *pReg);
+extern void net_reg_init_peredgesel (struct TESS Tess, double *edgesel);
+extern void net_reg_periodic (struct TESS *pTess);
+extern void net_reg_faceeq (struct TESS *pTess);
+extern void net_reg_periodic_ver (struct TESS *pTess);
+extern void net_reg_periodic_edge (struct TESS *pTess);
+extern void net_reg_periodic_face (struct TESS *pTess);

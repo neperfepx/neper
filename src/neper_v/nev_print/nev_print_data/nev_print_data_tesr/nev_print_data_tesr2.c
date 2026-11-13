@@ -40,6 +40,8 @@ nev_print_data_tesr_gen (struct SIM Sim, struct TESR *pTesr, struct DATA *pData,
   ut_free_1d_char (&datatype);
   ut_free_1d_char (&datavalue);
 
+  neut_datainput_free (&DataInput);
+
   return;
 }
 
@@ -123,15 +125,20 @@ nev_print_data_tesr_cell2vox (struct TESR Tesr, char *attribute,
     else
       abort ();
 
-    if (!(*pData).ColData)
-      (*pData).ColData = ut_alloc_2d ((*pData).Qty + 1, size);
+    // cell data rows can be longer (e.g. quaternions)
+    size = ut_num_max_int (size, TesrDataCell.ColDataSize);
+    (*pData).ColDataSize = TesrDataCell.ColDataSize;
+
+    ut_free_2d (&(*pData).ColData, (*pData).Qty + 1);
+    (*pData).ColData = ut_alloc_2d ((*pData).Qty + 1, size);
     vox = 0;
     for (k = 1; k <= Tesr.size[2]; k++)
       for (j = 1; j <= Tesr.size[1]; j++)
         for (i = 1; i <= Tesr.size[0]; i++)
         {
           vox++;
-          (*pData).ColData[vox] = TesrDataCell.ColData[Tesr.VoxCell[i][j][k]];
+          ut_array_1d_memcpy (TesrDataCell.ColData[Tesr.VoxCell[i][j][k]], size,
+                              (*pData).ColData[vox]);
         }
   }
   else if (!strcmp (attribute, "colscheme"))

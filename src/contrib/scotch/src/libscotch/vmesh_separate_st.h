@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,6 +43,8 @@
 /**                                 to   : 31 oct 2003     **/
 /**                # Version 6.0  : from : 31 may 2018     **/
 /**                                 to   : 31 may 2018     **/
+/**                # Version 7.0  : from : 07 nov 2024     **/
+/**                                 to   : 07 nov 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -62,6 +64,10 @@ typedef enum VmeshSeparateStMethodType_ {
   VMESHSEPASTMETHZR,                              /*+ Zero method            +*/
   VMESHSEPASTMETHNBR                              /*+ Number of methods      +*/
 } VmeshSeparateStMethodType;
+
+/*+ Method function pointer type. +*/
+
+typedef int (* VmeshSeparateFunc) (Vmesh * restrict const, const void * const);
 
 /*
 **  The external declarations.

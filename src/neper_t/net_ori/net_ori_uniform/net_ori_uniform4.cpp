@@ -65,7 +65,7 @@ net_ori_uniform_opt_forces_ser_neigh (struct OL_SET *pOSet, double **f,
 
     std::vector < std::pair < size_t, double >>ret_matches;
     neighqty =
-      qtree->radiusSearch ((*pOSet).q[i], (*pOOpt).neighdE, ret_matches,
+      (*qtree).radiusSearch ((*pOSet).q[i], (*pOOpt).neighdE, ret_matches,
                             params);
     for (j = 0; j < neighqty; j++)
       neighs[j] = ret_matches[j].first;
@@ -116,8 +116,8 @@ net_ori_uniform_opt_rot_ori (double **f, double alpha, int i,
 
   ol_q_q ((*pOSet).q[i], (*pOSet).q[i]);
 
-  ol_r_free (r);
-  ol_q_free (q);
+  ol_r_free (&r);
+  ol_q_free (&q);
 
   return;
 }
@@ -134,7 +134,7 @@ net_ori_uniform_log_var (struct IN_T In, struct OL_SET OSet,
   double **g = ol_g_alloc ();
   double *R = ol_R_alloc ();
   double *tmp = ol_e_alloc ();
-  double theta, *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
 
   /*
      if (!ut_list_iter_test (OOpt.logvar, NEUT_SEP_NODEP, OOpt.iter))
@@ -168,9 +168,8 @@ net_ori_uniform_log_var (struct IN_T In, struct OL_SET OSet,
       }
       else if (!strcmp (vars[j], "angle-axis"))
       {
-        ol_q_rtheta (q, r, &theta);
-        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, r, 3, REAL_PRINT_FORMAT);
-        fprintf (OOpt.logvar_fp, " " REAL_PRINT_FORMAT, theta);
+        ol_q_rtheta (q, rtheta);
+        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, rtheta, 4, REAL_PRINT_FORMAT);
       }
       else if (!strcmp (vars[j], "rodrigues"))
       {
@@ -209,11 +208,11 @@ net_ori_uniform_log_var (struct IN_T In, struct OL_SET OSet,
 
   ut_free_2d_char (&vars, varqty);
   ut_free_1d_char (&filename);
-  ol_q_free (q);
-  ol_R_free (R);
-  ol_g_free (g);
-  ol_r_free (r);
-  ol_e_free (tmp);
+  ol_q_free (&q);
+  ol_R_free (&R);
+  ol_g_free (&g);
+  ol_rtheta_free (&rtheta);
+  ol_e_free (&tmp);
 
   return;
 }

@@ -19,7 +19,6 @@ extern "C"
 #include "neut_struct_nodes.h"
 #include "neut_struct_ospace.h" // nodes and mesh must be defined before
 #include "neut_struct_odf.h" // ospace must be defined before
-#include "neut_struct_tesl.h"
 #include "neut_struct_crys.h"
 #include "neut_struct_reg.h"
 #include "neut_struct_lloyd.h"
@@ -37,22 +36,18 @@ extern "C"
 #include "neut_struct_data.h"
 #include "neut_struct_datainput.h"
 #include "neut_struct_poly.h"
-#include "neut_struct_polymod.h"
 #include "neut_struct_point.h"
 #include "neut_struct_test.h"
 #include "neut_struct_boundary.h"
 
 #include "neut_struct_topt.h"
-#ifdef HAVE_NLOPT
 #include "neut_struct_sopt.h"
-#endif
 
 #include "neut_struct_tdyn.h"
 #include "neut_struct_oopt.h"
 
 #include "neut_struct_prim.h"
 
-#include "neut_struct_fepxsim.h"
 #include "neut_struct_sim.h"
 #include "neut_struct_simres.h"
 

@@ -218,7 +218,7 @@ neut_flatten_init_domstuff_fromver (struct FLATTEN *pFlatten,
                             (*pFlatten).DomFaceTessVerNb[i]);
 
     // Adding vers of the edge bodies
-    for (j = 1; j <= DTess.FaceVerQty[i]; j++)
+    for (j = 1; j <= DTess.FaceEdgeQty[i]; j++)
     {
       dedge = DTess.FaceEdgeNb[i][j];
       for (k = 0; k < (*pFlatten).DomEdgeBTessVerQty[dedge]; k++)
@@ -338,7 +338,7 @@ neut_flatten_init_domstuff_fromedge (struct FLATTEN *pFlatten,
                             (*pFlatten).DomFaceBTessEdgeQty[i],
                             (*pFlatten).DomFaceTessEdgeNb[i]);
 
-    for (j = 1; j <= DTess.FaceVerQty[i]; j++)
+    for (j = 1; j <= DTess.FaceEdgeQty[i]; j++)
     {
       dedge = DTess.FaceEdgeNb[i][j];
       for (k = 0; k < (*pFlatten).DomEdgeTessEdgeQty[dedge]; k++)

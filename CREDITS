@@ -16,6 +16,11 @@ Thanks to Fabrice Barbe, who is at the origin of Neper and has provided many
 ideas (2003-2010), and Paul Dawson, for boosting Neper's development
 (2010-2011).
 
+The GSL tree code (src/contrib/gsl) is a subset of the GNU Scientific Library
+2.7.1, copyright (C) The GSL Team and other contributors (see
+src/contrib/gsl/AUTHORS) and licensed under the terms of the GNU General Public
+License, version 3 or any later version.
+
 The muparser tree code (src/contrib/muparser), excluding the
 CMakeLists.txt file, is copyright (C) 2011 Ingo Berg and licensed under
 the MIT License.
@@ -23,18 +28,19 @@ the MIT License.
 The nanoflann tree code (src/contrib/nanoflann) is copyright (C) Marius Muja,
 David G. Lowe and Jose Luis Blanco and licensed under the the BSD License.
 
-The nlopt tree code (src/contrib/nlopt) is copyright (C) Massachusetts
-Institute of Technology and and other contributors and licensed under the terms
-provided in src/contrib/nlopt.
+The subplex optimization code
+(src/neper_t/net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_minimize/net_tess_opt_comp_minimize_subplex)
+is derived from NLopt, copyright (C) Massachusetts Institute of Technology and
+other contributors, and licensed under the terms provided in its files.
 
 The openGJK tree code (src/contrib/openGJK) is copyright (C) Mattia Montanari
 and licensed under the terms of the GNU General Public License, version 3 or
 any later version.
 
-The scotch tree code (src/contrib/scotch) is copyright (C)
-2004,2007,2008,2010,2011 ENSEIRB, INRIA & CNRS and licensed under the terms of
-the the CeCILL-C license under French law and abiding by the rules of
-distribution of free software.
+The scotch tree code (src/contrib/scotch) is copyright (C) 2004-2026 IPB,
+Universite de Bordeaux, INRIA & CNRS and licensed under the terms of the
+CeCILL-C license under French law and abiding by the rules of distribution of
+free software (see src/contrib/scotch/doc).
 
 The tinycolormap tree code (src/contrib/tinycolormap) is copyright (C) 2018
 Yuki Koyama and licensed under the terms provided in src/contrib/tinycolormap.

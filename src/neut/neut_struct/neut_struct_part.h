@@ -12,8 +12,6 @@ extern "C"
 
   struct PART
   {
-    char *mode;			// partitioning or mapping
-    char *mapping;		// mapping string or architecture file
     int qty;			// number of partitions
 
     int *node_parts;		/* new node numbers */

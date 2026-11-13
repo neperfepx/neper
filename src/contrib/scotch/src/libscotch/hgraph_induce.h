@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,6 +43,8 @@
 /**                                 to   : 22 dec 2002     **/
 /**                # Version 6.0  : from : 05 apr 2018     **/
 /**                                 to   : 05 apr 2018     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -50,9 +52,9 @@
 **  The function prototypes.
 */
 
-#ifdef HGRAPH_INDUCE
+#ifdef SCOTCH_HGRAPH_INDUCE
 static int                  hgraphInduce2       (const Hgraph * const, Gnum * const, Hgraph * const, const Gnum, Gnum * const);
 static void                 hgraphInduce2L      (const Hgraph * const, Gnum * const, Hgraph * const);
 static void                 hgraphInduce2U      (const Hgraph * const, Gnum * const, Hgraph * const);
 static Gnum                 hgraphInduce3       (const Hgraph * restrict const, const Gnum, const Gnum * restrict const);
-#endif /* HGRAPH_INDUCE */
+#endif /* SCOTCH_HGRAPH_INDUCE */

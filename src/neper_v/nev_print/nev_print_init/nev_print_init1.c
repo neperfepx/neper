@@ -24,7 +24,6 @@ nev_print_init (struct IN_V In, struct PRINT *pPrint, struct PF *pPf,
     for (i = 0; i < (*pPrint).inputqty; i++)
       ut_string_string (Points[i].Name, (*pPrint).inputs + i);
   }
-  ut_string_string (In.colormode, &(*pPrint).colormode);
 
   if (strcmp (In.imageformat, "vtk"))
   {
@@ -39,9 +38,9 @@ nev_print_init (struct IN_V In, struct PRINT *pPrint, struct PF *pPf,
 
     for (i = 0; i < *pSQty; i++)
     {
-      nev_print_init_data_nodes (In, *pPrint, (*pSNodes)[i], crysym, (*pSNodes)[i].NodeQty,
+      nev_print_init_data_nodes (In, (*pSNodes)[i], crysym, (*pSNodes)[i].NodeQty,
                                  (*pSNodeData) + i);
-      nev_print_init_data_mesh (In, *pPrint, Nodes, (*pSMesh)[i][2], crysym, 1, Mesh[3].ElsetQty,
+      nev_print_init_data_mesh (In, Nodes, (*pSMesh)[i][2], crysym, 1, Mesh[3].ElsetQty,
                                 "elt", 3, (*pSMeshData)[i][2]);
     }
 
@@ -55,12 +54,12 @@ nev_print_init (struct IN_V In, struct PRINT *pPrint, struct PF *pPf,
   }
 
   else
-    nev_print_init_data_nodes (In, *pPrint, Nodes, crysym, Nodes.NodeQty, pNodeData);
+    nev_print_init_data_nodes (In, Nodes, crysym, Nodes.NodeQty, pNodeData);
 
   if (!strcmp (In.space, "pf") || !strcmp (In.space, "ipf"))
     nev_print_init_pf (In, Tess, Tesr, Points, PointQty, pPf);
   else if (!strncmp (In.space, "rodrigues", 9))
-    nev_print_init_ori (In, Tess, Tesr, pSim, pOri);
+    nev_print_init_ori (In, Tess, Tesr, Points, PointQty, pSim, pOri);
 
   ut_free_1d_char (&crysym);
 

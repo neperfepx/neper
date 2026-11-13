@@ -23,6 +23,16 @@ nev_print_data_nodes (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes,
 
   neut_data_datastring_type_value ("nodes", attribute, datastring, &datatype, &datavalue);
 
+  // radius: `default' variable
+  if (!strcmp (attribute, "rad") && datavalue)
+  {
+    char *tmp = NULL;
+
+    nev_print_rad_default (datavalue, nev_print_nodes_defrad ((*pNodes).NodeQty), &tmp);
+    ut_string_string (tmp, &datavalue);
+    ut_free_1d_char (&tmp);
+  }
+
   if (!strcmp (attribute, "colscheme"))
     ut_string_string (datastring, &(*pData).ColScheme);
 
@@ -47,6 +57,8 @@ nev_print_data_nodes (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes,
 
   ut_free_1d_char (&datatype);
   ut_free_1d_char (&datavalue);
+
+  neut_datainput_free (&DataInput);
 
   return;
 }

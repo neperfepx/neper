@@ -75,7 +75,13 @@ neut_oopt_finalize (struct OOPT *pOOpt)
 void
 neut_oopt_free (struct OOPT *pOOpt)
 {
-  (void) pOOpt;
+  ut_fct_free (&(*pOOpt).thetafct);
+  ut_free_1d_int (&(*pOOpt).fixori);
+  ut_free_1d_char (&(*pOOpt).crysym);
+  ut_free_1d_char (&(*pOOpt).orioptistop);
+  ut_free_1d_char (&(*pOOpt).orioptineigh);
+  ut_free_1d_char (&(*pOOpt).logvar);
+  ut_free_1d_char (&(*pOOpt).logval);
 
   return;
 }

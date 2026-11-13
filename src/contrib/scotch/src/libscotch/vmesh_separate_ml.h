@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,6 +43,8 @@
 /**                                 to   : 31 aug 2005     **/
 /**                # Version 6.0  : from : 31 may 2018     **/
 /**                                 to   : 31 may 2018     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -64,10 +66,10 @@ typedef struct VmeshSeparateMlParam_ {
 **  The function prototypes.
 */
 
-#ifdef VMESH_SEPARATE_ML
+#ifdef SCOTCH_VMESH_SEPARATE_ML
 static int                  vmeshSeparateMlCoarsen (const Vmesh * restrict const, Vmesh * restrict const, Gnum * restrict * const, const VmeshSeparateMlParam * const);
 static int                  vmeshSeparateMlUncoarsen (Vmesh * const, const Vmesh * const, const Gnum * restrict const);
 static int                  vmeshSeparateMl2    (Vmesh * const, const VmeshSeparateMlParam * const);
-#endif /* VMESH_SEPARATE_ML */
+#endif /* SCOTCH_VMESH_SEPARATE_ML */
 
 int                         vmeshSeparateMl     (Vmesh * const, const VmeshSeparateMlParam * const);

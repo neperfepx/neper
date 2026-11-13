@@ -27,19 +27,14 @@ struct OL_SET
 };
 typedef struct OL_SET OL_SET;
 
-extern void ol_set_mean (struct OL_SET, double *);
-extern void ol_set_mean_ref (struct OL_SET, double *, double *);
-extern int ol_set_mean_iter (struct OL_SET, double *);
-extern int ol_set_mean_iter_ref (struct OL_SET, double *, double *);
+extern int ol_set_mean (struct OL_SET, int, double *);
+extern int ol_set_mean_ref (struct OL_SET, double *, int, double *);
 
 extern void ol_set_zero (struct OL_SET*);
 extern struct OL_SET ol_set_alloc (size_t, char*);
 extern void ol_set_free (struct OL_SET*);
-extern int ol_set_fscanf (FILE *, struct OL_SET *, char*);
-extern int ol_set_fscanf_sample (FILE *, double, struct OL_SET *, char*);
-extern int ol_set_fscanf_sample_nb (FILE *, int, struct OL_SET *, char*);
-extern int ol_set_fprintf (FILE *, struct OL_SET, char*);
 extern void ol_set_subset (struct OL_SET, double, struct OL_SET *);
+extern void ol_set_subset_qty (struct OL_SET, int, struct OL_SET *);
 extern void ol_set_orthotropic (struct OL_SET, struct OL_SET *);
 extern void ol_set_memcpy (struct OL_SET, struct OL_SET*);
 
@@ -48,8 +43,6 @@ extern void ol_q_aniso_theta (double *, double **, double *);
 extern void ol_set_aniso_thetadistrib (struct OL_SET, double **, double,
 				       double **, double *, int *);
 
-extern void ol_set_sample (struct OL_SET, double, struct OL_SET *);
-extern void ol_set_sample_nb (struct OL_SET, int, struct OL_SET *);
 
 extern void ol_set_disori (struct OL_SET, double *, double *);
 extern int ol_set_filter (struct OL_SET, double, struct OL_SET *, double*, double*);

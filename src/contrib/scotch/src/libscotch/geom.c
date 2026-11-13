@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -42,14 +42,14 @@
 /**                                 to   : 21 dec 1998     **/
 /**                # Version 4.0  : from : 18 dec 2001     **/
 /**                                 to   : 26 nov 2003     **/
+/**                # Version 7.0  : from : 18 jan 2023     **/
+/**                                 to   : 18 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define GEOM
 
 #include "module.h"
 #include "common.h"
@@ -79,7 +79,7 @@ Geom * restrict const       geomptr)
 
 /* This routine frees a geometrical graph structure.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void

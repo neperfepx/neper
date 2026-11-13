@@ -1,4 +1,4 @@
-/* Copyright 2007-2010,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2007-2010,2018,2019,2021,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -45,20 +45,18 @@
 /**                                 to   : 01 jul 2008     **/
 /**                # Version 6.0  : from : 05 nov 2009     **/
 /**                                 to   : 31 may 2018     **/
+/**                # Version 6.1  : from : 23 nov 2021     **/
+/**                                 to   : 02 dec 2021     **/
+/**                # Version 7.0  : from : 23 aug 2019     **/
+/**                                 to   : 16 jan 2023     **/
 /**                                                        **/
 /************************************************************/
-
-#define WGRAPH_H
 
 /*
 **  The type and structure definitions.
 */
 
 /*+ The graph structure. +*/
-
-#ifndef ARCH_H
-typedef INT Anum;                                 /*+ Generic integer +*/
-#endif /* ARCH_H */
 
 typedef struct Wgraph_ {
   Graph                     s;                    /*+ Source graph                            +*/
@@ -69,7 +67,8 @@ typedef struct Wgraph_ {
   Gnum *                    compload;             /*+ Array of part loads                     +*/
   Gnum *                    compsize;             /*+ Array of part number of vertives        +*/
   Anum *                    parttax;              /*+ Part array; can be allocated separately +*/
-  Gnum                      levlnum;
+  INT                       levlnum;              /*+ Coarsening level                        +*/
+  Context *                 contptr;              /*+ Execution context                       +*/
 } Wgraph;
 
 /*+ The save graph structure. +*/
@@ -97,6 +96,7 @@ void                        wgraphExit          (Wgraph * const);
 int                         wgraphAlloc         (Wgraph * const);
 void                        wgraphZero          (Wgraph * const);
 int                         wgraphCheck         (const Wgraph * const);
+int                         wgraphCost          (Wgraph * const);
 
 int                         wgraphStoreInit     (const Wgraph * const, WgraphStore * const);
 void                        wgraphStoreExit     (WgraphStore * const);

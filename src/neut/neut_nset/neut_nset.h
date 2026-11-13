@@ -21,6 +21,10 @@ extern "C"
   extern void neut_nset_free (struct NSET *);
   extern void neut_nsets_inter (struct NSET NSet, int id1, int id2,
 				char **pname, int **pnodes, int *pnodeqty);
+  extern void neut_nset_renumber (struct NSET *NSet, int *old_new);
+  extern void neut_nset_rmempty (struct NSET *NSet);
+  extern void neut_nset_addeltnodes (struct NSET *NSet, struct NODES Nodes,
+				     struct MESH *Mesh);
 
 #endif				/* NEUT_NSET_H */
 

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2018,2021,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -45,14 +45,16 @@
 /**                                 to   : 15 apr 2010     **/
 /**                # Version 6.0  : from : 20 apr 2018     **/
 /**                                 to   : 25 apr 2018     **/
+/**                # Version 6.1  : from : 15 mar 2021     **/
+/**                                 to   : 15 mar 2021     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 01 apr 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -88,6 +90,18 @@ SCOTCH_Mesh * const         meshptr), \
 (meshptr))
 {
   SCOTCH_meshExit (meshptr);
+}
+
+/*
+**
+*/
+
+SCOTCH_FORTRAN (                      \
+MESHSIZEOF, meshsizeof, (             \
+int * const                 sizeptr), \
+(sizeptr))
+{
+  *sizeptr = SCOTCH_meshSizeof ();
 }
 
 /* When an input stream is built from the given
@@ -188,9 +202,37 @@ int * const                 revaptr),         \
  verttab, vendtab, velotab, vnlotab, vlbltab, \
  edgenbr, edgetab, revaptr))
 {
-  *revaptr = SCOTCH_meshBuild (meshptr, *velmnbr, *vnodnbr, *velmbas, *vnodbas,
+  *revaptr = SCOTCH_meshBuild (meshptr, *velmbas, *vnodbas, *velmnbr, *vnodnbr,
                                verttab, vendtab, velotab, vnlotab, vlbltab,
                                *edgenbr, edgetab);
+}
+
+/*
+**
+*/
+
+SCOTCH_FORTRAN (                              \
+MESHBUILDELEM, meshbuildelem, (               \
+SCOTCH_Mesh * const         meshptr,          \
+const SCOTCH_Num * const    velmbas,          \
+const SCOTCH_Num * const    vnodbas,          \
+const SCOTCH_Num * const    velmnbr,          \
+const SCOTCH_Num * const    vnodnbr,          \
+const SCOTCH_Num * const    verttab,          \
+const SCOTCH_Num * const    vendtab,          \
+const SCOTCH_Num * const    velotab,          \
+const SCOTCH_Num * const    vnlotab,          \
+const SCOTCH_Num * const    vlbltab,          \
+const SCOTCH_Num * const    edgenbr,          \
+const SCOTCH_Num * const    edgetab,          \
+int * const                 revaptr),         \
+(meshptr, velmbas, vnodbas, velmnbr, vnodnbr, \
+ verttab, vendtab, velotab, vnlotab, vlbltab, \
+ edgenbr, edgetab, revaptr))
+{
+  *revaptr = SCOTCH_meshBuildElem (meshptr, *velmbas, *vnodbas, *velmnbr, *vnodnbr,
+                                   verttab, vendtab, velotab, vnlotab, vlbltab,
+                                   *edgenbr, edgetab);
 }
 
 /*
@@ -255,10 +297,10 @@ SCOTCH_Num * const          degrnbr),                  \
   SCOTCH_meshData (meshptr, velmbas, vnodbas, velmnbr, vnodnbr,
                    &verttab, &vendtab, &velotab, &vnlotab, &vlbltab,
                    edgenbr, &edgetab, degrnbr);
-  *vertidx = (verttab - indxptr) + 1;             /* Add 1 since Fortran indices start at 1 */
-  *vendidx = (vendtab - indxptr) + 1;
-  *veloidx = (velotab != NULL) ? (velotab - indxptr) + 1 : *vertidx;
-  *vnloidx = (vnlotab != NULL) ? (vnlotab - indxptr) + 1 : *vertidx;
-  *vlblidx = (vlbltab != NULL) ? (vlbltab - indxptr) + 1 : *vertidx;
-  *edgeidx = (edgetab - indxptr) + 1;
+  *vertidx = (SCOTCH_Idx) (verttab - indxptr) + 1; /* Add 1 since Fortran indices start at 1 */
+  *vendidx = (SCOTCH_Idx) (vendtab - indxptr) + 1;
+  *veloidx = (velotab != NULL) ? (SCOTCH_Idx) (velotab - indxptr) + 1 : *vertidx;
+  *vnloidx = (vnlotab != NULL) ? (SCOTCH_Idx) (vnlotab - indxptr) + 1 : *vertidx;
+  *vlblidx = (vlbltab != NULL) ? (SCOTCH_Idx) (vlbltab - indxptr) + 1 : *vertidx;
+  *edgeidx = (SCOTCH_Idx) (edgetab - indxptr) + 1;
 }

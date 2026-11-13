@@ -4,132 +4,21 @@
 
 #include"neut_sim_fprintf_.h"
 
+// writing the definitions of the entities and results to the simulation
+// directory (the rest is given by the directory content)
 void
-neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
+neut_sim_fprintf (struct SIM Sim, char *mode)
 {
-  int i, j, qty;
-  char *oldfilename = ut_string_paste (dir, "/report");
-  char *filename = ut_string_paste (dir, "/.sim");
-  FILE *file = ut_file_open (filename, mode);
-
-  if (ut_file_exist (oldfilename))
-    remove (oldfilename);
-
-  fprintf (file, "***sim\n");
-  fprintf (file, " **format\n");
-  fprintf (file, "   1.1\n");
-  fprintf (file, " **input\n");
-  if (Sim.tess)
-    fprintf (file, "  *tess\n   %s\n", Sim.tess);
-  if (Sim.tesr)
-    fprintf (file, "  *tesr\n   %s\n", Sim.tesr);
-  if (Sim.msh)
-    fprintf (file, "  *msh\n   %s\n", Sim.msh);
-  if (Sim.bcs)
-    fprintf (file, "  *bcs\n   %s\n", Sim.msh);
-  if (Sim.ori)
-    fprintf (file, "  *ori\n   %s\n", Sim.msh);
-  if (Sim.opt)
-    fprintf (file, "  *opt\n   %s\n", Sim.msh);
-  if (Sim.phase)
-    fprintf (file, "  *phase\n   %s\n", Sim.msh);
-  if (Sim.cfg)
-    fprintf (file, "  *cfg\n   %s\n", Sim.cfg);
-
-  fprintf (file, " **general\n");
-  fprintf (file, "   %d %d %d %d %d\n",
-                 Sim.CellQty, Sim.NodeQty, Sim.EltQty, Sim.ElsetQty,
-                 Sim.PartQty);
-  if (Sim.OriDes)
-  {
-    fprintf (file, "  *orides\n");
-    fprintf (file, "   %s\n", Sim.OriDes);
-  }
+  int i, j;
 
   for (i = 0; i < Sim.EntityQty; i++)
   {
-    fprintf (file, " **entity %s\n", Sim.Entities[i]);
-
     if (!neut_sim_entity_internal (Sim.Entities[i]))
-    {
-      fprintf (file, "  *type\n");
-      fprintf (file, "   %s\n", Sim.EntityType[i]);
+      neut_sim_fprintf_entity (Sim, i, mode);
 
-      if (Sim.EntityMemberQty[i])
-      {
-        fprintf (file, "  *member\n");
-        fprintf (file, "   %d", Sim.EntityMemberQty[i]);
-        if (Sim.EntityMemberExpr[i])
-        {
-          for (j = 0; j < Sim.EntityMemberQty[i]; j++)
-            fprintf (file, " %s", Sim.EntityMemberExpr[i][j]);
-        }
-        fprintf (file, "\n");
-      }
-    }
-
-    if (Sim.EntityResQty[i])
-    {
-      fprintf (file, "  *result\n");
-      fprintf (file, "   %d\n  ", Sim.EntityResQty[i]);
-      if (Sim.EntityResQty[i])
-        for (j = 0; j < Sim.EntityResQty[i]; j++)
-        {
-          fprintf (file, " %s", Sim.EntityRes[i][j]);
-          if (Sim.EntityResExpr[i][j] && strlen (Sim.EntityResExpr[i][j])
-           && strcmp (Sim.EntityRes[i][j], Sim.EntityResExpr[i][j]))
-            fprintf (file, "%s%s", NEUT_SEP_DEP, Sim.EntityResExpr[i][j]);
-        }
-      fprintf (file, "\n");
-    }
+    for (j = 0; j < Sim.EntityResQty[i]; j++)
+      neut_sim_fprintf_res (Sim, i, j, mode);
   }
-
-  if (Sim.OriSpaceTess || Sim.OriSpaceMesh)
-  {
-    fprintf (file, " **orispace\n");
-
-    if (Sim.OriSpaceTess)
-    {
-      fprintf (file, "  *tess\n");
-      fprintf (file, "   %s\n", Sim.OriSpaceTess);
-    }
-
-    if (Sim.OriSpaceMesh)
-    {
-      fprintf (file, "  *mesh\n");
-      fprintf (file, "   %s\n", Sim.OriSpaceMesh);
-    }
-  }
-
-  if (Sim.StepQty > 0)
-  {
-    fprintf (file, " **step\n");
-    fprintf (file, "   %d\n", Sim.StepQty);
-
-    qty = ut_array_1d_int_valnb (Sim.StepState + 1, Sim.StepQty, 0);
-    if (qty)
-    {
-      fprintf (file, "  *printed\n");
-      fprintf (file, "   %d\n", Sim.StepQty - qty);
-      fprintf (file, "  ");
-      for (i = 1; i <= Sim.StepQty; i++)
-        if (!Sim.StepState[i])
-          fprintf (file, " %d", i);
-      fprintf (file, "\n");
-    }
-  }
-
-  if (Sim.RestartId || Sim.RestartFiles)
-  {
-    fprintf (file, " **restart\n");
-    fprintf (file, "   %d %d\n", Sim.RestartId, Sim.RestartFiles);
-  }
-
-  fprintf (file, "***end\n");
-
-  ut_file_close (file, filename, mode);
-  ut_free_1d_char (&oldfilename);
-  ut_free_1d_char (&filename);
 
   return;
 }
@@ -138,7 +27,6 @@ void
 neut_sim_fprintf_asy (char *dir, struct SIM Sim, char *mode)
 {
   int i, j, k;
-  char *oldfilename = ut_string_paste (dir, "/report");
   char *filename = NULL, *filename2 = NULL;
   if (strstr (dir, ".sim"))
   {
@@ -154,9 +42,6 @@ neut_sim_fprintf_asy (char *dir, struct SIM Sim, char *mode)
   char *command = ut_alloc_1d_char (strlen (filename) + 100);
   FILE *file = ut_file_open (filename, "W");
   ut_file_openmessage (filename2, mode);
-
-  if (ut_file_exist (oldfilename))
-    remove (oldfilename);
 
   fprintf (file, "\n");
   fprintf (file, "// A simple tree drawing module contributed by adarovsky\n");
@@ -328,7 +213,6 @@ neut_sim_fprintf_asy (char *dir, struct SIM Sim, char *mode)
   ut_file_close (file, filename, "W");
   ut_file_closemessage (filename2, mode);
 
-  ut_free_1d_char (&oldfilename);
   ut_free_1d_char (&filename);
   ut_free_1d_char (&filename2);
   ut_free_1d_char (&command);
@@ -378,20 +262,7 @@ neut_sim_verbose (struct SIM Sim)
   if (Sim.ElsetQty)
     ut_print_message (0, 3, "Elset number     : %d\n", Sim.ElsetQty);
 
-  if (Sim.PartQty)
-    ut_print_message (0, 3, "Partition number : %d\n", Sim.PartQty);
-
   ut_print_message (0, 3, "Step number      : %d\n", Sim.StepQty);
-
-  if (Sim.OriSpaceTess || Sim.OriSpaceMesh)
-  {
-    ut_print_message (0, 3, "Orientation space:");
-    if (Sim.OriSpaceTess)
-      printf (" %s", Sim.OriSpaceTess);
-    if (Sim.OriSpaceMesh)
-      printf (" %s", Sim.OriSpaceMesh);
-    printf ("\n");
-  }
 
   for (i = 0; i < Sim.EntityQty; i++)
     neut_sim_verbose_results (Sim.Entities[i], Sim.EntityRes[i], Sim.EntityResQty[i]);

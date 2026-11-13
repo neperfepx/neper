@@ -1,4 +1,4 @@
-/* Copyright 2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2019,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -42,14 +42,14 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 16 apr 2019     **/
 /**                                 to   : 25 apr 2019     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 21 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -65,12 +65,12 @@
 /*                                     */
 /***************************************/
 
-/*+ This function returns the smallest number
-*** of terminal domain included within the
-*** given domain.
-*** It returns:
-*** - SCOTCH_Num  : in all cases.
-+*/
+/* This function returns the smallest number
+** of terminal domain included within the
+** given domain.
+** It returns:
+** - SCOTCH_Num  : in all cases.
+*/
 
 SCOTCH_Num
 SCOTCH_archDomNum (
@@ -80,13 +80,13 @@ const SCOTCH_ArchDom * const  domnptr)
   return (archDomNum ((Arch * const) archptr, (const ArchDom * const) domnptr));
 }
 
-/*+ This function computes the terminal domain
-*** associated with the given terminal number.
-*** It returns:
-*** - 0  : if label is valid and domain has been updated.
-*** - 1  : if label is invalid.
-*** - 2  : on error.
-+*/
+/* This function computes the terminal domain
+** associated with the given terminal number.
+** It returns:
+** - 0  : if label is valid and domain has been updated.
+** - 1  : if label is invalid.
+** - 2  : on error.
+*/
 
 int
 SCOTCH_archDomTerm (
@@ -97,12 +97,12 @@ const SCOTCH_Num            domnnum)
   return (archDomTerm ((Arch * const) archptr, (ArchDom * const) domnptr, domnnum));
 }
 
-/*+ This function returns the number
-*** of elements in the given domain.
-*** It returns:
-*** - >0  : size of the domain.
-*** - 0   : on error.
-+*/
+/* This function returns the number
+** of elements in the given domain.
+** It returns:
+** - >0  : size of the domain.
+** - 0   : on error.
+*/
 
 SCOTCH_Num
 SCOTCH_archDomSize (
@@ -112,12 +112,12 @@ const SCOTCH_ArchDom * const  domnptr)
   return (archDomSize ((Arch * const) archptr, (const ArchDom * const) domnptr));
 }
 
-/*+ This function returns the weight
-*** of the given domain.
-*** It returns:
-*** - >0  : weight of the domain.
-*** - 0   : on error.
-+*/
+/* This function returns the weight
+** of the given domain.
+** It returns:
+** - >0  : weight of the domain.
+** - 0   : on error.
+*/
 
 SCOTCH_Num
 SCOTCH_archDomWght (
@@ -127,12 +127,12 @@ const SCOTCH_ArchDom * const  domnptr)
   return (archDomWght ((Arch * const) archptr, (const ArchDom * const) domnptr));
 }
 
-/*+ This function yields the average
-*** distance between two domains.
-*** It returns:
-*** - !-1  : distance between subdomains.
-*** - -1   : on error.
-+*/
+/* This function yields the average
+** distance between two domains.
+** It returns:
+** - !-1  : distance between subdomains.
+** - -1   : on error.
+*/
 
 SCOTCH_Num
 SCOTCH_archDomDist (
@@ -143,13 +143,13 @@ const SCOTCH_ArchDom * const  dom1ptr)
   return (archDomDist ((Arch * const) archptr, (const ArchDom * const) dom0ptr, (const ArchDom * const) dom1ptr));
 }
 
-/*+ This routine fills the contents of the
-*** given domain with the biggest domain
-*** of the given target architecture.
-*** It returns:
-*** - 0   : if domain could be created.
-*** - !0  : on error.
-+*/
+/* This routine fills the contents of the
+** given domain with the biggest domain
+** of the given target architecture.
+** It returns:
+** - 0   : if domain could be created.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_archDomFrst (
@@ -159,15 +159,15 @@ SCOTCH_ArchDom * const      domnptr)
   return (archDomFrst ((Arch * const) archptr, (ArchDom * const) domnptr));
 }
 
-/*+ This function tries to split a domain into
-*** two subdomains. The two subdomains are created
-*** so that subdomain 0 has same T_domNum as
-*** original domain.
-*** It returns:
-*** - 0  : if bipartitioning succeeded.
-*** - 1  : if bipartitioning could not be performed.
-*** - 2  : on error.
-+*/
+/* This function tries to split a domain into
+** two subdomains. The two subdomains are created
+** so that subdomain 0 has same T_domNum as
+** original domain.
+** It returns:
+** - 0  : if bipartitioning succeeded.
+** - 1  : if bipartitioning could not be performed.
+** - 2  : on error.
+*/
 
 int
 SCOTCH_archDomBipart (

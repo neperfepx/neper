@@ -4,10 +4,14 @@
 
 #include "nem_readmesh_.h"
 
-void
-nem_readmesh (char *filename, struct NODES *pNodes, struct MESH *Mesh, int *ptopology)
+// Returns 1 if the nsets of the mesh are known (recorded in NSet, possibly
+// none), and 0 otherwise
+int
+nem_readmesh (char *filename, struct NODES *pNodes, struct MESH *Mesh, struct NSET *NSet,
+              int *ptopology)
 {
-  int i;
+  int i, nsetstatus = 0;
+  struct NSET NSetIn;
   FILE *file = NULL;
   char *filetype = NULL;
 
@@ -32,9 +36,25 @@ nem_readmesh (char *filename, struct NODES *pNodes, struct MESH *Mesh, int *ptop
   if (strcmp (filetype, "gmsh:msh") == 0)
   {
     file = ut_file_open (meshname, "r");
+    // qty = -1 if the file contains no nsets
+    neut_nset_set_zero (&NSetIn);
+    NSetIn.qty = -1;
     neut_mesh_fscanf_msh (file, pNodes, Mesh, Mesh + 1, Mesh + 2, Mesh + 3,
-                          Mesh + 4, ptopology);
+                          Mesh + 4, Mesh + 5, NSet ? &NSetIn : NULL, ptopology);
     ut_file_close (file, meshname, "r");
+
+    if (NSet && NSetIn.qty >= 0)
+    {
+      nsetstatus = 1;
+      nem_readmesh_nsets (NSetIn, neut_mesh_array_dim (Mesh), NSet);
+      neut_nset_rmempty (NSet);
+      neut_nset_free (&NSetIn);
+    }
+
+    // no nsets in a periodic mesh: no boundary, hence no nsets (a mesh with
+    // a boundary has nsets)
+    else if (NSet && (*pNodes).PerNodeQty > 0)
+      nsetstatus = 1;
   }
   else if (strcmp (filetype, "zset:geof") == 0)
   {
@@ -65,7 +85,9 @@ nem_readmesh (char *filename, struct NODES *pNodes, struct MESH *Mesh, int *ptop
   }
 
   ut_free_1d_char (&filetype);
+  ut_free_1d_char (&meshname);
+  ut_free_1d_char (&nodename);
   ut_free_2d_char (&list, qty);
 
-  return;
+  return nsetstatus;
 }

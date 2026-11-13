@@ -10,7 +10,11 @@ extern "C"
 #ifndef NEUT_SIM_FSCANF_H
 #define NEUT_SIM_FSCANF_H
 
-  extern void neut_sim_fscanf (char *, struct SIM*, char *mode);
+  /// reads a simulation directory from its content
+  extern void neut_sim_fscanf (char *dir, struct SIM *pSim);
+
+  /// returns 0 and the step if file is <res>.step<step>, -1 otherwise
+  extern int neut_sim_fscanf_steps_file (char *res, char *file, int *pstep);
 
 #endif				/* NEUT_SIM_FSCANF_H */
 

@@ -27,10 +27,14 @@ nem_meshing_2d_face_mesh_gmsh_boundary (struct TESS Tess, struct NODES Nodes,
 void
 nem_meshing_2d_face_mesh_gmsh_proj (struct TESS Tess, struct NODES Nodes,
                                     int face, struct MESHPARA MeshPara,
-                                    int *bnodes, double ***pbnodecoos,
-                                    double **pbnodecls, int bnodeqty)
+                                    int *bnodes, double ***pbnodecoos, int bnodeqty,
+                                    int *pfacttype, double *factparms)
 {
-  int i, j;
+  int i;
+
+  // (no mesh size factor, unless stated otherwise)
+  (*pfacttype) = NEM_GMSH_SIZEFACT_NONE;
+  ut_array_1d_zero (factparms, NEM_GMSH_SIZEFACT_PARMQTY);
 
   if (!strcmp (MeshPara.face_op[face], "noproj"))
     return;
@@ -43,76 +47,29 @@ nem_meshing_2d_face_mesh_gmsh_proj (struct TESS Tess, struct NODES Nodes,
                                      MeshPara.face_eq[face],
                                      (*pbnodecoos)[i]);
 
+  // stereographic projection (conformal) onto the tangent plane at the
+  // middle of the face, which scales the lengths by a factor (see
+  // nem_meshing_2d_face_mesh_gmsh_sph_stereo)
   else if (!strcmp (MeshPara.face_op[face], "sphereproj"))
   {
-    double *uvect = ut_alloc_1d (3);
-    double *c = Tess.DomFaceParms[Tess.FaceDom[face][1]];       // centre
-
-    (*pbnodecls) = ut_alloc_1d (bnodeqty);
-
-    for (i = 0; i < bnodeqty; i++)
-    {
-      ut_space_points_uvect (c, (*pbnodecoos)[i], uvect);
-      ut_space_point_dir_plane_proj ((*pbnodecoos)[i], uvect,
-                                     MeshPara.face_eq[face],
-                                     (*pbnodecoos)[i]);
-    }
-
-    // increasing cl if needed to make sure 2d meshing is ok at the boundary
-    for (i = 0; i < bnodeqty; i++)
-    {
-      int bef, aft;
-      bef = ut_array_rotpos (0, bnodeqty - 1, i, -1);
-      aft = ut_array_rotpos (0, bnodeqty - 1, i, 1);
-
-      (*pbnodecls)[i] = Nodes.NodeCl[bnodes[i]];
-      (*pbnodecls)[i] =
-        ut_num_max ((*pbnodecls)[i],
-                    1.01 * ut_space_dist ((*pbnodecoos)[bef],
-                                          (*pbnodecoos)[i]));
-      (*pbnodecls)[i] =
-        ut_num_max ((*pbnodecls)[i],
-                    1.01 * ut_space_dist ((*pbnodecoos)[aft],
-                                          (*pbnodecoos)[i]));
-    }
-
-    ut_free_1d (&uvect);
+    (*pfacttype) = NEM_GMSH_SIZEFACT_STEREO;
+    nem_meshing_2d_face_mesh_gmsh_sph_stereo (Tess, face, Nodes, bnodes, bnodeqty,
+                                              *pbnodecoos, factparms);
   }
 
+  // unrolling the face onto its tangent plane (at the middle of the face),
+  // which preserves the lengths
   else if (!strcmp (MeshPara.face_op[face], "cylinderproj"))
+    nem_meshing_2d_face_mesh_gmsh_cyl_unroll (Tess, face, Nodes, bnodes, bnodeqty,
+                                              *pbnodecoos);
+
+  // conformal unrolling of the face onto a plane, which scales the lengths by
+  // a factor (see nem_meshing_2d_face_mesh_gmsh_tor_unroll)
+  else if (!strcmp (MeshPara.face_op[face], "torusproj"))
   {
-    int domface = Tess.FaceDom[face][1];
-    double d, r = Tess.DomFaceParms[domface][6];
-    double *tmp = ut_alloc_1d (3);
-    double *plane = ut_alloc_1d (4);
-    double *proj = ut_alloc_1d (3);
-    double *uvect = ut_alloc_1d (3);
-
-    ut_vector_vectprod (MeshPara.face_eq[face] + 1,
-                        Tess.DomFaceParms[domface] + 3, tmp);
-
-    ut_space_point_normal_plane (Tess.DomFaceParms[domface], tmp, plane);
-
-    for (i = 0; i < bnodeqty; i++)
-    {
-      ut_space_point_dir_plane_proj ((*pbnodecoos)[i],
-                                     MeshPara.face_eq[face] + 1,
-                                     MeshPara.face_eq[face],
-                                     (*pbnodecoos)[i]);
-
-      ut_space_point_plane_proj ((*pbnodecoos)[i], plane, proj);
-      ut_space_points_uvect ((*pbnodecoos)[i], proj, uvect);
-      d = ut_space_dist ((*pbnodecoos)[i], proj);
-      d = r * asin (d / r);
-
-      for (j = 0; j < 3; j++)
-        (*pbnodecoos)[i][j] = proj[j] - d * uvect[j];
-    }
-
-    ut_free_1d (&proj);
-    ut_free_1d (&plane);
-    ut_free_1d (&tmp);
-    ut_free_1d (&uvect);
+    (*pfacttype) = NEM_GMSH_SIZEFACT_TORUS;
+    nem_meshing_2d_face_mesh_gmsh_tor_unroll (Tess, face, Nodes, bnodes, bnodeqty,
+                                              *pbnodecoos, factparms);
   }
 
   else
@@ -176,19 +133,19 @@ nem_meshing_2d_face_mesh_gmsh_backproj (struct TESS Tess, struct NODES RNodes,
     // in other cases (face not flat), we do nothing
   }
 
+  // inverse stereographic projection
   else if (!strcmp (MeshPara.face_op[face], "sphereproj"))
-  {
-    double *c = Tess.DomFaceParms[domface];     // centre
-    double r = Tess.DomFaceParms[domface][3];   // radius
+    nem_meshing_2d_face_mesh_gmsh_sph_unstereo (Tess, face, Nodes, bnodes, bnodeqty, pN);
 
-    for (i = 1; i <= (*pN).NodeQty; i++)
-      ut_space_point_sphere_proj ((*pN).NodeCoo[i], c, r, (*pN).NodeCoo[i]);
-  }
-
+  // rolling the face back (inverse of the unrolling)
   else if (!strcmp (MeshPara.face_op[face], "cylinderproj"))
     for (i = 1; i <= (*pN).NodeQty; i++)
-      ut_space_point_cyl_proj ((*pN).NodeCoo[i], Tess.DomFaceParms[domface],
-                               Tess.DomFaceParms[domface] + 3, Tess.DomFaceParms[domface][6],(*pN).NodeCoo[i]);
+      nem_meshing_2d_face_mesh_gmsh_cyl_roll (Tess, face, Nodes, bnodes, bnodeqty,
+                                              (*pN).NodeCoo[i], (*pN).NodeCoo[i]);
+
+  // rolling the face back (inverse of the unrolling)
+  else if (!strcmp (MeshPara.face_op[face], "torusproj"))
+    nem_meshing_2d_face_mesh_gmsh_tor_roll (Tess, face, Nodes, bnodes, bnodeqty, pN);
 
   else
     abort ();
@@ -202,38 +159,186 @@ nem_meshing_2d_face_mesh_gmsh_backproj (struct TESS Tess, struct NODES RNodes,
   return;
 }
 
+// Finding the boundary nodes of a face mesh (in the projection plane), from
+// their coordinates
 void
-nem_meshing_2d_face_mesh_gmsh_writeboundary (struct NODES Nodes, int *bnodes,
-                                             double **bnodecoos,
-                                             double *bnodecls, int bnodeqty,
-                                             FILE * file)
+nem_meshing_2d_face_mesh_gmsh_bnodes (struct NODES N, struct MESH *pM,
+                                      double **bnodecoos, int bnodeqty,
+                                      int *lbnodes)
 {
-  int i, node;
+  int i, j, pos, *nodes1d = NULL, nodeqty1d;
+  double min_dist_max = 0, *dists = NULL;
+  struct MESH M1D;
 
-  // printing face nodes
+  neut_mesh_set_zero (&M1D);
+
+  // reconstructing boundary mesh (node numbers refer to N)
+  neut_mesh_init_nodeelts (pM, N.NodeQty);
+  neut_mesh2d_mesh1d (N, *pM, &M1D, NULL, NULL, NULL, 0);
+  neut_mesh_nodes (M1D, &nodes1d, &nodeqty1d);
+
+  dists = ut_alloc_1d (nodeqty1d);
   for (i = 0; i < bnodeqty; i++)
   {
-    node = bnodes[i];
+    for (j = 0; j < nodeqty1d; j++)
+      dists[j] = ut_space_dist (bnodecoos[i], N.NodeCoo[nodes1d[j]]);
 
-    fprintf (file, "Point(%d) = {" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT ","  REAL_PRINT_FORMAT "};\n", i + 1,
-             bnodecoos[i][0], bnodecoos[i][1], bnodecoos[i][2],
-             bnodecls ? bnodecls[i] : Nodes.NodeCl[node]);
+    pos = ut_array_1d_min_index (dists, nodeqty1d);
+    lbnodes[i] = nodes1d[pos];
+    min_dist_max = ut_num_max (min_dist_max, dists[pos]);
   }
 
-  for (i = 1; i <= bnodeqty; i++)
-    fprintf (file, "Line(%d) = {%d,%d} ;\n", i, i,
-             ut_array_rotpos (1, bnodeqty, i, 1));
+  // the boundary mesh is passed to Gmsh and kept unchanged
+  if (bnodeqty != nodeqty1d || min_dist_max > 1e-9)
+  {
+    printf ("\n");
+    printf ("bnodeqty = %d\n", bnodeqty);
+    printf ("nodeqty1d = %d\n", nodeqty1d);
+    printf ("min_dist_max = %f\n", min_dist_max);
+    ut_print_neperbug ();
+  }
 
-  fprintf (file, "Line Loop(1) = {");
+  neut_mesh_free (&M1D);
+  ut_free_1d (&dists);
+  ut_free_1d_int (&nodes1d);
 
-  for (i = 0; i < bnodeqty; i++)
-    fprintf (file, "%d%s", i + 1, i < bnodeqty - 1 ? "," : "};\n");
+  return;
+}
 
-  fprintf (file, "Plane Surface(1) = {1}; ");
-  fprintf (file, "Physical Surface(1) = {1};\n");
+// boundary nodes passed to Gmsh, with recombination: one in two, from a
+// vertex node (the others are the centres of the coarse boundary segments,
+// see nem_meshing); they are bnodecoos[offset + 2 i]
+void
+nem_meshing_2d_face_mesh_gmsh_coarse (struct TESS Tess, struct MESH *Mesh, int face,
+                                      int *bnodes, double **bnodecoos, double *cls,
+                                      int bnodeqty, int *poffset, double ***pgcoos,
+                                      double **pgcls, int *pgqty)
+{
+  int i, ver, node, pos = -1;
 
-  // fprintf (file, "Mesh.CharacteristicLengthMax = %f;\n", cl);
-  // above does not work on all architecture.
+  for (i = 1; i <= Tess.FaceVerQty[face] && pos == -1; i++)
+  {
+    ver = Tess.FaceVerNb[face][i];
+    node = Mesh[0].EltNodes[Mesh[0].Elsets[ver][1]][0];
+    pos = ut_array_1d_int_eltpos (bnodes, bnodeqty, node);
+  }
+
+  if (pos == -1 || bnodeqty % 2)
+    ut_print_neperbug ();
+
+  (*poffset) = pos % 2;
+  (*pgqty) = bnodeqty / 2;
+  (*pgcoos) = ut_alloc_2d (*pgqty, 3);
+  (*pgcls) = ut_alloc_1d (*pgqty);
+
+  for (i = 0; i < *pgqty; i++)
+  {
+    ut_array_1d_memcpy (bnodecoos[*poffset + 2 * i], 3, (*pgcoos)[i]);
+    (*pgcls)[i] = cls[*poffset + 2 * i];
+  }
+
+  return;
+}
+
+// splitting a (recombined) face mesh, of quad elts and tri elts (recorded
+// as quad elts of last node 0), into quad elts, as Gmsh does: a quad elt (0,
+// 1, 2, 3) of edge centres (01, 12, 23, 30) and centre c is split into (0,
+// 01, c, 30), (1, 12, c, 01), (2, 23, c, 12) and (3, 30, c, 23), and a tri
+// elt similarly into 3 quad elts.  The centres of the boundary edges are the
+// boundary nodes not passed to Gmsh (gcoos[i] = bnodecoos[offset + 2 i],
+// see nem_meshing_2d_face_mesh_gmsh_coarse).
+void
+nem_meshing_2d_face_mesh_gmsh_split (double **gcoos, int gqty, double **bnodecoos,
+                                     int bnodeqty, int offset, struct NODES *pN,
+                                     struct MESH *pM)
+{
+  int i, j, k, nn, centre, childqty, nodeqty = (*pN).NodeQty, *n = NULL;
+  int mids[4], *gpos = ut_alloc_1d_int (nodeqty + 1);
+  int **edgenodes = ut_alloc_1d_pint (nodeqty + 1);
+  int childnodeqty = 4 * (*pM).EltQty + 1;
+  int **childnodes = ut_alloc_2d_int (childnodeqty, 4);
+  double coo[3], dist, mindist;
+  int *elts = NULL;
+
+  // positions of the boundary nodes in gcoos
+  ut_array_1d_int_set (gpos + 1, nodeqty, -1);
+  for (k = 0; k < gqty; k++)
+  {
+    j = -1;
+    mindist = DBL_MAX;
+    for (i = 1; i <= nodeqty; i++)
+    {
+      dist = ut_space_dist (gcoos[k], (*pN).NodeCoo[i]);
+      if (dist < mindist)
+      {
+        mindist = dist;
+        j = i;
+      }
+    }
+    gpos[j] = k;
+  }
+
+  childqty = 0;
+  for (i = 1; i <= (*pM).EltQty; i++)
+  {
+    n = (*pM).EltNodes[i];
+    nn = n[3] ? 4 : 3;
+
+    for (j = 0; j < nn; j++)
+      mids[j] = nem_meshing_2d_face_mesh_gmsh_split_edgenode (gpos, gqty, bnodecoos,
+                                                              bnodeqty, offset, n[j],
+                                                              n[(j + 1) % nn], edgenodes,
+                                                              pN);
+
+    neut_nodes_bary (*pN, n, nn, coo, NULL);
+    centre = neut_nodes_addnode (pN, coo, -1);
+
+    for (j = 0; j < nn; j++)
+    {
+      childqty++;
+      childnodes[childqty][0] = n[j];
+      childnodes[childqty][1] = mids[j];
+      childnodes[childqty][2] = centre;
+      childnodes[childqty][3] = mids[(j + nn - 1) % nn];
+    }
+  }
+
+  neut_mesh_free (pM);
+  (*pM) = neut_mesh_alloc (2, "quad", 1, childqty, 0);
+  for (i = 1; i <= childqty; i++)
+    ut_array_1d_int_memcpy (childnodes[i], 4, (*pM).EltNodes[i]);
+
+  elts = ut_alloc_1d_int (childqty);
+  for (i = 0; i < childqty; i++)
+    elts[i] = i + 1;
+  neut_mesh_addelset (pM, elts, childqty);
+  neut_mesh_init_eltelset (pM, NULL);
+
+  ut_free_1d_int (&gpos);
+  ut_free_2d_int (&edgenodes, nodeqty + 1);
+  ut_free_2d_int (&childnodes, childnodeqty);
+  ut_free_1d_int (&elts);
+
+  return;
+}
+
+// Laplacian smoothing of a face mesh of quad elts, which is reverted if it
+// decreases the minimum scaled Jacobian of the elts
+void
+nem_meshing_2d_face_mesh_gmsh_smooth (struct MESH M, int *lbnodes, int bnodeqty,
+                                      struct NODES *pN)
+{
+  double sjmin, **coos = ut_alloc_2d ((*pN).NodeQty + 1, 3);
+
+  ut_array_2d_memcpy ((*pN).NodeCoo + 1, (*pN).NodeQty, 3, coos + 1);
+  sjmin = nem_meshing_2d_face_mesh_gmsh_sjmin (*pN, M);
+
+  neut_mesh_2d_laplaciansmooth (pN, M, lbnodes, bnodeqty);
+
+  if (nem_meshing_2d_face_mesh_gmsh_sjmin (*pN, M) < sjmin)
+    ut_array_2d_memcpy (coos + 1, (*pN).NodeQty, 3, (*pN).NodeCoo + 1);
+
+  ut_free_2d (&coos, (*pN).NodeQty + 1);
 
   return;
 }

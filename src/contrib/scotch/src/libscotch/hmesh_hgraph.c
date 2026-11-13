@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2019,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,6 +44,8 @@
 /**                                 to   : 10 sep 2007     **/
 /**                # Version 6.0  : from : 28 apr 2019     **/
 /**                                 to   : 28 apr 2019     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /**   NOTES      : # From a given halo mesh is created a   **/
 /**                  halo graph, such that all vertices of **/
@@ -67,8 +69,6 @@
 /*
 **  The defines and includes.
 */
-
-#define HMESH_HGRAPH
 
 #include "module.h"
 #include "common.h"

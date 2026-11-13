@@ -36,45 +36,33 @@ ol_p_alloc (void)
 }
 
 void
-ol_pole_free (int *pole)
+ol_pole_free (int **ppole)
 {
-  if (!pole)
-    return;
-  else
-    ut_free_1d_int (&pole);
+  ut_free_1d_int (ppole);
 
   return;
 }
 
 void
-ol_hpole_free (int *hpole)
+ol_hpole_free (int **phpole)
 {
-  if (!hpole)
-    return;
-  else
-    ut_free_1d_int (&hpole);
+  ut_free_1d_int (phpole);
 
   return;
 }
 
 void
-ol_vect_free (double *vect)
+ol_vect_free (double **pvect)
 {
-  if (!vect)
-    return;
-  else
-    ut_free_1d (&vect);
+  ut_free_1d (pvect);
 
   return;
 }
 
 void
-ol_p_free (double *p)
+ol_p_free (double **pp)
 {
-  if (!p)
-    return;
-  else
-    ut_free_1d (&p);
+  ut_free_1d (pp);
 
   return;
 }
@@ -116,7 +104,7 @@ int
 ol_hpole_fscanf (FILE * file, int *hpole)
 {
   return fscanf (file, "%d%d%d%d", &hpole[0], &hpole[1], &hpole[2],
-                 &hpole[3]);
+                 &hpole[3]) == 4;
 }
 
 int
@@ -137,7 +125,7 @@ ol_vect_fscanf (FILE * file, double *vect)
 
   status = fscanf (file, "%lf%lf%lf", vect, vect + 1, vect + 2);
 
-  return status == 3 ? 1 : -1;
+  return status == 3 ? 1 : 0;
 }
 
 int
@@ -156,7 +144,7 @@ ol_p_fscanf (FILE * file, double *p)
 
   status = fscanf (file, "%lf%lf", p, p + 1);
 
-  return status == 2 ? 1 : -1;
+  return status == 2 ? 1 : 0;
 }
 
 void
@@ -404,7 +392,7 @@ ol_g_pf_stproj_rad (double **g, double *vect, double *p)
 
   ol_vect_stproj_rad (tmp, p);
 
-  ol_vect_free (tmp);
+  ol_vect_free (&tmp);
 
   return;
 }
@@ -480,7 +468,7 @@ ol_g_ipf_stproj_rad (double **g, double *vect, double *p)
 
   ol_vect_stproj_rad (tmp, p);
 
-  ol_vect_free (tmp);
+  ol_vect_free (&tmp);
 
   return;
 }
@@ -592,9 +580,9 @@ ol_g_ipf_crysym_stproj_rad (double **g, double *vect, char *crysym, double *p)
   p[1] = beta;
 
   ut_free_1d (&tmp);
-  ol_g_free (gsym);
-  ol_vect_free (v);
-  ol_e_free (weight);
+  ol_g_free (&gsym);
+  ol_vect_free (&v);
+  ol_e_free (&weight);
 
   return;
 }
@@ -666,7 +654,7 @@ ol_stproj_vect (double *p, double *vect)
   ol_theta_deg2rad (pcpy[1], &(pcpy[1]));
   ol_stproj_vect_rad (pcpy, vect);
 
-  ol_p_free (pcpy);
+  ol_p_free (&pcpy);
 
   return;
 }
@@ -680,7 +668,7 @@ ol_eaproj_vect (double *p, double *vect)
   ol_theta_deg2rad (pcpy[1], &(pcpy[1]));
   ol_eaproj_vect_rad (pcpy, vect);
 
-  ol_p_free (pcpy);
+  ol_p_free (&pcpy);
 
   return;
 }
@@ -699,7 +687,7 @@ ol_stprojxy_vect (double *p, double *vect)
 
   ol_stproj_vect_rad (psh, vect);
 
-  ol_p_free (psh);
+  ol_p_free (&psh);
 
   return;
 }
@@ -718,26 +706,29 @@ ol_eaprojxy_vect (double *p, double *vect)
 
   ol_eaproj_vect_rad (psh, vect);
 
-  ol_p_free (psh);
+  ol_p_free (&psh);
 
   return;
 }
 
 // standard triangles are oriented in the same way for cubic and hexagonal symmetries
 int
-ol_vect_ipfweight (double *v, char *crysym, double *weight)
+ol_vect_ipfweight (double *vect, char *crysym, double *weight)
 {
+  double v[3];                  /* working copy (vect is not modified) */
   double *v1 = ol_vect_alloc ();
   double *v2 = ol_vect_alloc ();
   double *v3 = ol_vect_alloc ();
-  double *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
   double **g = ol_g_alloc ();
   double t, theta;
   int test = 0;
 
   ol_e_set_zero (weight);
 
-  if (crysym && !strcmp (crysym, "cubic"))
+  ut_array_1d_memcpy (vect, 3, v);
+
+  if (crysym && (!strcmp (crysym, "cubic") || !strcmp (crysym, "m-3m")))
   {
     if (v[0] > v[1] && v[0] < v[1] + sqrt (OL_EPS))
     {
@@ -751,11 +742,12 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
     if (test != -1)
     {
       /* calculating v1 = rotated vector to (001)-(011) about (01-1) */
-      ol_r_set_this (r, 0, 1 / sqrt (2), -1 / sqrt (2));
+      ol_r_set_this (rtheta, 0, 1 / sqrt (2), -1 / sqrt (2));
 
       ol_theta_rad2deg (atan2 (sqrt (2) * v[0], (v[1] + v[2])), &theta);
 
-      ol_rtheta_g (r, theta, g);
+      rtheta[3] = theta;
+      ol_rtheta_g (rtheta, g);
       ol_g_vect_vect (g, v, v1);
   /* computing theta3 = angle to reach segment (001)-(111) by rotation
      * about r (theta3 has a negative value)
@@ -783,7 +775,8 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
 
     ol_theta_rad2deg (2 * atan (t), &thetab);
 
-    ol_rtheta_g (r, thetab, g);
+    rtheta[3] = thetab;
+    ol_rtheta_g (rtheta, g);
     ol_g_vect_vect (g, v, v1b);
 
     w = 1 - acos (v1[2]) / (OL_PI / 4);
@@ -804,7 +797,7 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
     {
       /* calculating v2 = rotated vector to (001)-(011) about (-110) */
 
-      ol_r_set_this (r, -1 / sqrt (2), 1 / sqrt (2), 0);
+      ol_r_set_this (rtheta, -1 / sqrt (2), 1 / sqrt (2), 0);
 
       if (fabs (v[1]) < OL_EPS)
         t = -v[0] / (sqrt (2) * v[2]);
@@ -815,7 +808,8 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
 
       ol_theta_rad2deg (2 * atan (t), &theta);
 
-      ol_rtheta_g (r, -theta, g);
+      rtheta[3] = -theta;
+      ol_rtheta_g (rtheta, g);
       ol_g_vect_vect (g, v, v2);
       weight[1] = ut_num_acos (v2[2]) / (OL_PI / 4);
       if (weight[1] < 0 && weight[1] > -OL_EPS)
@@ -831,11 +825,12 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
       /* rotation to (001)--(111) */
       /* calculating v3 = rotated vector to (011)-(111) about (-100) */
 
-      ol_r_set_this (r, -1, 0, 0);
+      ol_r_set_this (rtheta, -1, 0, 0);
 
       ol_theta_rad2deg (atan2 (v[1] - v[2], v[1] + v[2]), &theta);
 
-      ol_rtheta_g (r, theta, g);
+      rtheta[3] = theta;
+      ol_rtheta_g (rtheta, g);
       ol_g_vect_vect (g, v, v3);
 
       if (ut_array_1d_norm (weight, 2) < OL_EPS)
@@ -854,17 +849,17 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
     }
   }
 
-  else if (crysym && !strcmp (crysym, "hexagonal"))
+  else if (crysym && (!strcmp (crysym, "hexagonal") || !strcmp (crysym, "6/mmm")))
   {
     int i;
-    double **g = ol_g_alloc ();
+    double **gsym = ol_g_alloc ();
     double *p = ol_p_alloc ();
 
     int found = 0;
     for (i = 1; i <= 12; i++)
     {
-      ol_g_crysym (NULL, "hexagonal", i, g);
-      ol_g_vect_vect (g, v, v1);
+      ol_g_crysym (NULL, "hexagonal", i, gsym);
+      ol_g_vect_vect (gsym, v, v1);
 
       ol_vect_stproj (v1, p);
 
@@ -882,21 +877,21 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
     weight[1] = p[0] * p[1] / 30;
     weight[2] = p[0] * (1 - p[1] / 30);
 
-    ol_g_free (g);
-    ol_p_free (p);
+    ol_g_free (&gsym);
+    ol_p_free (&p);
   }
 
   else
   {
-    printf ("Crystal symmetry `%s' not supported.\n", crysym ? crysym : "NULL");
-    abort ();
+    ut_print_message (2, 0, "Crystal symmetry `%s' not supported.\n",
+                      crysym ? crysym : "NULL");
   }
 
-  ol_g_free (g);
-  ol_vect_free (v1);
-  ol_vect_free (v2);
-  ol_vect_free (v3);
-  ol_r_free (r);
+  ol_g_free (&g);
+  ol_vect_free (&v1);
+  ol_vect_free (&v2);
+  ol_vect_free (&v3);
+  ol_rtheta_free (&rtheta);
 
   return test;
 }
@@ -909,7 +904,7 @@ ol_q_pf_stproj (double *q, double *vect, double *p)
 
   ol_g_pf_stproj (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -922,7 +917,7 @@ ol_q_pf_stprojxy (double *q, double *vect, double *p)
 
   ol_g_pf_stprojxy (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -935,7 +930,7 @@ ol_q_pf_stproj_rad (double *q, double *vect, double *p)
 
   ol_g_pf_stproj_rad (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -948,7 +943,7 @@ ol_q_pf_eaproj (double *q, double *vect, double *p)
 
   ol_g_pf_eaproj (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -961,7 +956,7 @@ ol_q_pf_eaprojxy (double *q, double *vect, double *p)
 
   ol_g_pf_eaprojxy (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -974,7 +969,7 @@ ol_q_pf_eaproj_rad (double *q, double *vect, double *p)
 
   ol_g_pf_eaproj_rad (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -987,7 +982,7 @@ ol_q_ipf_stproj (double *q, double *vect, double *p)
 
   ol_g_ipf_stproj (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1000,7 +995,7 @@ ol_q_ipf_stprojxy (double *q, double *vect, double *p)
 
   ol_g_ipf_stprojxy (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1013,7 +1008,7 @@ ol_q_ipf_stproj_rad (double *q, double *vect, double *p)
 
   ol_g_ipf_stproj_rad (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1026,7 +1021,7 @@ ol_q_ipf_eaproj (double *q, double *vect, double *p)
 
   ol_g_ipf_eaproj (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1039,7 +1034,7 @@ ol_q_ipf_eaprojxy (double *q, double *vect, double *p)
 
   ol_g_ipf_eaprojxy (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1052,7 +1047,7 @@ ol_q_ipf_eaproj_rad (double *q, double *vect, double *p)
 
   ol_g_ipf_eaproj_rad (g, vect, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1065,7 +1060,7 @@ ol_q_ipf_crysym_stproj (double *q, double *vect, char *crysym, double *p)
 
   ol_g_ipf_crysym_stproj (g, vect, crysym, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1078,7 +1073,7 @@ ol_q_ipf_crysym_stprojxy (double *q, double *vect, char *crysym, double *p)
 
   ol_g_ipf_crysym_stprojxy (g, vect, crysym, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1091,7 +1086,7 @@ ol_q_ipf_crysym_stproj_rad (double *q, double *vect, char *crysym, double *p)
 
   ol_g_ipf_crysym_stproj_rad (g, vect, crysym, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1104,7 +1099,7 @@ ol_q_ipf_crysym_eaproj (double *q, double *vect, char *crysym, double *p)
 
   ol_g_ipf_crysym_eaproj (g, vect, crysym, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1117,7 +1112,7 @@ ol_q_ipf_crysym_eaprojxy (double *q, double *vect, char *crysym, double *p)
 
   ol_g_ipf_crysym_eaprojxy (g, vect, crysym, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1130,7 +1125,7 @@ ol_q_ipf_crysym_eaproj_rad (double *q, double *vect, char *crysym, double *p)
 
   ol_g_ipf_crysym_eaproj_rad (g, vect, crysym, p);
 
-  ol_g_free (g);
+  ol_g_free (&g);
 
   return;
 }
@@ -1144,7 +1139,7 @@ ol_ipf_g_stprojxy (double *p, double *vect, double **g)
 
   ol_vect_vect_g (OP, vect, g);
 
-  ol_vect_free (OP);
+  ol_vect_free (&OP);
 
   return;
 }
@@ -1156,6 +1151,91 @@ ol_ipf_q_stprojxy (double *p, double *vect, double *q)
 
   ol_ipf_g_stprojxy (p, vect, g);
   ol_g_q (g, q);
+
+  ol_g_free (&g);
+
+  return;
+}
+
+void
+ol_ipfweight_rgb (double *weight0, int *rgb)
+{
+  double weight[3];             /* working copy (weight0 is not modified) */
+  int i, j, k, max;
+  int **rgbp = ut_alloc_2d_int (3, 3);
+  double f;
+  double slope;
+  double *s = ol_e_alloc ();
+  int maxrgb;
+
+  f = 0.1;
+  slope = 3;
+  maxrgb = 255 * 0.8;
+
+  /* adjustment due to the difference in vertex angle */
+  s[0] = slope;
+  s[1] = slope;
+  s[2] = slope;
+
+  for (i = 0; i < 3; i++)
+    for (j = 0; j < 3; j++)
+      if (i == j)
+        rgbp[i][j] = (int) 255;
+      else
+        rgbp[i][j] = (int) (f / (1 + f) * 255.);
+
+  for (k = 0; k < 3; k++)
+    weight[k] = weight0[k];
+  for (k = 0; k < 3; k++)
+    weight[k] = (s[k] - 2) * weight[k] * weight[k] * weight[k]
+      + (3 - 2 * s[k]) * weight[k] * weight[k] + s[k] * weight[k];
+
+  for (i = 0; i < 3; i++)
+    rgb[i] = (int) (rgbp[i][0] * weight[0] + rgbp[i][1] * weight[1] + rgbp[i][2] * weight[2]);
+
+  max = ut_array_1d_int_max (rgb, 3);
+
+  for (i = 0; i < 3; i++)
+    rgb[i] = (int) ((double) rgb[i] * maxrgb / (double) max);
+
+  ut_free_2d_int (&rgbp, 3);
+  ol_e_free (&s);
+
+  return;
+}
+
+void
+ol_ipfrgb_legend (size_t xsize, size_t * pysize, char *crysym, int ****prgb)
+{
+  unsigned int i, j;
+  int k, test;
+  double *p = ol_p_alloc ();
+  double *v = ol_vect_alloc ();
+  double *weight = ol_e_alloc ();
+  double xmax = 0.414213562373;
+  double ymax = 0.366025403784;
+
+  (*pysize) = (size_t) ceil (xsize * (ymax / xmax));
+
+  (*prgb) = ut_alloc_3d_int (xsize, *pysize, 3);
+
+  for (i = 0; i < xsize; i++)
+    for (j = 0; j < *pysize; j++)
+    {
+      ol_p_set_this (p, ymax * (1 - (double) j / (*pysize - 1)),
+                     xmax * (double) i / (xsize - 1));
+      ol_stprojxy_vect (p, v);
+      test = ol_vect_ipfweight (v, crysym, weight);
+      if (test == 0)
+        ol_ipfweight_rgb (weight, (*prgb)[i][j]);
+      else
+        for (k = 0; k < 3; k++)
+          (*prgb)[i][j][k] = 255;
+    }
+
+  ol_p_free (&p);
+  ol_vect_free (&v);
+  ol_e_free (&weight);
 
   return;
 }

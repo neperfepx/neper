@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -34,6 +34,10 @@
 /* C LALR(1) parser skeleton written by Richard Stallman, by
    simplifying the original so-called "semantic" parser.  */
 
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
+
 /* All symbols defined below should begin with yy or YY, to avoid
    infringing on user name space.  This should be done even for local
    variables, as they might otherwise be expanded by user macros.
@@ -41,20 +45,17 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* Identify Bison output, and Bison version.  */
+#define YYBISON 30802
 
-/* Identify Bison output.  */
-#define YYBISON 1
-
-/* Bison version.  */
-#define YYBISON_VERSION "3.5.1"
+/* Bison version string.  */
+#define YYBISON_VERSION "3.8.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
 
 /* Pure parsers.  */
-#define YYPURE 0
+#define YYPURE 2
 
 /* Push parsers.  */
 #define YYPUSH 0
@@ -64,18 +65,16 @@
 
 
 /* Substitute the variable and function names.  */
-#define yyparse         scotchyyparse
-#define yylex           scotchyylex
-#define yyerror         scotchyyerror
-#define yydebug         scotchyydebug
-#define yynerrs         scotchyynerrs
-#define yylval          scotchyylval
-#define yychar          scotchyychar
+#define yyparse         _SCOTCHyyparse
+#define yylex           _SCOTCHyylex
+#define yyerror         _SCOTCHyyerror
+#define yydebug         _SCOTCHyydebug
+#define yynerrs         _SCOTCHyynerrs
 
 /* First part of user prologue.  */
-#line 1 "parser_yy.y"
+#line 1 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
 
-/* Copyright 2004,2007,2008,2011,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2011,2014,2018,2019,2021,2023-2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -127,6 +126,8 @@
 /**                                 to   : 24 jul 2011     **/
 /**                # Version 6.0  : from : 30 sep 2014     **/
 /**                                 to   : 27 apr 2018     **/
+/**                # Version 7.0  : from : 02 mar 2018     **/
+/**                                 to   : 25 sep 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -134,21 +135,18 @@
 **  The defines and includes.
 */
 
-#define PARSER_YY
+#define SCOTCH_PARSER_YY
 
 #include "module.h"
 #include "common.h"
-
-#undef INTEGER                                    /* In case someone defined them */
-#undef DOUBLE
-
+#define YY_NO_UNISTD_H                            /* Improve portability */
 #include "parser.h"
-#include "parser_ll.h"
 #include "parser_yy.h"
+#include "parser_ly.h"
+#include "parser_lh.h"
+#include "parser_ll.h"
 
-/* #define SCOTCH_DEBUG_PARSER3 */
 #ifdef SCOTCH_DEBUG_PARSER3
-extern int                  yydebug;
 #define YYDEBUG                     1
 #endif /* SCOTCH_DEBUG_PARSER3 */
 
@@ -157,14 +155,17 @@ extern int                  yydebug;
 **  See also at the end of this file.
 */
 
-static const StratTab *     parserstrattab;       /* Pointer to parsing tables          */
-static Strat *              parserstratcurr = NULL; /* Pointer to current strategy node */
-static StratParamTab *      parserparamcurr = NULL; /* Pointer to current parameter     */
+/*+ Method token conversion array. +*/
 
-extern unsigned int         parsermethtokentab[]; /* Pre-definition for stupid compilers */
+extern unsigned int         parsermethtokentab[];  /* Pre-definition */
 
+/*
+**  The function prototypes.
+*/
 
-#line 168 "y.tab.c"
+YY_DECL;                                          /* Definition of yylex(); Flex and Bison interaction is crap */
+
+#line 169 "parser_yy.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -187,86 +188,82 @@ extern unsigned int         parsermethtokentab[]; /* Pre-definition for stupid c
 #  endif
 # endif
 
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 0
-#endif
-
-/* Use api.header.include to #include this header
-   instead of duplicating it here.  */
-#ifndef YY_SCOTCHYY_Y_TAB_H_INCLUDED
-# define YY_SCOTCHYY_Y_TAB_H_INCLUDED
-/* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
-extern int scotchyydebug;
-#endif
-
-/* Token type.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
-  {
-    METHODNAME = 258,
-    PARAMNAME = 259,
-    VALCASE = 260,
-    VALDOUBLE = 261,
-    VALINT = 262,
-    VALSTRING = 263,
-    VALSTRAT = 264,
-    VALPARAM = 265,
-    VALTEST = 266
-  };
-#endif
-/* Tokens.  */
-#define METHODNAME 258
-#define PARAMNAME 259
-#define VALCASE 260
-#define VALDOUBLE 261
-#define VALINT 262
-#define VALSTRING 263
-#define VALSTRAT 264
-#define VALPARAM 265
-#define VALTEST 266
-
-/* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
+#include "parser_ly.h"
+/* Symbol kind.  */
+enum yysymbol_kind_t
 {
-#line 92 "parser_yy.y"
-
-  char                      CASEVAL;              /* Case value          */
-  StratTest *               TEST;                 /* Test type           */
-  StratTestType             TESTOP;               /* Relational type     */
-  double                    DOUBLE;               /* Double-precision    */
-  INT                       INTEGER;              /* Integer             */
-  char                      STRING[PARSERSTRINGLEN]; /* Character string */
-  struct {
-    const StratTab *        tabl;                 /* Current tables    */
-    Strat *                 strat;                /* Current method    */
-    StratParamTab *         param;                /* Current parameter */
-  } SAVE;                                         /* Parameter type    */
-  Strat *                   STRAT;                /* Strategy tree     */
-
-#line 257 "y.tab.c"
-
+  YYSYMBOL_YYEMPTY = -2,
+  YYSYMBOL_YYEOF = 0,                      /* "end of file"  */
+  YYSYMBOL_YYerror = 1,                    /* error  */
+  YYSYMBOL_YYUNDEF = 2,                    /* "invalid token"  */
+  YYSYMBOL_METHODNAME = 3,                 /* METHODNAME  */
+  YYSYMBOL_PARAMNAME = 4,                  /* PARAMNAME  */
+  YYSYMBOL_VALCASE = 5,                    /* VALCASE  */
+  YYSYMBOL_VALDOUBLE = 6,                  /* VALDOUBLE  */
+  YYSYMBOL_VALINT = 7,                     /* VALINT  */
+  YYSYMBOL_VALSTRING = 8,                  /* VALSTRING  */
+  YYSYMBOL_VALSTRAT = 9,                   /* VALSTRAT  */
+  YYSYMBOL_VALPARAM = 10,                  /* VALPARAM  */
+  YYSYMBOL_VALTEST = 11,                   /* VALTEST  */
+  YYSYMBOL_12_ = 12,                       /* '|'  */
+  YYSYMBOL_13_ = 13,                       /* '/'  */
+  YYSYMBOL_14_ = 14,                       /* '?'  */
+  YYSYMBOL_15_ = 15,                       /* ';'  */
+  YYSYMBOL_16_ = 16,                       /* ':'  */
+  YYSYMBOL_17_ = 17,                       /* '('  */
+  YYSYMBOL_18_ = 18,                       /* ')'  */
+  YYSYMBOL_19_ = 19,                       /* '{'  */
+  YYSYMBOL_20_ = 20,                       /* '}'  */
+  YYSYMBOL_21_ = 21,                       /* ','  */
+  YYSYMBOL_22_ = 22,                       /* '='  */
+  YYSYMBOL_23_ = 23,                       /* '&'  */
+  YYSYMBOL_24_ = 24,                       /* '!'  */
+  YYSYMBOL_25_ = 25,                       /* '<'  */
+  YYSYMBOL_26_ = 26,                       /* '>'  */
+  YYSYMBOL_27_ = 27,                       /* '+'  */
+  YYSYMBOL_28_ = 28,                       /* '-'  */
+  YYSYMBOL_29_ = 29,                       /* '*'  */
+  YYSYMBOL_30_ = 30,                       /* '%'  */
+  YYSYMBOL_YYACCEPT = 31,                  /* $accept  */
+  YYSYMBOL_STRAT = 32,                     /* STRAT  */
+  YYSYMBOL_STRATSELECT = 33,               /* STRATSELECT  */
+  YYSYMBOL_STRATEMPTY = 34,                /* STRATEMPTY  */
+  YYSYMBOL_STRATCONCAT = 35,               /* STRATCONCAT  */
+  YYSYMBOL_STRATTEST = 36,                 /* STRATTEST  */
+  YYSYMBOL_37_1 = 37,                      /* $@1  */
+  YYSYMBOL_38_2 = 38,                      /* $@2  */
+  YYSYMBOL_STRATTESTELSE = 39,             /* STRATTESTELSE  */
+  YYSYMBOL_STRATGROUP = 40,                /* STRATGROUP  */
+  YYSYMBOL_STRATMETHOD = 41,               /* STRATMETHOD  */
+  YYSYMBOL_42_3 = 42,                      /* $@3  */
+  YYSYMBOL_METHODPARAM = 43,               /* METHODPARAM  */
+  YYSYMBOL_44_4 = 44,                      /* $@4  */
+  YYSYMBOL_45_5 = 45,                      /* $@5  */
+  YYSYMBOL_PARAMLIST = 46,                 /* PARAMLIST  */
+  YYSYMBOL_PARAMPARAM = 47,                /* PARAMPARAM  */
+  YYSYMBOL_48_6 = 48,                      /* @6  */
+  YYSYMBOL_PARAMVAL = 49,                  /* PARAMVAL  */
+  YYSYMBOL_50_7 = 50,                      /* @7  */
+  YYSYMBOL_TEST = 51,                      /* TEST  */
+  YYSYMBOL_TESTOR = 52,                    /* TESTOR  */
+  YYSYMBOL_TESTAND = 53,                   /* TESTAND  */
+  YYSYMBOL_TESTNOT = 54,                   /* TESTNOT  */
+  YYSYMBOL_TESTREL = 55,                   /* TESTREL  */
+  YYSYMBOL_TESTRELOP = 56,                 /* TESTRELOP  */
+  YYSYMBOL_TESTEXPR1 = 57,                 /* TESTEXPR1  */
+  YYSYMBOL_TESTEXPR1OP = 58,               /* TESTEXPR1OP  */
+  YYSYMBOL_TESTEXPR2 = 59,                 /* TESTEXPR2  */
+  YYSYMBOL_TESTEXPR2OP = 60,               /* TESTEXPR2OP  */
+  YYSYMBOL_TESTEXPR3 = 61,                 /* TESTEXPR3  */
+  YYSYMBOL_TESTEXPR3OP = 62,               /* TESTEXPR3OP  */
+  YYSYMBOL_TESTEXPR4 = 63,                 /* TESTEXPR4  */
+  YYSYMBOL_TESTVAL = 64,                   /* TESTVAL  */
+  YYSYMBOL_TESTVAR = 65,                   /* TESTVAR  */
+  YYSYMBOL_VALSDOUBLE = 66,                /* VALSDOUBLE  */
+  YYSYMBOL_VALSINT = 67                    /* VALSINT  */
 };
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
-#endif
+typedef enum yysymbol_kind_t yysymbol_kind_t;
 
-
-extern YYSTYPE scotchyylval;
-
-int scotchyyparse (void);
-
-#endif /* !YY_SCOTCHYY_Y_TAB_H_INCLUDED  */
 
 
 
@@ -305,6 +302,18 @@ typedef __INT_LEAST16_TYPE__ yytype_int16;
 typedef int_least16_t yytype_int16;
 #else
 typedef short yytype_int16;
+#endif
+
+/* Work around bug in HP-UX 11.23, which defines these macros
+   incorrectly for preprocessor constants.  This workaround can likely
+   be removed in 2023, as HPE has promised support for HP-UX 11.23
+   (aka HP-UX 11i v2) only through the end of 2022; see Table 2 of
+   <https://h20195.www2.hpe.com/V2/getpdf.aspx/4AA4-7673ENW.pdf>.  */
+#ifdef __hpux
+# undef UINT_LEAST8_MAX
+# undef UINT_LEAST16_MAX
+# define UINT_LEAST8_MAX 255
+# define UINT_LEAST16_MAX 65535
 #endif
 
 #if defined __UINT_LEAST8_MAX__ && __UINT_LEAST8_MAX__ <= __INT_MAX__
@@ -366,6 +375,7 @@ typedef int yytype_uint16;
 
 #define YYSIZEOF(X) YY_CAST (YYPTRDIFF_T, sizeof (X))
 
+
 /* Stored state numbers (used for stacks). */
 typedef yytype_int8 yy_state_t;
 
@@ -383,6 +393,7 @@ typedef int yy_state_fast_t;
 #  define YY_(Msgid) Msgid
 # endif
 #endif
+
 
 #ifndef YY_ATTRIBUTE_PURE
 # if defined __GNUC__ && 2 < __GNUC__ + (96 <= __GNUC_MINOR__)
@@ -402,17 +413,23 @@ typedef int yy_state_fast_t;
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YYUSE(E) ((void) (E))
+# define YY_USE(E) ((void) (E))
 #else
-# define YYUSE(E) /* empty */
+# define YY_USE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
+#if defined __GNUC__ && ! defined __ICC && 406 <= __GNUC__ * 100 + __GNUC_MINOR__
+# if __GNUC__ * 100 + __GNUC_MINOR__ < 407
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
+    _Pragma ("GCC diagnostic push")                                     \
+    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")
+# else
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
     _Pragma ("GCC diagnostic push")                                     \
     _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
     _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+# endif
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
     _Pragma ("GCC diagnostic pop")
 #else
@@ -441,7 +458,7 @@ typedef int yy_state_fast_t;
 
 #define YY_ASSERT(E) ((void) (0 && (E)))
 
-#if ! defined yyoverflow || YYERROR_VERBOSE
+#if !defined yyoverflow
 
 /* The parser invokes alloca or malloc; define the necessary symbols.  */
 
@@ -506,18 +523,19 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
 # endif
-#endif /* ! defined yyoverflow || YYERROR_VERBOSE */
-
+#endif /* !defined yyoverflow */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
-         || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
+         || (defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL \
+             && defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
 {
   yy_state_t yyss_alloc;
   YYSTYPE yyvs_alloc;
+  YYLTYPE yyls_alloc;
 };
 
 /* The size of the maximum gap between one aligned stack and the next.  */
@@ -526,8 +544,9 @@ union yyalloc
 /* The size of an array large to enough to hold all stacks, each with
    N elements.  */
 # define YYSTACK_BYTES(N) \
-     ((N) * (YYSIZEOF (yy_state_t) + YYSIZEOF (YYSTYPE)) \
-      + YYSTACK_GAP_MAXIMUM)
+     ((N) * (YYSIZEOF (yy_state_t) + YYSIZEOF (YYSTYPE) \
+             + YYSIZEOF (YYLTYPE)) \
+      + 2 * YYSTACK_GAP_MAXIMUM)
 
 # define YYCOPY_NEEDED 1
 
@@ -583,14 +602,16 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  93
 
-#define YYUNDEFTOK  2
+/* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   266
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex, with out-of-bounds checking.  */
-#define YYTRANSLATE(YYX)                                                \
-  (0 <= (YYX) && (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
+#define YYTRANSLATE(YYX)                                \
+  (0 <= (YYX) && (YYX) <= YYMAXUTOK                     \
+   ? YY_CAST (yysymbol_kind_t, yytranslate[YYX])        \
+   : YYSYMBOL_YYUNDEF)
 
 /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex.  */
@@ -626,49 +647,50 @@ static const yytype_int8 yytranslate[] =
 };
 
 #if YYDEBUG
-  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
+/* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   132,   132,   138,   156,   159,   161,   176,   194,   198,
-     202,   198,   226,   229,   234,   239,   243,   247,   246,   308,
-     312,   308,   316,   319,   320,   324,   323,   362,   397,   412,
-     427,   444,   444,   468,   476,   479,   497,   500,   518,   521,
-     537,   541,   544,   563,   567,   571,   577,   593,   596,   600,
-     606,   622,   625,   631,   647,   650,   656,   660,   661,   664,
-     679,   696,   737,   741,   744,   748
+       0,   148,   148,   154,   172,   175,   177,   192,   210,   214,
+     218,   214,   242,   245,   250,   255,   259,   263,   262,   326,
+     330,   326,   334,   337,   338,   342,   341,   381,   415,   429,
+     443,   459,   459,   482,   491,   494,   512,   515,   533,   536,
+     552,   556,   559,   578,   582,   586,   592,   608,   611,   615,
+     621,   637,   640,   646,   662,   665,   671,   675,   676,   679,
+     694,   711,   752,   756,   759,   763
 };
 #endif
 
-#if YYDEBUG || YYERROR_VERBOSE || 0
+/** Accessing symbol of state STATE.  */
+#define YY_ACCESSING_SYMBOL(State) YY_CAST (yysymbol_kind_t, yystos[State])
+
+#if YYDEBUG || 0
+/* The user-facing name of the symbol whose (internal) number is
+   YYSYMBOL.  No bounds checking.  */
+static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
+
 /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "METHODNAME", "PARAMNAME", "VALCASE",
-  "VALDOUBLE", "VALINT", "VALSTRING", "VALSTRAT", "VALPARAM", "VALTEST",
-  "'|'", "'/'", "'?'", "';'", "':'", "'('", "')'", "'{'", "'}'", "','",
-  "'='", "'&'", "'!'", "'<'", "'>'", "'+'", "'-'", "'*'", "'%'", "$accept",
-  "STRAT", "STRATSELECT", "STRATEMPTY", "STRATCONCAT", "STRATTEST", "$@1",
-  "$@2", "STRATTESTELSE", "STRATGROUP", "STRATMETHOD", "$@3",
-  "METHODPARAM", "$@4", "$@5", "PARAMLIST", "PARAMPARAM", "@6", "PARAMVAL",
-  "@7", "TEST", "TESTOR", "TESTAND", "TESTNOT", "TESTREL", "TESTRELOP",
-  "TESTEXPR1", "TESTEXPR1OP", "TESTEXPR2", "TESTEXPR2OP", "TESTEXPR3",
-  "TESTEXPR3OP", "TESTEXPR4", "TESTVAL", "TESTVAR", "VALSDOUBLE",
-  "VALSINT", YY_NULLPTR
+  "\"end of file\"", "error", "\"invalid token\"", "METHODNAME",
+  "PARAMNAME", "VALCASE", "VALDOUBLE", "VALINT", "VALSTRING", "VALSTRAT",
+  "VALPARAM", "VALTEST", "'|'", "'/'", "'?'", "';'", "':'", "'('", "')'",
+  "'{'", "'}'", "','", "'='", "'&'", "'!'", "'<'", "'>'", "'+'", "'-'",
+  "'*'", "'%'", "$accept", "STRAT", "STRATSELECT", "STRATEMPTY",
+  "STRATCONCAT", "STRATTEST", "$@1", "$@2", "STRATTESTELSE", "STRATGROUP",
+  "STRATMETHOD", "$@3", "METHODPARAM", "$@4", "$@5", "PARAMLIST",
+  "PARAMPARAM", "@6", "PARAMVAL", "@7", "TEST", "TESTOR", "TESTAND",
+  "TESTNOT", "TESTREL", "TESTRELOP", "TESTEXPR1", "TESTEXPR1OP",
+  "TESTEXPR2", "TESTEXPR2OP", "TESTEXPR3", "TESTEXPR3OP", "TESTEXPR4",
+  "TESTVAL", "TESTVAR", "VALSDOUBLE", "VALSINT", YY_NULLPTR
 };
-#endif
 
-# ifdef YYPRINT
-/* YYTOKNUM[NUM] -- (External) token number corresponding to the
-   (internal) symbol number NUM (which must be that of a token).  */
-static const yytype_int16 yytoknum[] =
+static const char *
+yysymbol_name (yysymbol_kind_t yysymbol)
 {
-       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   124,    47,    63,    59,    58,    40,    41,   123,
-     125,    44,    61,    38,    33,    60,    62,    43,    45,    42,
-      37
-};
-# endif
+  return yytname[yysymbol];
+}
+#endif
 
 #define YYPACT_NINF (-33)
 
@@ -680,8 +702,8 @@ static const yytype_int16 yytoknum[] =
 #define yytable_value_is_error(Yyn) \
   0
 
-  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-     STATE-NUM.  */
+/* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
+   STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
        5,   -33,     5,    10,     7,   -33,     5,   -33,     4,   -33,
@@ -696,9 +718,9 @@ static const yytype_int8 yypact[] =
        7,   -33,     7
 };
 
-  /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
-     Performed when YYTABLE does not specify something else to do.  Zero
-     means the default is an error.  */
+/* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
+   Performed when YYTABLE does not specify something else to do.  Zero
+   means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
        6,    17,     6,     0,     2,     4,     5,     8,     0,    12,
@@ -713,7 +735,7 @@ static const yytype_int8 yydefact[] =
       13,    11,    32
 };
 
-  /* YYPGOTO[NTERM-NUM].  */
+/* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
      -33,   -33,    -2,    66,   -33,    75,   -33,   -33,   -33,   -33,
@@ -722,18 +744,18 @@ static const yytype_int8 yypgoto[] =
       29,   -33,    30,   -33,   -33,    12,    15
 };
 
-  /* YYDEFGOTO[NTERM-NUM].  */
+/* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     3,     4,     5,     6,     7,     8,    46,    82,     9,
+       0,     3,     4,     5,     6,     7,     8,    46,    82,     9,
       10,    11,    17,    18,    75,    61,    62,    73,    86,    87,
       28,    29,    30,    31,    32,    52,    33,    34,    35,    57,
       36,    59,    37,    38,    39,    40,    41
 };
 
-  /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
-     positive, shift that token.  If negative, reduce the rule whose
-     number is the opposite.  If YYTABLE_NINF, syntax error.  */
+/* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
+   positive, shift that token.  If negative, reduce the rule whose
+   number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
       12,    53,    44,    14,    45,    54,    55,    81,     1,    83,
@@ -762,8 +784,8 @@ static const yytype_int8 yycheck[] =
       78,    -1,    -1,    78
 };
 
-  /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
-     symbol of state STATE-NUM.  */
+/* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
+   state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
        0,     3,    17,    32,    33,    34,    35,    36,    37,    40,
@@ -778,7 +800,7 @@ static const yytype_int8 yystos[] =
       33,    15,    33
 };
 
-  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
+/* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
        0,    31,    32,    33,    33,    34,    34,    35,    35,    37,
@@ -790,7 +812,7 @@ static const yytype_int8 yyr1[] =
       64,    65,    66,    66,    67,    67
 };
 
-  /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
+/* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     1,     3,     1,     1,     0,     2,     1,     0,
@@ -803,14 +825,15 @@ static const yytype_int8 yyr2[] =
 };
 
 
+enum { YYENOMEM = -2 };
+
 #define yyerrok         (yyerrstatus = 0)
 #define yyclearin       (yychar = YYEMPTY)
-#define YYEMPTY         (-2)
-#define YYEOF           0
 
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
 #define YYERROR         goto yyerrorlab
+#define YYNOMEM         goto yyexhaustedlab
 
 
 #define YYRECOVERING()  (!!yyerrstatus)
@@ -827,15 +850,40 @@ static const yytype_int8 yyr2[] =
       }                                                           \
     else                                                          \
       {                                                           \
-        yyerror (YY_("syntax error: cannot back up")); \
+        yyerror (&yylloc, scanptr, penvptr, YY_("syntax error: cannot back up")); \
         YYERROR;                                                  \
       }                                                           \
   while (0)
 
-/* Error token number */
-#define YYTERROR        1
-#define YYERRCODE       256
+/* Backward compatibility with an undocumented macro.
+   Use YYerror or YYUNDEF. */
+#define YYERRCODE YYUNDEF
 
+/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
+   If N is 0, then set CURRENT to the empty location which ends
+   the previous symbol: RHS[0] (always defined).  */
+
+#ifndef YYLLOC_DEFAULT
+# define YYLLOC_DEFAULT(Current, Rhs, N)                                \
+    do                                                                  \
+      if (N)                                                            \
+        {                                                               \
+          (Current).first_line   = YYRHSLOC (Rhs, 1).first_line;        \
+          (Current).first_column = YYRHSLOC (Rhs, 1).first_column;      \
+          (Current).last_line    = YYRHSLOC (Rhs, N).last_line;         \
+          (Current).last_column  = YYRHSLOC (Rhs, N).last_column;       \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          (Current).first_line   = (Current).last_line   =              \
+            YYRHSLOC (Rhs, 0).last_line;                                \
+          (Current).first_column = (Current).last_column =              \
+            YYRHSLOC (Rhs, 0).last_column;                              \
+        }                                                               \
+    while (0)
+#endif
+
+#define YYRHSLOC(Rhs, K) ((Rhs)[K])
 
 
 /* Enable debugging if requested.  */
@@ -852,19 +900,73 @@ do {                                            \
     YYFPRINTF Args;                             \
 } while (0)
 
-/* This macro is provided for backward compatibility. */
-#ifndef YY_LOCATION_PRINT
-# define YY_LOCATION_PRINT(File, Loc) ((void) 0)
-#endif
+
+/* YYLOCATION_PRINT -- Print the location on the stream.
+   This macro was not mandated originally: define only if we know
+   we won't break user code: when these are the locations we know.  */
+
+# ifndef YYLOCATION_PRINT
+
+#  if defined YY_LOCATION_PRINT
+
+   /* Temporary convenience wrapper in case some people defined the
+      undocumented and private YY_LOCATION_PRINT macros.  */
+#   define YYLOCATION_PRINT(File, Loc)  YY_LOCATION_PRINT(File, *(Loc))
+
+#  elif defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL
+
+/* Print *YYLOCP on YYO.  Private, do not rely on its existence. */
+
+YY_ATTRIBUTE_UNUSED
+static int
+yy_location_print_ (FILE *yyo, YYLTYPE const * const yylocp)
+{
+  int res = 0;
+  int end_col = 0 != yylocp->last_column ? yylocp->last_column - 1 : 0;
+  if (0 <= yylocp->first_line)
+    {
+      res += YYFPRINTF (yyo, "%d", yylocp->first_line);
+      if (0 <= yylocp->first_column)
+        res += YYFPRINTF (yyo, ".%d", yylocp->first_column);
+    }
+  if (0 <= yylocp->last_line)
+    {
+      if (yylocp->first_line < yylocp->last_line)
+        {
+          res += YYFPRINTF (yyo, "-%d", yylocp->last_line);
+          if (0 <= end_col)
+            res += YYFPRINTF (yyo, ".%d", end_col);
+        }
+      else if (0 <= end_col && yylocp->first_column < end_col)
+        res += YYFPRINTF (yyo, "-%d", end_col);
+    }
+  return res;
+}
+
+#   define YYLOCATION_PRINT  yy_location_print_
+
+    /* Temporary convenience wrapper in case some people defined the
+       undocumented and private YY_LOCATION_PRINT macros.  */
+#   define YY_LOCATION_PRINT(File, Loc)  YYLOCATION_PRINT(File, &(Loc))
+
+#  else
+
+#   define YYLOCATION_PRINT(File, Loc) ((void) 0)
+    /* Temporary convenience wrapper in case some people defined the
+       undocumented and private YY_LOCATION_PRINT macros.  */
+#   define YY_LOCATION_PRINT  YYLOCATION_PRINT
+
+#  endif
+# endif /* !defined YYLOCATION_PRINT */
 
 
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)                    \
+# define YY_SYMBOL_PRINT(Title, Kind, Value, Location)                    \
 do {                                                                      \
   if (yydebug)                                                            \
     {                                                                     \
       YYFPRINTF (stderr, "%s ", Title);                                   \
       yy_symbol_print (stderr,                                            \
-                  Type, Value); \
+                  Kind, Value, Location, scanptr, penvptr); \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
@@ -875,18 +977,18 @@ do {                                                                      \
 `-----------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_value_print (FILE *yyo,
+                       yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, void * scanptr, ParserEnv * penvptr)
 {
   FILE *yyoutput = yyo;
-  YYUSE (yyoutput);
+  YY_USE (yyoutput);
+  YY_USE (yylocationp);
+  YY_USE (scanptr);
+  YY_USE (penvptr);
   if (!yyvaluep)
     return;
-# ifdef YYPRINT
-  if (yytype < YYNTOKENS)
-    YYPRINT (yyo, yytoknum[yytype], *yyvaluep);
-# endif
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yytype);
+  YY_USE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -896,12 +998,15 @@ yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 `---------------------------*/
 
 static void
-yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_print (FILE *yyo,
+                 yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, void * scanptr, ParserEnv * penvptr)
 {
   YYFPRINTF (yyo, "%s %s (",
-             yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
+             yykind < YYNTOKENS ? "token" : "nterm", yysymbol_name (yykind));
 
-  yy_symbol_value_print (yyo, yytype, yyvaluep);
+  YYLOCATION_PRINT (yyo, yylocationp);
+  YYFPRINTF (yyo, ": ");
+  yy_symbol_value_print (yyo, yykind, yyvaluep, yylocationp, scanptr, penvptr);
   YYFPRINTF (yyo, ")");
 }
 
@@ -934,7 +1039,8 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule)
+yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp,
+                 int yyrule, void * scanptr, ParserEnv * penvptr)
 {
   int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
@@ -946,9 +1052,9 @@ yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule)
     {
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr,
-                       yystos[+yyssp[yyi + 1 - yynrhs]],
-                       &yyvsp[(yyi + 1) - (yynrhs)]
-                                              );
+                       YY_ACCESSING_SYMBOL (+yyssp[yyi + 1 - yynrhs]),
+                       &yyvsp[(yyi + 1) - (yynrhs)],
+                       &(yylsp[(yyi + 1) - (yynrhs)]), scanptr, penvptr);
       YYFPRINTF (stderr, "\n");
     }
 }
@@ -956,15 +1062,15 @@ yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule)
 # define YY_REDUCE_PRINT(Rule)          \
 do {                                    \
   if (yydebug)                          \
-    yy_reduce_print (yyssp, yyvsp, Rule); \
+    yy_reduce_print (yyssp, yyvsp, yylsp, Rule, scanptr, penvptr); \
 } while (0)
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
    multiple parsers can coexist.  */
 int yydebug;
 #else /* !YYDEBUG */
-# define YYDPRINTF(Args)
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
+# define YYDPRINTF(Args) ((void) 0)
+# define YY_SYMBOL_PRINT(Title, Kind, Value, Location)
 # define YY_STACK_PRINT(Bottom, Top)
 # define YY_REDUCE_PRINT(Rule)
 #endif /* !YYDEBUG */
@@ -987,265 +1093,34 @@ int yydebug;
 #endif
 
 
-#if YYERROR_VERBOSE
 
-# ifndef yystrlen
-#  if defined __GLIBC__ && defined _STRING_H
-#   define yystrlen(S) (YY_CAST (YYPTRDIFF_T, strlen (S)))
-#  else
-/* Return the length of YYSTR.  */
-static YYPTRDIFF_T
-yystrlen (const char *yystr)
-{
-  YYPTRDIFF_T yylen;
-  for (yylen = 0; yystr[yylen]; yylen++)
-    continue;
-  return yylen;
-}
-#  endif
-# endif
 
-# ifndef yystpcpy
-#  if defined __GLIBC__ && defined _STRING_H && defined _GNU_SOURCE
-#   define yystpcpy stpcpy
-#  else
-/* Copy YYSRC to YYDEST, returning the address of the terminating '\0' in
-   YYDEST.  */
-static char *
-yystpcpy (char *yydest, const char *yysrc)
-{
-  char *yyd = yydest;
-  const char *yys = yysrc;
 
-  while ((*yyd++ = *yys++) != '\0')
-    continue;
-
-  return yyd - 1;
-}
-#  endif
-# endif
-
-# ifndef yytnamerr
-/* Copy to YYRES the contents of YYSTR after stripping away unnecessary
-   quotes and backslashes, so that it's suitable for yyerror.  The
-   heuristic is that double-quoting is unnecessary unless the string
-   contains an apostrophe, a comma, or backslash (other than
-   backslash-backslash).  YYSTR is taken from yytname.  If YYRES is
-   null, do not copy; instead, return the length of what the result
-   would have been.  */
-static YYPTRDIFF_T
-yytnamerr (char *yyres, const char *yystr)
-{
-  if (*yystr == '"')
-    {
-      YYPTRDIFF_T yyn = 0;
-      char const *yyp = yystr;
-
-      for (;;)
-        switch (*++yyp)
-          {
-          case '\'':
-          case ',':
-            goto do_not_strip_quotes;
-
-          case '\\':
-            if (*++yyp != '\\')
-              goto do_not_strip_quotes;
-            else
-              goto append;
-
-          append:
-          default:
-            if (yyres)
-              yyres[yyn] = *yyp;
-            yyn++;
-            break;
-
-          case '"':
-            if (yyres)
-              yyres[yyn] = '\0';
-            return yyn;
-          }
-    do_not_strip_quotes: ;
-    }
-
-  if (yyres)
-    return yystpcpy (yyres, yystr) - yyres;
-  else
-    return yystrlen (yystr);
-}
-# endif
-
-/* Copy into *YYMSG, which is of size *YYMSG_ALLOC, an error message
-   about the unexpected token YYTOKEN for the state stack whose top is
-   YYSSP.
-
-   Return 0 if *YYMSG was successfully written.  Return 1 if *YYMSG is
-   not large enough to hold the message.  In that case, also set
-   *YYMSG_ALLOC to the required number of bytes.  Return 2 if the
-   required number of bytes is too large to store.  */
-static int
-yysyntax_error (YYPTRDIFF_T *yymsg_alloc, char **yymsg,
-                yy_state_t *yyssp, int yytoken)
-{
-  enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
-  /* Internationalized format string. */
-  const char *yyformat = YY_NULLPTR;
-  /* Arguments of yyformat: reported tokens (one for the "unexpected",
-     one per "expected"). */
-  char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
-  /* Actual size of YYARG. */
-  int yycount = 0;
-  /* Cumulated lengths of YYARG.  */
-  YYPTRDIFF_T yysize = 0;
-
-  /* There are many possibilities here to consider:
-     - If this state is a consistent state with a default action, then
-       the only way this function was invoked is if the default action
-       is an error action.  In that case, don't check for expected
-       tokens because there are none.
-     - The only way there can be no lookahead present (in yychar) is if
-       this state is a consistent state with a default action.  Thus,
-       detecting the absence of a lookahead is sufficient to determine
-       that there is no unexpected or expected token to report.  In that
-       case, just report a simple "syntax error".
-     - Don't assume there isn't a lookahead just because this state is a
-       consistent state with a default action.  There might have been a
-       previous inconsistent state, consistent state with a non-default
-       action, or user semantic action that manipulated yychar.
-     - Of course, the expected token list depends on states to have
-       correct lookahead information, and it depends on the parser not
-       to perform extra reductions after fetching a lookahead from the
-       scanner and before detecting a syntax error.  Thus, state merging
-       (from LALR or IELR) and default reductions corrupt the expected
-       token list.  However, the list is correct for canonical LR with
-       one exception: it will still contain any token that will not be
-       accepted due to an error action in a later state.
-  */
-  if (yytoken != YYEMPTY)
-    {
-      int yyn = yypact[+*yyssp];
-      YYPTRDIFF_T yysize0 = yytnamerr (YY_NULLPTR, yytname[yytoken]);
-      yysize = yysize0;
-      yyarg[yycount++] = yytname[yytoken];
-      if (!yypact_value_is_default (yyn))
-        {
-          /* Start YYX at -YYN if negative to avoid negative indexes in
-             YYCHECK.  In other words, skip the first -YYN actions for
-             this state because they are default actions.  */
-          int yyxbegin = yyn < 0 ? -yyn : 0;
-          /* Stay within bounds of both yycheck and yytname.  */
-          int yychecklim = YYLAST - yyn + 1;
-          int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
-          int yyx;
-
-          for (yyx = yyxbegin; yyx < yyxend; ++yyx)
-            if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR
-                && !yytable_value_is_error (yytable[yyx + yyn]))
-              {
-                if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
-                  {
-                    yycount = 1;
-                    yysize = yysize0;
-                    break;
-                  }
-                yyarg[yycount++] = yytname[yyx];
-                {
-                  YYPTRDIFF_T yysize1
-                    = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
-                  if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
-                    yysize = yysize1;
-                  else
-                    return 2;
-                }
-              }
-        }
-    }
-
-  switch (yycount)
-    {
-# define YYCASE_(N, S)                      \
-      case N:                               \
-        yyformat = S;                       \
-      break
-    default: /* Avoid compiler warnings. */
-      YYCASE_(0, YY_("syntax error"));
-      YYCASE_(1, YY_("syntax error, unexpected %s"));
-      YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
-      YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
-      YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
-      YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
-# undef YYCASE_
-    }
-
-  {
-    /* Don't count the "%s"s in the final size, but reserve room for
-       the terminator.  */
-    YYPTRDIFF_T yysize1 = yysize + (yystrlen (yyformat) - 2 * yycount) + 1;
-    if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
-      yysize = yysize1;
-    else
-      return 2;
-  }
-
-  if (*yymsg_alloc < yysize)
-    {
-      *yymsg_alloc = 2 * yysize;
-      if (! (yysize <= *yymsg_alloc
-             && *yymsg_alloc <= YYSTACK_ALLOC_MAXIMUM))
-        *yymsg_alloc = YYSTACK_ALLOC_MAXIMUM;
-      return 1;
-    }
-
-  /* Avoid sprintf, as that infringes on the user's name space.
-     Don't have undefined behavior even if the translation
-     produced a string with the wrong number of "%s"s.  */
-  {
-    char *yyp = *yymsg;
-    int yyi = 0;
-    while ((*yyp = *yyformat) != '\0')
-      if (*yyp == '%' && yyformat[1] == 's' && yyi < yycount)
-        {
-          yyp += yytnamerr (yyp, yyarg[yyi++]);
-          yyformat += 2;
-        }
-      else
-        {
-          ++yyp;
-          ++yyformat;
-        }
-  }
-  return 0;
-}
-#endif /* YYERROR_VERBOSE */
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
 `-----------------------------------------------*/
 
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
+yydestruct (const char *yymsg,
+            yysymbol_kind_t yykind, YYSTYPE *yyvaluep, YYLTYPE *yylocationp, void * scanptr, ParserEnv * penvptr)
 {
-  YYUSE (yyvaluep);
+  YY_USE (yyvaluep);
+  YY_USE (yylocationp);
+  YY_USE (scanptr);
+  YY_USE (penvptr);
   if (!yymsg)
     yymsg = "Deleting";
-  YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
+  YY_SYMBOL_PRINT (yymsg, yykind, yyvaluep, yylocationp);
 
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yytype);
+  YY_USE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
 
 
 
-/* The lookahead symbol.  */
-int yychar;
-
-/* The semantic value of the lookahead symbol.  */
-YYSTYPE yylval;
-/* Number of syntax errors so far.  */
-int yynerrs;
 
 
 /*----------.
@@ -1253,62 +1128,94 @@ int yynerrs;
 `----------*/
 
 int
-yyparse (void)
+yyparse (void * scanptr, ParserEnv * penvptr)
 {
-    yy_state_fast_t yystate;
+/* Lookahead token kind.  */
+int yychar;
+
+
+/* The semantic value of the lookahead symbol.  */
+/* Default value used for initialization, for pacifying older GCCs
+   or non-GCC compilers.  */
+YY_INITIAL_VALUE (static YYSTYPE yyval_default;)
+YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
+
+/* Location data for the lookahead symbol.  */
+static YYLTYPE yyloc_default
+# if defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL
+  = { 1, 1, 1, 1 }
+# endif
+;
+YYLTYPE yylloc = yyloc_default;
+
+    /* Number of syntax errors so far.  */
+    int yynerrs = 0;
+
+    yy_state_fast_t yystate = 0;
     /* Number of tokens to shift before error messages enabled.  */
-    int yyerrstatus;
+    int yyerrstatus = 0;
 
-    /* The stacks and their tools:
-       'yyss': related to states.
-       'yyvs': related to semantic values.
-
-       Refer to the stacks through separate pointers, to allow yyoverflow
+    /* Refer to the stacks through separate pointers, to allow yyoverflow
        to reallocate them elsewhere.  */
 
-    /* The state stack.  */
+    /* Their size.  */
+    YYPTRDIFF_T yystacksize = YYINITDEPTH;
+
+    /* The state stack: array, bottom, top.  */
     yy_state_t yyssa[YYINITDEPTH];
-    yy_state_t *yyss;
-    yy_state_t *yyssp;
+    yy_state_t *yyss = yyssa;
+    yy_state_t *yyssp = yyss;
 
-    /* The semantic value stack.  */
+    /* The semantic value stack: array, bottom, top.  */
     YYSTYPE yyvsa[YYINITDEPTH];
-    YYSTYPE *yyvs;
-    YYSTYPE *yyvsp;
+    YYSTYPE *yyvs = yyvsa;
+    YYSTYPE *yyvsp = yyvs;
 
-    YYPTRDIFF_T yystacksize;
+    /* The location stack: array, bottom, top.  */
+    YYLTYPE yylsa[YYINITDEPTH];
+    YYLTYPE *yyls = yylsa;
+    YYLTYPE *yylsp = yyls;
 
   int yyn;
+  /* The return value of yyparse.  */
   int yyresult;
-  /* Lookahead token as an internal (translated) token number.  */
-  int yytoken = 0;
+  /* Lookahead symbol kind.  */
+  yysymbol_kind_t yytoken = YYSYMBOL_YYEMPTY;
   /* The variables used to return semantic value and location from the
      action routines.  */
   YYSTYPE yyval;
+  YYLTYPE yyloc;
 
-#if YYERROR_VERBOSE
-  /* Buffer for error messages, and its allocated size.  */
-  char yymsgbuf[128];
-  char *yymsg = yymsgbuf;
-  YYPTRDIFF_T yymsg_alloc = sizeof yymsgbuf;
-#endif
+  /* The locations where the error started and ended.  */
+  YYLTYPE yyerror_range[3];
 
-#define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
+
+
+#define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N), yylsp -= (N))
 
   /* The number of symbols on the RHS of the reduced rule.
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
 
-  yyssp = yyss = yyssa;
-  yyvsp = yyvs = yyvsa;
-  yystacksize = YYINITDEPTH;
-
   YYDPRINTF ((stderr, "Starting parse\n"));
 
-  yystate = 0;
-  yyerrstatus = 0;
-  yynerrs = 0;
   yychar = YYEMPTY; /* Cause a token to be read.  */
+
+
+/* User initialization code.  */
+#line 99 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
+{
+  yylloc.cobenum =
+  yylloc.libenum =
+  yylloc.coennum =
+  yylloc.liennum = 1;
+  yylloc.tebeptr =
+  yylloc.teenptr = penvptr->textptr;
+}
+
+#line 1217 "parser_yy.c"
+
+  yylsp[0] = yylloc;
   goto yysetstate;
 
 
@@ -1330,10 +1237,11 @@ yysetstate:
   YY_IGNORE_USELESS_CAST_BEGIN
   *yyssp = YY_CAST (yy_state_t, yystate);
   YY_IGNORE_USELESS_CAST_END
+  YY_STACK_PRINT (yyss, yyssp);
 
   if (yyss + yystacksize - 1 <= yyssp)
 #if !defined yyoverflow && !defined YYSTACK_RELOCATE
-    goto yyexhaustedlab;
+    YYNOMEM;
 #else
     {
       /* Get the current used size of the three stacks, in elements.  */
@@ -1346,6 +1254,7 @@ yysetstate:
            memory.  */
         yy_state_t *yyss1 = yyss;
         YYSTYPE *yyvs1 = yyvs;
+        YYLTYPE *yyls1 = yyls;
 
         /* Each stack pointer address is followed by the size of the
            data in use in that stack, in bytes.  This used to be a
@@ -1354,14 +1263,16 @@ yysetstate:
         yyoverflow (YY_("memory exhausted"),
                     &yyss1, yysize * YYSIZEOF (*yyssp),
                     &yyvs1, yysize * YYSIZEOF (*yyvsp),
+                    &yyls1, yysize * YYSIZEOF (*yylsp),
                     &yystacksize);
         yyss = yyss1;
         yyvs = yyvs1;
+        yyls = yyls1;
       }
 # else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
-        goto yyexhaustedlab;
+        YYNOMEM;
       yystacksize *= 2;
       if (YYMAXDEPTH < yystacksize)
         yystacksize = YYMAXDEPTH;
@@ -1372,10 +1283,11 @@ yysetstate:
           YY_CAST (union yyalloc *,
                    YYSTACK_ALLOC (YY_CAST (YYSIZE_T, YYSTACK_BYTES (yystacksize))));
         if (! yyptr)
-          goto yyexhaustedlab;
+          YYNOMEM;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
-# undef YYSTACK_RELOCATE
+        YYSTACK_RELOCATE (yyls_alloc, yyls);
+#  undef YYSTACK_RELOCATE
         if (yyss1 != yyssa)
           YYSTACK_FREE (yyss1);
       }
@@ -1383,6 +1295,7 @@ yysetstate:
 
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
+      yylsp = yyls + yysize - 1;
 
       YY_IGNORE_USELESS_CAST_BEGIN
       YYDPRINTF ((stderr, "Stack size increased to %ld\n",
@@ -1393,6 +1306,7 @@ yysetstate:
         YYABORT;
     }
 #endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
+
 
   if (yystate == YYFINAL)
     YYACCEPT;
@@ -1414,17 +1328,29 @@ yybackup:
 
   /* Not known => get a lookahead token if don't already have one.  */
 
-  /* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
+  /* YYCHAR is either empty, or end-of-input, or a valid lookahead.  */
   if (yychar == YYEMPTY)
     {
-      YYDPRINTF ((stderr, "Reading a token: "));
-      yychar = yylex ();
+      YYDPRINTF ((stderr, "Reading a token\n"));
+      yychar = yylex (&yylval, &yylloc, scanptr);
     }
 
   if (yychar <= YYEOF)
     {
-      yychar = yytoken = YYEOF;
+      yychar = YYEOF;
+      yytoken = YYSYMBOL_YYEOF;
       YYDPRINTF ((stderr, "Now at end of input.\n"));
+    }
+  else if (yychar == YYerror)
+    {
+      /* The scanner already issued an error message, process directly
+         to error recovery.  But do not keep the error token as
+         lookahead, it is too special and may lead us to an endless
+         loop in error recovery. */
+      yychar = YYUNDEF;
+      yytoken = YYSYMBOL_YYerror;
+      yyerror_range[1] = yylloc;
+      goto yyerrlab1;
     }
   else
     {
@@ -1457,6 +1383,7 @@ yybackup:
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   *++yyvsp = yylval;
   YY_IGNORE_MAYBE_UNINITIALIZED_END
+  *++yylsp = yylloc;
 
   /* Discard the shifted token.  */
   yychar = YYEMPTY;
@@ -1490,729 +1417,730 @@ yyreduce:
      GCC warning that YYVAL may be used uninitialized.  */
   yyval = yyvsp[1-yylen];
 
-
+  /* Default location. */
+  YYLLOC_DEFAULT (yyloc, (yylsp - yylen), yylen);
+  yyerror_range[1] = yyloc;
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2:
-#line 133 "parser_yy.y"
+  case 2: /* STRAT: STRATSELECT  */
+#line 149 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                parserstratcurr = ((yyvsp[0].STRAT));           /* Save pointer to root of tree */
+                penvptr->straptr = ((yyvsp[0].STRAT));          /* Save pointer to root of tree */
               }
-#line 1503 "y.tab.c"
+#line 1432 "parser_yy.c"
     break;
 
-  case 3:
-#line 139 "parser_yy.y"
+  case 3: /* STRATSELECT: STRATSELECT '|' STRATEMPTY  */
+#line 155 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                Strat *           strat;
+                Strat *             straptr;
 
-                if ((strat = (Strat *) memAlloc (sizeof (Strat))) == NULL) {
-                  errorPrint ("stratParserParse: out of memory (2)");
+                if ((straptr = (Strat *) memAlloc (sizeof (Strat))) == NULL) {
+                  errorPrint ("stratParserParse: out of memory (1)");
                   stratExit  ((yyvsp[-2].STRAT));
                   stratExit  ((yyvsp[0].STRAT));
                   YYABORT;
                 }
 
-                strat->tabl                 = parserstrattab;
-                strat->type                 = STRATNODESELECT;
-                strat->data.select.strat[0] = ((yyvsp[-2].STRAT));
-                strat->data.select.strat[1] = ((yyvsp[0].STRAT));
+                straptr->tablptr                 = penvptr->stratab;
+                straptr->typeval                 = STRATNODESELECT;
+                straptr->data.seledat.stratab[0] = ((yyvsp[-2].STRAT));
+                straptr->data.seledat.stratab[1] = ((yyvsp[0].STRAT));
 
-                ((yyval.STRAT)) = strat;
+                ((yyval.STRAT)) = straptr;
               }
-#line 1525 "y.tab.c"
+#line 1454 "parser_yy.c"
     break;
 
-  case 6:
-#line 161 "parser_yy.y"
+  case 6: /* STRATEMPTY: %empty  */
+#line 177 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                Strat *           strat;
+                Strat *             straptr;
 
-                if ((strat = (Strat *) memAlloc (sizeof (Strat))) == NULL) {
-                  errorPrint ("stratParserParse: out of memory (3)");
+                if ((straptr = (Strat *) memAlloc (sizeof (Strat))) == NULL) {
+                  errorPrint ("stratParserParse: out of memory (2)");
                   YYABORT;
                 }
 
-                strat->tabl = parserstrattab;
-                strat->type = STRATNODEEMPTY;
+                straptr->tablptr = penvptr->stratab;
+                straptr->typeval = STRATNODEEMPTY;
 
-                ((yyval.STRAT)) = strat;
+                ((yyval.STRAT)) = straptr;
               }
-#line 1543 "y.tab.c"
+#line 1472 "parser_yy.c"
     break;
 
-  case 7:
-#line 177 "parser_yy.y"
+  case 7: /* STRATCONCAT: STRATCONCAT STRATTEST  */
+#line 193 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                Strat *           strat;
+                Strat *             straptr;
 
-                if ((strat = (Strat *) memAlloc (sizeof (Strat))) == NULL) {
-                  errorPrint ("stratParserParse: out of memory (4)");
+                if ((straptr = (Strat *) memAlloc (sizeof (Strat))) == NULL) {
+                  errorPrint ("stratParserParse: out of memory (3)");
                   stratExit  ((yyvsp[-1].STRAT));
                   stratExit  ((yyvsp[0].STRAT));
                   YYABORT;
                 }
 
-                strat->tabl                 = parserstrattab;
-                strat->type                 = STRATNODECONCAT;
-                strat->data.concat.strat[0] = ((yyvsp[-1].STRAT));
-                strat->data.concat.strat[1] = ((yyvsp[0].STRAT));
+                straptr->tablptr                 = penvptr->stratab;
+                straptr->typeval                 = STRATNODECONCAT;
+                straptr->data.concdat.stratab[0] = ((yyvsp[-1].STRAT));
+                straptr->data.concdat.stratab[1] = ((yyvsp[0].STRAT));
 
-                ((yyval.STRAT)) = strat;
+                ((yyval.STRAT)) = straptr;
               }
-#line 1565 "y.tab.c"
+#line 1494 "parser_yy.c"
     break;
 
-  case 9:
-#line 198 "parser_yy.y"
+  case 9: /* $@1: %empty  */
+#line 214 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                stratParserSelect (VALTEST);      /* Parse parameter tokens */
+                PARSERLLBEGIN (VALTEST);          /* Parse parameter tokens */
               }
-#line 1573 "y.tab.c"
+#line 1502 "parser_yy.c"
     break;
 
-  case 10:
-#line 202 "parser_yy.y"
+  case 10: /* $@2: %empty  */
+#line 218 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                stratParserSelect (VALSTRAT);     /* Parse strategy tokens */
+                PARSERLLBEGIN (VALSTRAT);         /* Parse strategy tokens */
               }
-#line 1581 "y.tab.c"
+#line 1510 "parser_yy.c"
     break;
 
-  case 11:
-#line 206 "parser_yy.y"
+  case 11: /* STRATTEST: $@1 '/' TEST $@2 '?' STRATSELECT STRATTESTELSE ';'  */
+#line 222 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                Strat *           strat;
+                Strat *             straptr;
 
-                if ((strat = (Strat *) memAlloc (sizeof (Strat))) == NULL) {
-                  errorPrint  ("stratParserParse: out of memory (1)");
-                  stratExit ((yyvsp[-2].STRAT));
+                if ((straptr = (Strat *) memAlloc (sizeof (Strat))) == NULL) {
+                  errorPrint ("stratParserParse: out of memory (4)");
+                  stratExit  ((yyvsp[-2].STRAT));
                   if (((yyvsp[-1].STRAT)) != NULL)
                     stratExit ((yyvsp[-1].STRAT));
                   stratTestExit ((yyvsp[-5].TEST));
                   YYABORT;
                 }
 
-                strat->tabl               = parserstrattab;
-                strat->type               = STRATNODECOND;
-                strat->data.cond.test     = ((yyvsp[-5].TEST));
-                strat->data.cond.strat[0] = ((yyvsp[-2].STRAT));
-                strat->data.cond.strat[1] = ((yyvsp[-1].STRAT));
+                straptr->tablptr                 = penvptr->stratab;
+                straptr->typeval                 = STRATNODECOND;
+                straptr->data.conddat.testptr    = ((yyvsp[-5].TEST));
+                straptr->data.conddat.stratab[0] = ((yyvsp[-2].STRAT));
+                straptr->data.conddat.stratab[1] = ((yyvsp[-1].STRAT));
 
-                ((yyval.STRAT)) = strat;
+                ((yyval.STRAT)) = straptr;
               }
-#line 1606 "y.tab.c"
+#line 1535 "parser_yy.c"
     break;
 
-  case 13:
-#line 230 "parser_yy.y"
+  case 13: /* STRATTESTELSE: ':' STRATSELECT  */
+#line 246 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.STRAT)) = ((yyvsp[0].STRAT));
               }
-#line 1614 "y.tab.c"
+#line 1543 "parser_yy.c"
     break;
 
-  case 14:
-#line 234 "parser_yy.y"
+  case 14: /* STRATTESTELSE: %empty  */
+#line 250 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.STRAT)) = NULL;
               }
-#line 1622 "y.tab.c"
+#line 1551 "parser_yy.c"
     break;
 
-  case 15:
-#line 240 "parser_yy.y"
+  case 15: /* STRATGROUP: '(' STRATSELECT ')'  */
+#line 256 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.STRAT)) = ((yyvsp[-1].STRAT));
               }
-#line 1630 "y.tab.c"
+#line 1559 "parser_yy.c"
     break;
 
-  case 17:
-#line 247 "parser_yy.y"
+  case 17: /* $@3: %empty  */
+#line 263 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                Strat *           strat;
-                int               meth;
-                int               methlen;
-                StratMethodTab *  methtab;
-                int               i, j;
+                Strat *             straptr;
+                int                 methnum;
+                size_t              methlen;
+                StratMethodTab *    methtab;
+                int                 i;
+                size_t              j;
 
-                meth    =
-                methlen = 0;                      /* No method recognized yet   */
-                methtab = parserstrattab->methtab; /* Point to the method table */
-                for (i = 0; methtab[i].name != NULL; i ++) {
+                methnum = 0;
+                methlen = 0;                      /* No method recognized yet     */
+                methtab = penvptr->stratab->methtab; /* Point to the method table */
+                for (i = 0; methtab[i].nameptr != NULL; i ++) {
                   if ((strncasecmp (((yyvsp[0].STRING)),         /* Find longest matching code name */
-                       methtab[i].name,
-                       j = strlen (methtab[i].name)) == 0) &&
+                       methtab[i].nameptr,
+                       j = strlen (methtab[i].nameptr)) == 0) &&
                       (j > methlen)) {
-                    meth    = methtab[i].meth;
+                    methnum = methtab[i].methnum;
                     methlen = j;
                   }
                 }
                 if (methlen == 0) {               /* If method name not known */
-                  errorPrint ("stratParserParse: invalid method name \"%s\", before \"%s\"",
-                              ((yyvsp[0].STRING)), stratParserRemain ());
+                  errorPrint ("stratParserParse: invalid method name \"%s\", line %d, column %d, at \"%s\"",
+                              ((yyvsp[0].STRING)), ((yylsp[0])).libenum, ((yylsp[0])).cobenum, ((yylsp[0])).tebeptr);
                   YYABORT;
                 }
-                if ((strat = (Strat *) memAlloc (sizeof (Strat))) == NULL) {
+                if ((straptr = (Strat *) memAlloc (sizeof (Strat))) == NULL) {
                   errorPrint ("stratParserParse: out of memory (5)");
                   YYABORT;
                 }
 
-                strat->tabl             = parserstrattab;
-                strat->type             = STRATNODEMETHOD;
-                strat->data.method.meth = meth;   /* Set method type         */
-                if (methtab[meth].data != NULL)   /* If default values exist */
-                  memcpy (&strat->data.method.data, /* Set values to default */
-                          methtab[meth].data,
+                straptr->tablptr              = penvptr->stratab;
+                straptr->typeval              = STRATNODEMETHOD;
+                straptr->data.methdat.methnum = methnum; /* Set method type        */
+                if (methtab[methnum].dataptr != NULL) /* If default values exist   */
+                  memcpy (&straptr->data.methdat.datadat, /* Set values to default */
+                          methtab[methnum].dataptr,
                           sizeof (StratNodeMethodData));
 
-                parserstratcurr = strat;          /* Structure available for parameter processing */
+                penvptr->straptr = straptr;       /* Structure available for parameter processing */
               }
-#line 1674 "y.tab.c"
+#line 1604 "parser_yy.c"
     break;
 
-  case 18:
-#line 287 "parser_yy.y"
+  case 18: /* STRATMETHOD: METHODNAME $@3 METHODPARAM  */
+#line 304 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                StratParamTab *   paratab;
-                int               i;
+                StratParamTab *     paratab;
+                int                 paraidx;
 
-                paratab = parserstrattab->paratab; /* Point to the parameter table */
-                for (i = 0; paratab[i].name != NULL; i ++) {
-                  if ((paratab[i].meth == parserstratcurr->data.method.meth) && /* If a strategy parameter found for this method */
-                      (paratab[i].type == STRATPARAMSTRAT)) {
-                    if (*((Strat **) ((byte *) &parserstratcurr->data.method.data + /* And this parameter has not been set */
-                        (paratab[i].dataofft - paratab[i].database))) == NULL)
-                      errorPrintW ("stratParserParse: strategy parameter \"%s\" of method \"%s\" not set, before \"%s\"",
-                                   paratab[i].name, parserstrattab->methtab[parserstratcurr->data.method.meth].name, stratParserRemain ());
+                paratab = penvptr->stratab->paratab; /* Point to the parameter table */
+                for (paraidx = 0; paratab[paraidx].nameptr != NULL; paraidx ++) {
+                  if ((paratab[paraidx].methnum == penvptr->straptr->data.methdat.methnum) && /* If a strategy parameter found for this method */
+                      (paratab[paraidx].typeval == STRATPARAMSTRAT)) {
+                    if (*((Strat **) ((byte *) &penvptr->straptr->data.methdat.datadat + /* And this parameter has not been set */
+                        (paratab[paraidx].doffptr - paratab[paraidx].dbasptr))) == NULL)
+                      errorPrintW ("stratParserParse: strategy parameter \"%s\" of method \"%s\" not set, line %d, column %d, before \"%s\"",
+                                   paratab[paraidx].nameptr, penvptr->stratab->methtab[penvptr->straptr->data.methdat.methnum].nameptr,
+                                   ((yylsp[-1])).libenum, ((yylsp[-1])).cobenum, ((yylsp[-1])).tebeptr);
                   }
                 }
 
-                ((yyval.STRAT)) = parserstratcurr;           /* Return current structure */
-                parserstratcurr = NULL;           /* No current structure     */
+                ((yyval.STRAT)) = penvptr->straptr;          /* Return current structure */
+                penvptr->straptr = NULL;          /* No current structure     */
               }
-#line 1697 "y.tab.c"
+#line 1628 "parser_yy.c"
     break;
 
-  case 19:
-#line 308 "parser_yy.y"
+  case 19: /* $@4: %empty  */
+#line 326 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                stratParserSelect (VALPARAM);     /* Parse parameter tokens */
+                PARSERLLBEGIN (VALPARAM);         /* Parse parameter tokens */
               }
-#line 1705 "y.tab.c"
+#line 1636 "parser_yy.c"
     break;
 
-  case 20:
-#line 312 "parser_yy.y"
+  case 20: /* $@5: %empty  */
+#line 330 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                stratParserSelect (VALSTRAT);     /* Parse strategy tokens */
+                PARSERLLBEGIN (VALSTRAT);         /* Parse strategy tokens */
               }
-#line 1713 "y.tab.c"
+#line 1644 "parser_yy.c"
     break;
 
-  case 25:
-#line 324 "parser_yy.y"
+  case 25: /* @6: %empty  */
+#line 342 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                int               para;
-                int               paralen;
+                int               paraidx;
+                size_t            paralen;
                 StratParamTab *   paratab;
-                int               i, j;
+                int               i;
+                size_t            j;
 
-                para    =
-                paralen = 0;                      /* No parameter recognized yet   */
-                paratab = parserstrattab->paratab; /* Point to the parameter table */
-                for (i = 0; paratab[i].name != NULL; i ++) {
-                  if ((paratab[i].meth == parserstratcurr->data.method.meth) &&
+                paraidx = 0;
+                paralen = 0;                      /* No parameter recognized yet     */
+                paratab = penvptr->stratab->paratab; /* Point to the parameter table */
+                for (i = 0; paratab[i].nameptr != NULL; i ++) {
+                  if ((paratab[i].methnum == penvptr->straptr->data.methdat.methnum) &&
                       (strncasecmp (((yyvsp[0].STRING)),         /* Find longest matching parameter name */
-                                    paratab[i].name,
-                                    j = strlen (paratab[i].name)) == 0) &&
+                                    paratab[i].nameptr,
+                                    j = strlen (paratab[i].nameptr)) == 0) &&
                       (j > paralen)) {
-                    para    = i;
+                    paraidx = i;
                     paralen = j;
                   }
                 }
                 if (paralen == 0) {
-                  errorPrint ("stratParserParse: invalid method parameter name \"%s\", before \"%s\"",
-                              ((yyvsp[0].STRING)), stratParserRemain ());
+                  errorPrint ("stratParserParse: invalid method parameter name \"%s\", line %d, column %d, before \"%s\"",
+                              ((yyvsp[0].STRING)), ((yylsp[0])).libenum, ((yylsp[0])).cobenum, ((yylsp[0])).tebeptr);
                   YYABORT;
                 }
 
-                ((yyval.SAVE)).tabl = parserstrattab; /* Save current strategy tables */
-                parserparamcurr = &paratab[para]; /* Save current parameter value */
-                stratParserSelect (parsermethtokentab[parserparamcurr->type & ~STRATPARAMDEPRECATED]); /* Get non-deprecated type */
-                if (parserparamcurr->type == STRATPARAMSTRAT) /* If parameter is a strategy           */
-                  parserstrattab = (StratTab *) parserparamcurr->datasltr; /* Use new strategy tables */
+                ((yyval.SAVE)).tabl = penvptr->stratab; /* Save current strategy tables   */
+                penvptr->paraptr = &paratab[paraidx]; /* Save current parameter value */
+                PARSERLLBEGIN (stratmethtokentab[penvptr->paraptr->typeval & ~STRATPARAMDEPRECATED]); /* Get non-deprecated type */
+                if (penvptr->paraptr->typeval == STRATPARAMSTRAT) /* If parameter is a strategy                                  */
+                  penvptr->stratab = (StratTab *) penvptr->paraptr->dselptr; /* Use new strategy tables                          */
               }
-#line 1749 "y.tab.c"
+#line 1681 "parser_yy.c"
     break;
 
-  case 26:
-#line 356 "parser_yy.y"
+  case 26: /* PARAMPARAM: PARAMNAME @6 '=' PARAMVAL  */
+#line 375 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                stratParserSelect (VALPARAM);     /* Go-on reading parameters        */
-                parserstrattab = ((yyvsp[-2].SAVE)).tabl; /* Restore current strategy tables */
+                PARSERLLBEGIN (VALPARAM);         /* Go-on reading parameters          */
+                penvptr->stratab = ((yyvsp[-2].SAVE)).tabl; /* Restore current strategy tables */
               }
-#line 1758 "y.tab.c"
+#line 1690 "parser_yy.c"
     break;
 
-  case 27:
-#line 363 "parser_yy.y"
+  case 27: /* PARAMVAL: VALCASE  */
+#line 382 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 char              c;              /* Character read             */
                 char *            p;              /* Pointer to selector string */
                 int               i;              /* Index in selector string   */
 
-                if ((parserparamcurr->type & STRATPARAMDEPRECATED) == 0) { /* If parameter is not deprecated */
-                  c = ((yyvsp[0].CASEVAL));                       /* First, use char as is                                   */
-                  for (p = (char *) parserparamcurr->datasltr, i = 0;
+                if ((penvptr->paraptr->typeval & STRATPARAMDEPRECATED) == 0) { /* If parameter is not deprecated */
+                  c = ((yyvsp[0].CASEVAL));                       /* First, use char as is */
+                  for (p = (char *) penvptr->paraptr->dselptr, i = 0;
                        (*p != '\0') && (*p != c);
                        p ++, i ++) ;
                   if (*p == '\0') {               /* Char was not found         */
                     c = tolower (c);              /* Convert char to lower case */
-                    for (p = (char *) parserparamcurr->datasltr, i = 0;
+                    for (p = (char *) penvptr->paraptr->dselptr, i = 0;
                          (*p != '\0') && (*p != c);
                          p ++, i ++) ;
                     if (*p == '\0') {
-                      errorPrint ("stratParserParse: invalid method parameter switch \"%s=%c\", before \"%s\"",
-                                  parserparamcurr->name, ((yyvsp[0].CASEVAL)), stratParserRemain ());
+                      errorPrint ("stratParserParse: invalid method parameter switch \"%s=%c\", line %d, column %d, before \"%s\"",
+                                  penvptr->paraptr->nameptr, ((yyvsp[0].CASEVAL)), ((yylsp[0])).libenum, ((yylsp[0])).cobenum, ((yylsp[0])).tebeptr);
                       YYABORT;
                     }
                   }
 
 #ifdef SCOTCH_DEBUG_PARSER2
-                  if ((parserparamcurr->dataofft - parserparamcurr->database + sizeof (int)) > sizeof (StratNodeMethodData)) {
+                  if (((penvptr->paraptr->doffptr - penvptr->paraptr->dbasptr) + sizeof (int)) > sizeof (StratNodeMethodData)) {
                     errorPrint ("stratParserParse: internal error (1)");
                     YYABORT;
                   }
 #endif /* SCOTCH_DEBUG_PARSER2 */
 
-                  *((int *) ((byte *) &parserstratcurr->data.method.data +
-                             (parserparamcurr->dataofft -
-                              parserparamcurr->database))) = i;
+                  *((int *) ((byte *) &penvptr->straptr->data.methdat.datadat +
+                             (penvptr->paraptr->doffptr - penvptr->paraptr->dbasptr))) = i;
                 }
               }
-#line 1797 "y.tab.c"
+#line 1728 "parser_yy.c"
     break;
 
-  case 28:
-#line 398 "parser_yy.y"
+  case 28: /* PARAMVAL: VALSDOUBLE  */
+#line 416 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                if ((parserparamcurr->type & STRATPARAMDEPRECATED) == 0) { /* If parameter is not deprecated */
+                if ((penvptr->paraptr->typeval & STRATPARAMDEPRECATED) == 0) { /* If parameter is not deprecated */
 #ifdef SCOTCH_DEBUG_PARSER2
-                  if ((parserparamcurr->dataofft - parserparamcurr->database + sizeof (double)) > sizeof (StratNodeMethodData)) {
+                  if (((penvptr->paraptr->doffptr - penvptr->paraptr->dbasptr) + sizeof (double)) > sizeof (StratNodeMethodData)) {
                     errorPrint ("stratParserParse: internal error (2)");
                     YYABORT;
                   }
 #endif /* SCOTCH_DEBUG_PARSER2 */
 
-                  *((double *) ((byte *) &parserstratcurr->data.method.data +
-                                (parserparamcurr->dataofft -
-                                 parserparamcurr->database))) = ((yyvsp[0].DOUBLE));
+                  *((double *) ((byte *) &penvptr->straptr->data.methdat.datadat +
+                                (penvptr->paraptr->doffptr - penvptr->paraptr->dbasptr))) = ((yyvsp[0].DOUBLE));
                 }
               }
-#line 1816 "y.tab.c"
+#line 1746 "parser_yy.c"
     break;
 
-  case 29:
-#line 413 "parser_yy.y"
+  case 29: /* PARAMVAL: VALSINT  */
+#line 430 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                if ((parserparamcurr->type & STRATPARAMDEPRECATED) == 0) { /* If parameter is not deprecated */
+                if ((penvptr->paraptr->typeval & STRATPARAMDEPRECATED) == 0) { /* If parameter is not deprecated */
 #ifdef SCOTCH_DEBUG_PARSER2
-                  if ((parserparamcurr->dataofft - parserparamcurr->database + sizeof (INT)) > sizeof (StratNodeMethodData)) {
+                  if (((penvptr->paraptr->doffptr - penvptr->paraptr->dbasptr) + sizeof (INT)) > sizeof (StratNodeMethodData)) {
                     errorPrint ("stratParserParse: internal error (3)");
                     YYABORT;
                   }
 #endif /* SCOTCH_DEBUG_PARSER2 */
 
-                  *((INT *) ((byte *) &parserstratcurr->data.method.data +
-                             (parserparamcurr->dataofft -
-                              parserparamcurr->database))) = (INT) ((yyvsp[0].INTEGER));
+                  *((INT *) ((byte *) &penvptr->straptr->data.methdat.datadat +
+                             (penvptr->paraptr->doffptr - penvptr->paraptr->dbasptr))) = (INT) ((yyvsp[0].INTEGER));
                 }
               }
-#line 1835 "y.tab.c"
+#line 1764 "parser_yy.c"
     break;
 
-  case 30:
-#line 428 "parser_yy.y"
+  case 30: /* PARAMVAL: VALSTRING  */
+#line 444 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                if ((parserparamcurr->type & STRATPARAMDEPRECATED) == 0) { /* If parameter is not deprecated */
+                if ((penvptr->paraptr->typeval & STRATPARAMDEPRECATED) == 0) { /* If parameter is not deprecated */
 #ifdef SCOTCH_DEBUG_PARSER2
-                  if ((parserparamcurr->dataofft - parserparamcurr->database + strlen ((yyvsp[0].STRING)) + 1) > sizeof (StratNodeMethodData)) {
+                  if (((penvptr->paraptr->doffptr - penvptr->paraptr->dbasptr) + strlen ((yyvsp[0].STRING)) + 1) > sizeof (StratNodeMethodData)) {
                     errorPrint ("stratParserParse: internal error (4)");
                     YYABORT;
                   }
 #endif /* SCOTCH_DEBUG_PARSER2 */
 
-                  strcpy ((char *) ((byte *) &parserstratcurr->data.method.data +
-                                    (parserparamcurr->dataofft -
-                                     parserparamcurr->database)),
+                  strcpy ((char *) ((byte *) &penvptr->straptr->data.methdat.datadat +
+                                    (penvptr->paraptr->doffptr - penvptr->paraptr->dbasptr)),
                           ((yyvsp[0].STRING)));
                 }
               }
-#line 1855 "y.tab.c"
+#line 1783 "parser_yy.c"
     break;
 
-  case 31:
-#line 444 "parser_yy.y"
+  case 31: /* @7: %empty  */
+#line 459 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                ((yyval.SAVE)).strat = parserstratcurr;
-                ((yyval.SAVE)).param = parserparamcurr;
-                parserstratcurr  = NULL;
-                parserparamcurr  = NULL;
+                ((yyval.SAVE)).strat = penvptr->straptr;
+                ((yyval.SAVE)).param = penvptr->paraptr;
+                penvptr->straptr = NULL;
+                penvptr->paraptr = NULL;
               }
-#line 1866 "y.tab.c"
+#line 1794 "parser_yy.c"
     break;
 
-  case 32:
-#line 451 "parser_yy.y"
+  case 32: /* PARAMVAL: @7 STRATSELECT  */
+#line 466 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                parserstratcurr = ((yyvsp[-1].SAVE)).strat; /* Restore current method    */
-                parserparamcurr = ((yyvsp[-1].SAVE)).param; /* Restore current parameter */
+                penvptr->straptr = ((yyvsp[-1].SAVE)).strat; /* Restore current method    */
+                penvptr->paraptr = ((yyvsp[-1].SAVE)).param; /* Restore current parameter */
 
-                if ((parserparamcurr->type & STRATPARAMDEPRECATED) == 0) { /* If parameter is not deprecated */
+                if ((penvptr->paraptr->typeval & STRATPARAMDEPRECATED) == 0) { /* If parameter is not deprecated */
 #ifdef SCOTCH_DEBUG_PARSER2
-                  if ((parserparamcurr->dataofft - parserparamcurr->database + sizeof (Strat *)) > sizeof (StratNodeMethodData)) {
+                  if (((penvptr->paraptr->doffptr - penvptr->paraptr->dbasptr) + sizeof (Strat *)) > sizeof (StratNodeMethodData)) {
                     errorPrint ("stratParserParse: internal error (5)");
                     YYABORT;
                   }
 #endif /* SCOTCH_DEBUG_PARSER2 */
 
-                  *((Strat **) ((byte *) &parserstratcurr->data.method.data +
-                                (parserparamcurr->dataofft -
-                                 parserparamcurr->database))) = ((yyvsp[0].STRAT));
+                  *((Strat **) ((byte *) &penvptr->straptr->data.methdat.datadat +
+                                (penvptr->paraptr->doffptr - penvptr->paraptr->dbasptr))) = ((yyvsp[0].STRAT));
                 }
               }
-#line 1888 "y.tab.c"
+#line 1815 "parser_yy.c"
     break;
 
-  case 33:
-#line 469 "parser_yy.y"
+  case 33: /* PARAMVAL: error  */
+#line 483 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                errorPrint ("stratParserParse: invalid value for parameter \"%s\" of method \"%s\", before \"%s\"",
-                            parserparamcurr->name, parserstratcurr->tabl->methtab[parserstratcurr->data.method.meth].name, stratParserRemain ());
+                errorPrint ("stratParserParse: invalid value for parameter \"%s\" of method \"%s\", line %d, column %d, before \"%s\"",
+                            penvptr->paraptr->nameptr, penvptr->straptr->tablptr->methtab[penvptr->straptr->data.methdat.methnum].nameptr,
+                            ((yylsp[0])).libenum, ((yylsp[0])).cobenum, ((yylsp[0])).tebeptr);
                 YYABORT;
               }
-#line 1898 "y.tab.c"
+#line 1826 "parser_yy.c"
     break;
 
-  case 35:
-#line 480 "parser_yy.y"
+  case 35: /* TESTOR: TESTOR '|' TESTAND  */
+#line 495 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                StratTest *       test;
+                StratTest *         testptr;
 
-                if ((test = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
+                if ((testptr = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
                   errorPrint    ("stratParserParse: out of memory (6)");
                   stratTestExit ((yyvsp[-2].TEST));
                   stratTestExit ((yyvsp[0].TEST));
                   YYABORT;
                 }
 
-                test->typetest     = STRATTESTOR;
-                test->typenode     = STRATPARAMLOG;
-                test->data.test[0] = ((yyvsp[-2].TEST));
-                test->data.test[1] = ((yyvsp[0].TEST));
+                testptr->testval         = STRATTESTOR;
+                testptr->nodeval         = STRATPARAMLOG;
+                testptr->data.testtab[0] = ((yyvsp[-2].TEST));
+                testptr->data.testtab[1] = ((yyvsp[0].TEST));
 
-                ((yyval.TEST)) = test;
+                ((yyval.TEST)) = testptr;
               }
-#line 1920 "y.tab.c"
+#line 1848 "parser_yy.c"
     break;
 
-  case 37:
-#line 501 "parser_yy.y"
+  case 37: /* TESTAND: TESTAND '&' TESTNOT  */
+#line 516 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                StratTest *       test;
+                StratTest *         testptr;
 
-                if ((test = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
+                if ((testptr = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
                   errorPrint    ("stratParserParse: out of memory (7)");
                   stratTestExit ((yyvsp[-2].TEST));
                   stratTestExit ((yyvsp[0].TEST));
                   YYABORT;
                 }
 
-                test->typetest     = STRATTESTAND;
-                test->typenode     = STRATPARAMLOG;
-                test->data.test[0] = ((yyvsp[-2].TEST));
-                test->data.test[1] = ((yyvsp[0].TEST));
+                testptr->testval         = STRATTESTAND;
+                testptr->nodeval         = STRATPARAMLOG;
+                testptr->data.testtab[0] = ((yyvsp[-2].TEST));
+                testptr->data.testtab[1] = ((yyvsp[0].TEST));
 
-                ((yyval.TEST)) = test;
+                ((yyval.TEST)) = testptr;
               }
-#line 1942 "y.tab.c"
+#line 1870 "parser_yy.c"
     break;
 
-  case 39:
-#line 522 "parser_yy.y"
+  case 39: /* TESTNOT: '!' TESTNOT  */
+#line 537 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                StratTest *       test;
+                StratTest *         testptr;
 
-                if ((test = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
+                if ((testptr = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
                   errorPrint    ("stratParserParse: out of memory (8)");
                   stratTestExit ((yyvsp[0].TEST));
                   YYABORT;
                 }
 
-                test->typetest     = STRATTESTNOT;
-                test->typenode     = STRATPARAMLOG;
-                test->data.test[0] = ((yyvsp[0].TEST));
+                testptr->testval         = STRATTESTNOT;
+                testptr->nodeval         = STRATPARAMLOG;
+                testptr->data.testtab[0] = ((yyvsp[0].TEST));
 
-                ((yyval.TEST)) = test;
+                ((yyval.TEST)) = testptr;
               }
-#line 1962 "y.tab.c"
+#line 1890 "parser_yy.c"
     break;
 
-  case 40:
-#line 538 "parser_yy.y"
+  case 40: /* TESTNOT: '(' TESTOR ')'  */
+#line 553 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.TEST)) = ((yyvsp[-1].TEST));
               }
-#line 1970 "y.tab.c"
+#line 1898 "parser_yy.c"
     break;
 
-  case 42:
-#line 545 "parser_yy.y"
+  case 42: /* TESTREL: TESTEXPR1 TESTRELOP TESTEXPR1  */
+#line 560 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                StratTest *       test;
+                StratTest *         testptr;
 
-                if ((test = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
+                if ((testptr = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
                   errorPrint    ("stratParserParse: out of memory (9)");
                   stratTestExit ((yyvsp[-2].TEST));
                   stratTestExit ((yyvsp[0].TEST));
                   YYABORT;
                 }
-                test->typetest     = ((yyvsp[-1].TESTOP));
-                test->typenode     = STRATPARAMLOG;
-                test->data.test[0] = ((yyvsp[-2].TEST));
-                test->data.test[1] = ((yyvsp[0].TEST));
+                testptr->testval         = ((yyvsp[-1].TESTOP));
+                testptr->nodeval         = STRATPARAMLOG;
+                testptr->data.testtab[0] = ((yyvsp[-2].TEST));
+                testptr->data.testtab[1] = ((yyvsp[0].TEST));
 
-                ((yyval.TEST)) = test;
+                ((yyval.TEST)) = testptr;
               }
-#line 1991 "y.tab.c"
+#line 1919 "parser_yy.c"
     break;
 
-  case 43:
-#line 564 "parser_yy.y"
+  case 43: /* TESTRELOP: '<'  */
+#line 579 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.TESTOP)) = STRATTESTLT;
               }
-#line 1999 "y.tab.c"
+#line 1927 "parser_yy.c"
     break;
 
-  case 44:
-#line 568 "parser_yy.y"
+  case 44: /* TESTRELOP: '='  */
+#line 583 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.TESTOP)) = STRATTESTEQ;
               }
-#line 2007 "y.tab.c"
+#line 1935 "parser_yy.c"
     break;
 
-  case 45:
-#line 572 "parser_yy.y"
+  case 45: /* TESTRELOP: '>'  */
+#line 587 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.TESTOP)) = STRATTESTGT;
               }
-#line 2015 "y.tab.c"
+#line 1943 "parser_yy.c"
     break;
 
-  case 46:
-#line 578 "parser_yy.y"
+  case 46: /* TESTEXPR1: TESTEXPR1 TESTEXPR1OP TESTEXPR2  */
+#line 593 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                StratTest *       test;
+                StratTest *         testptr;
 
-                if ((test = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
+                if ((testptr = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
                   errorPrint    ("stratParserParse: out of memory (10)");
                   stratTestExit ((yyvsp[-2].TEST));
                   stratTestExit ((yyvsp[0].TEST));
                   YYABORT;
                 }
-                test->typetest     = ((yyvsp[-1].TESTOP));
-                test->data.test[0] = ((yyvsp[-2].TEST));
-                test->data.test[1] = ((yyvsp[0].TEST));
+                testptr->testval         = ((yyvsp[-1].TESTOP));
+                testptr->data.testtab[0] = ((yyvsp[-2].TEST));
+                testptr->data.testtab[1] = ((yyvsp[0].TEST));
 
-                ((yyval.TEST)) = test;
+                ((yyval.TEST)) = testptr;
               }
-#line 2035 "y.tab.c"
+#line 1963 "parser_yy.c"
     break;
 
-  case 48:
-#line 597 "parser_yy.y"
+  case 48: /* TESTEXPR1OP: '+'  */
+#line 612 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.TESTOP)) = STRATTESTADD;
               }
-#line 2043 "y.tab.c"
+#line 1971 "parser_yy.c"
     break;
 
-  case 49:
-#line 601 "parser_yy.y"
+  case 49: /* TESTEXPR1OP: '-'  */
+#line 616 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.TESTOP)) = STRATTESTSUB;
               }
-#line 2051 "y.tab.c"
+#line 1979 "parser_yy.c"
     break;
 
-  case 50:
-#line 607 "parser_yy.y"
+  case 50: /* TESTEXPR2: TESTEXPR2 TESTEXPR2OP TESTEXPR3  */
+#line 622 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                StratTest *       test;
+                StratTest *         testptr;
 
-                if ((test = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
+                if ((testptr = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
                   stratTestExit ((yyvsp[-2].TEST));
                   stratTestExit ((yyvsp[0].TEST));
                   errorPrint    ("stratParserParse: out of memory (11)");
                   YYABORT;
                 }
-                test->typetest     = ((yyvsp[-1].TESTOP));
-                test->data.test[0] = ((yyvsp[-2].TEST));
-                test->data.test[1] = ((yyvsp[0].TEST));
+                testptr->testval         = ((yyvsp[-1].TESTOP));
+                testptr->data.testtab[0] = ((yyvsp[-2].TEST));
+                testptr->data.testtab[1] = ((yyvsp[0].TEST));
 
-                ((yyval.TEST)) = test;
+                ((yyval.TEST)) = testptr;
               }
-#line 2071 "y.tab.c"
+#line 1999 "parser_yy.c"
     break;
 
-  case 52:
-#line 626 "parser_yy.y"
+  case 52: /* TESTEXPR2OP: '*'  */
+#line 641 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.TESTOP)) = STRATTESTMUL;
               }
-#line 2079 "y.tab.c"
+#line 2007 "parser_yy.c"
     break;
 
-  case 53:
-#line 632 "parser_yy.y"
+  case 53: /* TESTEXPR3: TESTEXPR3 TESTEXPR3OP TESTEXPR4  */
+#line 647 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                StratTest *       test;
+                StratTest *         testptr;
 
-                if ((test = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
+                if ((testptr = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
                   errorPrint    ("stratParserParse: out of memory (12)");
                   stratTestExit ((yyvsp[-2].TEST));
                   stratTestExit ((yyvsp[0].TEST));
                   YYABORT;
                 }
-                test->typetest     = ((yyvsp[-1].TESTOP));
-                test->data.test[0] = ((yyvsp[-2].TEST));
-                test->data.test[1] = ((yyvsp[0].TEST));
+                testptr->testval         = ((yyvsp[-1].TESTOP));
+                testptr->data.testtab[0] = ((yyvsp[-2].TEST));
+                testptr->data.testtab[1] = ((yyvsp[0].TEST));
 
-                ((yyval.TEST)) = test;
+                ((yyval.TEST)) = testptr;
               }
-#line 2099 "y.tab.c"
+#line 2027 "parser_yy.c"
     break;
 
-  case 55:
-#line 651 "parser_yy.y"
+  case 55: /* TESTEXPR3OP: '%'  */
+#line 666 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.TESTOP)) = STRATTESTMOD;
               }
-#line 2107 "y.tab.c"
+#line 2035 "parser_yy.c"
     break;
 
-  case 56:
-#line 657 "parser_yy.y"
+  case 56: /* TESTEXPR4: '(' TESTEXPR1 ')'  */
+#line 672 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.TEST)) = ((yyvsp[-1].TEST));
               }
-#line 2115 "y.tab.c"
+#line 2043 "parser_yy.c"
     break;
 
-  case 59:
-#line 665 "parser_yy.y"
+  case 59: /* TESTVAL: VALSDOUBLE  */
+#line 680 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                StratTest *       test;
+                StratTest *         testptr;
 
-                if ((test = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
+                if ((testptr = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
                   errorPrint ("stratParserParse: out of memory (13)");
                   YYABORT;
                 }
 
-                test->typetest        = STRATTESTVAL;
-                test->typenode        = STRATPARAMDOUBLE;
-                test->data.val.valdbl = ((yyvsp[0].DOUBLE));
+                testptr->testval         = STRATTESTVAL;
+                testptr->nodeval         = STRATPARAMDOUBLE;
+                testptr->data.val.valdbl = ((yyvsp[0].DOUBLE));
 
-                ((yyval.TEST)) = test;
+                ((yyval.TEST)) = testptr;
               }
-#line 2134 "y.tab.c"
+#line 2062 "parser_yy.c"
     break;
 
-  case 60:
-#line 680 "parser_yy.y"
+  case 60: /* TESTVAL: VALSINT  */
+#line 695 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                StratTest *       test;
+                StratTest *         testptr;
 
-                if ((test = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
+                if ((testptr = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
                   errorPrint ("stratParserParse: out of memory (14)");
                   YYABORT;
                 }
 
-                test->typetest        = STRATTESTVAL;
-                test->typenode        = STRATPARAMINT;
-                test->data.val.valint = ((yyvsp[0].INTEGER));
+                testptr->testval         = STRATTESTVAL;
+                testptr->nodeval         = STRATPARAMINT;
+                testptr->data.val.valint = ((yyvsp[0].INTEGER));
 
-                ((yyval.TEST)) = test;
+                ((yyval.TEST)) = testptr;
               }
-#line 2153 "y.tab.c"
+#line 2081 "parser_yy.c"
     break;
 
-  case 61:
-#line 697 "parser_yy.y"
+  case 61: /* TESTVAR: PARAMNAME  */
+#line 712 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
-                StratTest *       test;
+                StratTest *       testptr;
                 StratParamTab *   condtab;
                 int               para;
-                int               paralen;
-                int               i, j;
+                size_t            paralen;
+                int               i;
+                size_t            j;
 
-                para    =
+                para    = 0;
                 paralen = 0;                      /* No parameter recognized yet */
-                condtab = parserstrattab->condtab; /* Point to parameter table   */
-                for (i = 0; condtab[i].name != NULL; i ++) {
+                condtab = penvptr->stratab->condtab; /* Point to parameter table */
+                for (i = 0; condtab[i].nameptr != NULL; i ++) {
                   if ((strncasecmp (((yyvsp[0].STRING)),         /* Find longest matching parameter name */
-                                    condtab[i].name,
-                                    j = strlen (condtab[i].name)) == 0) &&
+                                    condtab[i].nameptr,
+                                    j = strlen (condtab[i].nameptr)) == 0) &&
                       (j > paralen)) {
                     para    = i;
                     paralen = j;
                   }
                 }
                 if (paralen == 0) {
-                  errorPrint ("stratParserParse: invalid graph parameter name \"%s\", before \"%s\"",
-                              ((yyvsp[0].STRING)), stratParserRemain ());
+                  errorPrint ("stratParserParse: invalid graph parameter name \"%s\", line %d, column %d, before \"%s\"",
+                              ((yyvsp[0].STRING)), ((yylsp[0])).libenum, ((yylsp[0])).cobenum, ((yylsp[0])).tebeptr);
                   YYABORT;
                 }
 
-                if ((test = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
+                if ((testptr = (StratTest *) memAlloc (sizeof (StratTest))) == NULL) {
                   errorPrint ("stratParserParse: out of memory (15)");
                   YYABORT;
                 }
 
-                test->typetest          = STRATTESTVAR;
-                test->typenode          = condtab[para].type;
-                test->data.var.datatab  = parserstrattab;
-                test->data.var.datadisp = condtab[para].dataofft -
-                                          condtab[para].database;
+                testptr->testval          = STRATTESTVAR;
+                testptr->nodeval          = condtab[para].typeval;
+                testptr->data.var.datatab = penvptr->stratab;
+                testptr->data.var.dataoft = condtab[para].doffptr - condtab[para].dbasptr;
 
-                ((yyval.TEST)) = test;
+                ((yyval.TEST)) = testptr;
               }
-#line 2196 "y.tab.c"
+#line 2124 "parser_yy.c"
     break;
 
-  case 62:
-#line 738 "parser_yy.y"
+  case 62: /* VALSDOUBLE: TESTEXPR1OP VALDOUBLE  */
+#line 753 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.DOUBLE)) = (((yyvsp[-1].TESTOP)) == STRATTESTSUB) ? - ((yyvsp[0].DOUBLE)) : ((yyvsp[0].DOUBLE));
               }
-#line 2204 "y.tab.c"
+#line 2132 "parser_yy.c"
     break;
 
-  case 64:
-#line 745 "parser_yy.y"
+  case 64: /* VALSINT: TESTEXPR1OP VALINT  */
+#line 760 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
               {
                 ((yyval.INTEGER)) = (((yyvsp[-1].TESTOP)) == STRATTESTSUB) ? - ((yyvsp[0].INTEGER)) : ((yyvsp[0].INTEGER));
               }
-#line 2212 "y.tab.c"
+#line 2140 "parser_yy.c"
     break;
 
 
-#line 2216 "y.tab.c"
+#line 2144 "parser_yy.c"
 
       default: break;
     }
@@ -2227,13 +2155,13 @@ yyreduce:
      case of YYERROR or YYBACKUP, subsequent parser actions might lead
      to an incorrect destructor call or verbose syntax error message
      before the lookahead is translated.  */
-  YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
+  YY_SYMBOL_PRINT ("-> $$ =", YY_CAST (yysymbol_kind_t, yyr1[yyn]), &yyval, &yyloc);
 
   YYPOPSTACK (yylen);
   yylen = 0;
-  YY_STACK_PRINT (yyss, yyssp);
 
   *++yyvsp = yyval;
+  *++yylsp = yyloc;
 
   /* Now 'shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
@@ -2255,50 +2183,15 @@ yyreduce:
 yyerrlab:
   /* Make sure we have latest lookahead translation.  See comments at
      user semantic actions for why this is necessary.  */
-  yytoken = yychar == YYEMPTY ? YYEMPTY : YYTRANSLATE (yychar);
-
+  yytoken = yychar == YYEMPTY ? YYSYMBOL_YYEMPTY : YYTRANSLATE (yychar);
   /* If not already recovering from an error, report this error.  */
   if (!yyerrstatus)
     {
       ++yynerrs;
-#if ! YYERROR_VERBOSE
-      yyerror (YY_("syntax error"));
-#else
-# define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
-                                        yyssp, yytoken)
-      {
-        char const *yymsgp = YY_("syntax error");
-        int yysyntax_error_status;
-        yysyntax_error_status = YYSYNTAX_ERROR;
-        if (yysyntax_error_status == 0)
-          yymsgp = yymsg;
-        else if (yysyntax_error_status == 1)
-          {
-            if (yymsg != yymsgbuf)
-              YYSTACK_FREE (yymsg);
-            yymsg = YY_CAST (char *, YYSTACK_ALLOC (YY_CAST (YYSIZE_T, yymsg_alloc)));
-            if (!yymsg)
-              {
-                yymsg = yymsgbuf;
-                yymsg_alloc = sizeof yymsgbuf;
-                yysyntax_error_status = 2;
-              }
-            else
-              {
-                yysyntax_error_status = YYSYNTAX_ERROR;
-                yymsgp = yymsg;
-              }
-          }
-        yyerror (yymsgp);
-        if (yysyntax_error_status == 2)
-          goto yyexhaustedlab;
-      }
-# undef YYSYNTAX_ERROR
-#endif
+      yyerror (&yylloc, scanptr, penvptr, YY_("syntax error"));
     }
 
-
-
+  yyerror_range[1] = yylloc;
   if (yyerrstatus == 3)
     {
       /* If just tried and failed to reuse lookahead token after an
@@ -2313,7 +2206,7 @@ yyerrlab:
       else
         {
           yydestruct ("Error: discarding",
-                      yytoken, &yylval);
+                      yytoken, &yylval, &yylloc, scanptr, penvptr);
           yychar = YYEMPTY;
         }
     }
@@ -2331,6 +2224,7 @@ yyerrorlab:
      label yyerrorlab therefore never appears in user code.  */
   if (0)
     YYERROR;
+  ++yynerrs;
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
@@ -2347,13 +2241,14 @@ yyerrorlab:
 yyerrlab1:
   yyerrstatus = 3;      /* Each real token shifted decrements this.  */
 
+  /* Pop stack until we find a state that shifts the error token.  */
   for (;;)
     {
       yyn = yypact[yystate];
       if (!yypact_value_is_default (yyn))
         {
-          yyn += YYTERROR;
-          if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
+          yyn += YYSYMBOL_YYerror;
+          if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYSYMBOL_YYerror)
             {
               yyn = yytable[yyn];
               if (0 < yyn)
@@ -2365,9 +2260,9 @@ yyerrlab1:
       if (yyssp == yyss)
         YYABORT;
 
-
+      yyerror_range[1] = *yylsp;
       yydestruct ("Error: popping",
-                  yystos[yystate], yyvsp);
+                  YY_ACCESSING_SYMBOL (yystate), yyvsp, yylsp, scanptr, penvptr);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -2377,9 +2272,12 @@ yyerrlab1:
   *++yyvsp = yylval;
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 
+  yyerror_range[2] = yylloc;
+  ++yylsp;
+  YYLLOC_DEFAULT (*yylsp, yyerror_range, 2);
 
   /* Shift the error token.  */
-  YY_SYMBOL_PRINT ("Shifting", yystos[yyn], yyvsp, yylsp);
+  YY_SYMBOL_PRINT ("Shifting", YY_ACCESSING_SYMBOL (yyn), yyvsp, yylsp);
 
   yystate = yyn;
   goto yynewstate;
@@ -2390,7 +2288,7 @@ yyerrlab1:
 `-------------------------------------*/
 yyacceptlab:
   yyresult = 0;
-  goto yyreturn;
+  goto yyreturnlab;
 
 
 /*-----------------------------------.
@@ -2398,31 +2296,29 @@ yyacceptlab:
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
-  goto yyreturn;
+  goto yyreturnlab;
 
 
-#if !defined yyoverflow || YYERROR_VERBOSE
-/*-------------------------------------------------.
-| yyexhaustedlab -- memory exhaustion comes here.  |
-`-------------------------------------------------*/
+/*-----------------------------------------------------------.
+| yyexhaustedlab -- YYNOMEM (memory exhaustion) comes here.  |
+`-----------------------------------------------------------*/
 yyexhaustedlab:
-  yyerror (YY_("memory exhausted"));
+  yyerror (&yylloc, scanptr, penvptr, YY_("memory exhausted"));
   yyresult = 2;
-  /* Fall through.  */
-#endif
+  goto yyreturnlab;
 
 
-/*-----------------------------------------------------.
-| yyreturn -- parsing is finished, return the result.  |
-`-----------------------------------------------------*/
-yyreturn:
+/*----------------------------------------------------------.
+| yyreturnlab -- parsing is finished, clean up and return.  |
+`----------------------------------------------------------*/
+yyreturnlab:
   if (yychar != YYEMPTY)
     {
       /* Make sure we have latest lookahead translation.  See comments at
          user semantic actions for why this is necessary.  */
       yytoken = YYTRANSLATE (yychar);
       yydestruct ("Cleanup: discarding lookahead",
-                  yytoken, &yylval);
+                  yytoken, &yylval, &yylloc, scanptr, penvptr);
     }
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYABORT or YYACCEPT.  */
@@ -2431,20 +2327,18 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-                  yystos[+*yyssp], yyvsp);
+                  YY_ACCESSING_SYMBOL (+*yyssp), yyvsp, yylsp, scanptr, penvptr);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
   if (yyss != yyssa)
     YYSTACK_FREE (yyss);
 #endif
-#if YYERROR_VERBOSE
-  if (yymsg != yymsgbuf)
-    YYSTACK_FREE (yymsg);
-#endif
+
   return yyresult;
 }
-#line 751 "parser_yy.y"
+
+#line 766 "/tmp/claude-1000/-home-rquey-Progs-neper-neper-src/c2177580-f1cc-49c7-8dc0-ae9eb5145463/scratchpad/scotch-src/scotch/src/libscotch/parser_yy.y"
 
 
 /*
@@ -2454,7 +2348,7 @@ yyreturn:
 **  defined in the first section of the file.
 */
 
-unsigned int                parsermethtokentab[] = { /* Table for parameter/token type conversion */
+unsigned int                stratmethtokentab[] = { /* Table for parameter/token type conversion */
                               VALCASE,
                               VALDOUBLE,
                               VALINT,
@@ -2479,38 +2373,52 @@ unsigned int                parsermethtokentab[] = { /* Table for parameter/toke
 
 Strat *
 stratParserParse (
-const StratTab * const      strattab,             /*+ Pointer to parsing tables +*/
-const char * const          string)               /*+ Strategy string to parse  +*/
+const StratTab * const      stratab,              /*+ Pointer to parsing tables +*/
+const char * const          textptr)              /*+ Strategy string to parse  +*/
 {
-  yyclearin;                                      /* Reset the parser state */
+  YY_BUFFER_STATE     buffdat;
+  ParserEnv           penvdat;                    /* Parser environment    */
+  yyscan_t            scandat;                    /* Pointer to lex memory */
+  int                 o;
 
-#ifdef SCOTCH_DEBUG_PARSER3
-  yydebug = 1;                                    /* Set debugging if needed */
-#endif /* SCOTCH_DEBUG_PARSER3 */
+  penvdat.stratab = stratab;                      /* Point to the parsing tables             */
+  penvdat.straptr = NULL;                         /* Clear up the temporary strategy pointer */
+  penvdat.textptr = textptr;                      /* Initialize the lexical parser           */
 
-  stratParserInit (string);                       /* Initialize the lexical parser           */
-  parserstrattab  = strattab;                     /* Point to the parsing tables             */
-  parserstratcurr = NULL;                         /* Clear up the temporary strategy pointer */
+  if (stratParserLexInit (&scandat) != 0) {
+    errorPrint ("stratParserParse: cannot initialize reentrant parser");
+    return     (NULL);
+  }
+  buffdat = stratParserLexScanString (textptr, scandat); /* Let's hope nothing breaks; error management in flex is just crap */
+  stratParserLexBufSwitch (buffdat, scandat);
 
-  if (yyparse () != 0) {                          /* Parse the strategy string */
-    if (parserstratcurr != NULL)
-      stratExit (parserstratcurr);
+  o = yyparse (scandat, &penvdat);                /* Parse the strategy string */
+
+  stratParserLexBufDelete (buffdat, scandat);
+  stratParserLexDestroy   (scandat);
+
+  if (o != 0) {
+    if (penvdat.straptr != NULL)
+      stratExit (penvdat.straptr);
     return (NULL);
   }
 
-  return (parserstratcurr);                       /* Return strategy pointer */
+  return (penvdat.straptr);                       /* Return strategy pointer */
 }
 
 /* This routine displays the parser error message.
 ** It returns:
-** - 1  : in all cases.
+** - void  : in all cases.
 */
 
 static
-int
+void
 yyerror (
-const char * const          errstr)
+const ParserLocation * const  plocptr,            /*+ Scan location +*/
+void * const                  scanptr,            /*+ Not used      +*/
+const ParserEnv * const       penvptr,            /*+ Not used      +*/
+const char * const            mesgptr)            /*+ Not used      +*/
 {
-  errorPrint ("stratParserParse: invalid strategy string, before \"%s\"", stratParserRemain ());
-  return     (1);
+  errorPrint ("stratParserParse: invalid strategy string, line %d, column %d, at \"%s\"",
+              plocptr->libenum, plocptr->cobenum, plocptr->tebeptr);
 }

@@ -18,6 +18,7 @@ extern "C"
     char *mode;             // density or symbol (or combination)
     char *layout;           // layout (default surface,slices)
     char *field;            // field to print(?)
+    char *sym;              // sample symmetry
 
     // For tracking
 

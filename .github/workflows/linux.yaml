@@ -23,9 +23,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Install GNU Scientific Library
-        run: sudo apt-get install libgsl-dev
-
       - name: Create build directory
         run: mkdir -p src/build
 

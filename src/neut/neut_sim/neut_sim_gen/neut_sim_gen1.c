@@ -5,61 +5,17 @@
 #include"neut_sim_gen_.h"
 
 int
-neut_sim_name_type (char *name, char **ptype, char **pname, int *prestart)
+neut_sim_name_type (char *name, char **ptype)
 {
-  int i, qty1, *qty2 = NULL, status;
-  char ***parts = NULL;
+  int status = 0;
 
-  ut_list_break2 (name, NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty2, &qty1);
-
-  status = 0;
-  if (pname)
-    ut_string_string (name, pname);
-  if (prestart)
-    (*prestart) = 0;
-
-  if (qty1 > 1)
+  if (strstr (name, NEUT_SEP_NODEP))
     ut_string_string ("merge", ptype);
-  else if (ut_file_exist ("%s/report", name))
+  else if (ut_sys_isdir ("%s/inputs", name) || ut_sys_isdir ("%s/results", name)
+           || ut_file_exist ("%s/.sim", name))
     ut_string_string ("sim", ptype);
-  else if (ut_file_exist ("%s/.sim", name))
-    ut_string_string ("sim", ptype);
-  else if (qty2[0] == 1 && ut_file_exist ("%s/post.report", name))
-    ut_string_string ("fepx", ptype);
-  else if (qty2[0] == 2 && ut_file_exist ("%s/post.report.rst%s", parts[0][0], parts[0][1]))
-  {
-    ut_string_string ("fepx", ptype);
-    if (pname)
-      ut_string_string (parts[0][0], pname);
-    if (prestart)
-      *prestart = atoi (parts[0][1]);
-  }
-  else if (qty2[0] == 1)
-  {
-    int found = 0;
-
-    for (i = 1e3; i >= 1; i--)
-      if (ut_file_exist ("%s/post.report.rst%d", parts[0][0], i))
-      {
-        ut_string_string ("fepx", ptype);
-        if (pname)
-          ut_string_string (parts[0][0], pname);
-        if (prestart)
-          *prestart = i;
-
-        found = 1;
-        status = 1;
-        break;
-      }
-
-    if (!found)
-      status = -1;
-  }
   else
     status = -1;
-
-  // ut_free_3d_char (&parts, ...);
-  ut_free_1d_int (&qty2);
 
   return status;
 }
@@ -170,12 +126,12 @@ neut_sim_input_files (struct SIM Sim, char ***pfullfiles, char ***pfiles, int *p
     (*pfileqty)++;
   }
 
-  if (ut_file_exist ("%s/inputs/%s", Sim.simdir, "simulation.cfg"))
+  if (Sim.cfg && ut_file_exist ("%s/inputs/%s", Sim.simdir, Sim.cfg))
   {
     if (pfullfiles)
-      (*pfullfiles)[(*pfileqty)] = ut_string_paste3 (Sim.simdir, "/inputs/", "simulation.cfg");
+      (*pfullfiles)[(*pfileqty)] = ut_string_paste3 (Sim.simdir, "/inputs/", Sim.cfg);
     if (pfiles)
-      ut_string_string ("simulation.cfg", (*pfiles) + (*pfileqty));
+      ut_string_string (Sim.cfg, (*pfiles) + (*pfileqty));
     (*pfileqty)++;
   }
 
@@ -407,25 +363,23 @@ neut_sim_entity_id_res_val (struct SIM Sim, char *entity, int id, char *res, dou
 void
 neut_sim_testinputs (struct SIM Sim, struct TESS Tess, struct MESH *Mesh)
 {
-  (void) Sim;
-
   if (!neut_tess_isvoid (Tess))
   {
     if (!neut_mesh_isvoid (Mesh[0]))
       if (Tess.VerQty != Mesh[0].ElsetQty)
-        ut_print_message (2, 2, "simulation.tess and simulation.msh do not match (0D).\n");
+        ut_print_message (1, 2, "%s and %s do not match (0D).\n", Sim.tess, Sim.msh);
 
     if (!neut_mesh_isvoid (Mesh[1]))
       if (Tess.EdgeQty != Mesh[1].ElsetQty)
-        ut_print_message (2, 2, "simulation.tess and simulation.msh do not match (1D).\n");
+        ut_print_message (1, 2, "%s and %s do not match (1D).\n", Sim.tess, Sim.msh);
 
     if (!neut_mesh_isvoid (Mesh[2]))
       if (Tess.FaceQty != Mesh[2].ElsetQty)
-        ut_print_message (2, 2, "simulation.tess and simulation.msh do not match (2D).\n");
+        ut_print_message (1, 2, "%s and %s do not match (2D).\n", Sim.tess, Sim.msh);
 
     if (!neut_mesh_isvoid (Mesh[3]))
       if (Tess.PolyQty != Mesh[3].ElsetQty)
-        ut_print_message (2, 2, "simulation.tess and simulation.msh do not match (3D).\n");
+        ut_print_message (1, 2, "%s and %s do not match (3D).\n", Sim.tess, Sim.msh);
   }
 
   return;

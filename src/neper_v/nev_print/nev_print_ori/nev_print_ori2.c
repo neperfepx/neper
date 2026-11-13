@@ -383,12 +383,8 @@ nev_print_ori_space (struct IN_V In, struct ORI Ori, struct PRINT Print, FILE *f
 
   if (strcmp (In.oriedgecol, "default"))
     ut_string_string (In.oriedgecol, &basecol);
-  else if (!strcmp (In.colormode, "bright"))
-    ut_string_string ("black", &basecol);
-  else if (!strcmp (In.colormode, "dark"))
-    ut_string_string ("white", &basecol);
   else
-    abort ();
+    ut_string_string ("black", &basecol);
 
   neut_print_set_default (&TessPrint);
 

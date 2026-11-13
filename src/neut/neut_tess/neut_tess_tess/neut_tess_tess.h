@@ -18,7 +18,10 @@ extern "C"
   extern void neut_tess_tess_edge (struct TESS, struct TESS *);
   extern void neut_tess_tess_face (struct TESS, struct TESS *);
   extern void neut_tess_tess_domain (struct TESS, struct TESS *);
+  extern void neut_tess_tess_domprim (struct TESS, struct TESS *);
   extern void neut_tess_tess_scale (struct TESS TessA, struct TESS *pTessB);
+
+  extern void neut_tess_tess_domfaces_minimal (struct TESS TessA, struct TESS *pTessB);
 
 #endif				/* NEUT_TESS_MEMCPY_H */
 

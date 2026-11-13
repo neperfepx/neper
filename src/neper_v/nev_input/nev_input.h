@@ -3,3 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern int nev_input (int, char **, struct IN_V *, int *);
+extern void nev_input_free (struct IN_V *);

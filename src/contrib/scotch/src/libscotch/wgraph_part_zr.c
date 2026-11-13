@@ -1,4 +1,4 @@
-/* Copyright 2007-2010,2016 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2007-2010,2016,2021,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -45,17 +45,20 @@
 /**                                 to   : 01 jul 2008     **/
 /**                # Version 6.0  : from : 05 nov 2009     **/
 /**                                 to   : 14 mar 2010     **/
+/**                # Version 6.1  : from : 02 dec 2021     **/
+/**                                 to   : 02 dec 2021     **/
+/**                # Version 7.0  : from : 17 jan 2023     **/
+/**                                 to   : 17 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 /*
 **  The defines and includes.
 */
 
-#define WGRAPH_PART_ZR
-
 #include "module.h"
 #include "common.h"
 #include "graph.h"
+#include "arch.h"
 #include "wgraph.h"
 #include "wgraph_part_zr.h"
 

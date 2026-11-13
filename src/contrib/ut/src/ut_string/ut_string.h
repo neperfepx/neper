@@ -101,6 +101,23 @@ extern "C"
 /// \note To be a file name, the string has to start by 'file(', 'msfile' or '@'
   extern int ut_string_isfilename (char *string);
 
+/// \brief Split a string ternary, <cond>?<true>:<false>
+/// \param string: string
+/// \param *pcond: condition
+/// \param *ptrue: value if true
+/// \param *pfalse: value if false
+/// \return 0 on success and -1 on failure
+/// \note The string must contain at least one double quote (a ternary that
+/// returns strings), and can be enclosed in parentheses.  \c ?, \c : and
+/// parentheses are ignored inside double quotes.
+  extern int ut_string_ternary (char *string, char **pcond, char **ptrue,
+                                char **pfalse);
+
+/// \brief Test if a string is a double-quoted string, as in "abc"
+/// \param string: string
+/// \return 1 on success and 0 on failure
+  extern int ut_string_isquoted (char *string);
+
 /// \brief Convert a string into \c double
 /// \param string: string
 /// \param *pres: result
@@ -119,6 +136,12 @@ extern "C"
 /// \param string1: input string
 /// \param *pstring2: output string (does not need to be preallocated)
   extern void ut_string_string (const char *string1, char **pstring2);
+
+/// \brief Print a formatted string into a string allocated to the right size
+/// \param *pstring: string (reallocated; can appear in the arguments)
+/// \param format: format, as in printf
+/// \return length of the string
+  extern int ut_string_sprintf (char **pstring, const char *format, ...);
 
 /// \brief Compare two strings à la strcmp
 /// \param string1: string 1
@@ -203,6 +226,8 @@ extern "C"
   extern int ut_string_substrings (char *string, char ***psubstrings,
                                    int *psubstringqty);
   extern int ut_string_section_level (char *string, int *plevel);
+  extern void ut_string_ternary_part (char *string, int beg, int end,
+                                      char **ppart);
   extern int ut_string_untilchar (char *string, char c, int *ppos, char *res);
   extern int ut_string_untilstring (const char *string, const char *s,
                                     int *ppos, char *res);

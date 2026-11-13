@@ -8,6 +8,7 @@ extern "C"
 #endif
 
   extern void net_transform_tess_cut (char *expr, struct TESS Dom, struct TESS *pTess);
+  extern void net_transform_tess_cut_prim (struct PRIM *Prim, int PrimQty, struct TESS *pTess);
   extern void net_transform_tess_cut_pre_prim (char *expr, struct PRIM **pPrim, int *pPrimQty, int verbosity);
 
 #ifdef __cplusplus

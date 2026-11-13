@@ -447,8 +447,8 @@ extern "C"
 ///
 ///
 ///
-  extern int neut_tess_domfaces_comdomedge (struct TESS Tess, int *dface,
-					    int dfaceqty, int *pdedge);
+  extern void neut_tess_domfaces_comdomedges (struct TESS Tess, int *dface,
+					    int dfaceqty, int **pdedges, int *pdedgeqty);
 
 /// \brief Get the com domain ver of a set of domain faces
 ///
@@ -631,7 +631,7 @@ extern "C"
   extern int neut_tess_inter_isperslave (struct TESS Tess, int inter);
 
   extern int neut_tess_face_scale (struct TESS Tess, int face, int *pscale);
-  extern int neut_tess_face_scale_polys (struct TESS Tess, int face, int scale, int *poly);
+  extern int neut_tess_seedpair_scale (struct TESS Tess, int seed1, int seed2, int *pscale);
 
   extern void neut_tess_ver_scale (struct TESS Tess, int ver, int *pscale);
   extern void neut_tess_edge_scale (struct TESS Tess, int edge, int *pscale);
@@ -661,7 +661,33 @@ extern "C"
 
   extern int neut_tess_cell_scale (struct TESS Tess, int id, int *pscale);
 
+  extern void neut_tess_domface_boundaryfaces (struct TESS Tess, int domface, int **pfaces, int *pfaceqty);
+
 #endif				/* NEUT_TESS_TOPO_H */
+
+/// \brief Get the master of a vertex, and the periodicity shift of the
+/// vertex relative to it (a vertex that is not periodic is its own master)
+  extern void neut_tess_ver_master (struct TESS Tess, int ver, int *pmaster,
+                                    int *shift);
+
+/// \brief Get the copies of a vertex in a periodic tessellation (ver,
+/// then its other copies), with their offsets relative to ver
+  extern void neut_tess_ver_copies (struct TESS Tess, int ver, int **pvers,
+                                    int ***poffsets, int *pverqty);
+
+/// \brief Get the copies of an edge in a periodic tessellation (edge,
+/// then its other copies), with their offsets relative to edge
+  extern void neut_tess_edge_copies (struct TESS Tess, int edge, int **pedges,
+                                     int ***poffsets, int *pedgeqty);
+
+/// \brief Get the other vertex of an edge than ver
+  extern int neut_tess_edge_otherver (struct TESS Tess, int edge, int ver);
+
+/// \brief Test whether a vertex is a copy of another one in a periodic
+/// tessellation, of a given offset (ver = ver2 + offset * PeriodicDist)
+/// \return 1 if it is, 0 otherwise
+  extern int neut_tess_ver_iscopy (struct TESS Tess, int ver, int ver2,
+                                   int *offset);
 
 #ifdef __cplusplus
 }

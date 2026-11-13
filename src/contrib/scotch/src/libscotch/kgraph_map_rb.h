@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2014,2018,2019,2021,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -63,6 +63,8 @@
 /**                                 to   : 28 mar 2011     **/
 /**                # Version 6.0  : from : 07 aug 2014     **/
 /**                                 to   : 03 aug 2018     **/
+/**                # Version 7.0  : from : 23 aug 2019     **/
+/**                                 to   : 16 jul 2024     **/
 /**                                                        **/
 /************************************************************/
 
@@ -115,9 +117,10 @@ typedef struct KgraphMapRbParam_ {
 
 typedef struct KgraphMapRbData_ {
   const Graph *             grafptr;              /*+ Pointer to top-level graph, possibly with fixed vertices +*/
+  ArchDom                   domnorg;              /*+ Initial mapping (sub)domain                              +*/
   Mapping *                 mappptr;              /*+ Mapping to compute                                       +*/
   struct {                                        /*+ Remapping structure                                      +*/
-    const Mapping *         mappptr;              /*+ Old mapping (for remapping only)                         +*/ 
+    const Mapping *         mappptr;              /*+ Old mapping (for remapping only)                         +*/
     const Gnum *            vmlotax;              /*+ Array of vertex migration costs                          +*/
     Gnum                    cmloval;              /*+ Migration edge load for remapping                        +*/
     Gnum                    crloval;              /*+ Regular edge load for mapping                            +*/
@@ -158,4 +161,4 @@ int                         kgraphMapRbVfloBuild (const Arch * restrict const, c
 void                        kgraphMapRbVfloSplit (const Arch * restrict const, const ArchDom * restrict const, const Anum, KgraphMapRbVflo * restrict const, Anum * restrict const, Gnum * restrict const);
 int                         kgraphMapRbVfloMerge (Mapping * restrict const, const Gnum, const Anum * restrict const, const Anum);
 
-int                         kgraphMapRbBgraph   (const KgraphMapRbData * restrict const, Bgraph * restrict const, const Graph * restrict const, const Mapping * restrict const, const ArchDom * restrict const, const Gnum * restrict const);
+int                         kgraphMapRbBgraph   (const KgraphMapRbData * restrict const, Bgraph * restrict const, const Graph * restrict const, const Mapping * restrict const, const ArchDom * restrict const, const Gnum * restrict const, Context * const);

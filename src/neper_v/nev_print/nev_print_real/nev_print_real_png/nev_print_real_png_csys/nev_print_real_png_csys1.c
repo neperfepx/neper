@@ -83,8 +83,8 @@ nev_print_real_png_csys (FILE * file, struct DATA CsysData, struct PRINT Print, 
 
   ut_free_1d (&data);
   ut_free_1d (&O);
-  ol_g_free (g);
-  ol_g_free (s);
+  ol_g_free (&g);
+  ol_g_free (&s);
   ut_free_1d_char (&edge_rad);
   ut_free_1d_char (&edge_texture);
   ut_free_1d_char (&tmp);

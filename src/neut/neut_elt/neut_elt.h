@@ -26,7 +26,10 @@ extern double neut_elt_rr_2d (double *, double *, double *);
 extern double neut_elt_3d_rho (double *, double *, double *, double *);
 extern int neut_elt_boundlist (char *type, int dim, int ***pfaces,
 			       int *pfaceqty, int *pnodeqty);
-extern void neut_elt_nodes_facet (int dim, int* nodes, int* facetnodes, int* pfacet, int *pfacetori);
+extern double neut_elt_sj_quad (double *p1, double *p2, double *p3, double *p4);
+extern void neut_elt_nodes_facet (char *type, int dim, int* nodes, int* facetnodes, int* pfacet, int *pfacetori);
+extern void neut_elt_nodes_facet_quad (int dim, int *nodes, int *facetnodes, int *pfacet,
+                                       int *pfacetori);
 extern void neut_elt_facet_nodes (char *type, int dim, int order, int* nodes, int facet, int facetori, int*
     surfnodes);
 

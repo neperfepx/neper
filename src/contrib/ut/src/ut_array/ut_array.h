@@ -102,6 +102,15 @@ extern "C"
   extern void ut_array_1d_int_add (int *array1, int *array2, int size,
                                    int *array3);
 
+/// \brief Subtract 2 1D arrays of \c int
+/// \param array1: 1st-index array
+/// \param array2: 2nd-index array
+/// \param size: size of the arrays
+/// \param array3: output array (array2 - array1)
+/// \remark Input and output arrays can be the same.
+  extern void ut_array_1d_int_sub (int *array1, int *array2, int size,
+                                   int *array3);
+
 /// \brief Add 2 2D arrays of \c double
 /// \param array1: 1st-index array
 /// \param array2: 2nd-index array
@@ -1111,14 +1120,6 @@ extern "C"
   extern int ut_array_1d_equal (double *array, double *array2, int size,
                                 double tol);
 
-/// \brief Determine whether 2 \c double arrays are opposite to a given tolerance
-/// \param array1: 1st array
-/// \param array2: 2nd array
-/// \param size: size of the arrays
-/// \param tol: tolerancy
-/// \return 1 if equal and 0 otherwise
-  extern int ut_array_1d_opposite (double *array, double *array2, int size,
-                                   double tol);
 
 /// \brief Determine whether 2 \c int arrays are equal
 /// \param array1: 1st array
@@ -2057,6 +2058,8 @@ extern "C"
 
   extern int ut_array_1d_isint (double *array, int size);
   extern int ut_array_2d_isint (double **array, int size1, int size2);
+
+  extern void ut_array_1d_int_shuf (int *data, int size, gsl_rng * r);
 
 #endif                          /* UT_ARRAY_H */
 

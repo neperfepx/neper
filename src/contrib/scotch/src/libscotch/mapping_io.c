@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2011,2014 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2011,2014,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -68,14 +68,14 @@
 /**                                 to   : 11 aug 2010     **/
 /**                # Version 6.0  : from : 03 mar 2011     **/
 /**                                 to   : 22 aug 2014     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 20 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define MAPPING_IO
 
 #include "module.h"
 #include "common.h"
@@ -117,42 +117,42 @@ FILE * restrict const           stream)
   if (strcmp (archName (mappptr->archptr), "term") == 0) /* If target architecture is variable-sized */
     return (2);
 
-  archDomFrst (mappptr->archptr, &fdomdat);      /* Get architecture size */
+  archDomFrst (mappptr->archptr, &fdomdat);       /* Get architecture size */
   archnbr = archDomSize (mappptr->archptr, &fdomdat);
   if (mappptr->domnmax < (archnbr + 1)) {         /* If mapping array too small to store mapping data */
     ArchDom * restrict    domntab;
 
     if ((domntab = (ArchDom *) memRealloc (mappptr->domntab, (archnbr + 1) * sizeof (ArchDom))) == NULL) { /* If cannot resize domain array */
       errorPrint ("mapLoad: out of memory (1)");
-      return     (1);
+      return (1);
     }
 
     mappptr->domnmax = archnbr + 1;               /* Point to new array */
     mappptr->domntab = domntab;
   }
-  mappptr->domnnbr = archnbr + 1;                 /* One more for first domain, for unmapped vertices                 */
+  mappptr->domnnbr = archnbr + 1;                 /* One more for first domain, for unmapped vertices                */
   archDomFrst (mappptr->archptr, &mappptr->domntab[0]); /* Set first domain with root domain data                    */
-  for (mappnum = 0; mappnum < archnbr; mappnum ++) /* For all terminal domain numbers                                 */
+  for (mappnum = 0; mappnum < archnbr; mappnum ++) /* For all terminal domain numbers                                */
     archDomTerm (mappptr->archptr, &mappptr->domntab[mappnum + 1], mappnum); /* Set domain with terminal domain data */
 
   if ((intLoad (stream, &mappnbr) != 1) ||        /* Read number of mapping entries */
       (mappnbr < 1)) {
     errorPrint ("mapLoad: bad input (1)");
-    return     (1);
+    return (1);
   }
 
   if (memAllocGroup ((void **) (void *)
                      &mapptab, (size_t) (mappnbr          * sizeof (MappingLoadMap)),
                      &permtab, (size_t) (mappptr->grafptr->vertnbr * sizeof (MappingLoadPerm)), NULL) == NULL) {
     errorPrint ("mapLoad: out of memory (2)");
-    return     (1);
+    return (1);
   }
 
   for (mappnum = 0; mappnum < mappnbr; mappnum ++) { /* Load mapping array */
     if ((intLoad (stream, &mapptab[mappnum].slblnum) != 1) ||
         (intLoad (stream, &mapptab[mappnum].tlblnum) != 1)) {
       errorPrint ("mapLoad: bad input (2)");
-      return     (1);
+      return (1);
     }
   }
   intSort2asc1 (mapptab, mappnbr);                /* Sort mapping array by increasing source labels */
@@ -223,7 +223,7 @@ FILE * restrict const           stream)
   if (fprintf (stream, GNUMSTRING "\n",
                (Gnum) vertnnd) == EOF) {
     errorPrint ("mapSave: bad output (1)");
-    return     (1);
+    return (1);
   }
 
   for (vertnnd += vertnum; vertnum < vertnnd; vertnum ++) {
@@ -231,7 +231,7 @@ FILE * restrict const           stream)
                  (Gnum) ((vlbltax != NULL) ? vlbltax[vertnum] : vertnum),
                  (Anum) (parttax != NULL) ? archDomNum (archptr, &domntab[parttax[vertnum]]) : -1) == EOF) {
       errorPrint ("mapSave: bad output (2)");
-      return     (1);
+      return (1);
     }
   }
 

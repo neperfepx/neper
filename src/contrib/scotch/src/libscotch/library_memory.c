@@ -1,4 +1,4 @@
-/* Copyright 2014 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2014,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -40,14 +40,14 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 21 sep 2014     **/
 /**                                 to   : 23 sep 2014     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 06 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -60,11 +60,11 @@
 /*                                  */
 /************************************/
 
-/*+ This routine frees a structure allocated
-*** by a SCOTCH_*Alloc () routine.
-*** It returns:
-*** - void  : in all cases.
-+*/
+/* This routine frees a structure allocated
+** by a SCOTCH_*Alloc () routine.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_memFree (
@@ -73,14 +73,14 @@ void * const                dataptr)
   memFree (dataptr);
 }
 
-/*+ This routine returns the size, in bytes,
-*** of a SCOTCH_Num.
-*** It returns:
-*** - void  : in all cases.
-+*/
+/* This routine returns the size, in bytes,
+** of a SCOTCH_Num.
+** It returns:
+** - > 0  : in all cases.
+*/
 
 int
-SCOTCH_numSizeof ()
+SCOTCH_numSizeof (void)
 {
   return (sizeof (SCOTCH_Num));
 }

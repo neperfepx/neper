@@ -11,6 +11,9 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
   if ((*pTess).Dim != 3)
     ut_print_neperbug ();
 
+  if (!(*pTess).DomType)
+    ut_string_string ("unknown", &(*pTess).DomType);
+
   if ((!strcmp ((*pTess).DomType, "cube")
        || !strcmp ((*pTess).DomType, "square")
        || (!strcmp ((*pTess).DomType, "cut") && (*pTess).DomVerQty == 8
@@ -63,6 +66,7 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
   }
 
   else if (!strcmp ((*pTess).DomType, "cylinder")
+           || !strcmp ((*pTess).DomType, "hourglass")
            || !strcmp ((*pTess).DomType, "circle"))
   {
     (*pTess).DomFaceLabel = ut_alloc_2d_char ((*pTess).DomFaceQty + 1, 10);
@@ -70,6 +74,19 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
     strcpy ((*pTess).DomFaceLabel[2], "z1");
     for (i = 3; i <= (*pTess).DomFaceQty; i++)
       sprintf ((*pTess).DomFaceLabel[i], "f%d", i - 2);
+
+    // the curved face of an exact (curved) domain
+    if ((*pTess).DomFaceType)
+      for (i = 1; i <= (*pTess).DomFaceQty; i++)
+        if ((*pTess).DomFaceType[i] && strcmp ((*pTess).DomFaceType[i], "plane"))
+        {
+          if (!strcmp ((*pTess).DomType, "cylinder"))
+            ut_string_string ("cyl", (*pTess).DomFaceLabel + i);
+          else if (!strcmp ((*pTess).DomType, "hourglass"))
+            ut_string_string ("hourglass", (*pTess).DomFaceLabel + i);
+          else
+            ut_print_neperbug ();
+        }
   }
 
   else if (!strcmp ((*pTess).DomType, "stdtriangle"))
@@ -103,12 +120,28 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
     }
   }
 
-  else if (strcmp ((*pTess).DomType, "cut"))
+  // (the faces of a cut domain have their own labels, if any)
+  else if (strcmp ((*pTess).DomType, "cut") || !(*pTess).DomFaceLabel)
   {
     (*pTess).DomFaceLabel = ut_alloc_2d_char ((*pTess).DomFaceQty + 1, 10);
     for (i = 1; i <= (*pTess).DomFaceQty; i++)
       sprintf ((*pTess).DomFaceLabel[i], "f%d", i);
   }
+
+  neut_tess_init_domain_label_3d_edgever (pTess);
+
+  return;
+}
+
+// Setting the labels of the domain edges and vertices from the ones of
+// the domain faces
+void
+neut_tess_init_domain_label_3d_edgever (struct TESS *pTess)
+{
+  int i, j;
+
+  ut_free_2d_char (&(*pTess).DomEdgeLabel, (*pTess).DomEdgeQty + 1);
+  ut_free_2d_char (&(*pTess).DomVerLabel, (*pTess).DomVerQty + 1);
 
   (*pTess).DomEdgeLabel = ut_alloc_1d_pchar ((*pTess).DomEdgeQty + 1);
   for (i = 1; i <= (*pTess).DomEdgeQty; i++)

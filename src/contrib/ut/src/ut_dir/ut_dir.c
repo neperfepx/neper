@@ -17,10 +17,8 @@ ut_dir_allfiles (char *dir, char ***pfiles, int *pfileqty)
 
   dp = opendir(dir);
 
-  if (dp == NULL) {
-      perror("opendir");
-      abort ();
-  }
+  if (dp == NULL)
+    ut_print_message (2, 0, "Directory `%s' cannot be opened.\n", dir);
 
   (*pfileqty) = 0;
   // Read entries in the directory

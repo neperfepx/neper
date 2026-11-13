@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2018,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2018,2020,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -46,6 +46,8 @@
 /**                                 to   : 01 jun 2008     **/
 /**                # Version 6.0  : from : 07 jun 2018     **/
 /**                                 to   : 20 aug 2020     **/
+/**                # Version 7.0  : from : 18 jan 2023     **/
+/**                                 to   : 18 jan 2023     **/
 /**                                                        **/
 /**   NOTES      : # Most of the contents of this module   **/
 /**                  comes from "map_b_fm" of the SCOTCH   **/
@@ -111,10 +113,10 @@ GainLink *                  gainTablFrst        (GainTabl * const);
 GainLink *                  gainTablNext        (GainTabl * const, const GainLink * const);
 void                        gainTablMove        (GainTabl * const, const ptrdiff_t);
 #ifdef SCOTCH_DEBUG_GAIN3
-#ifdef GAIN
+#ifdef SCOTCH_GAIN
 static int                  gainTablCheck       (GainEntr * const);
 static int                  gainTablCheck2      (GainEntr * const, GainLink * const);
-#endif /* GAIN */
+#endif /* SCOTCH_GAIN */
 #endif /* SCOTCH_DEBUG_GAIN3 */
 
 /*
@@ -123,7 +125,7 @@ static int                  gainTablCheck2      (GainEntr * const, GainLink * co
 
 #define gainTablEmpty(tabl)         ((tabl)->tmin == (tabl)->tend)
 #define gainTablAdd(tabl,link,gain) ((tabl)->tablAdd  ((tabl), (link), (gain)))
-#if ((! defined GAIN) && (! defined SCOTCH_DEBUG_GAIN1))
+#if ((! defined SCOTCH_GAIN) && (! defined SCOTCH_DEBUG_GAIN1))
 #define gainTablDel(tabl,link)      (((GainLink *) (link))->next->prev = ((GainLink *) (link))->prev, \
                                      ((GainLink *) (link))->prev->next = ((GainLink *) (link))->next)
-#endif /* ((! defined GAIN) && (! defined SCOTCH_DEBUG_GAIN1)) */
+#endif /* ((! defined SCOTCH_GAIN) && (! defined SCOTCH_DEBUG_GAIN1)) */

@@ -122,7 +122,7 @@ neut_tess_edges_merge_checkfaces (struct TESS *pTess, int keepedge)
   {
     face = (*pTess).EdgeFaceNb[keepedge][i];
 
-    if ((*pTess).FaceVerQty[face] < 3)
+    if ((*pTess).FaceEdgeQty[face] < 3)
     {
       keepedge2 =
         (*pTess).FaceEdgeNb[face][1] !=
@@ -177,7 +177,7 @@ neut_tess_edges_merge_checkfaces (struct TESS *pTess, int keepedge)
 
         pos =
           ut_array_1d_int_eltpos ((*pTess).FaceEdgeNb[tmp] + 1,
-                                  (*pTess).FaceVerQty[tmp], keepedge);
+                                  (*pTess).FaceEdgeQty[tmp], keepedge);
 
         if (pos == -1)
           ut_print_neperbug ();

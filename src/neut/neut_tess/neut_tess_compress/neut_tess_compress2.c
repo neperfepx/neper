@@ -8,7 +8,7 @@
 void
 neut_tess_compress_polys (struct TESS *pTess)
 {
-  int i, pos;
+  int i, pos, oldqty = (*pTess).CellQty;
 
   pos = 0;
   for (i = 1; i <= (*pTess).PolyQty; i++)
@@ -28,7 +28,10 @@ neut_tess_compress_polys (struct TESS *pTess)
 
   (*pTess).PolyQty = pos;
   (*pTess).CellQty = pos;
-  (*pTess).SeedQty = pos;
+  neut_tess_compress_cells (pTess, oldqty);
+  // in a periodic tessellation, the seeds also include the periodic seeds
+  if (!(*pTess).Type || strcmp ((*pTess).Type, "periodic"))
+    (*pTess).SeedQty = pos;
 
   return;
 }
@@ -37,13 +40,20 @@ neut_tess_compress_polys (struct TESS *pTess)
 void
 neut_tess_compress_faces (struct TESS *pTess)
 {
-  int i, pos;
+  int i, pos, oldqty = (*pTess).FaceQty, *old_new = NULL;
+
+  if ((*pTess).PerFaceMaster)
+    old_new = ut_alloc_1d_int ((*pTess).FaceQty + 1);
 
   pos = 0;
   for (i = 1; i <= (*pTess).FaceQty; i++)
     if ((*pTess).FaceState[i] != -1)
+    {
       if (++pos < i)
         neut_tess_compress_moveface (pTess, i, pos);
+      if (old_new)
+        old_new[i] = pos;
+    }
 
   // realloc'ing
   if ((*pTess).Dim == 3)
@@ -53,6 +63,8 @@ neut_tess_compress_faces (struct TESS *pTess)
   (*pTess).FaceEq =
     ut_realloc_2d_delline ((*pTess).FaceEq, (*pTess).FaceQty + 1, pos + 1);
   (*pTess).FaceVerQty = ut_realloc_1d_int ((*pTess).FaceVerQty, pos + 1);
+  (*pTess).FaceEdgeQty = ut_realloc_1d_int ((*pTess).FaceEdgeQty, pos + 1);
+
   (*pTess).FaceVerNb =
     ut_realloc_2d_int_delline ((*pTess).FaceVerNb, (*pTess).FaceQty + 1,
                                pos + 1);
@@ -76,11 +88,19 @@ neut_tess_compress_faces (struct TESS *pTess)
   if ((*pTess).Dim == 2)
   {
     (*pTess).CellQty = pos;
-    (*pTess).SeedQty = pos;
+    neut_tess_compress_cells (pTess, oldqty);
+    // in a periodic tessellation, the seeds also include the periodic seeds
+    if (!(*pTess).Type || strcmp ((*pTess).Type, "periodic"))
+      (*pTess).SeedQty = pos;
   }
+
+  if (old_new)
+    neut_tess_compress_faces_per (pTess, old_new, oldqty);
 
   if ((*pTess).DomFaceQty > 0)
     neut_tess_init_domtessface (pTess);
+
+  ut_free_1d_int (&old_new);
 
   return;
 }
@@ -89,13 +109,20 @@ neut_tess_compress_faces (struct TESS *pTess)
 void
 neut_tess_compress_edges (struct TESS *pTess)
 {
-  int i, pos;
+  int i, pos, oldqty = (*pTess).EdgeQty, *old_new = NULL;
+
+  if ((*pTess).PerEdgeMaster)
+    old_new = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
 
   pos = 0;
   for (i = 1; i <= (*pTess).EdgeQty; i++)
     if ((*pTess).EdgeState[i] == 0)
+    {
       if (++pos < i)
         neut_tess_compress_moveedge (pTess, i, pos);
+      if (old_new)
+        old_new[i] = pos;
+    }
 
   // realloc'ing
   (*pTess).EdgeVerNb =
@@ -114,8 +141,13 @@ neut_tess_compress_edges (struct TESS *pTess)
 
   (*pTess).EdgeQty = pos;
 
+  if (old_new)
+    neut_tess_compress_edges_per (pTess, old_new, oldqty);
+
   if ((*pTess).DomEdgeQty > 0)
     neut_tess_init_domtessedge (pTess);
+
+  ut_free_1d_int (&old_new);
 
   return;
 }
@@ -124,13 +156,20 @@ neut_tess_compress_edges (struct TESS *pTess)
 void
 neut_tess_compress_vers (struct TESS *pTess)
 {
-  int i, pos;
+  int i, pos, oldqty = (*pTess).VerQty, *old_new = NULL;
+
+  if ((*pTess).PerVerMaster)
+    old_new = ut_alloc_1d_int ((*pTess).VerQty + 1);
 
   pos = 0;
   for (i = 1; i <= (*pTess).VerQty; i++)
     if ((*pTess).VerState[i] != -1)
+    {
       if (++pos < i)
         neut_tess_compress_movever (pTess, i, pos);
+      if (old_new)
+        old_new[i] = pos;
+    }
 
   // realloc'ing
   (*pTess).VerCoo =
@@ -145,13 +184,19 @@ neut_tess_compress_vers (struct TESS *pTess)
 
   (*pTess).VerQty = pos;
 
+  if (old_new)
+    neut_tess_compress_vers_per (pTess, old_new, oldqty);
+
   if ((*pTess).DomVerQty > 0)
     neut_tess_init_domtessver (pTess);
 
+  ut_free_1d_int (&old_new);
 
   return;
 }
 
+// neut_tess_compress_domfaces removes the domain faces that include no
+// tessellation faces, except the periodic ones (see neut_tess_domface_isper)
 void
 neut_tess_compress_domfaces (struct TESS *pTess)
 {
@@ -164,12 +209,12 @@ neut_tess_compress_domfaces (struct TESS *pTess)
 
   domfaceqty = 0;
   for (i = 1; i <= (*pTess).DomFaceQty; i++)
-    if ((*pTess).DomTessFaceQty[i] > 0)
+    if ((*pTess).DomTessFaceQty[i] > 0 || neut_tess_domface_isper (*pTess, i))
       domface_old_new[i] = ++domfaceqty;
 
   if (domfaceqty < (*pTess).DomFaceQty)
     for (i = 1; i <= (*pTess).DomFaceQty; i++)
-      if ((*pTess).DomTessFaceQty[i] > 0)
+      if (domface_old_new[i] > 0)
         neut_tess_compress_movedomface (pTess, i, domface_old_new[i]);
 
   (*pTess).DomFaceQty = domfaceqty;

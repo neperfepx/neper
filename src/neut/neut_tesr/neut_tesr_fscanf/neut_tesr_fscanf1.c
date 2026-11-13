@@ -8,80 +8,27 @@ void
 neut_tesr_fnscanf (char *name, struct TESR *pTesr)
 {
   FILE *file = NULL;
-  char **list = NULL;
-  int i, j, qty, qty2;
-  char **string = ut_alloc_2d_char (6, 1000);
-  double *bounds = NULL;
-  double *scale = NULL;
+  char *name2 = NULL;
 
-  ut_list_break (name, NEUT_SEP_DEP, &list, &qty);
+  ut_string_string (name, &name2);
 
-  for (i = 1; i < qty; i++)
-  {
-    if (!strncmp (list[i], "crop", 4))
-    {
-      ut_string_fnrs (list[i], ",", " ", INT_MAX);
-      list[i][strlen (list[i]) - 1] = '\0';
+  file = ut_file_open (name, "r");
+  neut_tesr_fscanf (file, dirname (name2), pTesr);
+  ut_file_close (file, name, "r");
 
-      bounds = ut_alloc_1d (6);
-      qty2 =
-        sscanf (list[i], "crop(%s%s%s%s%s%s", string[0], string[1], string[2],
-                string[3], string[4], string[5]);
-
-      for (j = 0; j < qty2; j++)
-        ut_math_eval (string[j], 0, NULL, NULL, &(bounds[j]));
-      for (j = qty2; j < 6; j++)
-        bounds[j] = -1;
-    }
-    else if (!strncmp (list[i], "rasterscale", 11))
-    {
-      ut_string_fnrs (list[i], ",", " ", INT_MAX);
-      list[i][strlen (list[i]) - 1] = '\0';
-
-      scale = ut_alloc_1d (3);
-      qty2 =
-        sscanf (list[i], "rasterscale(%s%s%s", string[0], string[1],
-                string[2]);
-
-      if (qty2 == 1)
-      {
-        ut_math_eval (string[0], 0, NULL, NULL, scale);
-        ut_array_1d_set (scale, 3, scale[0]);
-      }
-      else
-      {
-        for (j = 0; j < qty2; j++)
-          ut_math_eval (string[j], 0, NULL, NULL, scale + j);
-        for (j = qty2; j < 3; j++)
-          scale[j] = 1;
-      }
-    }
-    else
-      ut_print_message (2, 0, "Failed to process expression `%s'.\n", name);
-  }
-
-  file = ut_file_open (list[0], "r");
-  neut_tesr_fscanf (file, dirname (list[0]), bounds, scale, pTesr);
-  ut_file_close (file, list[0], "r");
-
-  ut_free_1d (&bounds);
-  ut_free_1d (&scale);
-  ut_free_2d_char (&string, 6);
-  ut_free_2d_char (&list, qty);
+  ut_free_1d_char (&name2);
 
   return;
 }
 
 void
-neut_tesr_fscanf (FILE * file, char *dirname, double *bounds, double *scale,
-                  struct TESR *pTesr)
+neut_tesr_fscanf (FILE * file, char *dirname, struct TESR *pTesr)
 {
   char *version = NULL, *dataformat = NULL, *oridataformat = NULL, string[1000];
-  int *voxbounds = NULL;
 
   neut_tesr_free (pTesr);
 
-  neut_tesr_fscanf_head (pTesr, bounds, &voxbounds, &version, &dataformat, &oridataformat, file);
+  neut_tesr_fscanf_head (pTesr, &version, &dataformat, &oridataformat, file);
 
   neut_tesr_fscanf_cell (pTesr, version, file);
 
@@ -90,13 +37,13 @@ neut_tesr_fscanf (FILE * file, char *dirname, double *bounds, double *scale,
     ut_file_nextstring (file, string);
 
     if (!strcmp (string, "**data"))
-      neut_tesr_fscanf_data (pTesr, dirname, voxbounds, scale, version, &dataformat, file);
+      neut_tesr_fscanf_data (pTesr, dirname, version, &dataformat, file);
 
     else if (!strcmp (string, "**oridata"))
-      neut_tesr_fscanf_oridata (pTesr, dirname, voxbounds, scale, version, &oridataformat, file);
+      neut_tesr_fscanf_oridata (pTesr, dirname, version, &oridataformat, file);
 
     else if (!strcmp (string, "**oridef"))
-      neut_tesr_fscanf_oridef (pTesr, dirname, voxbounds, scale, file);
+      neut_tesr_fscanf_oridef (pTesr, dirname, file);
   }
   while (strcmp (string, "***end"));
 
@@ -105,14 +52,9 @@ neut_tesr_fscanf (FILE * file, char *dirname, double *bounds, double *scale,
   neut_tesr_init_cellbbox (pTesr);
   neut_tesr_init_hasvoid (pTesr);
 
-  if (bounds || scale)
-    if ((*pTesr).size[2] == 1)
-      (*pTesr).Dim = 2;
-
   ut_free_1d_char (&version);
   ut_free_1d_char (&dataformat);
   ut_free_1d_char (&oridataformat);
-  ut_free_1d_int (&voxbounds);
 
   return;
 }

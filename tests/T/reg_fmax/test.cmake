@@ -2,5 +2,5 @@
 # Copyright (C) 2003-2026, Romain Quey, CNRS.
 # See the COPYING file in the top-level directory.
 
-set (test_command -T -n 2 -reg 1 -fmax 10 -o test)
+set (test_command -T -n 2 -reg 1 -regfmax 10 -o test)
 include(../../test.cmake)

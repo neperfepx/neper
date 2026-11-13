@@ -4,10 +4,6 @@
 
 #include "ol_gnd_rho.h"
 
-#ifdef HAVE_NLOPT
-#include <nlopt.h>
-#endif /* HAVE_NLOPT */
-
 void
 ol_gnd_crys_b (struct OL_CRYS Crys, double *pb)
 {
@@ -126,12 +122,12 @@ ol_gnd_nye_rho_simplex (struct OL_CRYS Crys, double **A, double *nyev,
       if (!strcmp (Crys.structure, "fcc"))
       {
         if ((i >= 1 && i <= 12) || (i >= 19 && i <= 30))        // edge dislocation
-          glp_set_obj_coef (lp, i, 1.);
-        else
           glp_set_obj_coef (lp, i, 1. / (1 - Crys.nu));
+        else                                                      // screw dislocation
+          glp_set_obj_coef (lp, i, 1.);
       }
       else
-        abort ();
+        ut_print_message (2, 0, "Crystal structure `%s' not supported (fcc only).\n", Crys.structure);
     }
     else
       abort ();
@@ -182,134 +178,6 @@ ol_gnd_nye_rho_simplex (struct OL_CRYS Crys, double **A, double *nyev,
   ut_array_1d_scale (x, 18, 1 / b);
 
   glp_delete_prob (lp);
-
-  return;
-}
-#endif
-
-#ifdef HAVE_NLOPT
-int count;
-
-double
-myfunc (unsigned n, const double *x, double *grad, void *my_func_data)
-{
-  count++;
-
-  (void) n;
-  (void) grad;
-  (void) my_func_data;
-
-  int i;
-  double value = 0;
-
-  for (i = 0; i < 18; i++)
-    value += x[i] * x[i] * x[i];
-
-  if (grad)
-    for (i = 0; i < 18; i++)
-      grad[i] = 3 * x[i] * x[i];
-
-  return value;
-}
-
-typedef struct
-{
-  double *A_line;
-  double nyev;
-
-} my_constraint_data;
-
-double
-myconstraint (unsigned n, const double *x, double *grad, void *data)
-{
-  my_constraint_data *d = (my_constraint_data *) data;
-
-  (void) n;
-  (void) grad;
-
-  int i;
-  double value = 0;
-  for (i = 0; i < 18; i++)
-    value += d->A_line[i] * x[i];
-
-  value -= d->nyev;
-
-  // if (grad)
-  // {
-  // grad[0] = 3 * a * (a * x[0] + b) * (a * x[0] + b);
-  // grad[1] = -1.0;
-  // }
-  return value;
-}
-
-void
-ol_gnd_nye_rho_norm (struct OL_CRYS Crys, double **A, double *nyev,
-                     double *rho)
-{
-  int i;
-  int count = 0;
-  double b;
-  double A_max;
-  double nyev_max;
-
-  int size1, size2;
-  size1 = 9;
-  size2 = 18;
-
-  A_max = ut_array_2d_absmax (A, size1, size2);
-  ut_array_2d_scale (A, size1, size2, 1 / A_max);
-
-  nyev_max = ut_array_1d_absmax (nyev, size1);
-  ut_array_1d_scale (nyev, size1, 1 / nyev_max);
-
-  ol_gnd_crys_b (Crys, &b);
-
-  nlopt_opt opt = nlopt_create (NLOPT_LN_COBYLA, size2);        // algorithm and dimensionality
-
-  nlopt_set_min_objective (opt, myfunc, NULL);
-
-  my_constraint_data *data = malloc (size1 * sizeof (my_constraint_data));
-
-  for (i = 0; i < size1; i++)
-  {
-    data[i].A_line = ut_alloc_1d (size2);
-    ut_array_1d_memcpy (A[i], size2, data[i].A_line);
-    data[i].nyev = nyev[i];
-  }
-
-  for (i = 0; i < size1; i++)
-    nlopt_add_equality_constraint (opt, myconstraint, &data[i], 1e-8);
-
-  nlopt_set_xtol_rel (opt, 1e-4);
-
-  // Setting initial guess
-  ut_array_1d_zero (rho, size2);
-  // ol_gnd_nye_rho_l2m (Crys, A, nyev, rho);
-  // ut_array_1d_scale  (rho, size2, b);
-  // for (i = 0; i < size2; i++)
-  // rho[i] = ut_num_max (0, rho[i]);
-
-  double minf;                  /* the minimum objective value, upon return */
-
-  if (nlopt_optimize (opt, rho, &minf) < 0)
-  {
-    printf ("nlopt failed!\n");
-    abort ();
-  }
-
-  ut_array_1d_scale (rho, size2, nyev_max / A_max);
-  ut_array_1d_scale (rho, size2, 1 / b);
-
-  ut_array_2d_scale (A, size1, size2, A_max);
-  ut_array_1d_scale (nyev, size1, nyev_max);
-
-  printf ("found minimum = %0.10g (%d iters)\n", minf, count);
-  double *B = ut_alloc_1d (size1);
-  ut_mat_vect_product (A, size1, size2, rho, size2, B);
-  for (i = 0; i < 8; i++)
-    printf ("%g %g\n", nyev[i], B[i]);
-
-  nlopt_destroy (opt);
 
   return;
 }

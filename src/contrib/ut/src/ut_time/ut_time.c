@@ -15,8 +15,9 @@ ut_time_subtract (struct timeval *x, struct timeval *y)
   struct timeval end;
   struct timeval *pend = &end;
 
+  // working on a copy of y, which therefore remains unchanged
   if (y)
-    pend = y;
+    end = *y;
   else
     gettimeofday (pend, NULL);
 
@@ -30,7 +31,7 @@ ut_time_subtract (struct timeval *x, struct timeval *y)
   }
   if (x->tv_usec - pend->tv_usec > 1000000)
   {
-    int nsec = (pend->tv_usec - x->tv_usec) / 1000000;
+    int nsec = (x->tv_usec - pend->tv_usec) / 1000000;
     pend->tv_usec += 1000000 * nsec;
     pend->tv_sec -= nsec;
   }

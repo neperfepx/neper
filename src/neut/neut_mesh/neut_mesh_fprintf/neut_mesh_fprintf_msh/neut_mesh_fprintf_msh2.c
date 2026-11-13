@@ -60,6 +60,16 @@ neut_mesh_fprintf_msh_domain (FILE * file, char *Domain)
 }
 
 void
+neut_mesh_fprintf_msh_topology (FILE * file, int topology)
+{
+  fprintf (file, "$Topology\n");
+  fprintf (file, "%d\n", topology);
+  fprintf (file, "$EndTopology\n");
+
+  return;
+}
+
+void
 neut_mesh_fprintf_msh_header (FILE * file, char *mode, char *version)
 {
   int filetype, one = 1;
@@ -75,8 +85,6 @@ neut_mesh_fprintf_msh_header (FILE * file, char *mode, char *version)
   fprintf (file, "$MeshFormat\n");
   if (!strcmp (version, "msh") || !strcmp (version, "msh2") || version[0] == '2')
     fprintf (file, "2.2 %d %ld\n", filetype, sizeof (double));
-  else if (!strcmp (version, "msh4") || version[0] == '4')
-    fprintf (file, "4.1 %d %ld\n", filetype, sizeof (double));
   else
     abort ();
 
@@ -89,35 +97,8 @@ neut_mesh_fprintf_msh_header (FILE * file, char *mode, char *version)
   fprintf (file, "$EndMeshFormat\n");
 
   fprintf (file, "$MeshVersion\n");
-  fprintf (file, "2.3\n");
+  fprintf (file, "2.4\n");
   fprintf (file, "$EndMeshVersion\n");
-
-  return;
-}
-
-void
-neut_mesh_fprintf_msh_entities (FILE * file, char *mode, struct TESS Tess,
-                                 struct NODES Nodes,
-                                 struct MESH Mesh0D, struct MESH Mesh1D,
-                                 struct MESH Mesh2D, struct MESH Mesh3D)
-{
-  fprintf (file, "$Entities\n");
-
-  fprintf (file, "%d %d %d %d\n", Mesh0D.ElsetQty, Mesh1D.ElsetQty, Mesh2D.ElsetQty, Mesh3D.ElsetQty);
-
-  if (Mesh0D.EltQty)
-    neut_mesh_fprintf_msh_entities_dim (file, mode, Tess, Nodes, Mesh0D);
-
-  if (Mesh1D.EltQty)
-    neut_mesh_fprintf_msh_entities_dim (file, mode, Tess, Nodes, Mesh1D);
-
-  if (Mesh2D.EltQty)
-    neut_mesh_fprintf_msh_entities_dim (file, mode, Tess, Nodes, Mesh2D);
-
-  if (Mesh3D.EltQty)
-    neut_mesh_fprintf_msh_entities_dim (file, mode, Tess, Nodes, Mesh3D);
-
-  fprintf (file, "$EndEntities\n");
 
   return;
 }
@@ -156,35 +137,6 @@ neut_mesh_fprintf_msh_nodes (FILE *file, char *mode, struct NODES Nodes)
 }
 
 void
-neut_mesh_fprintf_msh_nodes_v4 (FILE * file, char *mode, struct TESS Tess,
-                                 struct NODES Nodes,
-                                 struct MESH Mesh0D, struct MESH Mesh1D,
-                                 struct MESH Mesh2D, struct MESH Mesh3D)
-{
-  fprintf (file, "$Nodes\n");
-  fprintf (file, "%d %d 1 %d\n", Mesh0D.ElsetQty + Mesh1D.ElsetQty +
-                                 Mesh2D.ElsetQty + Mesh3D.ElsetQty,
-                                 Nodes.NodeQty, Nodes.NodeQty);
-
-  // if (!strcmp (mode, "ascii"))
-  {
-    neut_mesh_fprintf_msh_nodes_dim_v4 (file, mode, Tess, Nodes, Mesh0D, Mesh0D);
-    neut_mesh_fprintf_msh_nodes_dim_v4 (file, mode, Tess, Nodes, Mesh0D, Mesh1D);
-    neut_mesh_fprintf_msh_nodes_dim_v4 (file, mode, Tess, Nodes, Mesh1D, Mesh2D);
-    neut_mesh_fprintf_msh_nodes_dim_v4 (file, mode, Tess, Nodes, Mesh2D, Mesh3D);
-  }
-
-  /*
-  else
-    abort ();
-  */
-
-  fprintf (file, "$EndNodes\n");
-
-  return;
-}
-
-void
 neut_mesh_fprintf_msh_elts (FILE * file, char *mode, struct TESS Tess,
                              struct MESH Mesh0D, struct MESH Mesh1D,
                              struct MESH Mesh2D, struct MESH Mesh3D,
@@ -215,47 +167,6 @@ neut_mesh_fprintf_msh_elts (FILE * file, char *mode, struct TESS Tess,
 
   if (MeshCo.EltQty)
     neut_mesh_fprintf_msh_elts_dim (file, mode, shift[4], MeshCo);
-
-  fprintf (file, "$EndElements\n");
-
-  ut_free_1d_int (&eltfaset);
-
-  return;
-}
-
-void
-neut_mesh_fprintf_msh_elts_v4 (FILE * file, char *mode, struct TESS Tess,
-                                struct MESH Mesh0D, struct MESH Mesh1D,
-                                struct MESH Mesh2D, struct MESH Mesh3D,
-                                struct MESH MeshCo, char **fasets,
-                                int *fasetids, int fasetqty, char *dim,
-                                char *numbering, int *shift)
-{
-  int *eltfaset = NULL, EltQty;
-
-  neut_mesh_fprintf_msh_elts_pre (Tess, Mesh0D, Mesh1D, Mesh2D, Mesh3D,
-                                   MeshCo, fasets, fasetqty, fasetids, dim,
-                                   numbering, &eltfaset, shift, &EltQty);
-
-  fprintf (file, "$Elements\n");
-  fprintf (file, "%d %d 1 %d\n", Mesh0D.ElsetQty + Mesh1D.ElsetQty +
-                                 Mesh2D.ElsetQty + Mesh3D.ElsetQty,
-                                 EltQty, EltQty);
-
-  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "0"))
-    neut_mesh_fprintf_msh_elts_dim_v4 (file, mode, Mesh0D, shift[0]);
-
-  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "1"))
-    neut_mesh_fprintf_msh_elts_dim_v4 (file, mode, Mesh1D, shift[1]);
-
-  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "2"))
-    neut_mesh_fprintf_msh_elts_dim_v4 (file, mode, Mesh2D, shift[2]);
-
-  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "3"))
-    neut_mesh_fprintf_msh_elts_dim_v4 (file, mode, Mesh3D, shift[3]);
-
-  if (MeshCo.EltQty)
-    neut_mesh_fprintf_msh_elts_dim_v4 (file, mode, MeshCo, shift[4]);
 
   fprintf (file, "$EndElements\n");
 
@@ -440,126 +351,119 @@ neut_mesh_fprintf_msh_elsetgroups (FILE *file, struct MESH Mesh)
   return;
 }
 
+// Writing the nsets of nsetlist (an nset not found is skipped, and the
+// section is not written if no nset is found)
 void
 neut_mesh_fprintf_msh_nsets (FILE * file, struct NSET NSet0D,
                               struct NSET NSet1D, struct NSET NSet2D,
                               char *nsetlist)
 {
-  int i, j, status;
+  int i, j, k, foundqty = 0;
   char **nsets;
   int nsetqty;
+  struct NSET NSets[3] = { NSet0D, NSet1D, NSet2D };
+  int *dims = NULL, *ids = NULL;
 
   ut_list_break (nsetlist, NEUT_SEP_NODEP, &nsets, &nsetqty);
 
-  fprintf (file, "$NSets\n");
-  fprintf (file, "%d\n", nsetqty);
+  dims = ut_alloc_1d_int (nsetqty);
+  ids = ut_alloc_1d_int (nsetqty);
 
   for (i = 0; i < nsetqty; i++)
   {
-    status = -1;
+    ids[i] = -1;
 
-    for (j = 1; j <= NSet0D.qty; j++)
-      if (!strcmp (nsets[i], NSet0D.names[j]))
-      {
-        neut_mesh_fprintf_msh_nset (file, NSet0D.names[j], NSet0D.NodeQty[j],
-                                     NSet0D.nodes[j]);
-        status = 0;
-        break;
-      }
+    for (k = 0; k < 3 && ids[i] == -1; k++)
+      for (j = 1; j <= NSets[k].qty; j++)
+        if (!strcmp (nsets[i], NSets[k].names[j]))
+        {
+          dims[i] = k;
+          ids[i] = j;
+          foundqty++;
+          break;
+        }
 
-    if (status == 0)
-      continue;
-
-    for (j = 1; j <= NSet1D.qty; j++)
-      if (!strcmp (nsets[i], NSet1D.names[j]))
-      {
-        neut_mesh_fprintf_msh_nset (file, NSet1D.names[j], NSet1D.NodeQty[j],
-                                     NSet1D.nodes[j]);
-        status = 0;
-        break;
-      }
-
-    if (status == 0)
-      continue;
-
-    for (j = 1; j <= NSet2D.qty; j++)
-      if (!strcmp (nsets[i], NSet2D.names[j]))
-      {
-        neut_mesh_fprintf_msh_nset (file, NSet2D.names[j], NSet2D.NodeQty[j],
-                                     NSet2D.nodes[j]);
-        status = 0;
-        break;
-      }
-
-    if (status == 0)
-      continue;
-
-    if (status == -1)
+    if (ids[i] == -1)
       ut_print_message (1, 3, "Nset %s was not found (skipped).\n", nsets[i]);
   }
 
-  fprintf (file, "$EndNSets\n");
+  if (foundqty > 0)
+  {
+    fprintf (file, "$NSets\n");
+    fprintf (file, "%d\n", foundqty);
+
+    for (i = 0; i < nsetqty; i++)
+      if (ids[i] != -1)
+        neut_mesh_fprintf_msh_nset (file, NSets[dims[i]].names[ids[i]],
+                                     NSets[dims[i]].NodeQty[ids[i]],
+                                     NSets[dims[i]].nodes[ids[i]]);
+
+    fprintf (file, "$EndNSets\n");
+  }
 
   ut_free_2d_char (&nsets, nsetqty);
+  ut_free_1d_int (&dims);
+  ut_free_1d_int (&ids);
 
   return;
 }
 
 void
-neut_mesh_fprintf_msh_fasets (FILE * file, struct TESS Tess,
-                              struct MESH Mesh2D, struct MESH Mesh3D,
-                              int *shift, char *fasetlist)
+neut_mesh_fprintf_msh_fasets (FILE * file, int *shift, char *fasetlist,
+                              struct MESH Mesh)
+
 {
-  int i, j, k, eltnb, EltQty, elt3dqty, id, status, qty, eltnodeqty;
-  int *elt3d = NULL;
+  int i, j, elt2d, qty, eltnodeqty;
+  int *elt3d = NULL, *ids = NULL;
   char **name = NULL;
 
-  if (neut_mesh_isvoid (Mesh2D))
+  if (Mesh.EltQty == 0)
     return;
 
-  eltnodeqty = neut_elt_nodeqty (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder);
+  eltnodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder);
 
   ut_list_break (fasetlist, NEUT_SEP_NODEP, &name, &qty);
 
+  // elsets of the fasets (-1 if not found)
+  ids = ut_alloc_1d_int (qty);
+  ut_array_1d_int_set (ids, qty, -1);
+  for (i = 0; i < qty; i++)
+    for (j = 1; j <= Mesh.ElsetQty; j++)
+      if (!strcmp (name[i], Mesh.ElsetLabels[j]))
+      {
+        ids[i] = j;
+        break;
+      }
+
   fprintf (file, "$Fasets\n");
 
-  fprintf (file, "%d\n", qty);
+  fprintf (file, "%d\n", qty - ut_array_1d_int_valnb (ids, qty, -1));
 
   for (i = 0; i < qty; i++)
   {
-    status = neut_tess_domface_label_id (Tess, name[i], &id);
+    int id = ids[i];
 
-    if (status != 0)
+    if (id == -1)
       continue;
 
     // printing number of elements
-    EltQty = 0;
-    for (j = 1; j <= Tess.DomTessFaceQty[id]; j++)
-      EltQty += Mesh2D.Elsets[Tess.DomTessFaceNb[id][j]][0];
-
     fprintf (file, "%s\n", name[i]);
 
-    fprintf (file, "%d\n", EltQty);
+    fprintf (file, "%d\n", Mesh.Elsets[id][0]);
 
     // printing elements
-    for (j = 1; j <= Tess.DomTessFaceQty[id]; j++)
-      for (k = 1; k <= Mesh2D.Elsets[Tess.DomTessFaceNb[id][j]][0]; k++)
-      {
-        eltnb = Mesh2D.Elsets[Tess.DomTessFaceNb[id][j]][k];
-
-        neut_mesh_elt2d_elts3d (Mesh2D, eltnb, Mesh3D, &elt3d, &elt3dqty);
-
-        if (elt3dqty != 1)
-          abort ();
-
-        fprintf (file, "%d ", elt3d[0] + shift[3]);
-        ut_array_1d_int_fprintf_reverse (file, Mesh2D.EltNodes[eltnb], eltnodeqty, "%d");
-      }
+    for (j = 1; j <= Mesh.Elsets[id][0]; j++)
+    {
+      elt2d = Mesh.Elsets[id][j];
+      fprintf (file, "%d ", Mesh.EltId[elt2d] + shift[3]);
+      ut_array_1d_int_fprintf (file, Mesh.EltNodes[elt2d], eltnodeqty, "%d");
+    }
   }
 
   fprintf (file, "$EndFasets\n");
 
   ut_free_1d_int (&elt3d);
+  ut_free_1d_int (&ids);
   ut_free_2d_char (&name, qty);
 
   return;

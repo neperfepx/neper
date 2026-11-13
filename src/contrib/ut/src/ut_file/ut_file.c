@@ -9,6 +9,22 @@
 #include<dirent.h>
 #include"ut.h"
 
+// counting the lines from the current position, including a last line
+// without a newline character
+static int
+ut_file_nblines_count (FILE * file, char *trash)
+{
+  int nblines = 0, nl = 1;
+
+  while (fgets (trash, 10000, file))
+  {
+    nl = (strchr (trash, '\n') != NULL);
+    nblines += nl;
+  }
+
+  return nblines + !nl;
+}
+
 int
 ut_file_nblines (const char *filename)
 {
@@ -17,10 +33,10 @@ ut_file_nblines (const char *filename)
   char trash[10000];
 
   file = fopen (filename, "r");
+  if (!file)
+    return -1;
 
-  nblines = 0;
-  while (fgets (trash, 10000, file))
-    nblines++;
+  nblines = ut_file_nblines_count (file, trash);
 
   fclose (file);
 
@@ -33,9 +49,7 @@ ut_file_nblines_pointer (FILE * file)
   int nblines;
   char trash[10000];
 
-  nblines = 0;
-  while (fgets (trash, 10000, file))
-    nblines++;
+  nblines = ut_file_nblines_count (file, trash);
 
   fseek (file, 0, 0);
 
@@ -52,7 +66,7 @@ ut_file_nbwords (const char *filename)
   file = ut_file_open (filename, "R");
 
   nbwords = 0;
-  while (fscanf (file, "%s", trash) == 1)
+  while (fscanf (file, "%9999s", trash) == 1)
     nbwords++;
 
   ut_file_close (file, filename, "R");
@@ -84,7 +98,7 @@ ut_file_nbwords_pointer (FILE * file)
   char trash[10000];
 
   nbwords = 0;
-  while (fscanf (file, "%s", trash) == 1)
+  while (fscanf (file, "%9999s", trash) == 1)
     nbwords++;
 
   fseek (file, 0, 0);
@@ -95,19 +109,22 @@ ut_file_nbwords_pointer (FILE * file)
 int
 ut_file_nbcolumns (const char *filename)
 {
+  int nbwords, nblines;
+
   if (!ut_file_exist (filename))
     return -1;
-  else if (!ut_file_nbwords (filename))
-    return -1;
-  else
-    return ut_file_nbwords (filename) / ut_file_nblines (filename);
+
+  nbwords = ut_file_nbwords (filename);
+  nblines = ut_file_nblines (filename);
+
+  return (nbwords > 0 && nblines > 0) ? nbwords / nblines : -1;
 }
 
 int
 ut_file_exist (const char *name, ...)
 {
-  int res;
-  va_list args;
+  int res, length;
+  va_list args, args2;
   char *fullname = NULL;
   char *fullname2 = NULL;
   FILE *file = NULL;
@@ -115,11 +132,16 @@ ut_file_exist (const char *name, ...)
   if (!name)
     return 0;
 
-  fullname = ut_alloc_1d_char (1000);
-  fullname2 = ut_alloc_1d_char (1000);
-
   va_start (args, name);
-  vsprintf (fullname, name, args);
+  va_copy (args2, args);
+  length = vsnprintf (NULL, 0, name, args);
+  va_end (args);
+
+  fullname = ut_alloc_1d_char (length + 1);
+  fullname2 = ut_alloc_1d_char (length + 1);
+
+  vsprintf (fullname, name, args2);
+  va_end (args2);
 
   if (!strncmp (fullname, "file(", 5)
       && fullname[strlen (fullname) - 1] == ')')
@@ -152,7 +174,6 @@ ut_file_exist (const char *name, ...)
   ut_free_2d_char (&vals, qty);
   ut_free_1d_char (&fullname);
   ut_free_1d_char (&fullname2);
-  va_end (args);
 
   return res;
 }
@@ -195,7 +216,7 @@ ut_file_open (const char *name, const char *mode)
           break;
         }
 
-      ut_sys_mkdir (dir);
+      ut_sys_mkdir ("%s", dir);
       ut_free_1d_char (&dir);
     }
 
@@ -379,7 +400,7 @@ ut_file_skip (FILE * file, int qty)
   else if (qty > 0)
     for (i = 0; i < qty; i++)
     {
-      if (fscanf (file, "%s", trash) != 1)
+      if (fscanf (file, "%999s", trash) != 1)
         return -1;
     }
   else
@@ -387,7 +408,8 @@ ut_file_skip (FILE * file, int qty)
     {
       do
       {
-        fseek (file, -1, SEEK_CUR);
+        if (fseek (file, -1, SEEK_CUR) != 0)
+          return -1;
         status = ut_file_testpos (file, "wb");
       }
       while (status != 1);
@@ -409,8 +431,6 @@ ut_file_skip_char (FILE * file, int qty)
     for (i = 0; i < qty; i++)
       if (fscanf (file, "%c", &trash) != 1)
         return -1;
-      else
-        abort ();
   }
 
   return 0;
@@ -436,7 +456,7 @@ ut_file_cp_qty (FILE * in, int qty, FILE * out, const char *a, const char *b)
 
   for (i = 0; i < qty; i++)
   {
-    if (fscanf (in, "%s", s) != 1)
+    if (fscanf (in, "%999s", s) != 1)
       return -1;
     fprintf (out, "%s%s", s, a);
   }
@@ -452,7 +472,7 @@ ut_file_readwcomma (FILE * file, double *pres)
   char *tmp = ut_alloc_1d_char (1000);
 
   int status = 0;
-  if (fscanf (file, "%s", tmp) == 1)
+  if (fscanf (file, "%999s", tmp) == 1)
     (*pres) = ut_num_readwcomma (tmp);
   else
     status = -1;
@@ -470,7 +490,7 @@ ut_file_testformat (const char *filename, const char *format)
 
   ut_file_format (filename, &format2);
 
-  if (strcmp (format, format2) == 0)
+  if (format2 && strcmp (format, format2) == 0)
     res = 1;
   else
     res = 0;
@@ -487,7 +507,7 @@ ut_file_format (const char *filename, char **pformat)
   FILE *file = ut_file_open (filename, "R");
   char *string = ut_alloc_1d_char (1000);
 
-  status = fscanf (file, "%s", string);
+  status = fscanf (file, "%999s", string);
 
   if (status != 1)
   {
@@ -600,7 +620,7 @@ ut_file_string_scanandtest (FILE * file, const char *string)
   int status;
   char *scan = ut_alloc_1d_char (1000);
 
-  status = fscanf (file, "%s", scan);
+  status = fscanf (file, "%999s", scan);
 
   if (status == 1)
     status = strcmp (string, scan);
@@ -624,7 +644,7 @@ ut_file_string_nextpos (FILE * file, const char *string)
 
   ok = 0;
   p = 0;
-  while (fscanf (file, "%s", tmp) != EOF)
+  while (fscanf (file, "%999s", tmp) != EOF)
   {
     p++;
     if (!strcmp (tmp, string))
@@ -634,7 +654,6 @@ ut_file_string_nextpos (FILE * file, const char *string)
       break;
     }
   }
-  fprintf (file, "\n");
 
   fsetpos (file, &pos);
 
@@ -653,7 +672,7 @@ ut_file_string_number (FILE * file, const char *string)
   fgetpos (file, &pos);
 
   nb = 0;
-  while (fscanf (file, "%s", tmp) != EOF)
+  while (fscanf (file, "%999s", tmp) != EOF)
     if (strcmp (tmp, string) == 0)
       nb++;
 
@@ -674,11 +693,12 @@ ut_file_testpos (FILE * file, const char *p)
   fgetpos (file, &pos);
 
   res = 0;
+  c = '\0';
   if (strcmp (p, "le") == 0)
   {
     do
       status = fscanf (file, "%c", &c);
-    while (c == ' ' || c == '\t');
+    while (status == 1 && (c == ' ' || c == '\t'));
 
     if (status != 1 || (status == 1 && c == '\n'))
       res = 1;
@@ -706,7 +726,7 @@ ut_file_testpos (FILE * file, const char *p)
       fsstatus = fseek (file, --qty, SEEK_CUR);
       status = fscanf (file, "%c", &c);
     }
-    while (c == ' ' || c == '\t');
+    while (fsstatus == 0 && status == 1 && (c == ' ' || c == '\t'));
 
     if (fsstatus == -1 || status != 1 || (status == 1 && c == '\n'))
       res = 1;
@@ -770,7 +790,7 @@ ut_file_nextstring (FILE * file, char *string)
     int status;
     char *tmp = ut_alloc_1d_char (1000);
 
-    if (fscanf (file, "%s", tmp) != 1)
+    if (fscanf (file, "%999s", tmp) != 1)
       status = -1;
     else
     {
@@ -801,38 +821,31 @@ ut_file_nextstring_test (FILE * file, char *string)
 void
 ut_file_nextline (FILE * file, char **pline)
 {
-  int length = 10000;
-  int multiplier = 2;
-  int beg = 0, end = length - 2;
-
+  int c, length = 0, size = 1000;
   fpos_t pos;
 
   fgetpos (file, &pos);
 
-  (*pline) = ut_alloc_1d_char (length);
-  (*pline) = fgets (*pline, length, file);
+  (*pline) = ut_alloc_1d_char (size);
 
-  if (*pline == NULL)
-    abort ();
-
-  while (1)
+  while ((c = fgetc (file)) != EOF)
   {
-    (*pline) = ut_realloc_1d_char ((*pline), length);
+    if (length == size - 1)
+    {
+      size *= 2;
+      (*pline) = ut_realloc_1d_char ((*pline), size);
+    }
+    (*pline)[length++] = c;
 
-    //((*pline) + beg) =
-    if (fgets ((*pline) + beg, length - beg, file) == NULL)
-    break;
-
-    if ((*pline)[end] == '\0' || (*pline)[end] == '\n'
-    || (*pline)[end] == EOF)
-    break;
-
-    beg = end + 1;
-    length *= multiplier;
-    end = length - 2;
+    if (c == '\n')
+      break;
   }
 
-  (*pline) = ut_realloc_1d_char ((*pline), strlen (*pline) + 1);
+  if (length == 0 && c == EOF)
+    abort ();
+
+  (*pline)[length] = '\0';
+  (*pline) = ut_realloc_1d_char ((*pline), length + 1);
 
   fsetpos (file, &pos);
 
@@ -883,15 +896,16 @@ ut_file_cp_line (FILE * src, FILE * dest)
 int
 ut_file_cp_untilchar (FILE * src, FILE * dest, char c)
 {
-  char d = (c == 'a') ? 'b' : 'a';
+  int d;
 
-  while (d != c && d != EOF)
+  while ((d = fgetc (src)) != EOF)
   {
-    d = fgetc (src);
     putc (d, dest);
+    if (d == (unsigned char) c)
+      return 0;
   }
 
-  return (d == c) ? 0 : -1;
+  return -1;
 }
 
 void
@@ -924,12 +938,14 @@ ut_file_squashname (const char *name, char **pname)
   if (!strncmp (name, "file(", 5))
   {
     ut_string_string (name + 5, pname);
-    (*pname)[strlen ((*pname)) - 1] = '\0';
+    if (strlen (*pname) > 0 && (*pname)[strlen (*pname) - 1] == ')')
+      (*pname)[strlen ((*pname)) - 1] = '\0';
   }
   else if (!strncmp (name, "msfile(", 7))
   {
     ut_string_string (name + 7, pname);
-    (*pname)[strlen ((*pname)) - 1] = '\0';
+    if (strlen (*pname) > 0 && (*pname)[strlen (*pname) - 1] == ')')
+      (*pname)[strlen ((*pname)) - 1] = '\0';
   }
   else if (sscanf (name, "@%s", *pname) == 1)
   {
@@ -943,7 +959,10 @@ ut_file_squashname (const char *name, char **pname)
 
   ut_list_break (*pname, ",", &tmp, &qty);
 
-  ut_string_string (tmp[0], pname);
+  if (qty > 0)
+    ut_string_string (tmp[0], pname);
+  else
+    (*pname)[0] = '\0';
 
   ut_free_2d_char (&tmp, qty);
 
@@ -967,7 +986,7 @@ ut_file_lineheader_goto (FILE * file, const char *header)
   }
   while (status == 1 && strcmp (lineflag, header));
 
-  if (status == 1 && strcmp (lineflag, header))
+  if (status == 1 && !strcmp (lineflag, header))
   {
     fsetpos (file, &pos);
     status = 0;
@@ -1051,18 +1070,17 @@ ut_file_scan_file (FILE *file, char *dirname, FILE **pfile, char **pfilename)
   fsetpos (file, &pos);
 
   if (c == '*')
-    if (fscanf (file, "%s", tmp) != 1)
+    if (fscanf (file, "%999s", tmp) != 1)
       abort ();
 
   if (!strcmp (tmp, "*file"))
   {
-    filename = ut_alloc_1d_char (1000);
-    if (fscanf (file, "%s", tmp2) != 1)
+    if (fscanf (file, "%999s", tmp2) != 1)
       abort ();
     if (dirname)
-      sprintf (filename, "%s/%s", dirname, tmp2);
+      ut_string_sprintf (&filename, "%s/%s", dirname, tmp2);
     else
-      sprintf (filename, "%s", tmp2);
+      ut_string_string (tmp2, &filename);
     *pfile = ut_file_open (filename, "r");
   }
   else
@@ -1082,9 +1100,7 @@ void
 ut_file_dir_basename_extension_filename (char *dir, char *basename,
                                          char *extension, char **pfilename)
 {
-  char *tmp = NULL;
-  char *filename = ut_alloc_1d_char (strlen (dir) + strlen (basename)
-                                     + strlen (extension) + 10);
+  char *tmp = NULL, *filename = NULL;
 
   tmp = ut_string_addextension (basename, extension);
   filename = ut_string_paste3 (dir, "/", tmp);
@@ -1105,14 +1121,9 @@ ut_file_dir_basename_extension_filename (char *dir, char *basename,
 void
 ut_file_removepath (char *filename1, char **pfilename2)
 {
-  int qty;
-  char **tmp = NULL;
+  char *pos = strrchr (filename1, '/');
 
-  ut_list_break (filename1, "/", &tmp, &qty);
-
-  ut_string_string (tmp[qty - 1], pfilename2);
-
-  ut_free_2d_char (&tmp, qty);
+  ut_string_string (pos ? pos + 1 : filename1, pfilename2);
 
   return;
 }

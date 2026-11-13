@@ -5,7 +5,7 @@
 #include"nem_meshing_3d_.h"
 
 int
-nem_meshing_3d_poly (struct IN_M In, double cl, double mesh3dclreps,
+nem_meshing_3d_poly (struct IN_M In, double cl, double clgrad, double clreps,
                      struct MULTIM *pMultim, struct timeval *pctrlc_t,
                      double *pallowed_t, double *pmax_elapsed_t,
                      struct TESS Tess, struct NODES *pNodes,
@@ -27,7 +27,7 @@ nem_meshing_3d_poly (struct IN_M In, double cl, double mesh3dclreps,
   for (a = 0; a < (*pMultim).algoqty; a++)
   {
     // meshing
-    nem_meshing_3d_poly_algo (In, cl, mesh3dclreps, pMultim, a, pctrlc_t,
+    nem_meshing_3d_poly_algo (In, cl, clgrad, clreps, pMultim, a, pctrlc_t,
                               pallowed_t, pmax_elapsed_t, Tess, *pNodes, Mesh,
                               poly, &N2, &M2, &mOsize, &elapsed_t);
 
@@ -59,6 +59,52 @@ nem_meshing_3d_poly (struct IN_M In, double cl, double mesh3dclreps,
   neut_mesh_free (&M2);
 
   return 0;
+}
+
+// nem_meshing_3d_algos returns the list of 3D meshing algorithms: only dela
+// is used, as netg does not account for the mesh size map
+void
+nem_meshing_3d_algos (struct IN_M In, char **plist)
+{
+  int i, qty, algoqty;
+  char **algos = NULL, **algo = NULL;
+
+  if (!strcmp (In.mesh3dalgo, "default"))
+  {
+    ut_string_string (In.mesh3dalgo, plist);
+    return;
+  }
+
+  ut_list_break (In.mesh3dalgo, NEUT_SEP_NODEP, &algos, &algoqty);
+
+  (*plist) = ut_alloc_1d_char (strlen (In.mesh3dalgo) + 1);
+  for (i = 0; i < algoqty; i++)
+  {
+    ut_list_break (algos[i], NEUT_SEP_DEP, &algo, &qty);
+    if (!strcmp (algo[0], "dela"))
+    {
+      if (strlen (*plist) > 0)
+        strcat (*plist, NEUT_SEP_NODEP);
+      strcat (*plist, algos[i]);
+    }
+    ut_free_2d_char (&algo, qty);
+  }
+
+  if (strlen (*plist) == 0)
+  {
+    printf ("\n");
+    ut_print_message (2, 3, "Option -mesh3dalgo must include dela, as netg does not account for the mesh size map.\n");
+    abort ();
+  }
+  else if (strcmp (*plist, In.mesh3dalgo))
+  {
+    printf ("\n");
+    ut_print_message (1, 3, "netg ignored in option -mesh3dalgo, as it does not account for the mesh size map.\n");
+  }
+
+  ut_free_2d_char (&algos, algoqty);
+
+  return;
 }
 
 void

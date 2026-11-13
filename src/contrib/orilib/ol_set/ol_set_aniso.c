@@ -111,7 +111,7 @@ ol_set_aniso (struct OL_SET set, double **evect, double *eval)
   }
 
   ut_free_2d (&R, set.size);
-  ol_g_free (evect2);
+  ol_g_free (&evect2);
   ut_free_1d (&theta);
   ut_free_2d (&ERR, 3);
   ut_free_1d (&ER);
@@ -122,7 +122,7 @@ ol_set_aniso (struct OL_SET set, double **evect, double *eval)
 
 void
 ol_set_aniso_thetadistrib (struct OL_SET set, double **evect, double step,
-                           double **pdistrib, double *distribfirstx,
+                           double **distrib, double *distribfirstx,
                            int *distriblength)
 {
   int i, j, n;
@@ -148,15 +148,15 @@ ol_set_aniso_thetadistrib (struct OL_SET set, double **evect, double step,
     ut_stat_distribparam (theta[j], n, step,
                           &(distribfirstx[j]), &(distriblength[j]));
 
-    pdistrib[j] = ut_alloc_1d (distriblength[j]);
+    distrib[j] = ut_alloc_1d (distriblength[j]);
 
     ut_stat_distrib (theta[j], n, step, distribfirstx[j],
-                     distriblength[j], pdistrib[j]);
+                     distriblength[j], distrib[j]);
   }
 
   ut_free_2d (&theta, 3);
   ut_free_1d (&etheta);
-  ol_q_free (q);
+  ol_q_free (&q);
 
   return;
 }
@@ -183,7 +183,7 @@ ol_q_aniso_theta (double *q, double **evect, double *theta)
     theta[j] = 114.59155902616464175442 * atan (tmp);
   }
 
-  ol_R_free (R);
+  ol_R_free (&R);
 
   return;
 }

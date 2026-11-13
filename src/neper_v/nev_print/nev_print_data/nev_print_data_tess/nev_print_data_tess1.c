@@ -21,6 +21,19 @@ nev_print_data_tess (struct SIM Sim, struct TESS *pTess, char *entity, char *att
   nev_print_data_tess_init (*pTess, TessData, entity, attribute, datastring,
                             &dim, &entityqty, &datatype, &datavalue, &pData);
 
+  // radius: `default' variable
+  if (!strcmp (attribute, "rad") && strcmp (entity, "celledge")
+      && strcmp (entity, "crystaledge") && datavalue)
+  {
+    double defrad;
+    char *tmp = NULL;
+
+    nev_print_tess_defrad (*pTess, dim, &defrad);
+    nev_print_rad_default (datavalue, defrad, &tmp);
+    ut_string_string (tmp, &datavalue);
+    ut_free_1d_char (&tmp);
+  }
+
   if (!strcmp (attribute, ""))
     ut_string_string (datastring, &(*pData).Value);
 
@@ -65,6 +78,8 @@ nev_print_data_tess (struct SIM Sim, struct TESS *pTess, char *entity, char *att
 
   ut_free_1d_char (&datatype);
   ut_free_1d_char (&datavalue);
+
+  neut_datainput_free (&DataInput);
 
   return;
 }

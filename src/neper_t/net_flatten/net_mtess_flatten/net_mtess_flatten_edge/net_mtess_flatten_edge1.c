@@ -6,7 +6,8 @@
 
 void
 net_mtess_flatten_edge (struct MTESS MTess, struct TESS *Tess, int TessId,
-                        int *CTessIds, int CTessQty, struct TESS *pFTess,
+                        int *CTessIds, int CTessQty, int *VTessIds,
+                        int VTessQty, struct TESS *pFTess,
                         struct TESSE *TessE, struct FLATTEN *pFlatten)
 {
   int i, id;
@@ -19,10 +20,11 @@ net_mtess_flatten_edge (struct MTESS MTess, struct TESS *Tess, int TessId,
   TessE[TessId].EdgeFEdgeNb = ut_alloc_1d_pint (Tess[TessId].EdgeQty + 1);
   TessE[TessId].EdgeFEdgeOri = ut_alloc_1d_pint (Tess[TessId].EdgeQty + 1);
 
-  for (i = 0; i < CTessQty; i++)
+  for (i = 0; i < CTessQty + VTessQty; i++)
   {
-    id = CTessIds[i];
+    id = (i < CTessQty) ? CTessIds[i] : VTessIds[i - CTessQty];
 
+    TessE[id].EdgeQty = Tess[id].EdgeQty;
     TessE[id].EdgeFEdgeQty = ut_alloc_1d_int (Tess[id].EdgeQty + 1);
     TessE[id].EdgeFEdgeNb = ut_alloc_1d_pint (Tess[id].EdgeQty + 1);
     TessE[id].EdgeFEdgeOri = ut_alloc_1d_pint (Tess[id].EdgeQty + 1);
@@ -43,7 +45,8 @@ net_mtess_flatten_edge (struct MTESS MTess, struct TESS *Tess, int TessId,
   neut_tess_init_veredge (pFTess);
   neut_tess_init_edgelength (pFTess);
 
-  net_mtess_flatten_edge_init_fedgetessedge (Tess, CTessIds, CTessQty, pFTess,
+  net_mtess_flatten_edge_init_fedgetessedge (Tess, CTessIds, CTessQty,
+                                             VTessIds, VTessQty, pFTess,
                                              TessE, pFlatten);
 
   return;

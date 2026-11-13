@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2018,2019 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -45,6 +45,8 @@
 /**                                 to   : 04 nov 2010     **/
 /**                # Version 6.0  : from : 31 may 2018     **/
 /**                                 to   : 31 may 2018     **/
+/**                # Version 7.0  : from : 13 sep 2019     **/
+/**                                 to   : 13 sep 2019     **/
 /**                                                        **/
 /************************************************************/
 
@@ -64,6 +66,7 @@ typedef struct Vmesh_ {
   Gnum                      fronnbr;              /*+ Number of frontier nodes; TRICK: ncmpsize[2]       +*/
   Gnum *                    frontab;              /*+ Array of frontier node numbers                     +*/
   Gnum                      levlnum;              /*+ Nested dissection or coarsening level              +*/
+  Context *                 contptr;              /*+ Execution context                                  +*/
 } Vmesh;
 
 /*+ The graph separator storing structure. +*/

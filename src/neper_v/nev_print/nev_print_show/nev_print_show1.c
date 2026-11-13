@@ -6,17 +6,28 @@
 
 void
 nev_print_show (struct IN_V In, struct TESS *pTess, struct TESR Tesr,
-          struct NODES Nodes, struct MESH *Mesh, struct POINT *Points,
+          struct NODES Nodes, struct MESH *Mesh, struct NSET NSet, struct POINT *Points,
           int PointQty, struct PRINT *pPrint)
 {
-  int i, j;
+  int i, j, dim;
 
+  // the options are processed by decreasing entity dimension (general
+  // options first), as an option can depend on the entities shown at
+  // higher dimensions (e.g., -showelt1d elt3d_shown); options of the same
+  // dimension are processed in the input order
+  for (dim = 4; dim >= 0; dim--)
   for (i = 0; i < In.showqty; i++)
   {
+    if (nev_print_show_dim (In.show[i][0], *pTess, Tesr, Mesh) != dim)
+      continue;
+
     // general -----------------------------------------------------------
 
     if (!strcmp (In.show[i][0], "csys"))
       ut_string_int (In.show[i][1], &((*pPrint).showcsys));
+
+    else if (!strcmp (In.show[i][0], "domain"))
+      ut_string_int (In.show[i][1], &((*pPrint).showdomain));
 
     else if (!strcmp (In.show[i][0], "scale"))
       ut_string_int (In.show[i][1], &((*pPrint).showscale));
@@ -131,7 +142,7 @@ nev_print_show (struct IN_V In, struct TESS *pTess, struct TESR Tesr,
       nev_print_show_mesh_elt (In.show[i][0], In.show[i][1], pTess, Nodes, Mesh, pPrint);
 
     else if (!strcmp (In.show[i][0], "node"))
-      nev_print_show_mesh_nodes (In.show[i][1], pTess, Nodes, Mesh, pPrint);
+      nev_print_show_mesh_nodes (In.show[i][1], pTess, Nodes, Mesh, NSet, pPrint);
 
     else if (!strncmp (In.show[i][0], "elset", 5))
       nev_print_show_mesh_elset (In.show[i][0], In.show[i][1], pTess, Nodes, Mesh, pPrint);

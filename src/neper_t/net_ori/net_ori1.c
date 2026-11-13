@@ -44,7 +44,7 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
   }
   else
   {
-    OSet = ol_set_alloc ((*pSSet).N, oricrysym);
+    ol_set_zero (&OSet);
 
     ut_list_break (ori, "+", &parts, &partqty);
 
@@ -62,7 +62,7 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
 
       }
 
-      else if (!strcmp (parts[i], "random") || strstr (In.optiini[1][level], "ori=random"))
+      else if (!strcmp (parts[i], "random") || strstr (In.optiini[1][level], "ori:random"))
       {
         if (!strcmp (In.orisampling[level], "random"))
           net_ori_random ((*pSSet).Random, OSets + i);
@@ -76,7 +76,7 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
       }
 
       else if (!strncmp (parts[i], "fiber", 5))
-        net_ori_fiber (SSet, dtess, dcell, (*pSSet).Random, parts[i], OSets + i);
+        net_ori_fiber ((*pSSet).Random, parts[i], OSets + i);
 
       else if (!strncmp (ori, "file(", 5))
       {
@@ -84,11 +84,11 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
         ut_string_string (oricrysym, &(OSets[i].crysym));
       }
 
-      else if (strstr (In.optiini[1][level], "ori="))
+      else if (strstr (In.optiini[1][level], "ori:"))
       {
         int qty, *qty1 = NULL;
         char ***parts = NULL;
-        ut_list_break2 (In.optiini[1][level], ",", "=", &parts, &qty1, &qty);
+        ut_list_break2 (In.optiini[1][level], NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty1, &qty);
         for (j = 0; j < qty; j++)
           if (!strcmp (parts[j][0], "ori"))
             net_ori_file (parts[j][1], OSets + i);
@@ -102,7 +102,7 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
         net_ori_odf ((*pSSet).Random, parts[i], OSets + i);
 
       else if (!strncmp (parts[i], "parent", 6))
-        net_ori_parent (parts[i], SSet, dtess, dcell, OSets + i);
+        net_ori_parent ((*pSSet).Random, parts[i], SSet, dtess, dcell, OSets + i);
 
       else if (!strncmp (parts[i], "ks", 2) || !strncmp (parts[i], "KS", 2))
         net_ori_ks ((*pSSet).Random, parts[i], SSet, dtess, dcell, OSets + i);
@@ -111,33 +111,39 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
         net_ori_ti_beta2alpha ((*pSSet).Random, parts[i], SSet, dtess, dcell, OSets + i);
 
       else
-        net_ori_label (parts[i], SSet, dtess, dcell, OSets + i);
+        net_ori_label ((*pSSet).Random, parts[i], OSets + i);
 
-      if (strstr (In.optiini[1][level], "weight="))
+      if (strstr (In.optiini[1][level], "weight:"))
       {
         int qty, *qty1 = NULL;
         char ***parts = NULL;
-        ut_list_break2 (In.optiini[1][level], ",", "=", &parts, &qty1, &qty);
+        ut_list_break2 (In.optiini[1][level], NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty1, &qty);
 
-        OSets[i].weight = ut_alloc_1d (OSets[i].size);
+        OSets[i].weight = ut_realloc_1d (OSets[i].weight, OSets[i].size);
         for (j = 0; j < qty; j++)
           if (!strcmp (parts[j][0], "weight"))
             ut_array_1d_fnscanf_wcard (parts[j][1], OSets[i].weight, OSets[i].size, "numeral", "r");
+
+        ut_free_3d_char (&parts, qty, 2);
+        ut_free_1d_int (&qty1);
       }
 
-      if (strstr (In.optiini[1][level], "theta="))
+      if (strstr (In.optiini[1][level], "theta:"))
       {
         int qty, *qty1 = NULL;
         char ***parts = NULL;
-        ut_list_break2 (In.optiini[1][level], ",", "=", &parts, &qty1, &qty);
+        ut_list_break2 (In.optiini[1][level], NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty1, &qty);
 
-        OSets[i].theta = ut_alloc_1d (OSets[i].size);
+        OSets[i].theta = ut_realloc_1d (OSets[i].theta, OSets[i].size);
         for (j = 0; j < qty; j++)
           if (!strcmp (parts[j][0], "theta"))
           {
             ut_array_1d_fnscanf_wcard (parts[j][1], OSets[i].theta, OSets[i].size, "numeral", "r");
             ut_array_1d_scale (OSets[i].theta, OSets[i].size, M_PI / 180);
           }
+
+        ut_free_3d_char (&parts, qty, 2);
+        ut_free_1d_int (&qty1);
       }
     }
 

@@ -8,6 +8,10 @@
 #include<math.h>
 #include"ut.h"
 
+#ifdef _OPENMP
+#include<omp.h>
+#endif
+
 #ifdef HAVE_GSL
 #include<gsl/gsl_interp.h>
 
@@ -42,8 +46,12 @@ ut_fct_init_interp (struct FCT *pFct)
 {
   if (!(*pFct).interp_type)
     (*pFct).interp_type = (gsl_interp_type *) gsl_interp_cspline;
+  if ((*pFct).interp)
+    gsl_interp_free ((*pFct).interp);
   (*pFct).interp = gsl_interp_alloc ((*pFct).interp_type, (*pFct).size);
   gsl_interp_init ((*pFct).interp, (*pFct).x, (*pFct).y, (*pFct).size);
+  if ((*pFct).interp_accel)
+    gsl_interp_accel_free ((*pFct).interp_accel);
   (*pFct).interp_accel = gsl_interp_accel_alloc ();
 
   return;
@@ -58,6 +66,8 @@ ut_fct_free (struct FCT *pFct)
   ut_free_1d (&(*pFct).y);
   if ((*pFct).interp)
     gsl_interp_free ((*pFct).interp);
+  if ((*pFct).interp_accel)
+    gsl_interp_accel_free ((*pFct).interp_accel);
   ut_fct_set_zero (pFct);
 
   return;
@@ -71,6 +81,8 @@ ut_fct_set_dirac (struct FCT *pFct, double x, double area)
   (*pFct).mean = x;
   (*pFct).sigma = 0;
   (*pFct).area = area;
+  (*pFct).type_from = 'n';
+  (*pFct).type_to = 'n';
 
   return;
 }
@@ -83,6 +95,8 @@ ut_fct_set_numerical (struct FCT *pFct, double min, double max, int size,
   (*pFct).min = min;
   (*pFct).max = max;
   (*pFct).size = size;
+  ut_free_1d (&(*pFct).x);
+  ut_free_1d (&(*pFct).y);
   (*pFct).x = ut_alloc_1d ((*pFct).size);
   (*pFct).y = ut_alloc_1d ((*pFct).size);
   ut_fct_set_xaxis (pFct, min, max, size, method);
@@ -113,6 +127,9 @@ ut_fct_set_erf (struct FCT *pFct, double mean, double sigma)
   ut_string_string ("erf", &(*pFct).type);
   (*pFct).mean = mean;
   (*pFct).sigma = sigma;
+  (*pFct).area = 1;
+  (*pFct).type_from = 'n';
+  (*pFct).type_to = 'n';
 
   return;
 }
@@ -327,7 +344,7 @@ ut_fct_set_beta (struct FCT *pFct, double mean, double sigma, char type_from,
 {
   ut_string_string ("beta", &(*pFct).type);
 
-  if (mean > 0)
+  if (mean > 0 && sigma > 0)
     (*pFct).mean = mean;
   else
     ut_print_message (2, 0, "beta: required x, y > 0\n");
@@ -349,7 +366,7 @@ ut_fct_set_weibull (struct FCT *pFct, double mean, double sigma,
 {
   ut_string_string ("weibull", &(*pFct).type);
 
-  if (mean > 0)
+  if (mean > 0 && sigma > 0)
     (*pFct).mean = mean;
   else
     ut_print_message (2, 0, "weibull: required mean, sigma > 0\n");
@@ -383,7 +400,16 @@ ut_fct_eval (struct FCT Fct, double x)
     else if (x > Fct.x[Fct.size - 1])
       val = Fct.y[Fct.size - 1];
     else
-      val = gsl_interp_eval (Fct.interp, Fct.x, Fct.y, x, Fct.interp_accel);
+    {
+      // the accelerator caches the last interval and is not thread-safe, so it
+      // is not used in parallel regions (a binary search is used instead)
+      gsl_interp_accel *accel = Fct.interp_accel;
+#ifdef _OPENMP
+      if (omp_in_parallel ())
+        accel = NULL;
+#endif
+      val = gsl_interp_eval (Fct.interp, Fct.x, Fct.y, x, accel);
+    }
   }
 
   else if (!strcmp (Fct.type, "dirac"))
@@ -544,12 +570,10 @@ ut_fct_numericalfct (struct FCT Fct, double min, double max, int size,
   (*pFct2).sigma = FctC.sigma;
   (*pFct2).area = FctC.area;
 
-  ut_fct_set_xaxis (pFct2, min, max, size, "center");
-
   if (!ut_string_strcmp (FctC.type, "dirac"))
   {
     pos = ut_array_1d_eltpos ((*pFct2).x, (*pFct2).size, FctC.mean);
-    (*pFct2).y[pos] = 1. / ut_fct_binwidth (*pFct2, pos);
+    (*pFct2).y[pos] = FctC.area / ut_fct_binwidth (*pFct2, pos);
   }
   else
   {
@@ -566,7 +590,7 @@ ut_fct_numericalfct (struct FCT Fct, double min, double max, int size,
       xmean += (*pFct2).x[i] * (*pFct2).y[i] * ut_fct_binwidth (*pFct2, i);
 
     // it is necessary to fix the distribution when (unbalanced) from and to bounds are specified
-    if ((*pFct2).type_from != 'n' || (*pFct2).type_to != 'n')
+    if (FctC.type_from != 'n' || FctC.type_to != 'n')
     {
       // Note: doing this for weibull or beta would change the distribution because
       // "mean" does not represent the mean.  See the doc.
@@ -617,8 +641,7 @@ ut_fct_memcpy (struct FCT Fct, struct FCT *pFct2)
 
   (*pFct2).interp_type = Fct.interp_type;
   if ((*pFct2).interp_type)
-    ut_fct_init_interp (pFct2);
-  (*pFct2).interp_accel = Fct.interp_accel;
+    ut_fct_init_interp (pFct2);   // also allocates interp_accel
 
   return;
 }
@@ -649,15 +672,17 @@ ut_fct_integralfct (struct FCT Fct, struct FCT *pFct2)
           0.5 * ut_fct_binwidth (Fct,
                                  i - 1) * Fct.y[i - 1] +
           0.5 * ut_fct_binwidth (Fct, i) * Fct.y[i] + (*pFct2).y[i - 1];
-    (*pFct2).interp_type = (gsl_interp_type *) gsl_interp_cspline;
+    ut_array_1d_scale ((*pFct2).y, (*pFct2).size,
+                       1 / (*pFct2).y[(*pFct2).size - 1]);
+
+    // linear interpolation (a cumulative distribution function is
+    // monotonic, and a linear interpolation keeps it so)
+    (*pFct2).interp_type = (gsl_interp_type *) gsl_interp_linear;
     ut_fct_init_interp (pFct2);
   }
 
   else
     abort ();
-
-  ut_array_1d_scale ((*pFct2).y, (*pFct2).size,
-                     1 / (*pFct2).y[(*pFct2).size - 1]);
 
   return;
 }
@@ -712,6 +737,7 @@ ut_fct_convolution (struct FCT Fct, double sigma, struct FCT *pFct2)
                                                                           j);
 
     (*pFct2).interp_type = (gsl_interp_type *) gsl_interp_cspline;
+    ut_fct_init_interp (pFct2);
   }
 
   else
@@ -771,6 +797,8 @@ ut_fct_set (char *string, struct FCT *pFct)
       status = ut_string_completion (vars[i], varlist, varqty, &param);
       if (status == -1)
         ut_print_message (2, 0, "failed to parse `%s'\n", vars[i]);
+      else if (status == 1)
+        ut_print_message (2, 0, "ambiguous parameter `%s'\n", vars[i]);
     }
     else
       status = -1;
@@ -1021,6 +1049,9 @@ ut_fct_add (struct FCT *Fct1, int qty, double *fact, struct FCT *pFct2)
       (*pFct2).y[i] += (fact ? fact[j] : 1) * Fct1[j].y[i];
   }
 
+  if ((*pFct2).interp_type)
+    ut_fct_init_interp (pFct2);
+
   return;
 }
 
@@ -1054,13 +1085,12 @@ ut_fct_x_bin (struct FCT Fct, double x)
   int id;
   double binwidth = ut_fct_binwidth (Fct, 0);
 
-  id = (x - Fct.min) / binwidth;
-  if (id < 0 && x < Fct.min - binwidth * 1e-6)
-    id = -1;
-  else if (id > Fct.size - 1 && x > Fct.max + binwidth * 1e-6)
-    id = -1;
+  if (x < Fct.min - binwidth * 1e-6 || x > Fct.max + binwidth * 1e-6)
+    return -1;
 
-  return id;
+  id = (int) floor ((x - Fct.min) / binwidth);
+
+  return ut_num_bound_int (id, 0, Fct.size - 1);
 }
 
 void
@@ -1113,6 +1143,8 @@ ut_fct_numericalfct_fscanf (char *string, struct FCT *pFct)
   ut_string_string ("numerical", &(*pFct).type);
 
   (*pFct).size = ut_file_nblines (vals[0]) + 2;
+  if ((*pFct).size < 4)
+    ut_print_message (2, 0, "File `%s' not found or with fewer than 2 lines.\n", vals[0]);
   (*pFct).x = ut_alloc_1d ((*pFct).size);
   (*pFct).y = ut_alloc_1d ((*pFct).size);
 
@@ -1200,9 +1232,8 @@ ut_fct_invert (struct FCT Fct1, struct FCT *pFct2)
   // double max;
 
   (*pFct2).size = 1;
-  (*pFct2).x = ut_alloc_1d ((*pFct2).size);
-  (*pFct2).y = ut_alloc_1d ((*pFct2).size);
-
+  ut_free_1d (&(*pFct2).x);
+  ut_free_1d (&(*pFct2).y);
   (*pFct2).x = ut_alloc_1d ((*pFct2).size);
   (*pFct2).y = ut_alloc_1d ((*pFct2).size);
   (*pFct2).x[0] = Fct1.y[0];
@@ -1225,6 +1256,100 @@ ut_fct_invert (struct FCT Fct1, struct FCT *pFct2)
   // gsl_interp_accel *interp_accel;
 
   return 0;
+}
+
+void
+ut_fct_normalizecdf_samegrid (struct FCT *pFct)
+{
+  int i;
+  double mean;
+  struct FCT old_cdf0;
+  ut_fct_set_zero (&old_cdf0);
+
+  mean = 0;
+  for (i = 1; i < (*pFct).size - 1; i++)
+    mean += (*pFct).x[i] * ((*pFct).y[i + 1] - (*pFct).y[i - 1]) / 2;
+  mean += (*pFct).x[(*pFct).size - 1] * ((*pFct).y[(*pFct).size - 1] - (*pFct).y[(*pFct).size - 2]);
+
+  ut_fct_memcpy ((*pFct), &old_cdf0);
+  old_cdf0.interp_type = (gsl_interp_type *) gsl_interp_linear;
+  ut_fct_init_interp (&old_cdf0);
+
+#pragma omp parallel for private(i) schedule(dynamic)
+  for (i = 0; i < (*pFct).size; i++)
+    (*pFct).y[i] = ut_fct_eval (old_cdf0, (*pFct).x[i] * mean);
+
+  (*pFct).interp_type = (gsl_interp_type *) gsl_interp_linear;
+  ut_fct_init_interp (pFct);
+  ut_fct_free (&old_cdf0);
+
+  return;
+}
+
+void
+ut_fct_normalizecdf (struct FCT *pFct)
+{
+  int i;
+  double mean;
+
+  mean = 0;
+  for (i = 1; i < (*pFct).size - 1; i++)
+    mean += (*pFct).x[i] * ((*pFct).y[i + 1] - (*pFct).y[i - 1]) / 2;
+  mean += (*pFct).x[(*pFct).size - 1] * ((*pFct).y[(*pFct).size - 1] - (*pFct).y[(*pFct).size - 2]);
+
+  ut_fct_scalecdf (pFct, 1. / mean);
+
+  return;
+}
+
+void
+ut_fct_scalepdf (struct FCT *pFct, double fact)
+{
+  if (ut_num_equal (fact, 1, 1e-9))
+    return;
+
+  ut_array_1d_scale ((*pFct).x, (*pFct).size, fact);
+  ut_array_1d_scale ((*pFct).y, (*pFct).size, 1. / fact);
+
+  (*pFct).mean *= fact;
+  (*pFct).from *= fact;
+  (*pFct).to   *= fact;
+  (*pFct).min  *= fact;
+  (*pFct).max  *= fact;
+
+  ut_fct_init_interp (pFct);
+
+  return;
+}
+
+void
+ut_fct_scalecdf (struct FCT *pFct, double fact)
+{
+  if (ut_num_equal (fact, 1, 1e-9))
+    return;
+
+  ut_array_1d_scale ((*pFct).x, (*pFct).size, fact);
+
+  (*pFct).mean *= fact;
+  (*pFct).from *= fact;
+  (*pFct).to   *= fact;
+  (*pFct).min  *= fact;
+  (*pFct).max  *= fact;
+
+  ut_fct_init_interp (pFct);
+
+  return;
+}
+
+int
+ut_fct_samex (struct FCT Fct1, struct FCT Fct2)
+{
+  if (Fct1.size == Fct2.size
+   && Fct1.x[0] == Fct2.x[0]
+   && Fct1.x[Fct1.size - 1] == Fct2.x[Fct2.size - 1])
+    return 1;
+  else
+    return 0;
 }
 
 #endif

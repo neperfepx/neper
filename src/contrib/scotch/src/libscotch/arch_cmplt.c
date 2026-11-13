@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2011,2015 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2011,2015,2018,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -63,14 +63,14 @@
 /**                                 to   : 11 aug 2010     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 02 may 2015     **/
+/**                # Version 7.0  : from : 18 feb 2018     **/
+/**                                 to   : 11 jul 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define ARCH_CMPLT
 
 #include "module.h"
 #include "common.h"
@@ -99,14 +99,14 @@ FILE * restrict const       stream)
   if ((sizeof (ArchCmplt)    > sizeof (ArchDummy)) ||
       (sizeof (ArchCmpltDom) > sizeof (ArchDomDummy))) {
     errorPrint ("archCmpltArchLoad: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
   if ((intLoad (stream, &archptr->termnbr) != 1) ||
       (archptr->termnbr < 1)) {
     errorPrint ("archCmpltArchLoad: bad input");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -128,13 +128,13 @@ FILE * restrict const       stream)
   if ((sizeof (ArchCmplt)    > sizeof (ArchDummy)) ||
       (sizeof (ArchCmpltDom) > sizeof (ArchDomDummy))) {
     errorPrint ("archCmpltArchSave: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
   if (fprintf (stream, ANUMSTRING "\n", (Anum) archptr->termnbr) == EOF) {
     errorPrint ("archCmpltArchSave: bad output");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -160,7 +160,7 @@ const ArchCmplt * restrict const  archptr)
 
   if ((matcptr->multtab = memAlloc (((vertnbr + 1) >> 1) * sizeof (ArchCoarsenMulti))) == NULL) { /* In case vertnbr is odd */
     errorPrint ("archCmpltMatchInit: out of memory");
-    return     (1);
+    return (1);
   }
 
   matcptr->vertnbr = vertnbr;
@@ -216,8 +216,8 @@ ArchCoarsenMulti ** restrict const  multptr)
     coarmulttab[coarvertnum].vertnum[1] = finevertnum ++;
     coarvertnum ++;
   }
-  for ( ; coarvertnum < coarvertmax; coarvertnum ++) { /* For all even slots       */
-    coarmulttab[coarvertnum].vertnum[0] = finevertnum ++; /* Dimensional splatting */
+  for ( ; coarvertnum < coarvertmax; coarvertnum ++) { /* For all even slots          */
+    coarmulttab[coarvertnum].vertnum[0] = finevertnum ++; /* Merge terminals together */
     coarmulttab[coarvertnum].vertnum[1] = finevertnum ++;
   }
   if ((finevertnbr & (passnum ^ 1)) != 0) {       /* If finevertnbr is odd and old passnum == 0 */
@@ -228,7 +228,7 @@ ArchCoarsenMulti ** restrict const  multptr)
 #ifdef SCOTCH_DEBUG_ARCH2
   if (coarvertnum != ((finevertnbr + 1) >> 1)) {  /* Number of coarse vertices in all cases */
     errorPrint ("archCmpltMatchMate: internal error");
-    return     (-1);
+    return (-1);
   }
 #endif /* SCOTCH_DEBUG_ARCH2 */
 
@@ -268,14 +268,13 @@ const ArchCmplt * const     archptr,
 ArchCmpltDom * const        domnptr,
 const ArchDomNum            domnnum)
 {
-  if (domnnum < archptr->termnbr) {               /* If valid label */
-    domnptr->termmin = domnnum;                   /* Set the domain */
-    domnptr->termnbr = 1;
+  if (domnnum >= archptr->termnbr)                /* If invalid label */
+    return (1);
 
-    return (0);
-  }
+  domnptr->termmin = domnnum;                     /* Set the domain */
+  domnptr->termnbr = 1;
 
-  return (1);                                     /* Cannot set domain */
+  return (0);
 }
 
 /* This function returns the number of
@@ -315,8 +314,8 @@ const ArchCmpltDom * const  dom1ptr)
 
 int
 archCmpltDomFrst (
-const ArchCmplt * const         archptr,
-ArchCmpltDom * restrict const   domnptr)
+const ArchCmplt * const       archptr,
+ArchCmpltDom * restrict const domnptr)
 {
   domnptr->termmin = 0;
   domnptr->termnbr = archptr->termnbr;
@@ -345,7 +344,7 @@ FILE * const                  stream)
       (termnbr < 1)                     ||
       ((termnbr + termmin) > archptr->termnbr)) {
     errorPrint ("archCmpltDomLoad: bad input");
-    return     (1);
+    return (1);
   }
   domnptr->termmin = termmin;
   domnptr->termnbr = termnbr;
@@ -370,7 +369,7 @@ FILE * const                stream)
                (Anum) domnptr->termmin,
                (Anum) domnptr->termnbr) == EOF) {
     errorPrint ("archCmpltDomSave: bad output");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -422,22 +421,3 @@ const ArchCmpltDom * const  dom1ptr)
 
   return (0);
 }
-
-/* This function creates the MPI_Datatype for
-** complete graph domains.
-** It returns:
-** - 0  : if type could be created.
-** - 1  : on error.
-*/
-
-#ifdef SCOTCH_PTSCOTCH
-int
-archCmpltDomMpiType (
-const ArchCmplt * const       archptr,
-MPI_Datatype * const          typeptr)
-{
-  MPI_Type_contiguous (2, ANUM_MPI, typeptr);
-
-  return (0);
-}
-#endif /* SCOTCH_PTSCOTCH */

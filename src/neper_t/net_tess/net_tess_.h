@@ -28,4 +28,3 @@
 
 #include"net_tess.h"
 
-extern int net_tess_finalize (struct TESS PTess, struct SEEDSET SSet, struct TESS *pTess);

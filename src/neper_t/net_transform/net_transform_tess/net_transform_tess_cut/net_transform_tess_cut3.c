@@ -121,14 +121,53 @@ net_transform_tess_cut_clean_remove (struct PRIM Prim, int *seeds,
 // taking domain faces into account
 void
 net_transform_tess_cut_clean_proj (int *newdomfaces, int newdomfaceqty,
-                                   struct TESS *pTess)
+                                   int *DomFaceState, struct TESS *pTess)
 {
-  int i, status;
+  int i, j, status;
   int ver, verqty, *vers = NULL;
+  int verqty2, *vers2 = NULL;
   int *domfaces = NULL, domfaceqty;
+  int domface = -1, newdomface = -1;
 
-  neut_tess_domfaces_vers (*pTess, newdomfaces, newdomfaceqty, &vers,
-                           &verqty);
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+    if ((*pTess).FaceDom[i][0] == 2)
+    {
+      domface = (*pTess).FaceDom[i][1];
+      if (DomFaceState[domface] != 0)
+      {
+        newdomface = newdomfaces[- DomFaceState[domface] - 1];
+        (*pTess).FaceDom[i][1] = newdomface;
+      }
+    }
+
+  if (domface == -1 || newdomface == -1)
+    abort ();
+
+  for (i = 1; i <= (*pTess).DomFaceQty; i++)
+    if (DomFaceState[i] != 0)
+    {
+      newdomface = newdomfaces[- DomFaceState[domface] - 1];
+      ut_string_string ((*pTess).DomFaceType[newdomface], (*pTess).DomFaceType + i);
+      ut_array_1d_memcpy ((*pTess).DomFaceEq[newdomface], 4, (*pTess).DomFaceEq[i]);
+      (*pTess).DomFaceParmQty[i] = (*pTess).DomFaceParmQty[newdomface];
+      (*pTess).DomFaceParms[i] = ut_realloc_1d ((*pTess).DomFaceParms[i], (*pTess).DomFaceParmQty[newdomface]);
+      ut_array_1d_memcpy ((*pTess).DomFaceParms[newdomface], (*pTess).DomFaceParmQty[newdomface], (*pTess).DomFaceParms[i]);
+    }
+
+  neut_tess_domfaces_vers (*pTess, newdomfaces, newdomfaceqty, &vers, &verqty);
+
+  // Adding vertices of the domfaces with status != 0, to be projected
+  for (i = 1; i <= (*pTess).DomFaceQty; i++)
+    if (DomFaceState[i] != 0)
+    {
+      neut_tess_domface_vers (*pTess, i, &vers2, &verqty2);
+      for (j = 0; j < verqty2; j++)
+      {
+        ver = vers2[j];
+        (*pTess).VerDom[ver][1] = newdomfaces[-DomFaceState[i] - 1];
+      }
+      ut_array_1d_int_listpair_merge (vers, verqty, vers2, verqty2, &vers, &verqty);
+    }
 
   for (i = 0; i < verqty; i++)
   {
@@ -147,6 +186,7 @@ net_transform_tess_cut_clean_proj (int *newdomfaces, int newdomfaceqty,
   }
 
   ut_free_1d_int (&vers);
+  ut_free_1d_int (&vers2);
   ut_free_1d_int (&domfaces);
 
   return;
@@ -202,6 +242,7 @@ net_transform_tess_cut_post_update_domain (struct TESS *pTess)
                                      (*pTess).DomTessFaceNb[i] + 1,
                                      (*pTess).DomTessFaceQty[i], &qty, &faces,
                                      &faceqty);
+
     if (qty > 1)
     {
       ut_string_string ((*pTess).DomFaceLabel[i], &body);
@@ -247,6 +288,97 @@ net_transform_tess_cut_post_update_domain (struct TESS *pTess)
   neut_tess_init_domain_3d_fromdomfaces (pTess);
 
   ut_free_1d_char (&body);
+
+  return;
+}
+
+// net_transform_tess_cut_direct_proj projects the vertices of the domain
+// edges and domain vertices that belong to a curved domain face onto all
+// their domain faces.  This is needed for a vertex of a domain edge between
+// two curved domain faces (e.g., a sphere cut by a cylinder), which is
+// computed as the intersection between a (flat) face and a primitive, and
+// so does not lie on the other primitive.  The equations of the faces of
+// the moved vertices and of the faces on curved domain faces are then
+// updated (see neut_tess_face_eq).
+void
+net_transform_tess_cut_direct_proj (struct TESS *pTess)
+{
+  int i, j, ver, curved, *domfaces = NULL, domfaceqty;
+  int *vers = NULL, verqty = 0, *faces = NULL, faceqty;
+  double *proj = ut_alloc_1d (3);
+
+  for (ver = 1; ver <= (*pTess).VerQty; ver++)
+  {
+    if ((*pTess).VerState[ver] == -1 || (*pTess).VerDom[ver][0] > 1)
+      continue;
+
+    neut_tess_ver_domfaces (*pTess, ver, &domfaces, &domfaceqty);
+
+    curved = 0;
+    for (j = 0; j < domfaceqty; j++)
+      if (strcmp ((*pTess).DomFaceType[domfaces[j]], "plane"))
+        curved = 1;
+
+    if (!curved || domfaceqty < 2)
+      continue;
+
+    if (neut_tess_domfaces_point_proj (*pTess, domfaces, domfaceqty,
+                                       (*pTess).VerCoo[ver], proj))
+      ut_print_message (1, 3, "Failed to project vertex %d onto the domain.\n",
+                        ver);
+
+    // the vertices already on their domain faces are left untouched
+    if (ut_space_dist (proj, (*pTess).VerCoo[ver]) > 1e-12)
+    {
+      ut_array_1d_memcpy (proj, 3, (*pTess).VerCoo[ver]);
+      ut_array_1d_int_list_addval (&vers, &verqty, ver);
+    }
+  }
+
+  neut_tess_vers_allfaces (*pTess, vers, verqty, &faces, &faceqty);
+
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+    if ((*pTess).FaceState[i] != -1 && (*pTess).FaceDom[i][0] == 2
+        && strncmp ((*pTess).DomFaceType[(*pTess).FaceDom[i][1]], "plane", 5))
+      ut_array_1d_int_list_addval (&faces, &faceqty, i);
+
+  for (i = 0; i < faceqty; i++)
+    neut_tess_face_eq (*pTess, faces[i], (*pTess).FaceEq[faces[i]]);
+
+  ut_free_1d (&proj);
+  ut_free_1d_int (&domfaces);
+  ut_free_1d_int (&vers);
+  ut_free_1d_int (&faces);
+
+  return;
+}
+
+void
+net_transform_tess_cut_direct_poly (struct PRIM Prim, int index, struct POLY *pPoly)
+{
+  int i, min, max;
+  int *sides = ut_alloc_1d_int ((*pPoly).VerQty + 1);
+
+  // this may be overkill
+  min = INT_MAX;
+  max = -INT_MAX;
+  for (i = 1; i <= (*pPoly).VerQty; i++)
+  {
+    // -1 means inside / cut
+    neut_prim_point_side (Prim, (*pPoly).VerCoo[i], sides + i);
+    min = ut_num_min (min, sides[i]);
+    max = ut_num_max (max, sides[i]);
+  }
+
+  if (min == -1 && max == -1)
+    neut_poly_set_zero (pPoly);
+  if (min == -1 && max == 1)
+    net_poly_clip_prim (pPoly, Prim, index);
+  else
+  {
+  }
+
+  ut_free_1d_int (&sides);
 
   return;
 }

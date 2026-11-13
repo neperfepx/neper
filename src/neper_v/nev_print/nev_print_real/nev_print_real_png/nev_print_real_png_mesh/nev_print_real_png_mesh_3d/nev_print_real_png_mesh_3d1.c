@@ -52,6 +52,11 @@ nev_print_real_png_mesh_3d (FILE * file, struct PRINT Print, struct NODES Nodes,
                            nodes_new_old, NodeData, MeshData);
 
   ut_free_1d_int (&nodes_new_old);
+  ut_free_1d_int (&elt2delt3d);
+  ut_free_2d_int (&seq2, elt2dnodeqty);
+  neut_nodes_free (&N);
+  neut_mesh_free (&M1D);
+  neut_mesh_free (&M2D);
 
   return;
 }

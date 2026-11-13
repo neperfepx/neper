@@ -4,17 +4,25 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<limits.h>
 
 #include"neut_t.h"
 
 #include"net_tess/net_tess3d/net_tess3d_domain/net_tess3d_domain.h"
 #include"net_tess/net_tess.h"
+#include"net_tess/net_tess3d/net_tess3d_periodic/net_tess3d_periodic.h"
+#include"net_tess/net_tess3d/net_tess3d_tess/net_tess3d_tess.h"
 #include"net_reg/net_reg_merge/net_reg_merge_del/net_reg_merge_del_ff/net_reg_merge_del_ff.h"
 
 #include"net_transform_tess_cut.h"
 
-extern void net_transform_tess_cut_pre (struct TESS *pTess, char *expr, struct TESS *pTessGen,
-                                        struct PRIM **pPrim, int *pPrimQty);
+extern void net_transform_tess_cut_direct (char *expr, struct TESS *pTess);
+extern void net_transform_tess_cut_direct_prims (struct PRIM *Prim, int PrimQty,
+                                                 struct TESS *pTess);
+extern void net_transform_tess_cut_legacy (char *expr, struct TESS Dom, struct TESS *pTess);
+
+extern void net_transform_tess_cut_pre (struct TESS Tess, char *expr, struct TESS *pTessGen,
+                                        struct PRIM **pPrim, int *pPrimQty, int *DomFaceState);
 
 extern void net_transform_tess_cut_seedset_interior (struct PRIM *Prim, int PrimQty,
     struct TESS Tess, struct SEEDSET *pSSet, int **pintseed_oldseed, int *pintseedqty);
@@ -29,6 +37,7 @@ extern void net_transform_tess_cut_tess (struct TESS Dom, struct SEEDSET SSet,
                                          struct TESS TessGen, struct TESS *pTess);
 
 extern void net_transform_tess_cut_clean (struct PRIM *Prim, int PrimQty,
+                                          int *DomFaceState,
                                           int *cutcells, int cutcellqty, int
                                           *mirrorseeds, int *mirrorseedprims,
                                           int mirrorseedqty, struct TESS
@@ -46,6 +55,7 @@ extern void net_transform_tess_cut_clean_remove (struct PRIM Prim, int *seeds,
 
 extern void net_transform_tess_cut_clean_proj (int *newdomfaces,
                                                int newdomfaceqty,
+                                               int *DomFaceState,
                                                struct TESS *pTess);
 
 extern void net_transform_tess_cut_clean_faceequpdate (int *newdomfaces,
@@ -56,3 +66,6 @@ extern int net_transform_tess_cut_seedset_interior_seed (struct TESS Tess, int c
                                                           struct PRIM Prim);
 
 extern void net_transform_tess_cut_post_update_domain (struct TESS *pTess);
+
+extern void net_transform_tess_cut_direct_proj (struct TESS *pTess);
+extern void net_transform_tess_cut_direct_poly (struct PRIM Prim, int index, struct POLY *pPoly);

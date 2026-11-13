@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2019,2020,2021,2023-2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -47,6 +47,10 @@
 /**                                 to   : 09 nov 2008     **/
 /**                # Version 6.0  : from : 23 jan 2020     **/
 /**                                 to   : 06 feb 2020     **/
+/**                # Version 6.1  : from : 05 dec 2021     **/
+/**                                 to   : 05 dec 2021     **/
+/**                # Version 7.0  : from : 13 sep 2019     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -54,7 +58,7 @@
 **  The defines and includes.
 */
 
-#define VMESH_SEPARATE_GG
+#define SCOTCH_VMESH_SEPARATE_GG
 
 #include "module.h"
 #include "common.h"
@@ -83,7 +87,7 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
 {
   GainTabl * restrict               tablptr;      /* Pointer to gain table                                              */
   byte * restrict                   vexxtab;      /* Start of auxiliary arrays                                          */
-  Gnum                              vexxsiz;      /* Size of auxiliary arrays to be reset every pass                    */
+  size_t                            vexxsiz;      /* Size of auxiliary arrays to be reset every pass                    */
   VmeshSeparateGgElem * restrict    velxtax;      /* Based auxiliary element array                                      */
   VmeshSeparateGgNode * restrict    vnoxtax;      /* Based auxiliary node array                                         */
   Gnum * restrict                   velitax;      /* Array of sums of weights of isolated neighboring nodes of elements */
@@ -103,7 +107,7 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
 
   if (meshptr->m.velmnbr == 0) {                  /* If only a single node or disconnected nodes */
     vmeshZero (meshptr);                          /* Don't bother with parts                     */
-    return    (0);
+    return (0);
   }
 
   velssiz = (meshptr->m.vnlotax == NULL) ? 0 : meshptr->m.velmnbr; /*  Compute size of vertex load sum array */
@@ -116,10 +120,10 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
     if (tablptr != NULL)
       gainTablExit (tablptr);
     errorPrint ("vmeshSeparateGg: out of memory (1)");
-    return     (1);
+    return (1);
   }
-  vexxsiz  = (byte *) velitax - vexxtab;          /* Size of arrays that must be reset at each pass */
-  velxtax -= meshptr->m.velmbas;                  /* Base access to auxiliary arrays                */
+  vexxsiz  = (size_t) ((byte *) velitax - vexxtab); /* Size of arrays that must be reset at each pass */
+  velxtax -= meshptr->m.velmbas;                  /* Base access to auxiliary arrays                  */
   vnoxtax -= meshptr->m.vnodbas;
   velitax -= meshptr->m.velmbas;
 
@@ -179,11 +183,10 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
     ncmpload2   = 0;                              /* Reset separation parameters */
     ncmploaddlt = meshptr->m.vnlosum;
 
-    velmnum = meshptr->m.velmbas + intRandVal (meshptr->m.velmnbr); /* Randomly select first root element vertex              */
-    if (meshptr->m.verttax[velmnum] == meshptr->m.vendtax[velmnum]) /* If picked an isolated element, search for another root */
-      goto next;
-
-    velxptr = velxtax + velmnum;                  /* Set root pointer to root element */
+    velmnum = meshptr->m.velmbas + contextIntRandVal (meshptr->contptr, meshptr->m.velmnbr); /* Randomly select first root element vertex */
+    velxptr = velxtax + velmnum;                  /* Set root pointer to root element                                                     */
+    if (meshptr->m.verttax[velmnum] == meshptr->m.vendtax[velmnum]) /* If picked an isolated element, search for another root             */
+      goto skip;
 
     do {                                          /* Loop on root element vertices        */
       Gnum                velmnum;                /* Number of current element to process */
@@ -191,7 +194,7 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
       velxptr->gainlink.next =                    /* TRICK: allow deletion of root vertex */
       velxptr->gainlink.prev = (GainLink *) velxptr;
 
-      velmnum = velxptr - velxtax;                /* Get root element number */
+      velmnum = (Gnum) (velxptr - velxtax);       /* Get root element number */
       {
         Gnum                ncmpgain1;            /* Gain (2->1) */
         Gnum                ncmpgain2;            /* Gain (0->2) */
@@ -208,9 +211,9 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
       do {                                        /* While element vertices can be retrieved */
         Gnum                eelmnum;              /* Number of current element edge          */
 
-        velmnum = velxptr - velxtax;              /* Get based number of selected element */
+        velmnum = (Gnum) (velxptr - velxtax);     /* Get based number of selected element */
 
-        if (ncmploaddlt < abs (ncmploaddlt + velxtax[velmnum].ncmpgaindlt)) { /* If swapping would cause imbalance */
+        if (ncmploaddlt < ABS (ncmploaddlt + velxtax[velmnum].ncmpgaindlt)) { /* If swapping would cause imbalance */
           permptr = permtab + meshptr->m.velmnbr; /* Terminate swapping process                                    */
           velxptr = NULL;
           break;
@@ -219,7 +222,7 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
         gainTablDel (tablptr, (GainLink *) velxptr); /* Remove element from table */
         velxptr->gainlink.next = VMESHSEPAGGSTATEPART1; /* Move element to part 1 */
         ncmpload2   += velxptr->ncmpgain2;        /* Update partition parameters  */
-        ncmploaddlt += velxptr->ncmpgaindlt;          
+        ncmploaddlt += velxptr->ncmpgaindlt;
 
         sepaptr = NULL;                           /* No frontier elements to relink yet */
         for (eelmnum = meshptr->m.verttax[velmnum]; /* For all neighbor node vertices   */
@@ -231,7 +234,7 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
           if (vnoxtax[vnodnum].partval == 1) {
             errorPrint ("vmeshSeparateGg: internal error (1)");
-            return     (1);
+            return (1);
           }
 #endif /* SCOTCH_DEBUG_VMESH2 */
           if (vnoxtax[vnodnum].partval == 0) {    /* If yet untouched neighbor node        */
@@ -254,7 +257,7 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
               if ((velxtax[velmend].gainlink.next == VMESHSEPAGGSTATEPART1) &&
                   (velmend != velmnum)) {
                 errorPrint ("vmeshSeparateGg: internal error (2)");
-                return     (1);
+                return (1);
               }
 #endif /* SCOTCH_DEBUG_VMESH2 */
               if (velxtax[velmend].gainlink.next == VMESHSEPAGGSTATEPART0) { /* If untouched element */
@@ -283,12 +286,12 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
                   if ((vnoxtax[vnodend].partval == 1) ||
                       ((vnoxtax[vnodend].partval == 2) && (vnodend != vnodnum))) {
                     errorPrint ("vmeshSeparateGg: internal error (3)");
-                    return     (1);
+                    return (1);
                   }
                   if (meshptr->m.vendtax[vnodend] - meshptr->m.verttax[vnodend] == 1) {
                     if (vnoxtax[vnodend].partval != 0) {
                       errorPrint ("vmeshSeparateGg: internal error (4)");
-                      return     (1);
+                      return (1);
                     }
                   }
                 }
@@ -325,7 +328,7 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
             if (velxtax[velmend].gainlink.next < VMESHSEPAGGSTATEPART2) { /* Element should have been declared in part 0 at this stage */
               errorPrint ("vmeshSeparateGg: internal error (5)");
-              return     (1);
+              return (1);
             }
 #endif /* SCOTCH_DEBUG_VMESH2 */
 
@@ -351,12 +354,12 @@ const VmeshSeparateGgParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH3
         if (vmeshSeparateGgCheck (meshptr, ncmpload2, ncmploaddlt, velxtax, vnoxtax) != 0) {
           errorPrint ("vmeshSeparateGg: internal error (6)");
-          return     (1);
+          return (1);
         }
 #endif /* SCOTCH_DEBUG_VMESH3 */
       } while ((velxptr = (VmeshSeparateGgElem *) gainTablFrst (tablptr)) != NULL);
 
-next:                                             /* Select next root element systematically */
+skip:                                             /* Select next root element systematically */
       if (permptr == NULL) {                      /* If element permutation not yet built    */
         if (permtab == NULL) {                    /* If permutation array not yet allocated  */
           if ((permtab = (Gnum *) memAlloc (meshptr->m.velmnbr * sizeof (Gnum))) == NULL) {
@@ -367,8 +370,8 @@ next:                                             /* Select next root element sy
           }
           intAscn (permtab, meshptr->m.velmnbr, meshptr->m.velmbas); /* Initialize permutation array with based element indices */
         }
-        intPerm (permtab, meshptr->m.velmnbr);    /* Build random permutation          */
-        permptr = permtab;                        /* Start at beginning of permutation */
+        intPerm (permtab, meshptr->m.velmnbr, meshptr->contptr); /* Build random permutation */
+        permptr = permtab;                        /* Start at beginning of permutation       */
       }
       for ( ; permptr < permtab + meshptr->m.velmnbr; ) { /* Find next root vertex */
         Gnum                velmnum;
@@ -377,7 +380,7 @@ next:                                             /* Select next root element sy
 #ifdef SCOTCH_DEBUG_VMESH2
         if (velxtax[velmnum].gainlink.next >= VMESHSEPAGGSTATEPART2) {
           errorPrint ("vmeshSeparateGg: internal error (7)");
-          return     (1);
+          return (1);
         }
 #endif /* SCOTCH_DEBUG_VMESH2 */
         if ((velxtax[velmnum].gainlink.next == VMESHSEPAGGSTATEPART0) && /* If still in part 0 */
@@ -391,7 +394,7 @@ next:                                             /* Select next root element sy
     if ((passnum == 0) ||                         /* If it is the first try        */
         ( (meshptr->ncmpload[2] >  ncmpload2) ||  /* Or if better solution reached */
          ((meshptr->ncmpload[2] == ncmpload2) &&
-          (abs (meshptr->ncmploaddlt) > abs (ncmploaddlt))))) {
+          (ABS (meshptr->ncmploaddlt) > ABS (ncmploaddlt))))) {
       Gnum                vertnum;
 
       meshptr->ecmpsize[0] = ecmpsize0;           /* Set graph parameters */
@@ -426,7 +429,7 @@ next:                                             /* Select next root element sy
 #ifdef SCOTCH_DEBUG_VMESH2
   if (vmeshCheck (meshptr) != 0) {
     errorPrint ("vmeshSeparateGg: inconsistent graph data");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VMESH2 */
 
@@ -434,8 +437,6 @@ next:                                             /* Select next root element sy
     memFree (permtab);
   memFree      (vexxtab);                         /* Free group leader */
   gainTablExit (tablptr);
-
-/* printf ("GG Sepa\tsize=%ld\tload=%ld\tbal=%ld\n", (long) meshptr->fronnbr, (long) meshptr->ncmpload[2], (long) meshptr->ncmploaddlt); */
 
   return (0);
 }
@@ -459,7 +460,6 @@ const VmeshSeparateGgNode * restrict const  vnoxtax)
 {
   Gnum                vnodnum;
   Gnum                vnloval;
-  Gnum                ncmpsize0c;
   Gnum                ncmpsize1c;
   Gnum                ncmpsize2c;
   Gnum                ncmpload0c;
@@ -483,23 +483,22 @@ const VmeshSeparateGgNode * restrict const  vnoxtax)
       vnloval = meshptr->m.vnlotax[vnodnum];
     if (partval > 2) {
       errorPrint ("vmeshSeparateGgCheck: invalid node part value");
-      return     (1);
+      return (1);
     }
     ncmpsize1c += partval1;
     ncmpsize2c += partval2;
     ncmpload1c += partval1 * vnloval;
     ncmpload2c += partval2 * vnloval;
   }
-  ncmpsize0c = meshptr->m.vnodnbr - ncmpsize1c - ncmpsize2c;
   ncmpload0c = meshptr->m.vnlosum - ncmpload1c - ncmpload2c;
 
   if (ncmpload2c != ncmpload2) {
-    errorPrint ("vmeshSeparateGgCheck: invalid separator size");
-    return     (1);
+    errorPrint ("vmeshSeparateGgCheck: invalid separator load");
+    return (1);
   }
   if (ncmploaddlt != (ncmpload0c - ncmpload1c)) {
     errorPrint ("vmeshSeparateGgCheck: invalid separator balance");
-    return     (1);
+    return (1);
   }
 
   return (0);

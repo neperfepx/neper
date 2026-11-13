@@ -31,8 +31,6 @@ nev_print_png_scale_minmax (FILE *file, struct DATA Data, struct PRINT Print)
   else
     pos[0] = -0.21;
 
-  int rgb = !strcmp (Print.colormode, "bright") ? 0 : 1;
-
   id = 0;
   if (print_min)
   {
@@ -40,13 +38,13 @@ nev_print_png_scale_minmax (FILE *file, struct DATA Data, struct PRINT Print)
 
     fprintf (file, "#declare MinString =\n");
     fprintf (file, "text {ttf \"timrom.ttf\" \"min\" 0.1, 0\n");
-    fprintf (file, "pigment { rgbt <%d,%d,%d,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}\n", rgb, rgb, rgb);
+    fprintf (file, "pigment { rgbt <0,0,0,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}\n");
     fprintf (file, "scale 0.06\n");
     fprintf (file, "rotate <90,0,0>\n");
     fprintf (file, "translate <-0.1,0,%f>\n", pos[id]);
     fprintf (file, "}\n");
     fprintf (file, "text {ttf \"timrom.ttf\" \"%s\" 0.1, 0\n", tmp);
-    fprintf (file, "pigment { rgbt <%d,%d,%d,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}\n", rgb, rgb, rgb);
+    fprintf (file, "pigment { rgbt <0,0,0,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}\n");
     fprintf (file, "scale 0.06\n");
     fprintf (file, "rotate <90,0,0>\n");
     fprintf (file, "translate <0.02,0,%f>\n", pos[id]);
@@ -62,13 +60,13 @@ nev_print_png_scale_minmax (FILE *file, struct DATA Data, struct PRINT Print)
 
     fprintf (file, "#declare MaxString =\n");
     fprintf (file, "text {ttf \"timrom.ttf\" \"max\" 0.1, 0\n");
-    fprintf (file, "pigment { rgbt <%d,%d,%d,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}\n", rgb, rgb, rgb);
+    fprintf (file, "pigment { rgbt <0,0,0,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}\n");
     fprintf (file, "scale 0.06\n");
     fprintf (file, "rotate <90,0,0>\n");
     fprintf (file, "translate <-0.1,0,%f>\n", pos[id]);
     fprintf (file, "}\n");
     fprintf (file, "text {ttf \"timrom.ttf\" \"%s\" 0.1, 0\n", tmp);
-    fprintf (file, "pigment { rgbt <%d,%d,%d,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}\n", rgb, rgb, rgb);
+    fprintf (file, "pigment { rgbt <0,0,0,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000}\n");
     fprintf (file, "scale 0.06\n");
     fprintf (file, "rotate <90,0,0>\n");
     fprintf (file, "translate <0.02,0,%f>\n", pos[id]);

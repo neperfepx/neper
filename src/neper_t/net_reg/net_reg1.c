@@ -7,7 +7,7 @@
 void
 net_reg (struct IN_T In, struct TESS *pTess, struct REG *pReg)
 {
-  int DelId = 0;
+  int DelId = 0, cellqty = (*pTess).CellQty;
 
   if ((*pTess).CellQty == 0)
     return;
@@ -23,8 +23,25 @@ net_reg (struct IN_T In, struct TESS *pTess, struct REG *pReg)
     net_reg_merge (pTess, *pReg, &DelId);
 
   /*----------------------------------------------------------------------
+   * updating face equations */
+  if ((*pTess).Dim == 3)
+    net_reg_faceeq (pTess);
+
+  /*----------------------------------------------------------------------
+   * updating periodicity */
+  if (!strcmp ((*pTess).Type, "periodic"))
+    net_reg_periodic (pTess);
+
+  /*----------------------------------------------------------------------
    * compressing */
   neut_tess_compress (pTess);
+
+  if ((*pTess).CellQty < cellqty)
+  {
+    printf ("\n");
+    ut_print_message (0, 2, "%d cell%s deleted.", cellqty - (*pTess).CellQty,
+                      cellqty - (*pTess).CellQty > 1 ? "s" : "");
+  }
 
   if ((*pTess).Dim == 3)
     neut_tess_init_domtessface (pTess);
@@ -36,7 +53,9 @@ net_reg (struct IN_T In, struct TESS *pTess, struct REG *pReg)
    * testing full tessellation */
 
 #ifdef DEVEL_DEBUGGING_TEST
-  if (neut_tess_test (*pTess, 0) != 0 || neut_tess_test_dom (*pTess, 0) != 0)
+  if (neut_tess_test (*pTess, 0) != 0 || neut_tess_test_dom (*pTess, 0) != 0
+      || (!strcmp ((*pTess).Type, "periodic")
+          && neut_tess_test_per (*pTess, 0) != 0))
     ut_print_message (2, 2, "The tessellation is not valid.\n");
 #endif
 

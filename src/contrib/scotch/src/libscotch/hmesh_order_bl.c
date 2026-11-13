@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2021,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -43,14 +43,14 @@
 /**                                 to   : 09 feb 2005     **/
 /**                # Version 5.0  : from : 25 jul 2007     **/
 /**                                 to   : 25 jul 2007     **/
+/**                # Version 7.0  : from : 26 apr 2021     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HMESH_ORDER_BL
 
 #include "module.h"
 #include "common.h"
@@ -76,7 +76,7 @@
 
 int
 hmeshOrderBl (
-const Hmesh * restrict const              meshptr,
+Hmesh * restrict const                    meshptr,
 Order * restrict const                    ordeptr,
 const Gnum                                ordenum, /*+ Zero-based ordering number +*/
 OrderCblk * restrict const                cblkptr, /*+ Single column-block        +*/
@@ -87,7 +87,7 @@ const HmeshOrderBlParam * restrict const  paraptr)
 
   if (paraptr->cblkmin <= 0) {
     errorPrint ("hmeshOrderBl: invalid minimum block size");
-    return     (1);
+    return (1);
   }
 
   if (hmeshOrderSt (meshptr, ordeptr, ordenum, cblkptr, paraptr->strat) != 0) /* Perform ordering strategy */
@@ -100,15 +100,22 @@ const HmeshOrderBlParam * restrict const  paraptr)
     cblknbr = cblkptr->vnodnbr / paraptr->cblkmin; /* Get new number of blocks */
 
     if ((cblkptr->cblktab = (OrderCblk *) memAlloc (cblknbr * sizeof (OrderCblk))) == NULL) {
-      errorPrint ("hgraphOrderBl: out of memory");
-      return     (1);
+      errorPrint ("hmeshOrderBl: out of memory");
+      return (1);
     }
+    cblkptr->typeval = ORDERCBLKSEQU;             /* Node becomes a sequence of blocks */
+    cblkptr->cblknbr = cblknbr;
+#ifdef SCOTCH_PTHREAD
+    pthread_mutex_lock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
     ordeptr->treenbr += cblknbr;                  /* These more number of tree nodes    */
     ordeptr->cblknbr += cblknbr - 1;              /* These more number of column blocks */
-    cblkptr->cblknbr  = cblknbr;
+#ifdef SCOTCH_PTHREAD
+    pthread_mutex_unlock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
 
     for (cblknum = 0; cblknum < cblknbr; cblknum ++) {
-      cblkptr->cblktab[cblknum].typeval = ORDERCBLKOTHR;
+      cblkptr->cblktab[cblknum].typeval = ORDERCBLKLEAF;
       cblkptr->cblktab[cblknum].vnodnbr = ((cblkptr->vnodnbr + cblknbr - 1) - cblknum) / cblknbr;
       cblkptr->cblktab[cblknum].cblknbr = 0;
       cblkptr->cblktab[cblknum].cblktab = NULL;

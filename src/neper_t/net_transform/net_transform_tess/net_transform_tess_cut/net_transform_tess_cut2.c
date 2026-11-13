@@ -5,15 +5,136 @@
 #include"net_transform_tess_cut_.h"
 
 void
-net_transform_tess_cut_pre (struct TESS *pTess, char *expr,
+net_transform_tess_cut_pre (struct TESS Tess, char *expr,
                             struct TESS *pTessGen, struct PRIM **pPrim,
-                            int *pPrimQty)
+                            int *pPrimQty, int *DomFaceState)
 {
-  neut_tess_compress (pTess);
-  neut_tess_tess_gen (*pTess, pTessGen);
-  neut_tess_tess_cell (*pTess, pTessGen);
+  int i, j, k, out, domver, side;
+
+  // neut_tess_compress (pTess); // we should not compress here...
+  neut_tess_tess_gen (Tess, pTessGen);
+  neut_tess_tess_cell (Tess, pTessGen);
 
   net_transform_tess_cut_pre_prim (expr, pPrim, pPrimQty, 1);
+
+  for (i = 0; i < *pPrimQty; i++)
+    if (!strcmp ((*pPrim)[i].Type, "cylinderi"))
+    {
+      out = 1;
+      for (j = 1; j <= Tess.DomFaceQty; j++)
+        if (!strcmp (Tess.DomFaceType[j], "plane") &&
+            fabs (ut_vector_scalprod (Tess.DomFaceEq[j] + 1, (*pPrim)[i].Dir)) < 1e-6)
+        {
+          for (k = 1; k <= Tess.DomFaceVerQty[j]; k++)
+          {
+            domver = Tess.DomFaceVerNb[j][k];
+            neut_prim_point_side ((*pPrim)[i], Tess.DomVerCoo[domver], &side);
+            if (side == 1)
+            {
+              out = 0;
+              break;
+            }
+          }
+
+          if (out && DomFaceState)
+            DomFaceState[j] = -i - 1;
+        }
+    }
+
+  return;
+}
+
+void
+net_transform_tess_cut_direct_prims (struct PRIM *Prim, int PrimQty,
+                                     struct TESS *pTess)
+{
+  int i, j, polyqty;
+  struct SEEDSET SSet;
+  struct POLY* Poly = (struct POLY *) calloc ((*pTess).PolyQty + 1, sizeof (struct POLY));
+  char *label = ut_alloc_1d_char (100);
+  int *Prim_domface = NULL;
+  struct TESS TessCpy;
+
+  neut_tess_set_zero (&TessCpy);
+  neut_seedset_set_zero (&SSet);
+
+  // Reconstructing a minimal domain if there is none (e.g. after rmdomain)
+  if ((*pTess).Dim == 3 && (*pTess).DomFaceQty == 0)
+  {
+    int id = 0;
+    for (i = 1; i <= (*pTess).FaceQty; i++)
+      if ((*pTess).FacePoly[i][1] == 0)
+        (*pTess).FacePoly[i][1] = -(++id);
+
+    neut_tess_init_domain (pTess);
+    neut_tess_init_verdom (pTess);
+    neut_tess_init_edgedom (pTess);
+    neut_tess_init_facedom (pTess);
+  }
+
+  neut_tess_tess_gen (*pTess, &TessCpy);
+  neut_tess_tess_cell (*pTess, &TessCpy);
+  neut_tess_tess_domain (*pTess, &TessCpy);
+
+  Prim_domface = ut_alloc_1d_int (PrimQty);
+  for (i = 0; i < PrimQty; i++)
+    Prim_domface[i] = (*pTess).DomFaceQty + i + 1;
+
+  // Copying info from Tess
+  net_tess_seedset (*pTess, &SSet);
+
+  // tess to polys
+  polyqty = (*pTess).PolyQty;
+  for (i = 1; i <= (*pTess).PolyQty; i++)
+    net_tess_poly (*pTess, i, Poly + i);
+
+  // cutting polys
+  for (i = 0; i < PrimQty; i++)
+    for (j = 1; j <= (*pTess).PolyQty; j++)
+      net_transform_tess_cut_direct_poly (Prim[i], -Prim_domface[i], Poly + j);
+
+  // polys to tess
+  net_tess3d_tess (1, SSet, 1, Poly, pTess);
+
+  neut_tess_init_facedom_fromfacepoly (pTess);
+
+  // Setting DomFaces
+  (*pTess).DomFaceQty = TessCpy.DomFaceQty + PrimQty;
+
+  neut_tess_tess_domfaces_minimal (TessCpy, pTess);
+
+  for (i = 0; i < PrimQty; i++)
+  {
+    sprintf (label, "cut%d", i + 1);
+    neut_tess_adddomface_prim (pTess, Prim[i], label);
+  }
+
+  neut_tess_init_domtessface (pTess);
+  neut_tess_compress_domfaces (pTess);
+
+  // Setting DomEdges and DomVers
+  neut_tess_init_domedgesandvers (pTess);
+
+  // Projecting vertices onto the curved domain edges
+  net_transform_tess_cut_direct_proj (pTess);
+
+  // Copying general and cell info: CellOri, CellModeId, etc.
+  net_tess_finalize (TessCpy, SSet, pTess);
+  neut_tess_tess_gen (TessCpy, pTess);
+  neut_tess_tess_cell (TessCpy, pTess);
+  ut_string_string ("cut", &(*pTess).DomType);
+
+  // Setting periodicity (the primitives must be invariant by the periodic
+  // translations, see net_domain_curved)
+  if (!strcmp ((*pTess).Type, "periodic"))
+    net_tess3d_periodic (pTess);
+
+  neut_seedset_free (&SSet);
+  neut_poly_array_free (&Poly, polyqty);
+
+  ut_free_1d_char (&label);
+  ut_free_1d_int (&Prim_domface);
+  neut_tess_free (&TessCpy);
 
   return;
 }
@@ -124,7 +245,8 @@ net_transform_tess_cut_tess (struct TESS Dom, struct SEEDSET SSet,
 }
 
 void
-net_transform_tess_cut_clean (struct PRIM *Prim, int PrimQty, int *cutcells,
+net_transform_tess_cut_clean (struct PRIM *Prim, int PrimQty,
+                              int *DomFaceState, int *cutcells,
                               int cutcellqty, int *mirrorseeds,
                               int *mirrorseedprims, int mirrorseedqty,
                               struct TESS *pTess,
@@ -163,7 +285,7 @@ net_transform_tess_cut_clean (struct PRIM *Prim, int PrimQty, int *cutcells,
   ut_array_1d_int_addval (newdomfaces, PrimQty,
                           (*pTess).DomFaceQty - domfaceqty_old, newdomfaces);
 
-  net_transform_tess_cut_clean_proj (newdomfaces, PrimQty, pTess);
+  net_transform_tess_cut_clean_proj (newdomfaces, PrimQty, DomFaceState, pTess);
 
   net_transform_tess_cut_clean_faceequpdate (newdomfaces, PrimQty, pTess);
 

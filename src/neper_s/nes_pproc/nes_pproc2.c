@@ -28,6 +28,15 @@ nes_pproc_load (struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr,
 
   neut_sim_testinputs (*pSim, *pTess, Mesh);
 
+  if (!neut_tess_isvoid (*pTess))
+    neut_tess_sim (*pTess, pSim);
+
+  if (!neut_tesr_isvoid (*pTesr))
+    neut_tesr_sim (*pTesr, pSim);
+
+  if (!neut_nodes_isvoid (*pNodes))
+    neut_mesh_sim (*pNodes, Mesh, pSim);
+
   nes_pproc_load_crysym (pTess, pTesr, pNodes, Mesh, GroupCrySym, GroupQty);
 
   ut_free_2d_char (&GroupCrySym, GroupQty);

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2012-2014,2018,2019 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2012-2014,2018,2019,2023-2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -51,6 +51,8 @@
 /**                                 to   : 14 aug 2010     **/
 /**                # Version 6.0  : from : 08 jan 2012     **/
 /**                                 to   : 29 sep 2019     **/
+/**                # Version 7.0  : from : 07 may 2019     **/
+/**                                 to   : 08 feb 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -58,10 +60,9 @@
 **  The defines and includes.
 */
 
-#define LIBRARY
-
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "parser.h"
 #include "graph.h"
 #include "order.h"
@@ -77,13 +78,13 @@
 /*                                  */
 /************************************/
 
-/*+ This routine initializes an API ordering
-*** with respect to the given source graph
-*** and the locations of output parameters.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine initializes an API ordering
+** with respect to the given source graph
+** and the locations of output parameters.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphOrderInit (
@@ -95,18 +96,16 @@ SCOTCH_Num * const          cblkptr,              /*+ Pointer to number of colum
 SCOTCH_Num * const          rangtab,              /*+ Column block range array           +*/
 SCOTCH_Num * const          treetab)              /*+ Separator tree array               +*/
 {
-  const Graph *       srcgrafptr;
-  LibOrder *          libordeptr;
-
 #ifdef SCOTCH_DEBUG_LIBRARY1
   if (sizeof (SCOTCH_Ordering) < sizeof (LibOrder)) {
     errorPrint (STRINGIFY (SCOTCH_graphOrderInit) ": internal error");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_LIBRARY1 */
 
-  srcgrafptr = (Graph *) grafptr;                 /* Use structure as source graph */
-  libordeptr = (LibOrder *) ordeptr;
+  const Graph * const srcgrafptr = (Graph *) CONTEXTOBJECT (grafptr); /* Use structure as source graph */
+  LibOrder * const    libordeptr = (LibOrder *) ordeptr;
+
   libordeptr->permtab = ((permtab == NULL) || ((void *) permtab == (void *) grafptr)) ? NULL : (Gnum *) permtab;
   libordeptr->peritab = ((peritab == NULL) || ((void *) peritab == (void *) grafptr)) ? NULL : (Gnum *) peritab;
   libordeptr->cblkptr = ((cblkptr == NULL) || ((void *) cblkptr == (void *) grafptr)) ? NULL : (Gnum *) cblkptr;
@@ -116,10 +115,10 @@ SCOTCH_Num * const          treetab)              /*+ Separator tree array      
   return (orderInit (&libordeptr->o, srcgrafptr->baseval, srcgrafptr->vertnbr, libordeptr->peritab));
 }
 
-/*+ This routine frees an API ordering.
-*** It returns:
-*** - VOID  : in all cases.
-+*/
+/* This routine frees an API ordering.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_graphOrderExit (
@@ -129,12 +128,12 @@ SCOTCH_Ordering * const     ordeptr)
   orderExit (&((LibOrder *) ordeptr)->o);
 }
 
-/*+ This routine loads the contents of
-*** the given ordering from the given stream.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine loads the contents of
+** the given ordering from the given stream.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphOrderLoad (
@@ -142,11 +141,8 @@ const SCOTCH_Graph * const        grafptr,        /*+ Graph to order   +*/
 SCOTCH_Ordering * restrict const  ordeptr,        /*+ Ordering to load +*/
 FILE * restrict const             stream)         /*+ Output stream    +*/
 {
-  const Graph *       srcgrafptr;
-  LibOrder *          libordeptr;
-
-  srcgrafptr = (Graph *) grafptr;
-  libordeptr = (LibOrder *) ordeptr;
+  const Graph * const srcgrafptr = (Graph *) CONTEXTOBJECT (grafptr); /* Use structure as source graph */
+  LibOrder * const    libordeptr = (LibOrder *) ordeptr;
 
   if (orderLoad (&libordeptr->o, srcgrafptr->vlbltax, stream) != 0)
     return (1);
@@ -157,12 +153,12 @@ FILE * restrict const             stream)         /*+ Output stream    +*/
   return (0);
 }
 
-/*+ This routine saves the contents of
-*** the given ordering to the given stream.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine saves the contents of
+** the given ordering to the given stream.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphOrderSave (
@@ -170,16 +166,18 @@ const SCOTCH_Graph * const    grafptr,            /*+ Graph to order   +*/
 const SCOTCH_Ordering * const ordeptr,            /*+ Ordering to save +*/
 FILE * const                  stream)             /*+ Output stream    +*/
 {
-  return (orderSave (&((LibOrder *) ordeptr)->o, ((Graph *) grafptr)->vlbltax, stream));
+  const Graph * const srcgrafptr = (Graph *) CONTEXTOBJECT (grafptr);
+
+  return (orderSave (&((LibOrder *) ordeptr)->o, srcgrafptr->vlbltax, stream));
 }
 
-/*+ This routine saves to the given stream
-*** the mapping data associated with the
-*** given ordering.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine saves to the given stream
+** the mapping data associated with the
+** given ordering.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphOrderSaveMap (
@@ -187,16 +185,18 @@ const SCOTCH_Graph * const    grafptr,            /*+ Graph to order   +*/
 const SCOTCH_Ordering * const ordeptr,            /*+ Ordering to save +*/
 FILE * const                  stream)             /*+ Output stream    +*/
 {
-  return (orderSaveMap (&((LibOrder *) ordeptr)->o, ((Graph *) grafptr)->vlbltax, stream));
+  const Graph * const srcgrafptr = (Graph *) CONTEXTOBJECT (grafptr);
+
+  return (orderSaveMap (&((LibOrder *) ordeptr)->o, srcgrafptr->vlbltax, stream));
 }
 
-/*+ This routine saves to the given stream
-*** the separator tree data associated with
-*** the given ordering.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine saves to the given stream
+** the separator tree data associated with
+** the given ordering.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphOrderSaveTree (
@@ -204,95 +204,104 @@ const SCOTCH_Graph * const    grafptr,            /*+ Graph to order   +*/
 const SCOTCH_Ordering * const ordeptr,            /*+ Ordering to save +*/
 FILE * const                  stream)             /*+ Output stream    +*/
 {
-  return (orderSaveTree (&((LibOrder *) ordeptr)->o, ((Graph *) grafptr)->vlbltax, stream));
+  const Graph * const srcgrafptr = (Graph *) CONTEXTOBJECT (grafptr);
+
+  return (orderSaveTree (&((LibOrder *) ordeptr)->o, srcgrafptr->vlbltax, stream));
 }
 
-/*+ This routine computes an ordering
-*** of the API ordering structure with
-*** respect to the given strategy.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine computes an ordering
+** of the API ordering structure with
+** respect to the given strategy.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphOrderCompute (
 SCOTCH_Graph * const        grafptr,              /*+ Graph to order      +*/
 SCOTCH_Ordering * const     ordeptr,              /*+ Ordering to compute +*/
-SCOTCH_Strat * const        stratptr)             /*+ Ordering strategy   +*/
+SCOTCH_Strat * const        straptr)              /*+ Ordering strategy   +*/
 {
-  return (SCOTCH_graphOrderComputeList (grafptr, ordeptr, ((Graph *) grafptr)->vertnbr, NULL, stratptr));
+  return (SCOTCH_graphOrderComputeList (grafptr, ordeptr, ((Graph *) CONTEXTOBJECT (grafptr))->vertnbr, NULL, straptr));
 }
 
-/*+ This routine computes a partial ordering
-*** of the listed vertices of the API ordering
-*** structure graph with respect to the given
-*** strategy.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine computes a partial ordering
+** of the listed vertices of the API ordering
+** structure graph with respect to the given
+** strategy.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphOrderComputeList (
-SCOTCH_Graph * const        grafptr,              /*+ Graph to order                  +*/
+SCOTCH_Graph * const        libgrafptr,           /*+ Graph to order                  +*/
 SCOTCH_Ordering * const     ordeptr,              /*+ Ordering to compute             +*/
 const SCOTCH_Num            listnbr,              /*+ Number of vertices in list      +*/
 const SCOTCH_Num * const    listtab,              /*+ List of vertex indices to order +*/
-SCOTCH_Strat * const        stratptr)             /*+ Ordering strategy               +*/
+SCOTCH_Strat * const        straptr)              /*+ Ordering strategy               +*/
 {
-  const Graph * restrict  srcgrafptr;
-  LibOrder *              libordeptr;             /* Pointer to ordering             */
-  Hgraph                  halgrafdat;             /* Halo source graph structure     */
-  Hgraph                  halgraftmp;             /* Halo source graph structure     */
-  Hgraph *                halgrafptr;             /* Pointer to halo graph structure */
-  const Strat *           ordstratptr;            /* Pointer to ordering strategy    */
-  OrderCblk *             cblkptr;
+  Hgraph              halgrafdat;                 /* Halo source graph structure     */
+  Hgraph              halgraftmp;                 /* Halo source graph structure     */
+  Hgraph *            halgrafptr;                 /* Pointer to halo graph structure */
+  CONTEXTDECL        (libgrafptr);
+  const Strat *       ordstraptr;                 /* Pointer to ordering strategy    */
+  OrderCblk *         cblkptr;
+  int                 o;
 
-  srcgrafptr = (Graph *) grafptr;
-  libordeptr = (LibOrder *) ordeptr;              /* Get ordering */
+  o = 1;                                          /* Assume an error */
+
+  if (CONTEXTINIT (libgrafptr)) {
+    errorPrint (STRINGIFY (SCOTCH_graphOrderComputeList) ": cannot initialize context");
+    return (o);
+  }
+
+  const Graph * const srcgrafptr = (Graph *) CONTEXTGETOBJECT (libgrafptr);
+  LibOrder * const    libordeptr = (LibOrder *) ordeptr;
 
 #ifdef SCOTCH_DEBUG_LIBRARY1
   if ((listnbr < 0) || (listnbr > srcgrafptr->vertnbr)) {
     errorPrint (STRINGIFY (SCOTCH_graphOrderComputeList) ": invalid parameters (1)");
-    return     (1);
+    goto fail;
   }
 #endif /* SCOTCH_DEBUG_LIBRARY1 */
 #ifdef SCOTCH_DEBUG_LIBRARY2
   if (graphCheck (srcgrafptr) != 0) {
     errorPrint (STRINGIFY (SCOTCH_graphOrderComputeList) ": invalid input graph");
-    return     (1);
+    goto fail;
   }
 #endif /* SCOTCH_DEBUG_LIBRARY2 */
 
   if (listnbr == 0) {                             /* If empty list, return identity permutation */
     intAscn (libordeptr->o.peritab, srcgrafptr->vertnbr, srcgrafptr->baseval);
-    return  (0);
+    o = 0;                                        /* Not an error */
+    goto skip;
   }
 
-  if (*((Strat **) stratptr) == NULL)             /* Set default ordering strategy if necessary */
-    SCOTCH_stratGraphOrderBuild (stratptr, SCOTCH_STRATQUALITY, 0, 0.2);
-
-  ordstratptr = *((Strat **) stratptr);
-  if (ordstratptr->tabl != &hgraphorderststratab) {
-    errorPrint (STRINGIFY (SCOTCH_graphOrderComputeList) ": not an ordering strategy");
-    return     (1);
+  if (*((Strat **) straptr) == NULL) {            /* Set default ordering strategy if necessary */
+    if (SCOTCH_stratGraphOrderBuild (straptr, SCOTCH_STRATQUALITY, 0, 0.2))
+      goto fail;
   }
 
-  memCpy (&halgrafdat.s, grafptr, sizeof (Graph)); /* Copy non-halo graph data   */
-  halgrafdat.s.flagval &= ~GRAPHFREETABS;         /* Do not allow to free arrays */
-  halgrafdat.s.edlotax  = NULL;                   /* Don't mind about edge loads */
-  halgrafdat.vnohnbr    = halgrafdat.s.vertnbr;   /* All vertices are non-halo   */
-  halgrafdat.vnohnnd    = halgrafdat.s.vertnnd;   /* No halo present             */
-  halgrafdat.vnhdtax    = halgrafdat.s.vendtax;   /* End of non-halo vertices    */
-  halgrafdat.vnlosum    = halgrafdat.s.velosum;   /* Sum of node vertex weights  */
-  halgrafdat.enohnbr    = halgrafdat.s.edgenbr;   /* No halo present             */
-  halgrafdat.enlosum    = halgrafdat.s.edlosum;
-  halgrafdat.levlnum    = 0;                      /* No nested dissection yet */
+  ordstraptr = *((Strat **) straptr);
+  if (ordstraptr->tablptr != &hgraphorderststratab) {
+    errorPrint (STRINGIFY (SCOTCH_graphOrderComputeList) ": not a sequential graph ordering strategy");
+    goto fail;
+  }
+
+  memCpy (&halgrafdat.s, srcgrafptr, sizeof (Graph)); /* Copy non-halo graph data   */
+  halgrafdat.s.flagval &= ~GRAPHFREETABS;         /* Do not allow to free arrays    */
+  halgrafdat.s.edlotax  = NULL;                   /* Never mind about edge loads    */
+  halgrafdat.s.vlbltax  = NULL;                   /* Do not propagate vertex labels */
+  hgraphUnhalo2 (&halgrafdat);                    /* Set default halo members       */
+  halgrafdat.levlnum = 0;                         /* No nested dissection yet       */
+  halgrafdat.contptr = CONTEXTGETDATA (libgrafptr);
 
   if (listnbr == srcgrafptr->vertnbr) {           /* If work on full graph */
     halgrafptr = &halgrafdat;
-    cblkptr    = &libordeptr->o.cblktre;
+    cblkptr    = &libordeptr->o.rootdat;
   }
   else {
     Gnum * restrict       peritax;
@@ -302,20 +311,20 @@ SCOTCH_Strat * const        stratptr)             /*+ Ordering strategy         
 
     if ((cblkptr = (OrderCblk *) memAlloc (2 * sizeof (OrderCblk))) == NULL) {
       errorPrint (STRINGIFY (SCOTCH_graphOrderComputeList) ": out of memory");
-      return     (1);
+      goto fail;
     }
     libordeptr->o.treenbr = 3;
     libordeptr->o.cblknbr = 2;
-    libordeptr->o.cblktre.typeval = ORDERCBLKNEDI; /* Node becomes a (fake) nested dissection node */
-    libordeptr->o.cblktre.vnodnbr = srcgrafptr->vertnbr;
-    libordeptr->o.cblktre.cblknbr = 2;
-    libordeptr->o.cblktre.cblktab = cblkptr;
+    libordeptr->o.rootdat.typeval = ORDERCBLKDICO; /* Node is a set of two disconnected components */
+    libordeptr->o.rootdat.vnodnbr = srcgrafptr->vertnbr;
+    libordeptr->o.rootdat.cblknbr = 2;
+    libordeptr->o.rootdat.cblktab = cblkptr;
 
-    cblkptr[0].typeval = ORDERCBLKOTHR;           /* Build column blocks */
+    cblkptr[0].typeval = ORDERCBLKLEAF;           /* Build column blocks */
     cblkptr[0].vnodnbr = listnbr;
     cblkptr[0].cblknbr = 0;
     cblkptr[0].cblktab = NULL;
-    cblkptr[1].typeval = ORDERCBLKOTHR;
+    cblkptr[1].typeval = ORDERCBLKLEAF;
     cblkptr[1].vnodnbr = srcgrafptr->vertnbr - listnbr;
     cblkptr[1].cblknbr = 0;
     cblkptr[1].cblktab = NULL;
@@ -327,7 +336,7 @@ SCOTCH_Strat * const        stratptr)             /*+ Ordering strategy         
       if ((listtab[listnum] <  srcgrafptr->baseval) ||
           (listtab[listnum] >= srcgrafptr->vertnnd)) {
         errorPrint (STRINGIFY (SCOTCH_graphOrderComputeList) ": invalid parameters (2)");
-        return     (1);
+        goto fail;
       }
 #endif /* SCOTCH_DEBUG_LIBRARY2 */
       peritax[listtab[listnum]] = ~0;             /* TRICK: use peritab as flag array to mark used vertices */
@@ -339,27 +348,31 @@ SCOTCH_Strat * const        stratptr)             /*+ Ordering strategy         
 #ifdef SCOTCH_DEBUG_LIBRARY2
     if (halonum != (listnbr + srcgrafptr->baseval - 1)) {
       errorPrint (STRINGIFY (SCOTCH_graphOrderComputeList) ": internal error");
-      return     (1);
+      goto fail;
     }
 #endif /* SCOTCH_DEBUG_LIBRARY2 */
 
     if (hgraphInduceList (&halgrafdat, listnbr, (Gnum * const) listtab, srcgrafptr->vertnbr - listnbr, &halgraftmp) != 0) {
       errorPrint (STRINGIFY (SCOTCH_graphOrderComputeList) ": cannot create induced subgraph");
-      return     (1);
+      goto fail;
     }
     halgrafptr = &halgraftmp;
   }
 
-  intRandInit ();                                 /* Check that random number generator is initialized */
-
-  hgraphOrderSt (halgrafptr, &libordeptr->o, 0, cblkptr, ordstratptr);
+  o = hgraphOrderSt (halgrafptr, &libordeptr->o, 0, cblkptr, ordstraptr);
 
   if (halgrafptr != &halgrafdat)                  /* If induced subgraph created */
     hgraphExit (halgrafptr);                      /* Free it                     */
 
+  if (o != 0)
+    goto fail;
+
+skip:
 #ifdef SCOTCH_DEBUG_LIBRARY2
-  if (orderCheck (&libordeptr->o) != 0)
-    return (1);
+  if (orderCheck (&libordeptr->o) != 0) {
+    o = 1;
+    goto fail;
+  }
 #endif /* SCOTCH_DEBUG_LIBRARY2 */
 
   if (libordeptr->permtab != NULL)                /* Build direct permutation if wanted */
@@ -371,21 +384,23 @@ SCOTCH_Strat * const        stratptr)             /*+ Ordering strategy         
   if (libordeptr->cblkptr != NULL)                /* Set number of column blocks if wanted */
     *(libordeptr->cblkptr) = libordeptr->o.cblknbr;
 
-  return (0);
+fail:
+  CONTEXTEXIT (libgrafptr);
+  return (o);
 }
 
-/*+ This routine computes an ordering
-*** of the API ordering structure with
-*** respect to the given strategy.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine computes an ordering
+** of the API ordering structure with
+** respect to the given strategy.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphOrder (
 SCOTCH_Graph * const        grafptr,              /*+ Graph to order                     +*/
-SCOTCH_Strat * const        stratptr,             /*+ Ordering strategy                  +*/
+SCOTCH_Strat * const        straptr,              /*+ Ordering strategy                  +*/
 SCOTCH_Num * const          permtab,              /*+ Ordering permutation               +*/
 SCOTCH_Num * const          peritab,              /*+ Inverse permutation array          +*/
 SCOTCH_Num * const          cblkptr,              /*+ Pointer to number of column blocks +*/
@@ -398,28 +413,28 @@ SCOTCH_Num * const          treetab)              /*+ Separator tree array      
   if (SCOTCH_graphOrderInit (grafptr, &ordedat, permtab, peritab, cblkptr, rangtab, treetab) != 0)
     return (1);
 
-  o = SCOTCH_graphOrderCompute (grafptr, &ordedat, stratptr);
+  o = SCOTCH_graphOrderCompute (grafptr, &ordedat, straptr);
   SCOTCH_graphOrderExit (grafptr, &ordedat);
 
   return (o);
 }
 
-/*+ This routine computes an ordering
-*** of the subgraph of the API ordering
-*** structure graph induced by the given
-*** vertex list, with respect to the given
-*** strategy.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine computes an ordering
+** of the subgraph of the API ordering
+** structure graph induced by the given
+** vertex list, with respect to the given
+** strategy.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphOrderList (
 SCOTCH_Graph * const        grafptr,              /*+ Graph to order                     +*/
 const SCOTCH_Num            listnbr,              /*+ Number of vertices in list         +*/
 const SCOTCH_Num * const    listtab,              /*+ List of vertex indices to order    +*/
-SCOTCH_Strat * const        stratptr,             /*+ Ordering strategy                  +*/
+SCOTCH_Strat * const        straptr,              /*+ Ordering strategy                  +*/
 SCOTCH_Num * const          permtab,              /*+ Ordering permutation               +*/
 SCOTCH_Num * const          peritab,              /*+ Inverse permutation array          +*/
 SCOTCH_Num * const          cblkptr,              /*+ Pointer to number of column blocks +*/
@@ -430,18 +445,18 @@ SCOTCH_Num * const          treetab)              /*+ Column block range array  
   int                 o;
 
   SCOTCH_graphOrderInit (grafptr, &ordedat, permtab, peritab, cblkptr, rangtab, treetab);
-  o = SCOTCH_graphOrderComputeList (grafptr, &ordedat, listnbr, listtab, stratptr);
+  o = SCOTCH_graphOrderComputeList (grafptr, &ordedat, listnbr, listtab, straptr);
   SCOTCH_graphOrderExit (grafptr, &ordedat);
 
   return (o);
 }
 
-/*+ This routine checks the consistency
-*** of the given graph ordering.
-*** It returns:
-*** - 0   : on success.
-*** - !0  : on error.
-+*/
+/* This routine checks the consistency
+** of the given graph ordering.
+** It returns:
+** - 0   : on success.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_graphOrderCheck (
@@ -451,39 +466,39 @@ const SCOTCH_Ordering * const ordeptr)            /*+ Ordering to check +*/
   return (orderCheck (&((LibOrder *) ordeptr)->o));
 }
 
-/*+ This routine parses the given
-*** graph ordering strategy.
-*** It returns:
-*** - 0   : if string successfully scanned.
-*** - !0  : on error.
-+*/
+/* This routine parses the given
+** graph ordering strategy.
+** It returns:
+** - 0   : if string successfully scanned.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_stratGraphOrder (
-SCOTCH_Strat * const        stratptr,
+SCOTCH_Strat * const        straptr,
 const char * const          string)
 {
-  if (*((Strat **) stratptr) != NULL)
-    stratExit (*((Strat **) stratptr));
+  if (*((Strat **) straptr) != NULL)
+    stratExit (*((Strat **) straptr));
 
-  if ((*((Strat **) stratptr) = stratInit (&hgraphorderststratab, string)) == NULL) {
+  if ((*((Strat **) straptr) = stratInit (&hgraphorderststratab, string)) == NULL) {
     errorPrint (STRINGIFY (SCOTCH_stratGraphOrder) ": error in ordering strategy");
-    return     (1);
+    return (1);
   }
 
   return (0);
 }
 
-/*+ This routine provides predefined
-*** ordering strategies.
-*** It returns:
-*** - 0   : if string successfully initialized.
-*** - !0  : on error.
-+*/
+/* This routine provides predefined
+** ordering strategies.
+** It returns:
+** - 0   : if string successfully initialized.
+** - !0  : on error.
+*/
 
 int
 SCOTCH_stratGraphOrderBuild (
-SCOTCH_Strat * const        stratptr,             /*+ Strategy to create                 +*/
+SCOTCH_Strat * const        straptr,              /*+ Strategy to create                 +*/
 const SCOTCH_Num            flagval,              /*+ Desired characteristics            +*/
 const SCOTCH_Num            levlnbr,              /*+ Number of nested dissection levels +*/
 const double                balrat)               /*+ Desired imbalance ratio            +*/
@@ -536,10 +551,5 @@ const double                balrat)               /*+ Desired imbalance ratio   
   stringSubst (bufftab, "<OSEP>", osepptr);
   stringSubst (bufftab, "<BBAL>", bbaltab);
 
-  if (SCOTCH_stratGraphOrder (stratptr, bufftab) != 0) {
-    errorPrint (STRINGIFY (SCOTCH_stratGraphOrderBuild) ": error in sequential ordering strategy");
-    return     (1);
-  }
-
-  return (0);
+  return (SCOTCH_stratGraphOrder (straptr, bufftab));
 }

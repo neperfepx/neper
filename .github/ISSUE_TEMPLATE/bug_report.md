@@ -27,7 +27,7 @@ $ neper -T -n 10
 ========================    N   e   p   e   r    =======================
 Info   : A software package for polycrystal generation and meshing.
 Info   : Version 4.2.0
-Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
+Info   : Built with: gsl|muparser|opengjk|openmp|libscotch (full)
 Info   : Running on 8 threads.
 Info   : <https://neper.info>
 Info   : Copyright (C) 2003-2021, and GNU GPL'd, by Romain Quey.

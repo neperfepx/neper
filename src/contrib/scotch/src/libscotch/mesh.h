@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2010,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2010,2018,2019,2023,2025 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,8 +44,12 @@
 /**                                 to   : 04 nov 2010     **/
 /**                # Version 6.0  : from : 06 jun 2018     **/
 /**                                 to   : 06 jun 2018     **/
+/**                # Version 7.0  : from : 03 may 2019     **/
+/**                                 to   : 30 aug 2025     **/
 /**                                                        **/
 /************************************************************/
+
+#define SCOTCH_MESH_H
 
 /*
 **  The defines.
@@ -65,7 +69,7 @@
 
 /*+ The Mesh flag type. +*/
 
-typedef int MeshFlag;                             /*+ Mesh property flags +*/
+typedef unsigned int MeshFlag;                    /*+ Mesh property flags +*/
 
 /*+ Mesh structure. It is basically a graph
     structure. It is a bipartite graph in the
@@ -133,15 +137,16 @@ void                        meshFree            (Mesh * const);
 int                         meshLoad            (Mesh * restrict const, FILE * restrict const, const Gnum);
 int                         meshSave            (const Mesh * restrict const, FILE * restrict const);
 Gnum                        meshBase            (Mesh * const, const Gnum);
-int                         meshGraph           (const Mesh * restrict const, Graph * restrict const);
+int                         meshGraphNodal      (const Mesh * restrict const, Graph * restrict const);
+int                         meshGraphDual       (const Mesh * restrict const, Graph * restrict const, const Gnum);
 int                         meshInduceList      (const Mesh *, Mesh *, const VertList *);
 int                         meshInducePart      (const Mesh *, Mesh *, const Gnum, const GraphPart *, const GraphPart);
 int                         meshInduceSepa      (const Mesh * restrict const, const GraphPart * restrict const, const Gnum, const Gnum * restrict const, Mesh * restrict const);
 int                         meshCheck           (const Mesh * const);
 int                         meshReorder         (const Mesh * restrict const, Mesh * restrict const);
 
-#ifdef GEOM_H
+#ifdef SCOTCH_GEOM_H
 int                         meshGeomLoadHabo    (Mesh * restrict const, Geom * restrict const, FILE * const, FILE * const, const char * const);
 int                         meshGeomLoadScot    (Mesh * restrict const, Geom * restrict const, FILE * const, FILE * const, const char * const);
 int                         meshGeomSaveScot    (const Mesh * restrict const, const Geom * restrict const, FILE * const, FILE * const, const char * const);
-#endif /* GEOM_H */
+#endif /* SCOTCH_GEOM_H */

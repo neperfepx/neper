@@ -4,7 +4,7 @@
 
 #include "nes_pproc_.h"
 
-// Checking consistency between Tess and Sim crysym, if simulation.cfg exists
+// Checking consistency between Tess and Sim crysym, if a config file exists
 void
 nes_pproc_load_crysym (struct TESS *pTess, struct TESR *pTesr,
                        struct NODES *pNodes, struct MESH *Mesh,
@@ -14,7 +14,7 @@ nes_pproc_load_crysym (struct TESS *pTess, struct TESR *pTesr,
 
   if (GroupQty)
   {
-    // Does simulation.cfg have multiple crystal symmetries?
+    // Does the config file have multiple crystal symmetries?
     multiple = 0;
     for (i = 1; i < GroupQty; i++)
       if (strcmp (GroupCrySym[0], GroupCrySym[i]))
@@ -49,13 +49,14 @@ nes_pproc_load_crysym (struct TESS *pTess, struct TESR *pTesr,
       ut_string_string ("triclinic", &((*pTess).CellCrySym));
   }
 
-  // Pushing Tess crysym to Nodes and Mesh if not defined there
+  // Pushing Tess crysym to Nodes and Mesh if not defined there, or if triclinic (the default of
+  // a mesh) while the config file defines it
 
   for (i = 0; i < 5; i++)
-    if (!Mesh[i].ElsetCrySym)
+    if (!Mesh[i].ElsetCrySym || (GroupQty && !strcmp (Mesh[i].ElsetCrySym, "triclinic")))
       ut_string_string ((*pTess).CellCrySym, &(Mesh[i].ElsetCrySym));
 
-  if (!(*pNodes).crysym)
+  if (!(*pNodes).crysym || (GroupQty && !strcmp ((*pNodes).crysym, "triclinic")))
     ut_string_string ((*pTess).CellCrySym, &((*pNodes).crysym));
 
   return;

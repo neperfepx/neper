@@ -5,7 +5,7 @@
 #include "ol_gnd_alloc.h"
 
 struct OL_CRYS
-ol_crys_alloc ()
+ol_crys_alloc (void)
 {
   struct OL_CRYS Crys;
 
@@ -16,6 +16,11 @@ ol_crys_alloc ()
   Crys.rho_min = ut_alloc_1d_char (10);
   sprintf (Crys.rho_min, "sc");
 
+  Crys.N = 0;
+  Crys.m = NULL;
+  Crys.s = NULL;
+  Crys.t = NULL;
+
   Crys.gnd_size = 0;
   Crys.gnd_s = NULL;
   Crys.gnd_t = NULL;
@@ -24,17 +29,17 @@ ol_crys_alloc ()
 }
 
 void
-ol_crys_free (struct OL_CRYS Crys)
+ol_crys_free (struct OL_CRYS *pCrys)
 {
-  if (Crys.gnd_s != NULL)
-    if (!strcmp (Crys.structure, "fcc"))
-    {
-      ut_free_2d (&Crys.gnd_s, 18);
-      ut_free_2d (&Crys.gnd_t, 18);
-    }
-
-  ut_free_1d_char (&Crys.structure);
-  ut_free_1d_char (&Crys.rho_min);
+  ut_free_2d (&(*pCrys).m, (*pCrys).N);
+  ut_free_2d (&(*pCrys).s, (*pCrys).N);
+  ut_free_2d (&(*pCrys).t, (*pCrys).N);
+  ut_free_2d (&(*pCrys).gnd_s, (*pCrys).gnd_size);
+  ut_free_2d (&(*pCrys).gnd_t, (*pCrys).gnd_size);
+  ut_free_1d_char (&(*pCrys).structure);
+  ut_free_1d_char (&(*pCrys).rho_min);
+  (*pCrys).N = 0;
+  (*pCrys).gnd_size = 0;
 
   return;
 }
@@ -43,14 +48,12 @@ void
 ol_crys_set_this (struct OL_CRYS *pCrys, char *structure, double a, double nu,
                   char *rho_min)
 {
-  (*pCrys).structure = ut_alloc_1d_char (strlen (structure) + 1);
-  strcpy ((*pCrys).structure, structure);
+  ut_string_string (structure, &(*pCrys).structure);
 
   (*pCrys).a = a;
   (*pCrys).nu = nu;
 
-  (*pCrys).rho_min = ut_alloc_1d_char (strlen (rho_min) + 1);
-  strcpy ((*pCrys).rho_min, rho_min);
+  ut_string_string (rho_min, &(*pCrys).rho_min);
 
   return;
 }
@@ -216,7 +219,7 @@ ol_crys_set_mat (struct OL_CRYS *pCrys, char *mat)
   else
     status = -1;
 
-  if (!strcmp ((*pCrys).structure, "fcc"))
+  if (status == 0 && !strcmp ((*pCrys).structure, "fcc"))
   {
     (*pCrys).N = 12;
     (*pCrys).s = ut_alloc_2d ((*pCrys).N, 3);
@@ -234,14 +237,14 @@ ol_crys_set_mat (struct OL_CRYS *pCrys, char *mat)
     ut_array_2d_memcpy (fcc_s_gnd, 18, 3, (*pCrys).gnd_s);
     ut_array_2d_memcpy (fcc_t_gnd, 18, 3, (*pCrys).gnd_t);
   }
-  else
+  else if (status == 0)
     abort ();
 
   ut_free_2d (&fcc_s, 12);
   ut_free_2d (&fcc_m, 12);
   ut_free_2d (&fcc_t, 12);
-  ut_free_2d (&fcc_s_gnd, 12);
-  ut_free_2d (&fcc_t_gnd, 12);
+  ut_free_2d (&fcc_s_gnd, 18);
+  ut_free_2d (&fcc_t_gnd, 18);
 
   return status;
 }
@@ -263,7 +266,7 @@ ol_gndmap_alloc (struct OL_MAP Map, struct OL_CRYS Crys)
   if (!strcmp (Crys.structure, "fcc"))
     rho_size = 18;
   else
-    abort ();
+    ut_print_message (2, 0, "Crystal structure `%s' not supported (fcc only).\n", Crys.structure);
 
   Gnd.rho = ut_alloc_3d (Map.xsize, Map.ysize, rho_size);
   Gnd.rhosum = ut_alloc_2d (Map.xsize, Map.ysize);
@@ -272,33 +275,30 @@ ol_gndmap_alloc (struct OL_MAP Map, struct OL_CRYS Crys)
 }
 
 void
-ol_gndmap_free (struct OL_GNDMAP Gnd)
+ol_gndmap_free (struct OL_GNDMAP *pGnd)
 {
-  ut_free_2d_uint (&Gnd.id, Gnd.xsize);
-  ut_free_4d (&Gnd.nye, Gnd.xsize, Gnd.ysize, 3);
-  ut_free_3d (&Gnd.rho, Gnd.xsize, Gnd.ysize);
-  ut_free_2d (&Gnd.rhosum, Gnd.xsize);
+  ut_free_2d_uint (&(*pGnd).id, (*pGnd).xsize);
+  ut_free_4d (&(*pGnd).nye, (*pGnd).xsize, (*pGnd).ysize, 3);
+  ut_free_3d (&(*pGnd).rho, (*pGnd).xsize, (*pGnd).ysize);
+  ut_free_2d (&(*pGnd).rhosum, (*pGnd).xsize);
 
-  Gnd.xsize = 0;
-  Gnd.ysize = 0;
-  Gnd.stepsize = 0;
+  (*pGnd).xsize = 0;
+  (*pGnd).ysize = 0;
+  (*pGnd).stepsize = 0;
 
   return;
 }
 
 double **
-ol_nye_alloc ()
+ol_nye_alloc (void)
 {
   return ut_alloc_2d (3, 3);
 }
 
 void
-ol_nye_free (double **nye)
+ol_nye_free (double ***pnye)
 {
-  if (!nye)
-    return;
-  else
-    ut_free_2d (&nye, 3);
+  ut_free_2d (pnye, 3);
 
   return;
 }
@@ -322,7 +322,7 @@ ol_crys_ss_schmid (struct OL_CRYS Crys, double **g, double ***T)
     ol_g_csys (T[i], ginv, T[i]);
   }
 
-  ol_g_free (ginv);
+  ol_g_free (&ginv);
 
   return;
 }

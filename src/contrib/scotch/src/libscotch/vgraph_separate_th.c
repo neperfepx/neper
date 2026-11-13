@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2021,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,14 +41,16 @@
 /**                                 to   : 17 oct 1998     **/
 /**                # Version 4.0  : from : 12 dec 2001     **/
 /**                                 to   : 06 jan 2002     **/
+/**                # Version 6.1  : from : 27 nov 2021     **/
+/**                                 to   : 27 nov 2021     **/
+/**                # Version 7.0  : from : 16 jan 2023     **/
+/**                                 to   : 16 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define VGRAPH_SEPARATE_TH
 
 #include "module.h"
 #include "common.h"
@@ -76,36 +78,42 @@ Vgraph * const              grafptr)
   Gnum                fronnum;                    /* Number of current frontier vertex   */
   Gnum                commcut[3];                 /* Cut count array ([3] for halo)      */
 
+  const Gnum * restrict const verttax = grafptr->s.verttax; /* Fast accesses */
+  const Gnum * restrict const vendtax = grafptr->s.vendtax;
+  const Gnum * restrict const edgetax = grafptr->s.edgetax;
+  Gnum * restrict const       frontab = grafptr->frontab;
+  GraphPart *  restrict const parttax = grafptr->parttax;
+
   fronnbr = grafptr->fronnbr;                     /* Get current number of frontier vertices */
   for (fronnum = 0; fronnum < fronnbr; ) {
     Gnum                vertnum;
     Gnum                edgenum;
 
-    vertnum    = grafptr->frontab[fronnum];       /* Get vertex number */
+    vertnum    = frontab[fronnum];                /* Get vertex number */
     commcut[0] =
     commcut[1] =
     commcut[2] = 0;
-    for (edgenum = grafptr->s.verttax[vertnum]; edgenum < grafptr->s.vendtax[vertnum]; edgenum ++)
-      commcut[grafptr->parttax[grafptr->s.edgetax[edgenum]]] ++;
+    for (edgenum = verttax[vertnum]; edgenum < vendtax[vertnum]; edgenum ++)
+      commcut[parttax[edgetax[edgenum]]] ++;
 
     if (commcut[0] == 0) {
-      grafptr->parttax[vertnum] = 1;
+      parttax[vertnum] = 1;
       grafptr->compload[1] += (grafptr->s.velotax == NULL) ? 1 : grafptr->s.velotax[vertnum];
       grafptr->compsize[1] ++;
-      grafptr->frontab[fronnum] = grafptr->frontab[-- fronnbr]; /* Replace frontier vertex by another */
+      frontab[fronnum] = frontab[-- fronnbr];     /* Replace frontier vertex by another */
     }
     else if (commcut[1] == 0) {
-      grafptr->parttax[vertnum] = 0;
+      parttax[vertnum] = 0;
       grafptr->compload[0] += (grafptr->s.velotax == NULL) ? 1 : grafptr->s.velotax[vertnum];
       grafptr->compsize[0] ++;
-      grafptr->frontab[fronnum] = grafptr->frontab[-- fronnbr]; /* Replace frontier vertex by another */
+      frontab[fronnum] = frontab[-- fronnbr];     /* Replace frontier vertex by another */
     }
     else
       fronnum ++;                                 /* Keep vertex in separator */
   }
   grafptr->fronnbr     = fronnbr;                 /* Set new frontier parameters */
   grafptr->compload[2] = grafptr->s.velosum - (grafptr->compload[0] + grafptr->compload[1]);
-  grafptr->comploaddlt = grafptr->compload[0] - grafptr->compload[1];
+  grafptr->comploaddlt = grafptr->compload[0] * grafptr->dwgttab[1] - grafptr->compload[1] * grafptr->dwgttab[0];
 
   return (0);
 }

@@ -8,16 +8,17 @@ void
 nem_in_set_zero (struct IN_M *pIn)
 {
   (*pIn).abq = NULL;
+  (*pIn).mesh = NULL;
+  (*pIn).sim = NULL;
   (*pIn).body = NULL;
   (*pIn).elttype = NULL;
+  (*pIn).eltsplit = 0;
   (*pIn).faset = NULL;
   (*pIn).format = NULL;
   (*pIn).performat = NULL;
   (*pIn).geof = NULL;
   (*pIn).etree = NULL;
   (*pIn).ntree = NULL;
-  (*pIn).gmsh = NULL;
-  (*pIn).tmp = NULL;
   (*pIn).outtess = NULL;
   (*pIn).loadmesh = NULL;
   (*pIn).loadpoint = NULL;
@@ -25,10 +26,11 @@ nem_in_set_zero (struct IN_M *pIn)
   (*pIn).mesh3dalgo = NULL;
   (*pIn).meshedge = NULL;
   (*pIn).meshface = NULL;
+  (*pIn).meshedgelist = NULL;
+  (*pIn).meshfacelist = NULL;
   (*pIn).meshpoly = NULL;
   (*pIn).interface = NULL;
   (*pIn).msh = NULL;
-  (*pIn).msh4 = NULL;
   (*pIn).ori = NULL;
   (*pIn).phase = NULL;
   (*pIn).bcs = NULL;
@@ -36,7 +38,6 @@ nem_in_set_zero (struct IN_M *pIn)
   (*pIn).per = NULL;
   (*pIn).nset = NULL;
   (*pIn).elset = NULL;
-  (*pIn).partmethod = NULL;
   (*pIn).partstring = NULL;
   (*pIn).transform = NULL;
   (*pIn).sortelt = NULL;
@@ -52,6 +53,7 @@ nem_in_set_zero (struct IN_M *pIn)
 
   (*pIn).meshqualexpr = NULL;
   (*pIn).meshqualdisexpr = NULL;
+  (*pIn).mesh2dclrepsstring = NULL;
   (*pIn).mesh3dclrepsstring = NULL;
   // (*pIn).meshoptisizeexpr = NULL;
   (*pIn).dimstring = NULL;
@@ -66,6 +68,10 @@ nem_in_set_zero (struct IN_M *pIn)
   (*pIn).cledgestring = NULL;
   (*pIn).clvertype = NULL;
   (*pIn).clverstring = NULL;
+  (*pIn).clpolystring = NULL;
+  (*pIn).plpolystring = NULL;
+  (*pIn).plfacestring = NULL;
+  (*pIn).pledgestring = NULL;
   (*pIn).clratiostring = NULL;
 
   (*pIn).transportstring = NULL;
@@ -79,14 +85,20 @@ void
 nem_in_free (struct IN_M In)
 {
   ut_free_1d_char (&In.body);
-  ut_free_1d_char (&In.gmsh);
-  ut_free_1d_char (&In.tmp);
+  ut_free_1d_char (&In.mesh);
+  ut_free_1d_char (&In.loadmesh);
+  ut_free_1d_char (&In.loadpoint);
+  ut_free_1d_char (&In.sim);
+  ut_free_1d_char (&In.etree);
+  ut_free_1d_char (&In.ntree);
   ut_free_1d_char (&In.format);
   ut_free_1d_char (&In.performat);
   ut_free_1d_char (&In.mesh2dalgo);
   ut_free_1d_char (&In.mesh3dalgo);
   ut_free_1d_char (&In.meshedge);
   ut_free_1d_char (&In.meshface);
+  ut_free_1d_int (&In.meshedgelist);
+  ut_free_1d_int (&In.meshfacelist);
   ut_free_1d_char (&In.meshpoly);
   ut_free_1d_char (&In.nset);
   ut_free_1d_char (&In.elset);
@@ -95,7 +107,6 @@ nem_in_free (struct IN_M In)
   ut_free_1d_char (&In.transform);
   ut_free_1d_char (&In.sortelt);
   ut_free_1d_char (&In.sortnode);
-  ut_free_1d_char (&In.partmethod);
   ut_free_1d_char (&In.tess);
   ut_free_1d_char (&In.tesr);
   ut_free_1d_char (&In.stnode);
@@ -104,7 +115,6 @@ nem_in_free (struct IN_M In)
   ut_free_2d_char (&In.stelset, 5);
   ut_free_1d_char (&In.stpt);
   ut_free_1d_char (&In.msh);
-  ut_free_1d_char (&In.msh4);
   ut_free_1d_char (&In.ori);
   ut_free_1d_char (&In.phase);
   ut_free_1d_char (&In.bcs);
@@ -118,6 +128,7 @@ nem_in_free (struct IN_M In)
   ut_free_1d_char (&In.dimout_msh);
   ut_free_1d_char (&In.meshqualexpr);
   ut_free_1d_char (&In.meshqualdisexpr);
+  ut_free_1d_char (&In.mesh2dclrepsstring);
   ut_free_1d_char (&In.mesh3dclrepsstring);
   ut_free_1d_char (&In.elttype);
   ut_free_1d_char (&In.cltype);
@@ -128,6 +139,10 @@ nem_in_free (struct IN_M In)
   ut_free_1d_char (&In.cledgestring);
   ut_free_1d_char (&In.clvertype);
   ut_free_1d_char (&In.clverstring);
+  ut_free_1d_char (&In.clpolystring);
+  ut_free_1d_char (&In.plpolystring);
+  ut_free_1d_char (&In.plfacestring);
+  ut_free_1d_char (&In.pledgestring);
   ut_free_1d_char (&In.clratiostring);
   ut_free_1d_char (&In.transportstring);
   ut_free_1d_char (&In.transporteltmethodstring);

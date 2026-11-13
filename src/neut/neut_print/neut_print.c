@@ -7,8 +7,6 @@
 void
 neut_print_set_default (struct PRINT *pPrint)
 {
-  (*pPrint).colormode = NULL;
-  ut_string_string ("bright", &(*pPrint).colormode);
 
   (*pPrint).background = NULL;
   ut_string_string ("default", &(*pPrint).background);
@@ -52,6 +50,8 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).showelt1d = ut_alloc_1d_int (1);
   (*pPrint).showelt2d = ut_alloc_1d_int (1);
   (*pPrint).showelt3d = ut_alloc_1d_int (1);
+  (*pPrint).showelsetco = ut_alloc_1d_int (1);
+  (*pPrint).showeltco = ut_alloc_1d_int (1);
   (*pPrint).showpoint = NULL;
   (*pPrint).showcrystal[0] = -1;
   (*pPrint).showseed[0] = -1;
@@ -68,7 +68,12 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).showelset1d[0] = -1;
   (*pPrint).showelset2d[0] = -1;
   (*pPrint).showelset3d[0] = -1;
+  (*pPrint).showelsetco[0] = -1;
+  (*pPrint).showeltco[0] = -1;
   (*pPrint).showcsys = -1;
+  (*pPrint).showdomain = 0;
+  (*pPrint).domainrad = -1;
+  (*pPrint).domaincol = NULL;
   (*pPrint).showvox = NULL;
   (*pPrint).showvoxstring = NULL;
   (*pPrint).showvoidvoxstring = NULL;
@@ -85,7 +90,6 @@ neut_print_set_default (struct PRINT *pPrint)
 void
 neut_print_free (struct PRINT *pPrint)
 {
-  ut_free_1d_char (&(*pPrint).colormode);
 
   ut_free_1d_char (&(*pPrint).background);
 
@@ -103,6 +107,7 @@ neut_print_free (struct PRINT *pPrint)
 
   // image -------------------------------------------------------------
   ut_free_1d_int (&(*pPrint).showseed);
+  ut_free_1d_int (&(*pPrint).domaincol);
   ut_free_1d_int (&(*pPrint).showcrystal);
   ut_free_1d_int (&(*pPrint).showver);
   ut_free_1d_int (&(*pPrint).showedge);
@@ -113,44 +118,18 @@ neut_print_free (struct PRINT *pPrint)
   ut_free_1d_int (&(*pPrint).showelt2d);
   ut_free_1d_int (&(*pPrint).showelt1d);
   ut_free_1d_int (&(*pPrint).showelt0d);
+  ut_free_1d_int (&(*pPrint).showelset3d);
+  ut_free_1d_int (&(*pPrint).showelset2d);
+  ut_free_1d_int (&(*pPrint).showelset1d);
+  ut_free_1d_int (&(*pPrint).showelset0d);
+  ut_free_1d_int (&(*pPrint).showeltco);
+  ut_free_1d_int (&(*pPrint).showelsetco);
   ut_free_2d_int (&(*pPrint).showpoint, (*pPrint).inputqty);
   ut_free_2d_char (&(*pPrint).inputs, (*pPrint).inputqty);
-
-  return;
-}
-
-void
-neut_print_outdir (char *outdir, struct SIM Sim, char *format, char **pdir)
-{
-  int i, qty;
-  char **parts = NULL;
-
-  ut_list_break (outdir, NEUT_SEP_NODEP, &parts, &qty);
-
-  ut_string_string (".", pdir);
-
-  for (i = 0; i < qty; i++)
-  {
-    if (!strcmp (parts[i], "sim_dir"))
-    {
-      if (!neut_sim_isvoid (Sim))
-      {
-        (*pdir) = ut_string_paste3 (Sim.simdir, "/images/", format);
-        break;
-      }
-    }
-
-    else
-    {
-      ut_string_string (parts[i], pdir);
-      break;
-    }
-  }
-
-  if (strcmp (outdir, "."))
-    ut_sys_mkdir (outdir);
-
-  ut_free_2d_char (&parts, qty);
+  ut_free_1d_char (&(*pPrint).showvoxstring);
+  ut_free_1d_char (&(*pPrint).showvoidvoxstring);
+  ut_free_1d_char (&(*pPrint).showedgestring);
+  // showvox is freed by the caller, which knows its size
 
   return;
 }
@@ -270,6 +249,7 @@ neut_print_povheader (char *format, struct PRINT Print, FILE * file)
 
         ut_free_1d (&coo);
         ut_free_1d_char (&col);
+        ut_free_1d_char (&fct);
         ut_free_2d_char (&vars, size);
         ut_free_2d_char (&vals, size);
       }
@@ -350,12 +330,13 @@ neut_print_povfoot (char *includepov, char *imageformat, FILE * file)
 
 void
 neut_print_pov2png (char *povray, char *filename, int imagewidth,
-                   int imageheight, int antialiasing, int messagetag)
+                   int imageheight, int messagetag)
 {
   char *pngfilename = NULL;
-  char *command = ut_alloc_1d_char (1000);
+  char *binary = NULL, *input = NULL, *output = NULL;
+  char *args = NULL, *command = NULL;
 
-  neut_povray_check (povray);
+  neut_povray_check_error (povray);
 
   ut_string_string (filename, &pngfilename);
   ut_string_fnrs (pngfilename, ".pov", ".png", 1);
@@ -369,28 +350,25 @@ neut_print_pov2png (char *povray, char *filename, int imagewidth,
 
   ut_file_openmessage (pngfilename, messagetag >= 0 ? "w" : "W");
 
-  sprintf (command, "%s Input_File_Name=%s +O%s +W%d +H%d -D %s 2>/dev/null",
-           povray, filename, pngfilename, imagewidth, imageheight,
-           antialiasing > 0 ? "+A0.2" : "");
+  ut_sys_shellquote (povray, &binary);
+  ut_sys_shellquote (filename, &input);
+  ut_sys_shellquote (pngfilename, &output);
+
+  ut_string_sprintf (&args, "%s Input_File_Name=%s +O%s +W%d +H%d -D +A0.2", binary, input, output,
+                     imagewidth, imageheight);
+  ut_string_sprintf (&command, "%s 2>/dev/null", args);
 
   if (system (command) == -1 || !ut_file_exist (pngfilename))
-  {
-    ut_print_message (2, 3, "File `%s' could not be generated!\n",
-                      pngfilename);
-
-    sprintf (command, "%s Input_File_Name=%s +O%s +W%d +H%d -D %s", povray,
-             filename, pngfilename, imagewidth, imageheight,
-             antialiasing > 0 ? "+A0.2" : "");
-
-    // otherwise, printing debugging info.
-    ut_print_message (2, 3,
-                      "To debug: use option `-imageformat pov' and run command `%s'.\n",
-                      command);
-  }
+    ut_print_message (2, 3, "File `%s' could not be generated!  To debug: use option `-imageformat pov' and run command `%s'.\n",
+                      pngfilename, args);
 
   ut_file_closemessage (pngfilename, messagetag >= 0 ? "w" : "W");
 
   ut_free_1d_char (&pngfilename);
+  ut_free_1d_char (&binary);
+  ut_free_1d_char (&input);
+  ut_free_1d_char (&output);
+  ut_free_1d_char (&args);
   ut_free_1d_char (&command);
 
   return;

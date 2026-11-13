@@ -1,4 +1,4 @@
-/* Copyright 2015-2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2015-2018,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,8 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 30 apr 2015     **/
 /**                                 to   : 15 may 2018     **/
+/**                # Version 7.0  : from : 18 feb 2018     **/
+/**                                 to   : 15 jun 2026     **/
 /**                                                        **/
 /************************************************************/
 
@@ -48,7 +50,7 @@
 **  The defines and includes.
 */
 
-#define ARCH_DECO2
+#define SCOTCH_ARCH_DECO2
 
 #include "module.h"
 #include "common.h"
@@ -128,7 +130,7 @@ FILE * restrict const       stream)
   if ((sizeof (ArchDeco2)    > sizeof (ArchDummy)) ||
       (sizeof (ArchDeco2Dom) > sizeof (ArchDomDummy))) {
     errorPrint ("archDeco2ArchLoad2: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
@@ -138,21 +140,22 @@ FILE * restrict const       stream)
       (archptr->termnbr < 1) ||
       (archptr->levlmax <= 0)) {
     errorPrint ("archDeco2ArchLoad2: bad input (1)");
-    return     (1);
+    return (1);
   }
+  archptr->domnnbr = 2 * archptr->termnbr - 1;
   archptr->termtab = NULL;                        /* Assume nothing allocated yet */
   archptr->vnumtab = NULL;
   archptr->levltab = NULL;
 
   termnbr = archptr->termnbr;
-  domnnbr = 2 * termnbr - 1;
+  domnnbr = archptr->domnnbr;
   levlnbr = archptr->levlmax --;                  /* Get levlmax */
   if (memAllocGroup ((void **) (void *)
                      &archptr->termtab, (size_t) (termnbr * sizeof (ArchSubTerm)),
                      &archptr->domntab, (size_t) (domnnbr * sizeof (ArchSubData)),
                      &archptr->doextab, (size_t) (domnnbr * sizeof (ArchDeco2Data)), NULL) == NULL) {
     errorPrint ("archDeco2ArchLoad2: out of memory (1)");
-    return     (1);
+    return (1);
   }
   termtab = archptr->termtab;
   domntab = archptr->domntab;
@@ -165,7 +168,7 @@ FILE * restrict const       stream)
         (termtab[termnum].domnidx >= domnnbr) ||
         (termtab[termnum].termnum < 0)) {
       errorPrint ("archDeco2ArchLoad2: bad input (2)");
-      goto abort;
+      goto fail;
     }
   }
 
@@ -195,7 +198,7 @@ FILE * restrict const       stream)
         (doextab[domnnum].levlnum >= levlnbr)    ||
         (doextab[domnnum].vnumidx < 0)) {
       errorPrint ("archDeco2ArchLoad2: bad input (3)");
-      goto abort;
+      goto fail;
     }
     if (doextab[domnnum].vnumidx > vnummax)       /* Keep track of max index */
       vnummax = doextab[domnnum].vnumidx;
@@ -203,7 +206,7 @@ FILE * restrict const       stream)
 
   if ((levltab = memAlloc (levlnbr * sizeof (ArchDeco2Levl))) == NULL) {
     errorPrint ("archDeco2ArchLoad2: out of memory (2)");
-    goto abort;
+    goto fail;
   }
   archptr->levltab = levltab;
 
@@ -211,12 +214,12 @@ FILE * restrict const       stream)
     if (graphLoad (&levltab[levlnum].grafdat, stream, -1, 0) != 0) {
       errorPrint ("archDeco2ArchLoad2: bad input (4)");
       archptr->levlmax = levlnum - 1;             /* Only free existing levels */
-      goto abort;
+      goto fail;
     }
     if (intLoad (stream, &levltab[levlnum].wdiaval) != 1) { /* Read graph diameter */
       errorPrint ("archDeco2ArchLoad2: bad input (5)");
       archptr->levlmax = levlnum;                 /* Free this level as well */
-      goto abort;
+      goto fail;
     }
   }
   archptr->levlmax = levlnbr - 1;                 /* All levels have been read */
@@ -225,12 +228,12 @@ FILE * restrict const       stream)
   vnumnbr = archptr->vnumnbr;
   if (vnummax >= vnumnbr) {
     errorPrint ("archDeco2ArchLoad2: bad input (6)");
-    goto abort;
+    goto fail;
   }
 
   if ((vnumtab = memAlloc (vnumnbr * sizeof (Anum))) == NULL) {
     errorPrint ("archDeco2ArchLoad2: out of memory (3)");
-    goto abort;
+    goto fail;
   }
   archptr->vnumtab = vnumtab;
 
@@ -240,7 +243,7 @@ FILE * restrict const       stream)
         (vnumtab[vnumnum] < 0)                     ||
         (vnumtab[vnumnum] >= vertnbr)) {
       errorPrint ("archDeco2ArchLoad2: bad input (7)");
-      goto abort;
+      goto fail;
     }
   }
 
@@ -248,14 +251,14 @@ FILE * restrict const       stream)
   for (domnnum = 0; domnnum < domnnbr; domnnum ++) {
     if (doextab[domnnum].vnumidx > vnumnbr) {
       errorPrint ("archDeco2ArchLoad2: bad input (8)");
-      goto abort;
+      goto fail;
     }
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
   return (0);
 
-abort:
+fail:
   archDeco2ArchFree (archptr);
   return (1);
 }
@@ -292,7 +295,7 @@ FILE * restrict const             stream)
   if ((sizeof (ArchDeco2)    > sizeof (ArchDummy)) ||
       (sizeof (ArchDeco2Dom) > sizeof (ArchDomDummy))) {
     errorPrint ("archDeco2ArchSave: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
@@ -301,7 +304,7 @@ FILE * restrict const             stream)
                (Anum) (archptr->levlmax + 1),
                (Anum) archptr->vnumnbr) == EOF) {
     errorPrint ("archDeco2ArchSave: bad output (1)");
-    return     (1);
+    return (1);
   }
 
   for (termnum = 0; termnum < termnbr; termnum ++) {
@@ -309,7 +312,7 @@ FILE * restrict const             stream)
                  (Anum) termtab[termnum].domnidx,
                  (Anum) termtab[termnum].termnum) == EOF) {
       errorPrint ("archDeco2ArchSave: bad output (2)");
-      return     (1);
+      return (1);
     }
   }
 
@@ -327,19 +330,19 @@ FILE * restrict const             stream)
                  (Anum) doextab[domnnum].levlnum,
                  (Anum) doextab[domnnum].vnumidx) == EOF) {
       errorPrint ("archDeco2ArchSave: bad output (3)");
-      return     (1);
+      return (1);
     }
   }
 
   for (levlnum = 0; levlnum <= levlmax; levlnum ++) {
     if (graphSave (&levltab[levlnum].grafdat, stream) != 0) {
       errorPrint ("archDeco2ArchSave: bad output (4)");
-      return     (1);
+      return (1);
     }
     if (fprintf (stream, ANUMSTRING "\n",
                  (Anum) levltab[levlnum].wdiaval) == EOF) {
       errorPrint ("archDeco2ArchSave: bad output (5)");
-      return     (1);
+      return (1);
     }
   }
 
@@ -356,7 +359,7 @@ FILE * restrict const             stream)
   }
   if (o != 0) {
     errorPrint ("archDeco2ArchSave: bad output (6)");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -404,7 +407,7 @@ const ArchDeco2 * restrict const  archptr)
   multnbr = 1 << levlnbr;                         /* Maximum number of multinodes is the size of last level */
   if ((matcptr->multtab = memAlloc (multnbr * sizeof (ArchCoarsenMulti))) == NULL) {
     errorPrint ("archDeco2MatchInit: out of memory");
-    return     (1);
+    return (1);
   }
 
   matcptr->domntab = archptr->domntab;            /* Keep pointer to sub-architecture domain array */
@@ -521,7 +524,7 @@ const ArchDeco2Dom * const  dom1ptr)
 #ifdef SCOTCH_DEBUG_ARCH2
   if (vertnbr <= 1) {                             /* If coarsest graph hit without exiting before */
     errorPrint ("archDeco2DomDist: internal error (1)");
-    return     (-1);
+    return (-1);
   }
 #endif /* SCOTCH_DEBUG_ARCH2 */
 
@@ -531,7 +534,7 @@ const ArchDeco2Dom * const  dom1ptr)
   if ((domntab[domnidx0].domnnum != domnnum0) ||
       (domntab[domnidx1].domnnum != domnnum1)) {
     errorPrint ("archDeco2DomDist: internal error (2)");
-    return     (-1);
+    return (-1);
   }
 #endif /* SCOTCH_DEBUG_ARCH2 */
   while (levlnum0 < levlnum1) {                   /* Level subdomains as much as possible */
@@ -550,7 +553,7 @@ const ArchDeco2Dom * const  dom1ptr)
     if ((doextab[domnidx0].levlnum != levlnum0) ||
         (domntab[domnidx0].domnnum != domnnum0)) {
       errorPrint ("archDeco2DomDist: internal error (3)");
-      return     (-1);
+      return (-1);
     }
 #endif /* SCOTCH_DEBUG_ARCH2 */
   }
@@ -570,7 +573,7 @@ const ArchDeco2Dom * const  dom1ptr)
     if ((doextab[domnidx1].levlnum != levlnum1) ||
         (domntab[domnidx1].domnnum != domnnum1)) {
       errorPrint ("archDeco2DomDist: internal error (4)");
-      return     (-1);
+      return (-1);
     }
 #endif /* SCOTCH_DEBUG_ARCH2 */
   }
@@ -582,7 +585,7 @@ const ArchDeco2Dom * const  dom1ptr)
                      &queutab, (size_t) ((vertnbr + ARCHDECO2PASSNBR + 1) * sizeof (Anum)), /* Room for pass markers */
                      &disttax, (size_t) (vertnbr * sizeof (Anum)), NULL) == NULL) {
     errorPrint ("archDeco2DomDist: out of memory");
-    return     (0);                               /* Nothing to free because group allocation failed */
+    return (0);                                   /* Nothing to free because group allocation failed */
   }
   baseval  = levlptr->grafdat.baseval;
   disttax -= baseval;
@@ -608,7 +611,7 @@ const ArchDeco2Dom * const  dom1ptr)
     if ((vertnum0 < 0) || (vertnum0 >= vertnbr) ||
         (vertnum1 < 0) || (vertnum1 >= vertnbr)) {
       errorPrint ("archDeco2DomDist: internal error (5)");
-      return     (-1);
+      return (-1);
     }
 #endif /* SCOTCH_DEBUG_ARCH2 */
 
@@ -691,7 +694,7 @@ loop: vertnum = queutab[queutailidx ++];          /* Get vertex number from queu
       if ((doextab[domnidx0].levlnum != levlnum0) ||
           (domntab[domnidx0].domnnum != domnnum0)) {
         errorPrint ("archDeco2DomDist: internal error (6)");
-        return     (-1);
+        return (-1);
       }
 #endif /* SCOTCH_DEBUG_ARCH2 */
     }
@@ -704,7 +707,7 @@ loop: vertnum = queutab[queutailidx ++];          /* Get vertex number from queu
       if ((doextab[domnidx1].levlnum != levlnum1) ||
           (domntab[domnidx1].domnnum != domnnum1)) {
         errorPrint ("archDeco2DomDist: internal error (7)");
-        return     (-1);
+        return (-1);
       }
 #endif /* SCOTCH_DEBUG_ARCH2 */
     }
@@ -716,7 +719,7 @@ loop: vertnum = queutab[queutailidx ++];          /* Get vertex number from queu
 #ifdef SCOTCH_DEBUG_ARCH2
     if (vertnbr <= 1) {                           /* If coarsest graph hit without exiting before */
       errorPrint ("archDeco2DomDist: internal error (8)");
-      return     (-1);
+      return (-1);
     }
 #endif /* SCOTCH_DEBUG_ARCH2 */
   }
@@ -761,7 +764,7 @@ FILE * restrict const         stream)
       (domnptr->domnidx < 0)                     ||
       (domnptr->domnidx >= archptr->domnnbr)) {
     errorPrint ("archDeco2DomLoad: bad input");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -783,7 +786,7 @@ FILE * restrict const       stream)
   if (fprintf (stream, ANUMSTRING " ",
                (Anum) domnptr->domnidx) == EOF) {
     errorPrint ("archDeco2DomSave: bad output");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -842,22 +845,3 @@ const ArchDeco2Dom * const  dom1ptr)
 
   return (0);
 }
-
-/* This function creates the MPI_Datatype for
-** decomposition-described domains.
-** It returns:
-** - 0  : if type could be created.
-** - 1  : on error.
-*/
-
-#ifdef SCOTCH_PTSCOTCH
-int
-archDeco2DomMpiType (
-const ArchDeco2 * const       archptr,
-MPI_Datatype * const          typeptr)
-{
-  *typeptr = ANUM_MPI;
-
-  return (0);
-}
-#endif /* SCOTCH_PTSCOTCH */

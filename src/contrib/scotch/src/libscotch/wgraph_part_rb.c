@@ -1,4 +1,4 @@
-/* Copyright 2010,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2010,2014,2018,2019,2021,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -33,8 +33,8 @@
 /**                                                        **/
 /**   NAME       : wgraph_part_rb.c                        **/
 /**                                                        **/
-/**   AUTHOR     : Jun-Ho HER (v6.0)                       **/
-/**                Francois PELLEGRINI                     **/
+/**   AUTHOR     : Francois PELLEGRINI                     **/
+/**                Jun-Ho HER (v6.0)                       **/
 /**                                                        **/
 /**   FUNCTION   : This module performs the vertex overla- **/
 /**                pped graph partitioning based on recur- **/
@@ -42,9 +42,14 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 16 mar 2010     **/
 /**                                 to   : 26 feb 2018     **/
+/**                # Version 6.1  : from : 01 nov 2021     **/
+/**                                 to   : 25 nov 2021     **/
+/**                # Version 7.0  : from : 23 aug 2019     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
-/**   NOTES      : # This code derives from the code of    **/
-/**                  kgraph_map_rb_part.c for the vertex   **/
+/**   NOTES      : # This code originally derived from     **/
+/**                  the code of kgraph_map_rb_part.c,     **/
+/**                  which was then adapted for vertex     **/
 /**                  overlapped graph partitioning.        **/
 /**                                                        **/
 /************************************************************/
@@ -53,323 +58,405 @@
 **  The defines and includes.
 */
 
-#define WGRAPH_PART_RB
-
 #include "module.h"
 #include "common.h"
 #include "parser.h"
 #include "graph.h"
 #include "arch.h"
-#include "arch_cmplt.h"
-#include "mapping.h"
 #include "vgraph.h"
 #include "vgraph_separate_st.h"
 #include "vgraph_separate_zr.h"
 #include "wgraph.h"
 #include "wgraph_part_rb.h"
-#include "scotch.h"
 
-/*
-**  The static variables.
+/***********************************/
+/*                                 */
+/* Recursion management routines.  */
+/*                                 */
+/***********************************/
+
+/* This routine propagates the local frontier
+** array to the global frontier array.
+** It returns:
+** - void  : in all cases.
 */
 
-static const Gnum           wgraphpartrbloadone = 1;
+static
+void
+wgraphPartRb3Fron (
+WgraphPartRbData * restrict const dataptr,        /* Top-level graph and partition data */
+const Graph * restrict const      orggrafptr,     /* Graph to induce and bipartition    */
+const Gnum * restrict const       orgfrontab,     /* Frontier array of original graph   */
+const Gnum                        orgfronnbr)     /* Part of graph to consider          */
+{
+  Gnum                fronnbr;
+  Gnum                fronnum;
 
-/********************************************/
-/*                                          */
-/* This is the entry point for the vertex   */
-/* overlapped graph partitioning based on   */
-/* recursive bipartitioning approach.       */
-/*                                          */
-/********************************************/
+  const Gnum * restrict const       orgvnumtax = orggrafptr->vnumtax;
+  Gnum * restrict const             frontab    = dataptr->frontab;
 
-/* This routine runs recursive
-** bipartitioning approach.
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_lock (&dataptr->mutedat);         /* Lock frontier mutex */
+#endif /* SCOTCH_PTHREAD */
+  fronnbr = dataptr->fronnbr;                     /* Get position where to insert frontier */
+  dataptr->fronnbr = fronnbr + orgfronnbr;        /* Update current frontier end position  */
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_unlock (&dataptr->mutedat);       /* Unlock frontier mutex */
+#endif /* SCOTCH_PTHREAD */
+
+  if (orgvnumtax == NULL)                         /* If original graph is not itself a subgraph */
+    memCpy (frontab + fronnbr, orgfrontab, orgfronnbr * sizeof (Gnum)); /* Directly copy array  */
+  else {                                          /* Original graph is a subgraph               */
+    for (fronnum = 0; fronnum < orgfronnbr; fronnum ++, fronnbr ++)
+      frontab[fronnbr] = orgvnumtax[orgfrontab[fronnum]];
+  }
+}
+
+/* This routine propagates the local frontier
+** array to the global frontier array, and sets
+** the separator part array.
+** It returns:
+** - void  : in all cases.
+*/
+
+static
+void
+wgraphPartRb3SepFron (
+WgraphPartRbData * restrict const dataptr,        /* Top-level graph and partition data */
+const Graph * restrict const      orggrafptr,     /* Graph to induce and bipartition    */
+const Gnum * restrict const       orgfrontab,     /* Frontier array of original graph   */
+const Gnum                        orgfronnbr)     /* Part of graph to consider          */
+{
+  Gnum                fronnbr;
+  Gnum                fronnum;
+
+  const Gnum * restrict const       orgvnumtax = orggrafptr->vnumtax;
+  Anum * restrict const             parttax    = dataptr->parttax;
+  Gnum * restrict const             frontab    = dataptr->frontab;
+
+#ifdef SCOTCH_DEBUG_WGRAPH2
+  if (orgfrontab == NULL) {                       /* Part array must exist */
+    errorPrint ("wgraphPartRb3SepFron: invalid parameters");
+    return;
+  }
+#endif /* SCOTCH_DEBUG_WGRAPH2 */
+
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_lock (&dataptr->mutedat);         /* Lock frontier mutex */
+#endif /* SCOTCH_PTHREAD */
+  fronnbr = dataptr->fronnbr;                     /* Get position where to insert frontier */
+  dataptr->fronnbr = fronnbr + orgfronnbr;        /* Update current frontier end position  */
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_unlock (&dataptr->mutedat);       /* Unlock frontier mutex */
+#endif /* SCOTCH_PTHREAD */
+
+  if (orgvnumtax == NULL) {                       /* If original graph is not itself a subgraph */
+    for (fronnum = 0; fronnum < orgfronnbr; fronnum ++, fronnbr ++) {
+      Gnum                vertnum;
+
+      vertnum = orgfrontab[fronnum];
+      frontab[fronnbr] = vertnum;
+      parttax[vertnum] = -1;
+    }
+  }
+  else {                                          /* Original graph is a subgraph */
+    for (fronnum = 0; fronnum < orgfronnbr; fronnum ++, fronnbr ++) {
+      Gnum                vertnum;
+
+      vertnum = orgvnumtax[orgfrontab[fronnum]];
+      frontab[fronnbr] = vertnum;
+      parttax[vertnum] = -1;
+    }
+  }
+}
+
+/* This routine fills the global part array
+** with part data from the given part and
+** its separator.
+** It returns:
+** - void  : in all cases.
+*/
+
+static
+void
+wgraphPartRb3One (
+WgraphPartRbData * restrict const dataptr,        /* Top-level graph and partition data */
+const Graph * restrict const      orggrafptr,     /* Graph to induce and bipartition    */
+const GraphPart * restrict const  orgparttax,     /* Part array of original graph       */
+const int                         indpartval,     /* Part value to consider             */
+const Anum                        inddomnnum)     /* Domain onto which to map the part  */
+{
+  Anum                indparttmp;                 /* Part value to exclude */
+  Gnum                vertnum;
+
+  const Gnum * restrict const       orgvnumtax = orggrafptr->vnumtax;
+  Anum * restrict const             parttax    = dataptr->parttax;
+
+#ifdef SCOTCH_DEBUG_WGRAPH2
+  if (orgparttax == NULL) {                       /* Graph can never be a full graph */
+    errorPrint ("wgraphPartRb3One: invalid parameters");
+    return;
+  }
+#endif /* SCOTCH_DEBUG_WGRAPH2 */
+
+  indparttmp = 1 - indpartval;                    /* Part to exclude from update                */
+  if (orgvnumtax == NULL) {                       /* If original graph is not itself a subgraph */
+    for (vertnum = orggrafptr->baseval; vertnum < orggrafptr->vertnnd; vertnum ++) {
+      GraphPart           orgpartval;
+
+      orgpartval = orgparttax[vertnum];
+      if (orgpartval != indparttmp)               /* If vertex belongs to the right part or the separator */
+        parttax[vertnum] = (orgpartval == indpartval) ? inddomnnum : -1;
+    }
+  }
+  else {
+    for (vertnum = orggrafptr->baseval; vertnum < orggrafptr->vertnnd; vertnum ++) {
+      GraphPart           orgpartval;
+
+      orgpartval = orgparttax[vertnum];
+      if (orgpartval != indparttmp)               /* If vertex belongs to the right part or the separator */
+        parttax[orgvnumtax[vertnum]] = (orgpartval == indpartval) ? inddomnnum : -1;
+    }
+  }
+}
+
+/* This routine fills the global part array
+** with part data from both parts and
+** their separator.
+** It returns:
+** - void  : in all cases.
+*/
+
+static
+void
+wgraphPartRb3Both (
+WgraphPartRbData * restrict const dataptr,        /* Top-level graph and partition data */
+const Graph * restrict const      orggrafptr,     /* Graph to induce and bipartition    */
+const GraphPart * restrict const  orgparttax,     /* Part array of original graph       */
+const Anum                        inddomnnum)     /* Part of graph to consider          */
+{
+  Gnum                vertnum;
+
+  const Gnum * restrict const       orgvnumtax = orggrafptr->vnumtax;
+  Anum * restrict const             parttax    = dataptr->parttax;
+
+#ifdef SCOTCH_DEBUG_WGRAPH2
+  if (orgparttax == NULL) {                       /* Part array must exist */
+    errorPrint ("wgraphPartRb3Both: invalid parameters");
+    return;
+  }
+#endif /* SCOTCH_DEBUG_WGRAPH2 */
+
+  if (orgvnumtax == NULL) {                       /* If original graph is not itself a subgraph */
+    for (vertnum = orggrafptr->baseval; vertnum < orggrafptr->vertnnd; vertnum ++) {
+      GraphPart           orgpartval;
+
+      orgpartval = orgparttax[vertnum];
+      parttax[vertnum] = (orgpartval < 2) ? (inddomnnum + (Anum) orgpartval) : -1;
+    }
+  }
+  else {
+    for (vertnum = orggrafptr->baseval; vertnum < orggrafptr->vertnnd; vertnum ++) {
+      GraphPart           orgpartval;
+
+      orgpartval = orgparttax[vertnum];
+      parttax[orgvnumtax[vertnum]] = (orgpartval < 2) ? (inddomnnum + (Anum) orgpartval) : -1;
+    }
+  }
+}
+
+/* This routine is the recursive vertex
+** bipartitioning core routine.
 ** It returns:
 ** - 0   : on success.
 ** - !0  : on error.
 */
 
 static
-int
-wgraphPartRb3 (
-const Graph * restrict const     orggrafptr,    /* Graph to induce and bipartition         */
-const GraphPart * restrict const orgparttax,    /* Part array of original graph            */
-const GraphPart                  indpartval,    /* Part of graph to consider               */
-const int                        domnnum,       /* Index of domain onto which map the part */
-Mapping * restrict const         mappptr)       /* Final mapping                           */
-{
-  Gnum               vertnum;
-
-  if (orgparttax == NULL) {                       /* If graph is full graph */
-#ifdef SCOTCH_DEBUG_WGRAPH2
-    if ((orggrafptr->vnumtax != NULL) || (domnnum != 0)) {
-      errorPrint ("wgraphPartRb3: internal error");
-      return     (1);
-    }
-#endif /* SCOTCH_DEBUG_WGRAPH2 */
-    memSet (mappptr->parttax + mappptr->grafptr->baseval, 0, orggrafptr->vertnbr * sizeof (ArchDomNum));
-  }
-  else {                                          /* Graph to consider is a subgraph of the original graph       */
-    if (orggrafptr->vnumtax == NULL) {            /* If original graph is not itself a subgraph                  */
-      for (vertnum = orggrafptr->baseval; vertnum < orggrafptr->vertnnd; vertnum ++) { /* For all graph vertices */
-        if (orgparttax[vertnum] == indpartval)    /* If vertex belongs to the right part                         */
-          mappptr->parttax[vertnum] = domnnum;
-      }
-    }
-    else {
-      for (vertnum = orggrafptr->baseval; vertnum < orggrafptr->vertnnd; vertnum ++) { /* For all graph vertices */
-        if (orgparttax[vertnum] == indpartval)    /* If vertex belongs to the right part                         */
-          mappptr->parttax[orggrafptr->vnumtax[vertnum]] = domnnum;
-      }
-    }
-  }
-
-  return (0);
-}
-
-static
-int
+void
 wgraphPartRb2 (
-WgraphPartRbData * restrict const dataptr,        /* Top-level graph and partition data       */
-Graph * restrict const            orggrafptr,     /* Graph to induce and bipartition          */
-const GraphPart * restrict const  orgparttax,     /* Part array of original graph to consider */
-const GraphPart                   indpartval,     /* Part of graph to consider                */
-const int                         indvertnbr,     /* Number of vertices in part or in graph   */
-const int                         domnnum)        /* Index of domain onto which map the part  */
+Context * restrict const        contptr,          /*+ (Sub-)context                          +*/
+const int                       spltnum,          /*+ Rank of sub-context in initial context +*/
+const WgraphPartRbSplit * const spltptr)
 {
-  Graph                  indgrafdat;
-  Graph *                indgrafptr;
-  Vgraph                 actgrafdat;
-  Anum                   domnsubidx;
-  Anum                   domnsubdlt;
-  ArchDom                domnsubtab[2];           /* Target subdomains              */
-  Anum                   domnsubnum[2];           /* Index of subdomains in mapping */
-  Gnum                   grafsubsiz[2];
-  Gnum                   vertnum;
-  Mapping * restrict     mappptr;
-  int                    i;
-  int                    o;
+  Vgraph              actgrafdat;
+  WgraphPartRbSplit   spltdat;
+  int                 partval;
+  int                 o;
 
-  mappptr = &dataptr->mappdat;
-  o = archDomBipart (mappptr->archptr, &mappptr->domntab[domnnum], &domnsubtab[0], &domnsubtab[1]);
+  WgraphPartRbData * restrict const dataptr = spltptr->dataptr;
+  const Graph * restrict const      orggrafptr = spltptr->grafptr; /* Graph to induce and bipartition                      */
+  const Gnum * restrict const       orgfrontab = spltptr->frontab; /* Graph frontier array                                 */
+  const Gnum                        orgfronnbr = spltptr->fronnbr; /* Number of frontier vertices                          */
+  const GraphPart * restrict const  orgparttax = spltptr->parttax; /* Part array of original graph to consider             */
+  const GraphPart                   indpartval = (GraphPart) spltnum; /* Part of graph to consider                         */
+  const Gnum                        indvertnbr = spltptr->splttab[spltnum].vertnbr; /* Number of vertices in part or graph */
+  const Anum                        inddomnnum = spltptr->splttab[spltnum].domnnum; /* Initial domain number to map        */
+  const Anum                        inddomnsiz = spltptr->splttab[spltnum].domnsiz; /* Number of domains to map            */
 
-  switch (o) {
-    case 1 :                                      /* If target domain is terminal */
-      return (wgraphPartRb3 (orggrafptr, orgparttax, indpartval, domnnum, mappptr)); /* Update mapping and return */
-    case 2 :                                      /* On error */
-      errorPrint ("wgraphPartRb2: cannot bipartition domain");
-      return     (1);
+  if (indpartval == 0) {                          /* If in small branch of the recursion; TRICK: never at first call      */
+    if (inddomnsiz <= 1) {                        /* If target domain is terminal                                         */
+      wgraphPartRb3Fron (dataptr, orggrafptr, orgfrontab, orgfronnbr); /* Copy previous frontier to global frontier array */
+      wgraphPartRb3One  (dataptr, orggrafptr, orgparttax, indpartval, inddomnnum); /* Update mapping and return           */
+      return;
+    }
+    wgraphPartRb3SepFron (dataptr, orggrafptr, orgfrontab, orgfronnbr); /* Copy previous frontier to global frontier array and update separator */
   }
 
-  indgrafptr = orggrafptr;                        /* Assume we will work on the original graph */
-  if (orgparttax != NULL) {                       /* If not the case, build induced subgraph   */
-    indgrafptr = &indgrafdat;
-    if (graphInducePart (orggrafptr, orgparttax, indvertnbr, indpartval, &indgrafdat) != 0) {
+  if (orgparttax == NULL) {                       /* If working graph is original graph */
+    actgrafdat.s = *orggrafptr;                   /* Clone original graph data          */
+    actgrafdat.s.flagval &= ~GRAPHFREETABS;       /* Nothing to be freed (yet)          */
+    actgrafdat.s.vlbltax  = NULL;                 /* Vertex labels are no use           */
+  }
+  else {                                          /* If not the case, build induced subgraph */
+    if (graphInducePart (orggrafptr, orgparttax, indvertnbr, indpartval, &actgrafdat.s) != 0) {
       errorPrint ("wgraphPartRb2: cannot induce graph");
-      return     (1);
+      goto fail;
     }
   }
 
-  actgrafdat.s = *indgrafptr;
-  actgrafdat.s.vlbltax = NULL;
-  if ((actgrafdat.frontab = (Gnum *) memAlloc (actgrafdat.s.vertnbr * sizeof (Gnum))) == NULL) {
-    errorPrint ("wgraphPartRb2: out of memory (1)");
-    return     (1);
+  if (memAllocGroup ((void **) (void *)
+                     &actgrafdat.parttax, (size_t) (actgrafdat.s.vertnbr * sizeof (GraphPart)),
+                     &actgrafdat.frontab, (size_t) (actgrafdat.s.vertnbr * sizeof (Gnum)), NULL) == NULL) {
+    errorPrint ("wgraphPartRb2: out of memory");
+    graphExit  (&actgrafdat.s);
+    goto fail;
   }
-  if ((actgrafdat.parttax = (GraphPart *) memAlloc (actgrafdat.s.vertnbr * sizeof (GraphPart))) == NULL) {
-    errorPrint ("wgraphPartRb2: out of memory (2)");
-    memFree    (actgrafdat.frontab);
-    return     (1);
-  }
-  actgrafdat.parttax -= actgrafdat.s.baseval;
-  vgraphZero (&actgrafdat);                       /* Create active graph */
-  if (vgraphSeparateSt (&actgrafdat, dataptr->stratptr) != 0) { /* Perform bipartitioning */
+  actgrafdat.parttax   -= actgrafdat.s.baseval;
+  actgrafdat.s.flagval |= VGRAPHFREEPART;         /* Free group leader   */
+  actgrafdat.levlnum    = 0;                      /* Initial level       */
+  actgrafdat.contptr    = contptr;                /* Use current context */
+
+  actgrafdat.dwgttab[0] = inddomnsiz / 2;         /* Compute relative weights of subdomains to compute */
+  actgrafdat.dwgttab[1] = inddomnsiz - actgrafdat.dwgttab[0];
+  vgraphZero (&actgrafdat);
+  if (vgraphSeparateSt (&actgrafdat, dataptr->straptr) != 0) { /* Perform bipartitioning */
     errorPrint ("wgraphPartRb2: cannot bipartition graph");
     vgraphExit (&actgrafdat);
-    return     (1);
+    goto fail;
   }
 
-  if (actgrafdat.s.vnumtax == NULL) {             /* If the active graph is not itself a subgraph                  */
-    for (vertnum = actgrafdat.s.baseval; vertnum < actgrafdat.s.vertnnd; vertnum ++) { /* For all graph vertices */
-      if (actgrafdat.parttax[vertnum] == 2) {     /* If vertex belongs to frontier */
-	mappptr->parttax[vertnum]   = -1;
-	actgrafdat.parttax[vertnum] = 3;
-      }
-    }
-  }
-  else {
-    for (vertnum = actgrafdat.s.baseval; vertnum < actgrafdat.s.vertnnd; vertnum ++) { /* For all graph vertices */
-      if (actgrafdat.parttax[vertnum] == 2) {     /* If vertex belongs to frontier */
-	mappptr->parttax[actgrafdat.s.vnumtax[vertnum]]= -1;
-	actgrafdat.parttax[vertnum] = 3;
-      }
-    }
+  if (inddomnsiz <= 2) {                          /* If end of recursion, set both parts and separator */
+    wgraphPartRb3Fron (dataptr, &actgrafdat.s, actgrafdat.frontab, actgrafdat.fronnbr);
+    wgraphPartRb3Both (dataptr, &actgrafdat.s, actgrafdat.parttax, inddomnnum);
+    vgraphExit        (&actgrafdat);
+    return;
   }
 
+  o = 0;                                          /* Assume that everything will go well */
+  spltdat.splttab[0].domnnum = inddomnnum;
+  spltdat.splttab[0].domnsiz = inddomnsiz / 2;    /* Compute median values */
+  spltdat.splttab[1].domnnum = inddomnnum + spltdat.splttab[0].domnsiz;
+  spltdat.splttab[1].domnsiz = inddomnsiz - spltdat.splttab[0].domnsiz;
+  spltdat.dataptr = dataptr;                      /* Refer to global data */
+  spltdat.grafptr = &actgrafdat.s;
+  spltdat.revaptr = &o;
 
-  domnsubdlt = mappptr->domnnbr - domnnum;        /* Increment in domain number */
-  domnsubidx = domnnum - domnsubdlt;              /* Place where to insert subdomain */
-  mappptr->domnnbr --;                            /* One less subdomain as for now   */
-  grafsubsiz[0] = actgrafdat.compsize[0];
-  grafsubsiz[1] = actgrafdat.compsize[1];
-
-  o = 0;
-  for (i = 1; i >= 0; i --) {                     /* For all subparts             */
-    if (grafsubsiz[i] <= 0)                       /* If subpart is empty, skip it */
-      continue;
-    mappptr->domnnbr ++;                          /* One more subdomain to account for */
-    domnsubidx   += domnsubdlt;                   /* Compute location of subdomain */
-    domnsubnum[i] = domnsubidx;                   /* Record it before recursion    */
-    mappptr->domntab[domnsubidx] = domnsubtab[i]; /* Write it at this place        */
+  if ((partval = 1, actgrafdat.compsize[0] <= 0) || /* If a subpart is empty, run on other part (without considering separator vertices) */
+      (partval = 0, actgrafdat.compsize[1] <= 0)) {
+    spltdat.splttab[1].vertnbr = actgrafdat.s.vertnbr; /* TRICK: use fake part 1 for calling */
+    spltdat.splttab[1].domnnum = spltdat.splttab[partval].domnnum;
+    spltdat.splttab[1].domnsiz = spltdat.splttab[partval].domnsiz;
+    spltdat.frontab = NULL;                       /* No separator vertices, even if they were some */
+    spltdat.fronnbr = 0;
+    spltdat.parttax = NULL;
+    wgraphPartRb2 (contptr, partval, &spltdat);
+    vgraphExit    (&actgrafdat);
+    if (o != 0)
+      goto fail;
+    return;
   }
 
-  if (o == 0) {
-    for (i = 1; i >= 0; i --) {                   /* For all subparts             */
-      if (grafsubsiz[i] <= 0)                     /* If subpart is empty, skip it */
-        continue;
+  spltdat.splttab[0].vertnbr = actgrafdat.compsize[0];
+  spltdat.splttab[1].vertnbr = actgrafdat.compsize[1];
+  spltdat.frontab = actgrafdat.frontab;
+  spltdat.fronnbr = actgrafdat.fronnbr;
+  spltdat.parttax = actgrafdat.parttax;
 
-      if ((o = wgraphPartRb2 (dataptr, indgrafptr, actgrafdat.parttax, (GraphPart) i, grafsubsiz[i], domnsubnum[i])) != 0)
-        return (1);                               /* If problem in recursion, stop */
-    }
+#ifndef WGRAPHPARTRBNOTHREAD
+  if (contextThreadLaunchSplit (contptr, (ContextSplitFunc) wgraphPartRb2, &spltdat) != 0) /* If counld not split context to run concurrently */
+#endif /* WGRAPHPARTRBNOTHREAD */
+  {
+    wgraphPartRb2 (contptr, 0, &spltdat);         /* Run tasks in sequence */
+    if (o == 0)
+      wgraphPartRb2 (contptr, 1, &spltdat);
   }
 
-  memFree (actgrafdat.frontab);                   /* Frontier array of bipartitioning graph is no longer necessary      */
-  memFree (actgrafdat.parttax + actgrafdat.s.baseval); /* Frontier array of bipartitioning graph is no longer necessary */
-  if (indgrafptr == &indgrafdat)                  /* If an induced subgraph had been created                            */
-    graphExit (indgrafptr);                       /* Free it                                                            */
+  vgraphExit (&actgrafdat);
 
-  return (o);
+  if (o == 0)                                     /* If no error detected, return directly */
+    return;
+
+fail:
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_lock (&dataptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
+  *spltptr->revaptr = 1;
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_unlock (&dataptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
 }
+
+/*********************************************/
+/*                                           */
+/* This is the entry point for vertex        */
+/* overlapped graph partitioning based on    */
+/* on the recursive bipartitioning approach. */
+/*                                           */
+/*********************************************/
 
 int
 wgraphPartRb (
 Wgraph * restrict const                   grafptr,
 const WgraphPartRbParam * restrict const  paraptr)
 {
-  const Anum * restrict         parttax;
-  Gnum                          vertnum;
-  Gnum                          velomsk;
-  const Gnum * restrict         velobax;              /* Data for handling of optional arrays  */
-  Gnum * restrict               frontab;
-  Gnum                          fronnbr;
-  Gnum                          fronload;
-  Gnum * restrict               compload;
-  Gnum * restrict               compsize;
-  WgraphPartRbData              datadat;
-  Arch                          archdat;
-  WgraphPartList * restrict     listtab;
+  WgraphPartRbData    datadat;
+  WgraphPartRbSplit   spltdat;
+  int                 o;
 
-  const Gnum * restrict const   verttax = grafptr->s.verttax;
-  const Gnum * restrict const   vendtax = grafptr->s.vendtax;
-  const Gnum * restrict const   edgetax = grafptr->s.edgetax;
-
-  if ((listtab = (WgraphPartList *) memAlloc ((grafptr->partnbr + 1) * sizeof (WgraphPartList))) == NULL) { /* TRICK: "+1" to create slot for a "-1" index */
-    errorPrint ("wgraphPartRb: out of memory (1)");
-    return     (1);
-  }
-  listtab ++;                                     /* TRICK: trim array so that listtab[-1] is valid */
-  memSet (listtab, ~0, grafptr->partnbr * sizeof (WgraphPartList)); /* Set vertex indices to ~0     */
- 
-  datadat.grafptr  = &grafptr->s;
-  datadat.frontab  = grafptr->frontab;            /* Re-use frontier array */
-  datadat.fronnbr  = 0;
-  datadat.stratptr = paraptr->stratptr;
-  datadat.mappdat.grafptr = &grafptr->s;
-  datadat.mappdat.parttax = grafptr->parttax;     /* Re-use part array */
-  datadat.mappdat.domnmax = grafptr->partnbr + 1;
-  datadat.mappdat.domnnbr = 1;
-
-  SCOTCH_archCmplt ((SCOTCH_Arch *) &archdat, grafptr->partnbr); /* Create a complete graph architecture */
-  datadat.mappdat.archptr = &archdat;
-
-  archDomFrst (datadat.mappdat.archptr, &datadat.mappdat.domnorg); /* Get first domain of architecture */
-  if ((datadat.mappdat.domntab = (ArchDom *) memAlloc ((grafptr->partnbr + 2) * sizeof (ArchDom))) == NULL) {
-    errorPrint ("wgraphPartRb: out of memory (2)");
-    memFree    (listtab - 1);                     /* TRICK: free array using its real beginning */
-    return     (1);
-  }
-  datadat.mappdat.domntab[0] = datadat.mappdat.domnorg; /* Set first domain */
-
-  if (wgraphPartRb2 (&datadat, &grafptr->s, NULL, 0, grafptr->s.vertnbr, 0) != 0) {
-    errorPrint ("wgraphPartRb: internal error (1)");
-    return     (1);
+  if (grafptr->partnbr <= 1) {                    /* If only one part needed    */
+    wgraphZero (grafptr);                         /* All vertices set to part 0 */
+    return (0);
   }
 
-  if (grafptr->s.velotax == NULL) {               /* Set accesses to optional arrays             */
-    velobax = &wgraphpartrbloadone;               /* In case vertices not weighted (least often) */
-    velomsk = 0;
+  datadat.grafptr = &grafptr->s;                  /* Start with full graph    */
+  datadat.parttax = grafptr->parttax;             /* Take part array          */
+  datadat.frontab = grafptr->frontab;             /* Take frontier array      */
+  datadat.fronnbr = 0;                            /* No frontier vertices yet */
+  datadat.straptr = paraptr->straptr;
+  spltdat.splttab[1].vertnbr = grafptr->s.vertnbr; /* TRICK: initial fake part is 1 */
+  spltdat.splttab[1].domnnum = 0;
+  spltdat.splttab[1].domnsiz = grafptr->partnbr;
+  spltdat.dataptr = &datadat;                     /* Refer to global data */
+  spltdat.grafptr = &grafptr->s;
+  spltdat.frontab = NULL;
+  spltdat.fronnbr = 0;
+  spltdat.parttax = NULL;
+  spltdat.revaptr = &o;
+
+  o = 0;                                          /* Assume everything will go well */
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_init (&datadat.mutedat, NULL);    /* Create mutex for global frontier and return values */
+#endif /* SCOTCH_PTHREAD */
+  wgraphPartRb2 (grafptr->contptr, 1, &spltdat);
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_destroy (&datadat.mutedat);
+#endif /* SCOTCH_PTHREAD */
+  if (o != 0) {
+    errorPrint ("wgraphPartRb: cound not perform recursion");
+    return (1);
   }
-  else {
-    velobax = grafptr->s.velotax;
-    velomsk = ~((Gnum) 0);
+  grafptr->fronnbr = datadat.fronnbr;             /* Set overall number of frontier vertices */
+
+  if (wgraphCost (grafptr) != 0) {
+    errorPrint ("wgraphPartRb: could not compute partition cost");
+    return (1);
   }
-
-  compload = grafptr->compload;
-  compsize = grafptr->compsize;
-  memSet (compload, 0, grafptr->partnbr * sizeof (Gnum));
-  memSet (compsize, 0, grafptr->partnbr * sizeof (Gnum));
-
-  parttax  = grafptr->parttax;
-  frontab  = grafptr->frontab;
-  fronnbr  =
-  fronload = 0;
-  for (vertnum = grafptr->s.baseval; vertnum < grafptr->s.vertnnd; vertnum ++) {
-    Gnum                partval;
-
-    partval = parttax[vertnum];
-    if (partval >= 0) {
-      compload[partval] += velobax[vertnum & velomsk];
-      compsize[partval] ++;
-    }
-    else {                                        /* Vertex is in separator       */
-      Gnum                listidx;                /* Index of first neighbor part */
-      Gnum                edgenum;
-      Gnum                veloval;
-
-      frontab[fronnbr ++] = vertnum;              /* Add vertex to frontier */
-      fronload           += velobax[vertnum & velomsk];
-
-      listidx = -1;                               /* No neighboring parts recorded yet          */
-      listtab[-1].vertnum = vertnum;              /* Separator neighbors will not be considered */
-      for (edgenum = verttax[vertnum];
-           edgenum < vendtax[vertnum]; edgenum ++) { /* Compute gain */
-        Gnum                vertend;
-        Gnum                partend;
-
-        vertend = edgetax[edgenum];
-        partend = parttax[vertend];
-        if (listtab[partend].vertnum != vertnum) { /* If part not yet considered  */
-          listtab[partend].vertnum = vertnum;     /* Link it in list of neighbors */
-          listtab[partend].nextidx = listidx;
-          listidx = partend;
-        }
-      }
-
-      veloval = velobax[vertnum & velomsk];
-
-      while (listidx != -1) {                     /* For all neighboring parts found      */
-        compload[listidx] += veloval;             /* Add load of separator vertex to part */
-        compsize[listidx] ++;
-        listidx = listtab[listidx].nextidx;
-      }
-    }
-  }
-  grafptr->fronnbr  = fronnbr;
-  grafptr->fronload = fronload;
-
-#if 0 /* TODO REMOVE */
-  for (partval = 0; partval < grafptr->partnbr; partval ++)
-    printf("\033[0;33mcompload[%d] %d %d\033[0m\n", partval, grafptr->compload[partval], grafptr->compsize[partval]);
-#endif
-
-  memFree (datadat.mappdat.domntab);              /* Free only newly allocated array of mapping */
-  memFree (listtab - 1);                          /* TRICK: free array using its real beginning */
 
 #ifdef SCOTCH_DEBUG_WGRAPH2
   if (wgraphCheck (grafptr) != 0) {
     errorPrint ("wgraphPartRb: inconsistent graph data");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_WGRAPH2 */
 

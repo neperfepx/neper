@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2012,2014,2016 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2012,2014,2016,2019,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -42,14 +42,14 @@
 /**                                 to   : 15 jun 2005     **/
 /**                # Version 6.0  : from : 08 oct 2012     **/
 /**                                 to   : 19 mar 2016     **/
+/**                # Version 7.0  : from : 13 sep 2019     **/
+/**                                 to   : 11 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -62,69 +62,85 @@
 /*                                  */
 /************************************/
 
-/*+ This routine loads a random state.
-*** It returns:
-*** - 0  : if state successfully loaded.
-*** - 1  : state cannot be loaded.
-*** - 2  : on error.
-+*/
+/* This routine loads a random state.
+** It returns:
+** - 0  : if state successfully loaded.
+** - 1  : state cannot be loaded.
+** - 2  : on error.
+*/
 
 int
 SCOTCH_randomLoad (
 FILE *                      stream)
 {
-  return (intRandLoad (stream));
+  return (intRandLoad (&intranddat, stream));
 }
 
-/*+ This routine saves the random state.
-*** It returns:
-*** - 0  : if state successfully saved.
-*** - 1  : state cannot be saved.
-*** - 2  : on error.
-+*/
+/* This routine saves the random state.
+** It returns:
+** - 0  : if state successfully saved.
+** - 1  : state cannot be saved.
+** - 2  : on error.
+*/
 
 int
 SCOTCH_randomSave (
 FILE *                      stream)
 {
-  return (intRandSave (stream));
+  return (intRandSave (&intranddat, stream));
 }
 
-/*+ This routine sets the process number that
-*** is used to generate a different seed across
-*** all processes.
-*** It returns:
-*** - void  : in all cases.
-+*/
+/* This routine sets the process number that
+** is used to generate a different seed across
+** all processes.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_randomProc (
 int                         procnum)
 {
-  intRandProc (procnum);
+  intRandProc (&intranddat, procnum);
 }
 
-/*+ This routine resets the random generator
-*** to simulate a start from scratch.
-*** It returns:
-*** - void  : in all cases.
-+*/
+/* This routine resets the random generator
+** to simulate a start from scratch.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
-SCOTCH_randomReset ()
+SCOTCH_randomReset (void)
 {
-  intRandReset ();
+  intRandInit  (&intranddat);                     /* In case it was not initialized through a context */
+  intRandReset (&intranddat);
 }
 
-/*+ This routine sets the value of the
-*** random seed.
-*** It returns:
-*** - void  : in all cases.
-+*/
+/* This routine sets the value of the
+** random seed.
+** It returns:
+** - void  : in all cases.
+*/
 
 void
 SCOTCH_randomSeed (
-INT                         seedval)
+SCOTCH_Num                  seedval)
 {
-  intRandSeed (seedval);
+  intRandSeed (&intranddat, (UINT64) seedval);
+}
+
+/* This routine returns a pseudo-random integer
+** value in the range [0..randmax[. This routine
+** is not thread-safe as it uses a global state
+** variable.
+** It returns:
+** - x  : pseudo-random number, in all cases.
+*/
+
+SCOTCH_Num
+SCOTCH_randomVal (
+SCOTCH_Num                  randmax)
+{
+  return ((SCOTCH_Num) intRandVal (&intranddat, (UINT) randmax));
 }

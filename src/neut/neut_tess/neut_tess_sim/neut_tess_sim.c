@@ -4,15 +4,16 @@
 
 #include"neut_tess_sim_.h"
 
+// setting the tessellation data of a simulation
 void
-neut_tess_sim (char *simdir, struct TESS Tess, struct SIM *pSim)
+neut_tess_sim (struct TESS Tess, struct SIM *pSim)
 {
-  neut_sim_set_zero (pSim);
-  ut_string_string (simdir, &((*pSim).simdir));
   (*pSim).CellQty = Tess.CellQty;
-  ut_string_string (Tess.CellOriDes, &((*pSim).OriDes));
 
-  ut_string_string ("simulation.tess", &(*pSim).tess);
+  if (!(*pSim).OriDes)
+    ut_string_string (Tess.CellOriDes, &((*pSim).OriDes));
+
+  neut_sim_init_memberqty (pSim);
 
   return;
 }

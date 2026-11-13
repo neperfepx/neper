@@ -87,6 +87,7 @@ nev_print_init_camera_coo (double **bbox, double *centre, double *v, char *expr,
   ut_free_2d_char (&vars, var_qty);
   ut_free_1d (&vals);
   ut_free_2d_char (&def, 3);
+  ut_free_2d_char (&expr2, qty);
   ut_free_1d (&X);
   ut_free_1d (&L);
 

@@ -1,4 +1,4 @@
-/* Copyright 2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2018,2021,2023-2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,14 +41,14 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 04 apr 2018     **/
 /**                                 to   : 06 jun 2018     **/
+/**                # Version 7.0  : from : 26 apr 2021     **/
+/**                                 to   : 14 apr 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HGRAPH_ORDER_CC
 
 #include "module.h"
 #include "common.h"
@@ -73,22 +73,22 @@
 
 int
 hgraphOrderCc (
-const Hgraph * restrict const             grafptr,
+Hgraph * restrict const                   grafptr,
 Order * restrict const                    ordeptr,
 const Gnum                                ordenum, /*+ Zero-based ordering number +*/
 OrderCblk * restrict const                cblkptr, /*+ Single column-block        +*/
 const HgraphOrderCcParam * restrict const paraptr)
 {
-  Hgraph                indgrafdat;
-  Gnum                  indordenum;
-  Gnum * restrict       flagtax;                  /* Flag array                       */
-  Gnum * restrict       roottab;                  /* Array of root indices in queutab */
-  Gnum                  rootnbr;                  /* Number of connected components   */
-  Gnum                  rootnum;
-  Gnum                  vrotnum;                  /* Number of found root vertex      */
-  Gnum * restrict       queutab;                  /* Vertex queue and sub-lists       */
-  Gnum                  qhedidx;
-  Gnum                  qtalidx;
+  Hgraph              indgrafdat;
+  Gnum * restrict     flagtax;                    /* Flag array                       */
+  Gnum * restrict     roottab;                    /* Array of root indices in queutab */
+  Gnum                rootnbr;                    /* Number of connected components   */
+  Gnum                rootnum;
+  Gnum                vrotnum;                    /* Number of found root vertex      */
+  Gnum * restrict     queutab;                    /* Vertex queue and sub-lists       */
+  Gnum                qhedidx;
+  Gnum                qtalidx;
+  int                 o;
 
   const Gnum * restrict const verttax = grafptr->s.verttax;
   const Gnum * restrict const vnhdtax = grafptr->vnhdtax;
@@ -99,7 +99,7 @@ const HgraphOrderCcParam * restrict const paraptr)
                      &roottab, (size_t) ((grafptr->vnohnbr + 1) * sizeof (Gnum)), /* TRICK: +1 to store end index */
                      &flagtax, (size_t) ( grafptr->vnohnbr      * sizeof (Gnum)), NULL) == NULL) {
     errorPrint ("hgraphOrderCc: out of memory");
-    return     (1);
+    return (1);
   }
   memSet (flagtax, ~0, grafptr->vnohnbr * sizeof (Gnum)); /* Initialize flag array */
   flagtax -= grafptr->s.baseval;
@@ -111,9 +111,10 @@ const HgraphOrderCcParam * restrict const paraptr)
   while (qtalidx < grafptr->vnohnbr) {
     while (flagtax[vrotnum] >= 0)                 /* Search for an unflagged vertex */
       vrotnum ++;
+
     roottab[rootnbr] = qtalidx;                   /* Record start vertex of component */
     flagtax[vrotnum] = rootnbr;                   /* Flag vertex as enqueued          */
-    queutab[qtalidx ++] = vrotnum;                /* Enqueue found root vertex        */
+    queutab[qtalidx ++] = vrotnum ++;             /* Enqueue found root vertex        */
 
     while (qhedidx < qtalidx) {
       Gnum                vertnum;
@@ -123,7 +124,7 @@ const HgraphOrderCcParam * restrict const paraptr)
 #ifdef SCOTCH_DEBUG_ORDER2
       if ((vertnum < grafptr->s.baseval) || (vertnum >= grafptr->vnohnnd)) {
         errorPrint ("hgraphOrderCc: internal error (1)");
-        return     (1);
+        return (1);
       }
 #endif /* SCOTCH_DEBUG_ORDER2 */
 
@@ -139,7 +140,7 @@ const HgraphOrderCcParam * restrict const paraptr)
         else {
           if (flagtax[vertend] != rootnbr) {
             errorPrint ("hgraphOrderCc: internal error (2)");
-            return     (1);
+            return (1);
           }
         }
 #endif /* SCOTCH_DEBUG_ORDER2 */
@@ -158,45 +159,48 @@ const HgraphOrderCcParam * restrict const paraptr)
   if ((cblkptr->cblktab = (OrderCblk *) memAlloc (rootnbr * sizeof (OrderCblk))) == NULL) {
     errorPrint ("hgraphOrderCc: out of memory");
     memFree    (queutab);
-    return     (1);
+    return (1);
   }
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_lock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
   ordeptr->treenbr += rootnbr;                    /* These more number of tree nodes    */
   ordeptr->cblknbr += rootnbr - 1;                /* These more number of column blocks */
-  cblkptr->cblknbr  = rootnbr;
-  cblkptr->typeval  = ORDERCBLKDICO;              /* Disconnected components node  */
+#ifdef SCOTCH_PTHREAD
+  pthread_mutex_unlock (&ordeptr->mutedat);
+#endif /* SCOTCH_PTHREAD */
+  cblkptr->typeval = ORDERCBLKDICO;               /* Node becomes a set of disconnected components */
+  cblkptr->cblknbr = rootnbr;
+
+  o = 0;                                          /* Assume everything will be all right */
+
   for (rootnum = 0; rootnum < rootnbr; rootnum ++) { /* Initialize tree node array */
-    cblkptr->cblktab[rootnum].typeval = ORDERCBLKOTHR;
-    cblkptr->cblktab[rootnum].vnodnbr = roottab[rootnum + 1] - roottab[rootnum];
+    Gnum                vnodnbr;
+
+    vnodnbr = roottab[rootnum + 1] - roottab[rootnum];
+    cblkptr->cblktab[rootnum].typeval = ORDERCBLKLEAF;
+    cblkptr->cblktab[rootnum].vnodnbr = vnodnbr;
     cblkptr->cblktab[rootnum].cblknbr = 0;
     cblkptr->cblktab[rootnum].cblktab = NULL;
-  }
 
-  for (rootnum = 0, indordenum = 0; rootnum < rootnbr; rootnum ++) {
-    Gnum                indvnohnbr;
-    int                 o;
-
-    indvnohnbr = roottab[rootnum + 1] - roottab[rootnum];
-
-    if (hgraphInduceList (grafptr, indvnohnbr, &queutab[roottab[rootnum]], grafptr->s.vertnbr - grafptr->vnohnbr, &indgrafdat) != 0) {
+    if (hgraphInduceList (grafptr, vnodnbr, &queutab[roottab[rootnum]], grafptr->s.vertnbr - grafptr->vnohnbr, &indgrafdat) != 0) {
       errorPrint ("hgraphOrderCc: cannot create induced graph");
-      memFree    (queutab);
-      return     (1);
+      memFree    (queutab);                       /* Free group leader */
+      return (1);
     }
 
-    o = hgraphOrderSt (&indgrafdat, ordeptr, indordenum, &cblkptr->cblktab[rootnum], paraptr->straptr); /* Perform strategy on induced subgraph */
+    o = hgraphOrderSt (&indgrafdat, ordeptr, ordenum + roottab[rootnum], /* Perform strategy on induced subgraph */
+                       &cblkptr->cblktab[rootnum], paraptr->straptr);
 
     hgraphExit (&indgrafdat);
 
     if (o != 0) {
       errorPrint ("hgraphOrderCc: cannot compute ordering on induced graph");
-      memFree    (queutab);
-      return     (1);
+      break;
     }
-
-    indordenum += indvnohnbr;
   }
 
   memFree (queutab);
 
-  return (0);
+  return (o);
 }

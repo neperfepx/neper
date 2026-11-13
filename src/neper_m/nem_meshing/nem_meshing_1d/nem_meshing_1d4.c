@@ -10,8 +10,8 @@ nem_meshing_1d_edge_algo_mesh (int node1, int node2, int edge, double l,
                                double *Node0DCl, struct NODES *pN,
                                struct MESH *pM)
 {
-  int i, j, ptqty, flip;
-  double cl1, cl2, dist1, dist2, *Coo = NULL, *Cl = NULL;
+  int i, j, ptqty;
+  double cl1, cl2, *Coo = NULL, *Cl = NULL;
 
   cl1 = Nodes.NodeCl[node1];
   cl2 = Nodes.NodeCl[node2];
@@ -24,31 +24,13 @@ nem_meshing_1d_edge_algo_mesh (int node1, int node2, int edge, double l,
     ut_print_neperbug ();
   }
 
-  // trick to support cl < cli
-  if (cl1 > cl || cl2 > cl)
-  {
-    cl1 = ut_num_min (cl1, cl);
-    cl2 = ut_num_min (cl2, cl);
-  }
-
-  // if cl1 > cl2, flipping edge before passing it to nem_mesh_1d_unitsegment
-  flip = (cl1 > cl2);
-
-  if (flip)
-    ut_num_switch (&cl1, &cl2);
-
   nem_mesh_1d_unitsegment (cl1 / l, cl2 / l, cl / l, pl, &ptqty, &Coo, &Cl);
 
-  // if cl1 > cl2, flipping back edge
-  if (flip)
-  {
-    ut_array_1d_reverseelts (Coo, ptqty + 2);
-    for (i = 0; i <= ptqty + 1; i++)
-      Coo[i] = 1 - Coo[i];
-    ut_array_1d_reverseelts (Cl, ptqty + 2);
-  }
-
   // Recording N -------------------------------------------------------
+
+  // (this is called iteratively for curved edges)
+  ut_free_2d (&(*pN).NodeCoo, (*pN).NodeQty + 1);
+  ut_free_1d (&(*pN).NodeCl);
 
   (*pN).NodeQty = 2 + ptqty;
   (*pN).NodeCoo = ut_alloc_2d (3 + ptqty, 3);
@@ -70,14 +52,14 @@ nem_meshing_1d_edge_algo_mesh (int node1, int node2, int edge, double l,
 
     (*pN).NodeCl[i + 1] = Cl[i] * l;
   }
-  dist1 = ut_space_dist ((*pN).NodeCoo[1], (*pN).NodeCoo[2]);
-  dist2 = ut_space_dist ((*pN).NodeCoo[ptqty + 1], (*pN).NodeCoo[ptqty + 2]);
-
-  Node0DCl[node1] = ut_num_max (Node0DCl[node1], dist1);
-  Node0DCl[node2] = ut_num_max (Node0DCl[node2], dist2);
+  // the characteristic lengths of the vertices are increased to the mesh
+  // sizes at the vertices (if higher)
+  Node0DCl[node1] = ut_num_max (Node0DCl[node1], Cl[0] * l);
+  Node0DCl[node2] = ut_num_max (Node0DCl[node2], Cl[ptqty + 1] * l);
 
   // Recording M -------------------------------------------------------
 
+  neut_mesh_free (pM);
   neut_mesh_set_zero (pM);
 
   (*pM).Dimension = 1;
@@ -101,8 +83,7 @@ nem_meshing_1d_edge_algo_mesh (int node1, int node2, int edge, double l,
 
 void
 nem_meshing_1d_edge_projontomesh (struct TESS Tess, int edge, struct NODES N0,
-                                  struct MESH M0, struct NODES *pN,
-                                  struct MESH M)
+                                  struct MESH M0, struct NODES *pN)
 {
   int i, j, elt, node1, node2, ver1, ver2;
   double l, alpha, eps;
@@ -166,8 +147,6 @@ nem_meshing_1d_edge_projontomesh (struct TESS Tess, int edge, struct NODES N0,
         (1 - alpha) * N0.NodeCoo[node1][j] + alpha * N0.NodeCoo[node2][j];
   }
 
-  nem_meshing_1d_edge_proj_fixcl (M, pN);
-
   ut_free_1d (&rccoo);
   ut_free_1d (&ccoo);
 
@@ -176,7 +155,7 @@ nem_meshing_1d_edge_projontomesh (struct TESS Tess, int edge, struct NODES N0,
 
 void
 nem_meshing_1d_edge_projontodomain (struct TESS Tess, int edge,
-                                    struct NODES *pN, struct MESH M)
+                                    struct NODES *pN)
 {
   int i, domedge;
   int *domfaces = NULL, domfaceqty;
@@ -207,7 +186,6 @@ nem_meshing_1d_edge_projontodomain (struct TESS Tess, int edge,
     ut_free_1d_int (&domfaces);
   }
 
-  nem_meshing_1d_edge_proj_fixcl (M, pN);
 
   return;
 }

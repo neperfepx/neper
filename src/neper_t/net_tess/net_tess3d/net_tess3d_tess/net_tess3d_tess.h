@@ -1,0 +1,15 @@
+/* This file is part of the Neper software package. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
+/* See the COPYING file in the top-level directory. */
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+  extern void net_tess3d_tess (int level, struct SEEDSET SSet, int TessId, struct POLY *Poly,
+                               struct TESS *pTess);
+
+#ifdef __cplusplus
+}
+#endif

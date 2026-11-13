@@ -23,12 +23,12 @@
 
 extern void nev_print_pf_header (struct PF Pf, FILE *);
 extern void nev_print_pf_background (struct PF Pf, FILE *, struct PRINT Print);
-extern void nev_print_pf_border (FILE *, struct PRINT Print, struct PF *pPf);
+extern void nev_print_pf_border (FILE *, struct PF *pPf);
 extern void nev_print_pf_inputs (struct PRINT Print, struct POINT *Points,
                                  int PointQty, struct PF *pPf);
 
-extern void nev_print_pf_pole_proj (struct PRINT Print, struct PF Pf, FILE *file, char *pole_string);
-extern void nev_print_pf_csys (struct PRINT Print, struct PF Pf, FILE *, struct DATA CsysData);
+extern void nev_print_pf_pole_proj (struct PF Pf, FILE *file, char *pole_string);
+extern void nev_print_pf_csys (struct PF Pf, FILE *, struct DATA CsysData);
 
 extern void nev_print_pf_pts (int input, struct PF *pPf,
                        char *type, double **data, double *weights, int qty,

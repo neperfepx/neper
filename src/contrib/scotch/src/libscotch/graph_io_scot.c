@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -48,14 +48,14 @@
 /**                                 to   : 27 feb 2008     **/
 /**                # Version 5.1  : from : 11 aug 2010     **/
 /**                                 to   : 11 aug 2010     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 19 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define GRAPH_IO_SCOT
 
 #include "module.h"
 #include "common.h"

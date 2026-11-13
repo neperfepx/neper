@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -40,6 +40,8 @@
 /**                                                        **/
 /**   DATES      : # Version 4.0  : from : 28 apr 2004     **/
 /**                                 to   : 11 may 2004     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
 /**   NOTES      : # From a given halo mesh is created a   **/
 /**                  non-halo mesh. When nodes are         **/
@@ -55,8 +57,6 @@
 /*
 **  The defines and includes.
 */
-
-#define HMESH_MESH
 
 #include "module.h"
 #include "common.h"
@@ -127,7 +127,7 @@ Mesh * restrict const         meshptr)            /*+ Mesh to build      +*/
       return     (1);
     }
     memCpy (meshptr->vendtax, hmshptr->m.vendtax + hmshptr->m.baseval, hmshptr->vnohnbr * sizeof (Gnum)); /* Copy non-halo node part */
-    memCpy (meshptr->vendtax + hmshptr->vnohnbr, hmshptr->m.verttax + hmshptr->vnohnnd, hmshptr->m.vnodnbr - hmshptr->vnohnbr * sizeof (Gnum)); /* Create empty fake element part */
+    memCpy (meshptr->vendtax + hmshptr->vnohnbr, hmshptr->m.verttax + hmshptr->vnohnnd, (hmshptr->m.vnodnbr - hmshptr->vnohnbr) * sizeof (Gnum)); /* Create empty fake element part */
     memCpy (meshptr->vendtax + hmshptr->m.vnodnbr, hmshptr->vehdtax + hmshptr->m.velmbas, hmshptr->m.velmnbr * sizeof (Gnum));
 
     meshptr->velmnbr = hmshptr->m.velmnbr + hmshptr->m.vnodnbr - hmshptr->vnohnbr; /* Turn halo node vertices into element vertices */

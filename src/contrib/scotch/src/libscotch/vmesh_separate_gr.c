@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2019,2023,2025 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,14 +41,14 @@
 /**                                                        **/
 /**   DATES      : # Version 4.0  : from : 13 oct 2003     **/
 /**                                 to   : 13 oct 2003     **/
+/**                # Version 7.0  : from : 13 sep 2019     **/
+/**                                 to   : 30 aug 2025     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define VMESH_SEPARATE_GR
 
 #include "module.h"
 #include "common.h"
@@ -82,10 +82,9 @@ const VmeshSeparateGrParam * restrict const paraptr) /*+ Method parameters    +*
   Gnum                              velmnum;
   Gnum                              ecmpsize1;
 
-  graphInit (&grafdat.s);
-  if (meshGraph (&meshptr->m, &grafdat.s) != 0) {
+  if (meshGraphNodal (&meshptr->m, &grafdat.s) != 0) {
     errorPrint ("vmeshSeparateGr: cannot build graph");
-    return     (1);
+    return (1);
   }
   grafdat.parttax     = meshptr->parttax + (meshptr->m.vnodbas - grafdat.s.baseval); /* Get node area of part array */
   grafdat.compload[0] = meshptr->ncmpload[0];
@@ -97,6 +96,7 @@ const VmeshSeparateGrParam * restrict const paraptr) /*+ Method parameters    +*
   grafdat.fronnbr     = meshptr->fronnbr;
   grafdat.frontab     = meshptr->frontab;         /* Re-use frontier array */
   grafdat.levlnum     = meshptr->levlnum;
+  grafdat.contptr     = meshptr->contptr;
 
   for (fronnum = 0; fronnum < grafdat.fronnbr; fronnum ++)
     grafdat.frontab[fronnum] -= (meshptr->m.vnodbas - grafdat.s.baseval);
@@ -104,13 +104,13 @@ const VmeshSeparateGrParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
   if (vgraphCheck (&grafdat) != 0) {
     errorPrint ("vmeshSeparateGr: internal error (1)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VMESH2 */
 
   if (vgraphSeparateSt (&grafdat, paraptr->stratptr) != 0) {
     errorPrint ("vmeshSeparateGr: cannot separate graph");
-    return     (1);
+    return (1);
   }
 
   for (fronnum = 0; fronnum < grafdat.fronnbr; fronnum ++) /* Restore mesh-based frontier array */
@@ -148,7 +148,7 @@ const VmeshSeparateGrParam * restrict const paraptr) /*+ Method parameters    +*
 #ifdef SCOTCH_DEBUG_VMESH2
   if (vmeshCheck (meshptr) != 0) {
     errorPrint ("vmeshSeparateGr: internal error (2)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_VMESH2 */
 

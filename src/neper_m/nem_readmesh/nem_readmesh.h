@@ -2,4 +2,5 @@
 /* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nem_readmesh (char *, struct NODES *, struct MESH *, int *ptopology);
+extern int nem_readmesh (char *, struct NODES *, struct MESH *, struct NSET *NSet,
+                         int *ptopology);

@@ -4,56 +4,53 @@
 
 #include"nem_meshing_2d_face_mesh_gmsh_.h"
 
+// Meshing a face, from its boundary (edge) mesh, in a projection plane, using
+// the mesh size map of its boundary nodes: their characteristic lengths
+// increased by clgrad = ln (pl) times the distance, up to cl, and multiplied
+// by the mesh size factor of the projection (in the Gmsh worker, see
+// nem_mesh_gmsh_lib_2d).  As for the polys, cl and clgrad are scaled by a
+// factor, calibrated so that the mean ratio of the elt lengths of the actual
+// (back-projected) mesh to the mesh size map is 1 within the -mesh2dclreps
+// value (see nem_mesh_gmsh_sizecalib_next); the characteristic lengths of the
+// boundary nodes are not, as the boundary mesh is fixed.  The best mesh is
+// kept.
+// With split elts in 2D (see nem_meshing), the face is meshed as Gmsh does
+// with its full-quad recombination: the boundary nodes passed to Gmsh are
+// one in two (the others being the centres of the coarse boundary
+// segments), the face is meshed at twice the mesh size, and the mesh is
+// recombined (into quad elts and some tri elts, Blossom algorithm), then
+// split into quad elts (see nem_meshing_2d_face_mesh_gmsh_split), and
+// smoothed.  The calibration applies to the resulting mesh.
 int
 nem_meshing_2d_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
                                struct MESH *RMesh, int face,
                                struct MESHPARA MeshPara, struct NODES Nodes,
-                               struct MESH *Mesh, double cl, char *gmsh,
-                               char *tmp, char *algo, double rnd,
-                               double allowed_t, struct NODES *pN,
+                               struct MESH *Mesh, double cl, char *algo,
+                               double rnd, double allowed_t, struct NODES *pN,
                                struct MESH *pM, int **pbnodes, int **plbnodes,
                                int *pbnodeqty, double *pacl,
                                struct timeval *pctrlc_t, double *pelapsed_t)
 {
-  FILE *file = NULL;
-  int i, j, nb, status;
+  int i, nb, status, done, best;
   struct timeval beg_time, end_time;
-  double acl, *n = ut_alloc_1d (3);
-  struct MESH M1D;
-  int match;
-  char *filename = ut_alloc_1d_char (100);
-  char *filename_msh = ut_alloc_1d_char (100);
+  double r, acl, elapsed_t;
   double **bnodecoos = NULL;
-  double *bnodecls = NULL;
-  double *face_eq = MeshPara.face_eq ? MeshPara.face_eq[face] : NULL;
+  int facttype;
+  double factparms[NEM_GMSH_SIZEFACT_PARMQTY];
+  struct NODES BNodes, BestN;
+  struct MESH BestM;
+  struct NEM_SIZECALIB Calib;
+  int recombine = MeshPara.eltsplit && Tess.Dim == 2;
+  int gqty, goffset = 0;
+  double gfact = 1, **gcoos = NULL, *gcls = NULL;
 
-  neut_mesh_set_zero (&M1D);
+  neut_nodes_set_zero (&BNodes);
+  neut_nodes_set_zero (&BestN);
+  neut_mesh_set_zero (&BestM);
 
   neut_nodes_reset (pN);
   neut_mesh_reset (pM);
 
-  neut_gmsh_rc ("bak");
-
-// Opening geo input file ----------------------------------------------
-
-#ifdef HAVE_OPENMP
-  sprintf (filename, "%s/tmp%d-%d.geo", tmp, getpid (),
-           omp_get_thread_num ());
-  sprintf (filename_msh, "%s/tmp%d-%d.msh", tmp, getpid (),
-           omp_get_thread_num ());
-#else // HAVE_OPENMP
-  sprintf (filename, "%s/tmp%d-1.geo", tmp, getpid ());
-  sprintf (filename_msh, "%s/tmp%d-1.msh", tmp, getpid ());
-#endif // HAVE_OPENMP
-
-  file = ut_file_open (filename, "W");
-
-// Writing meshing options ---------------------------------------------
-
-  fprintf (file, "// face %d.\n", face);
-  if (Tess.FacePoly)
-    fprintf (file, "// (polys %d %d).\n", Tess.FacePoly[face][0], Tess.FacePoly[face][1]);
-  fprintf (file, "// face state = %d\n", Tess.FaceState[face]);
   if (neut_gmsh_meshalgo2d_nb (algo, &nb) != 0)
   {
     printf ("\n");
@@ -61,150 +58,131 @@ nem_meshing_2d_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
     abort ();
   }
 
-  nem_mesh_gmsh_options (file, nb, 4, 1, rnd);
-
 // Building boundary mesh and projecting it ----------------------------
 
   nem_meshing_2d_face_mesh_gmsh_boundary (Tess, Nodes, Mesh, face, pbnodes,
                                           &bnodecoos, pbnodeqty);
 
   nem_meshing_2d_face_mesh_gmsh_proj (Tess, Nodes, face, MeshPara, *pbnodes,
-                                      &bnodecoos, &bnodecls, *pbnodeqty);
+                                      &bnodecoos, *pbnodeqty, &facttype, factparms);
 
-// Writing boundary mesh -----------------------------------------------
+  (*plbnodes) = ut_alloc_1d_int (*pbnodeqty);
+  int *bestlbnodes = ut_alloc_1d_int (*pbnodeqty);
 
-  nem_meshing_2d_face_mesh_gmsh_writeboundary (Nodes, *pbnodes, bnodecoos,
-                                               bnodecls, *pbnodeqty, file);
+// Mesh size map: boundary nodes (actual coordinates) and their cls -----
 
-  ut_file_close (file, filename, "W");
-
-// Meshing -------------------------------------------------------------
-
-  gettimeofday (&beg_time, NULL);
-  char *Args = ut_alloc_1d_char (1000);
-  sprintf (Args, "%s -2 -v 0 %s > /dev/null 2> /dev/null", gmsh, filename);
-
-  ut_sys_runwtime (gmsh, Args, allowed_t, pctrlc_t);
-  gettimeofday (&end_time, NULL);
-#pragma omp critical
-  (*pelapsed_t) = ut_time_subtract (&beg_time, &end_time);
-  ut_free_1d_char (&Args);
-
-// Reading output mesh -------------------------------------------------
-
-  if (ut_file_exist (filename_msh))
+  double clgrad = log (MeshPara.face_pl[face]);
+  double *cls = ut_alloc_1d (*pbnodeqty);
+  for (i = 0; i < *pbnodeqty; i++)
   {
-    status = 0;
-    file = ut_file_open (filename_msh, "R");
-    neut_mesh_fscanf_msh (file, pN, NULL, NULL, pM, NULL, NULL, NULL);
-    ut_file_close (file, filename_msh, "R");
-
-    if ((*pM).EltQty <= 0)
-      status = 1;
-    else
-    {
-      neut_mesh_Osize (*pN, *pM, cl, &acl);
-#pragma omp critical
-      (*pacl) = acl;
-
-      int node1d, *nodes1d = NULL, nodeqty1d;
-      (*plbnodes) = ut_alloc_1d_int (*pbnodeqty);
-
-      // reconstructing boundary mesh (node numbers refer to *pN)
-      neut_mesh_init_nodeelts (pM, (*pN).NodeQty);
-      neut_mesh2d_mesh1d (*pN, *pM, &M1D, NULL, NULL, NULL, 0);
-      // neut_mesh_mergeelsets (&M1D); // is this useful?
-      neut_mesh_nodes (M1D, &nodes1d, &nodeqty1d);
-
-      int pos;
-      double min_dist_max = 0, *dists = ut_alloc_1d (nodeqty1d);
-      for (i = 0; i < *pbnodeqty; i++)
-      {
-        for (j = 0; j < nodeqty1d; j++)
-        {
-          node1d = nodes1d[j];
-          dists[j] = ut_space_dist (bnodecoos[i], (*pN).NodeCoo[node1d]);
-        }
-
-        pos = ut_array_1d_min_index (dists, nodeqty1d);
-        (*plbnodes)[i] = nodes1d[pos];
-        if ((*plbnodes)[i] <= 0 || (*plbnodes)[i] > (*pN).NodeQty)
-        {
-          printf ("(*plbnodes)[i] = %d\n", (*plbnodes)[i]);
-          printf ("(*pN).NodeQty = %d\n", (*pN).NodeQty);
-          ut_print_neperbug ();
-        }
-
-        min_dist_max = ut_num_max (min_dist_max, dists[pos]);
-      }
-      ut_free_1d (&dists);
-
-      ut_free_1d_int (&nodes1d);
-
-      if (*pbnodeqty == nodeqty1d && min_dist_max < 1e-9)
-        match = 1;
-      else
-      {
-        printf ("\n");
-        printf ("*pbnodeqty = %d\n", *pbnodeqty);
-        printf ("nodeqty1d = %d\n", nodeqty1d);
-        printf ("min_dist_max = %f\n", min_dist_max);
-        abort ();
-      }
-
-      if (match == 1)
-        status = 0;
-      else
-        status = 2;             // means meshes do not match
-    }
+    cls[i] = Nodes.NodeCl[(*pbnodes)[i]];
+    neut_nodes_addnode (&BNodes, Nodes.NodeCoo[(*pbnodes)[i]], cls[i]);
   }
 
+// Boundary nodes passed to Gmsh (one in two, with recombination) -------
+
+  if (recombine)
+  {
+    gfact = 2;
+    nem_meshing_2d_face_mesh_gmsh_coarse (Tess, Mesh, face, *pbnodes, bnodecoos, cls,
+                                          *pbnodeqty, &goffset, &gcoos, &gcls, &gqty);
+    ut_array_1d_scale (gcls, gqty, gfact);
+  }
   else
-    status = 1;
+  {
+    gqty = *pbnodeqty;
+    gcoos = ut_alloc_2d (gqty, 3);
+    ut_array_2d_memcpy (bnodecoos, gqty, 3, gcoos);
+    gcls = ut_alloc_1d (gqty);
+    ut_array_1d_memcpy (cls, gqty, gcls);
+  }
 
-// Fixing mesh ---------------------------------------------------------
+// Meshing (with calibration of the mesh size map) ----------------------
 
-// Back-projecting mesh ------------------------------------------------
+  (*pelapsed_t) = 0;
+  nem_mesh_gmsh_sizecalib_init (&Calib);
+  do
+  {
+    gettimeofday (&beg_time, NULL);
+    status = nem_mesh_gmsh_lib_2d (nb, recombine, rnd, Calib.alpha * gfact * cl,
+                                   Calib.alpha * gfact * clgrad, gcoos, gcls, gqty,
+                                   facttype, factparms, allowed_t, pctrlc_t, pN, pM);
+    gettimeofday (&end_time, NULL);
+    // (longest request, as the allowed time applies to each request)
+    elapsed_t = ut_time_subtract (&beg_time, &end_time);
+    (*pelapsed_t) = ut_num_max (*pelapsed_t, elapsed_t);
 
-  nem_meshing_2d_face_mesh_gmsh_backproj (Tess, RNodes, RMesh, face, MeshPara,
-                                          Nodes, *pbnodes, *plbnodes,
-                                          *pbnodeqty, pN, *pM);
+    if (status || (*pM).EltQty <= 0)
+      break;
 
-  // aligning element normal to face normal (should be the case, but
-  // not always)
+    if (recombine)
+      nem_meshing_2d_face_mesh_gmsh_split (gcoos, gqty, bnodecoos, *pbnodeqty, goffset,
+                                           pN, pM);
 
-  if (face_eq)
-    for (i = 1; i <= (*pM).EltQty; i++)
+    // boundary nodes of the mesh (in the projection plane), then
+    // back-projection
+    nem_meshing_2d_face_mesh_gmsh_bnodes (*pN, pM, bnodecoos, *pbnodeqty,
+                                          *plbnodes);
+
+    // (as Gmsh does after the split)
+    if (recombine)
+      nem_meshing_2d_face_mesh_gmsh_smooth (*pM, *plbnodes, *pbnodeqty, pN);
+
+    nem_meshing_2d_face_mesh_gmsh_backproj (Tess, RNodes, RMesh, face, MeshPara,
+                                            Nodes, *pbnodes, *plbnodes,
+                                            *pbnodeqty, pN, *pM);
+
+    r = nem_mesh_gmsh_sizeratio (BNodes, cl, clgrad, *pN, *pM);
+
+    done = nem_mesh_gmsh_sizecalib_next (&Calib, r, MeshPara.mesh2dclreps[face],
+                                         &best);
+
+    if (best)
     {
-      neut_mesh_elt_normal (*pM, *pN, i, n);
-      if (ut_vector_scalprod (face_eq + 1, n) < 0)
-        ut_array_1d_int_switch ((*pM).EltNodes[i], 0, 2);
+      neut_nodes_memcpy (*pN, &BestN);
+      neut_mesh_memcpy (*pM, &BestM);
+      ut_array_1d_int_memcpy (*plbnodes, *pbnodeqty, bestlbnodes);
     }
+  }
+  while (!done);
+
+// Recording the best mesh ----------------------------------------------
+
+  if (Calib.besterr == DBL_MAX) // no mesh
+    status = 1;
+  else
+  {
+    status = 0;
+
+    neut_nodes_memcpy (BestN, pN);
+    neut_mesh_memcpy (BestM, pM);
+    ut_array_1d_int_memcpy (bestlbnodes, *pbnodeqty, *plbnodes);
+
+    // size quality, for the (unscaled) mesh size map
+    neut_mesh_Osize_sizemap (*pN, *pM, BNodes, cl, clgrad, &acl);
+#pragma omp critical
+    (*pacl) = acl;
+
+    // characteristic lengths of the nodes: values of the mesh size map
+    // (those of the boundary nodes, at the boundary nodes), used for 3D
+    // meshing
+    (*pN).NodeCl = ut_realloc_1d ((*pN).NodeCl, (*pN).NodeQty + 1);
+    for (i = 1; i <= (*pN).NodeQty; i++)
+      (*pN).NodeCl[i] = neut_nodes_point_clgrad (BNodes, (*pN).NodeCoo[i], cl, clgrad);
+    for (i = 0; i < *pbnodeqty; i++)
+      (*pN).NodeCl[(*plbnodes)[i]] = cls[i];
+  }
 
 // Closing -------------------------------------------------------------
 
-  if (status == 0)
-  {
-    // commenting these two lines will break multimeshing
-#ifndef DEVEL_DEBUGGING_TEST
-    remove (filename);
-    remove (filename_msh);
-#endif
-  }
-
-#ifndef DEVEL_DEBUGGING_TEST
-  remove ("debugp.pos");
-  remove ("debugr.pos");
-#endif
-
-  neut_gmsh_rc ("unbak");
-
-  ut_free_1d (&n);
-  neut_mesh_free (&M1D);
-  ut_free_1d_char (&filename);
-  ut_free_1d_char (&filename_msh);
+  neut_nodes_free (&BNodes);
+  neut_nodes_free (&BestN);
+  neut_mesh_free (&BestM);
   ut_free_2d (&bnodecoos, *pbnodeqty);
-  ut_free_1d (&bnodecls);
+  ut_free_2d (&gcoos, gqty);
+  ut_free_1d (&gcls);
+  ut_free_1d (&cls);
+  ut_free_1d_int (&bestlbnodes);
 
   return status;
 }

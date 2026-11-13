@@ -14,15 +14,19 @@ To make sure that everyone has such rights, we have to forbid you to deprive any
 
 Also, for our own protection, we must make certain that everyone finds out that there is no warranty for Neper.  If Neper is modified by someone else and passed on, we want their recipients to know that what they have is not what we distributed, so that any problems introduced by others will not reflect on our reputation.
 
-The precise conditions of the license for Neper are found in the General Public License that accompanies the source code (:ref:`gpl`). Further information about this license is available from the GNU Project webpage (`GNU General Public License FAQ <http://www.gnu.org/copyleft/gpl-faq.html>`_).
+The precise conditions of the license for Neper are found in the General Public License that accompanies the source code (:ref:`gpl`). Further information about this license is available from the GNU Project webpage (`GNU General Public License FAQ <https://www.gnu.org/licenses/gpl-faq.html>`_).
+
+.. _citing:
 
 User Guidelines
 ---------------
 
-If you use Neper for your own work, please, mention it explicitly in your reports (papers, books, talks, ...) and cite one or several of the following papers, depending of your use of Neper:
+If you use Neper for your own work, please mention it explicitly in your reports (papers, books, talks, etc.) and cite one or several of the following papers, depending on your use of Neper:
 
-- *R. Quey, P.R. Dawson, F. Barbe. Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing.  Comput. Methods Appl. Mech. Engrg., vol. 200, pp. 1729--1745, 2011*, for Voronoi tessellation, regularization, meshing;
+- *R. Quey, P.R. Dawson and F. Barbe, Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing, Comput. Methods Appl. Mech. Engrg., vol. 200, pp. 1729-1745, 2011*, for Voronoi tessellation, regularization and meshing;
 
-- *R. Quey and L. Renversade, Optimal polyhedral description of 3D polycrystals: Method and application to statistical and synchrotron X-ray diffraction data, Comput. Methods Appl. Mech. Engrg., vol. 330, pp.  308-333, 2018* for tessellation from custom or experimental properties with option :option:`-morpho`;
+- *R. Quey and L. Renversade, Optimal polyhedral description of 3D polycrystals: Method and application to statistical and synchrotron X-ray diffraction data, Comput. Methods Appl. Mech. Engrg., vol. 330, pp. 308-333, 2018*, for tessellation from custom or experimental properties with option :option:`-morpho`;
 
-- *R. Quey, A. Villani and C. Maurice, Nearly uniform sampling of crystal orientations, J. Appl. Crystallogr., vol. 51, pp. 1162-1173, 2018*, for uniform crystal orientation distribution with option :data:`-ori uniform`.
+- *R. Quey, A. Villani and C. Maurice, Nearly uniform sampling of crystal orientations, J. Appl. Crystallogr., vol. 51, pp. 1162-1173, 2018*, for uniform crystal orientation distribution with option :data:`-orisampling uniform`;
+
+- *R. Quey and M. Kasemer, The Neper/FEPX project: free / open-source polycrystal generation, deformation simulation, and post-processing, IOP Conference Series: Materials Science and Engineering 1249, 012021, 2022*, for the use of Neper with FEPX (simulation post-processing with the :ref:`neper_s`, etc.).

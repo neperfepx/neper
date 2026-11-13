@@ -33,7 +33,7 @@ nem_meshing_1d_edge_algo (struct TESS Tess, struct NODES RNodes,
 
     neut_mesh_elset_mesh (RNodes, RMesh[1], edge, &N0, &M0, NULL);
 
-    nem_meshing_1d_edge_projontomesh (Tess, edge, N0, M0, pN, *pM);
+    nem_meshing_1d_edge_projontomesh (Tess, edge, N0, M0, pN);
   }
 
   // case of curved edge
@@ -46,7 +46,7 @@ nem_meshing_1d_edge_algo (struct TESS Tess, struct NODES RNodes,
                                    Tess.EdgeVerNb[edge][1], edge, l, cl, pl,
                                    Nodes, Node0DCl, pN, pM);
 
-    nem_meshing_1d_edge_projontodomain (Tess, edge, pN, *pM);
+    nem_meshing_1d_edge_projontodomain (Tess, edge, pN);
 
     iter = 0;
     do
@@ -61,8 +61,8 @@ nem_meshing_1d_edge_algo (struct TESS Tess, struct NODES RNodes,
                                      Tess.EdgeLength[edge], cl, pl, Nodes,
                                      Node0DCl, pN, pM);
 
-      nem_meshing_1d_edge_projontomesh (Tess, edge, N0, M0, pN, *pM);
-      nem_meshing_1d_edge_projontodomain (Tess, edge, pN, *pM);
+      nem_meshing_1d_edge_projontomesh (Tess, edge, N0, M0, pN);
+      nem_meshing_1d_edge_projontodomain (Tess, edge, pN);
     }
     while (N0.NodeQty != (*pN).NodeQty && ++iter < itermax);
   }

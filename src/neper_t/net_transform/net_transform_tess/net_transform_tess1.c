@@ -7,15 +7,23 @@
 void
 net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
 {
-  int i, PartQty, status;
+  int i, PartQty, status, domchanged = 0;
   char **parts = NULL;
-  double theta, *tmp = ol_r_alloc ();
+  double *tmp = ol_rtheta_alloc ();
   double **g = ol_g_alloc ();
 
   ut_list_break (In.transform, NEUT_SEP_NODEP, &parts, &PartQty);
 
   for (i = 0; i < PartQty; i++)
   {
+    // the domain is needed by these, and must account for previous transformations
+    if (domchanged && (!strncmp (parts[i], "cut", 3) || !strncmp (parts[i], "rmseed", 6)))
+    {
+      neut_tess_reset (pDom);
+      net_domain_fromtess (*pTess, pDom);
+      domchanged = 0;
+    }
+
     if (!strncmp (parts[i], "scale", 5))
     {
       ut_print_message (0, 2, "Scaling...\n");
@@ -23,16 +31,18 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       if (status == 2)
         tmp[2] = 1;
       neut_tess_scale (pTess, tmp[0], tmp[1], tmp[2]);
+      domchanged = 1;
     }
 
     else if (!strncmp (parts[i], "rotate", 6))
     {
       ut_print_message (0, 2, "Rotating...\n");
       sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2,
-              &theta);
+              tmp + 3);
       ol_r_set_unit (tmp);
-      ol_rtheta_g (tmp, theta, g);
+      ol_rtheta_g (tmp, g);
       neut_tess_rotate (pTess, g);
+      domchanged = 1;
     }
 
     else if (!strncmp (parts[i], "translate", 9))
@@ -43,12 +53,14 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       if (status == 2)
         tmp[2] = 1;
       neut_tess_shift (pTess, tmp[0], tmp[1], tmp[2]);
+      domchanged = 1;
     }
 
     else if (!strncmp (parts[i], "cut", 3))
     {
-      ut_print_message (0, 2, "Cutting (experimental)...\n");
+      ut_print_message (0, 2, "Cutting (new algorithm)...\n");
       net_transform_tess_cut (parts[i], *pDom, pTess);
+      domchanged = 1;
     }
 
     else if (!strncmp (parts[i], "mergecell", 9))
@@ -89,6 +101,12 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       ut_free_2d_char (&exprs, exprqty);
     }
 
+    else if (!strncmp (parts[i], "rmseed", 6))
+    {
+      ut_print_message (0, 2, "Removing seeds...\n");
+      net_transform_tess_rmseed (In, *pDom, parts[i], pTess);
+    }
+
     else if (!strcmp (parts[i], "resetcellid"))
     {
       ut_print_message (0, 2, "Resetting cell ids...\n");
@@ -105,12 +123,14 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
     {
       ut_print_message (0, 2, "Cutting by plane...\n");
       net_tess_clip_expr (pTess, parts[i]);
+      domchanged = 1;
     }
 
     else if (!strncmp (parts[i], "crop(", 5))
     {
       ut_print_message (0, 2, "Cropping...\n");
       net_tess_crop_expr (pTess, parts[i]);
+      domchanged = 1;
     }
 
     else if (!strncmp (parts[i], "slice(", 6))
@@ -145,6 +165,13 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       ut_free_1d_char (&fct);
       ut_free_2d_char (&exprs, exprqty);
       neut_tess_free (&Tess2);
+      domchanged = 1;
+    }
+
+    else if (!strncmp (parts[i], "renamedomface(", 14))
+    {
+      ut_print_message (0, 2, "Renaming domain face...\n");
+      net_transform_tess_renamedomface (parts[i], pTess);
     }
 
     else if (!strcmp (parts[i], "resetlabels"))
@@ -165,12 +192,18 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       net_transform_tess_crysym (parts[i], pTess);
     }
 
+    else if (!strcmp (parts[i], "rmdomain"))
+    {
+      ut_print_message (0, 3, "Removing domain...\n");
+      neut_tess_free_domain (pTess);
+    }
+
     else
       ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
   }
 
-  ol_g_free (g);
-  ol_r_free (tmp);
+  ol_g_free (&g);
+  ol_rtheta_free (&tmp);
   ut_free_2d_char (&parts, PartQty);
 
   return;

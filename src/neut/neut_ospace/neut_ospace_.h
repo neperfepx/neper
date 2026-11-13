@@ -22,7 +22,6 @@ extern "C"
 
 #include "neut.h"
 #include "neut_ospace.h"
-#include "gsl/gsl_sf_erf.h"
 
 #ifdef __cplusplus
 }

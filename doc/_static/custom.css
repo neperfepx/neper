@@ -1,0 +1,57 @@
+/* Neper documentation, for the website's theme (pydata-sphinx-theme), as FEPX's documentation.  The
+   rules are those of the website (my_theme.css) that apply to the documentation. */
+
+/* Light mode only: also opts out of the forced dark mode of browsers */
+html {
+  color-scheme: only light !important;
+}
+
+/* The content uses the full page width, as the header does */
+.bd-page-width {
+  max-width: 100rem;
+}
+
+.bd-main .bd-content .bd-article-container {
+  max-width: none;
+}
+
+@media (min-width: 960px) {
+  .bd-sidebar-primary {
+    max-width: 20rem;
+  }
+}
+
+/* Citations (the reference papers): the label, then the text over the whole width of the text
+   column. */
+div.citation,
+aside.citation {
+  grid-template-columns: max-content auto;
+}
+
+/* Option links: plain monospace, instead of bold boxed pills */
+code.xref.literal,
+a > code.literal {
+  padding: 0;
+  border: none;
+  background: none;
+  font-weight: normal;
+}
+
+:is(h1, h2, h3, h4, h5, h6) code.xref.literal {
+  font-weight: inherit;
+}
+
+a:has(> code.xref) {
+  text-decoration: none;
+}
+
+a:has(> code.xref):hover {
+  text-decoration: underline;
+}
+
+/* Version next to the logo */
+.neper-version {
+  align-self: center;
+  color: var(--pst-color-text-muted);
+  font-size: 0.8rem;
+}

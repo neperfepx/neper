@@ -34,10 +34,11 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
     else if (dim == 2)
       ut_string_string ("edges,vertices", &nset);
   }
+  else
+    ut_string_string (In.nset, &nset);
 
   neut_nset_expand (NSet[0], NSet[1], NSet[2], nset, &nsetlist);
-  if (!strcmp (Mesh[dim].EltType, "tri"))
-    neut_nset_expand (NSet[0], NSet[1], NSet[2], In.faset, &fasetlist);
+  nem_writemesh_fasetlist (In, Mesh[5], NSet, &fasetlist);
 
   ut_print_message (0, 2, "Preparing mesh...\n");
   for (i = 3; i >= 0; i--)
@@ -62,8 +63,7 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
   {
     if (!strcmp (formats[i], "msh")
         || !strcmp (formats[i], "msh:ascii")
-        || !strcmp (formats[i], "msh:binary")
-        || !strcmp (formats[i], "msh4"))
+        || !strcmp (formats[i], "msh:binary"))
       nem_writemesh_msh (In, Tess, Nodes, Mesh, NSet, nsetlist, fasetlist,
                          formats[i]);
 

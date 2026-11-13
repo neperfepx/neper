@@ -23,11 +23,14 @@ nem_meshing_para_faceproj (struct TESS Tess, struct NODES RNodes,
     if (RMesh[2].EltQty > 0)
       ut_string_string ("meshproj", (*pMeshPara).face_op + i);
     else if (neut_tess_face_iscurved (Tess, i)
-             && !strcmp (Tess.DomFaceType[Tess.FaceDom[i][1]], "cylinder"))
+             && !strncmp (Tess.DomFaceType[Tess.FaceDom[i][1]], "cylinder", 8))
       ut_string_string ("cylinderproj", (*pMeshPara).face_op + i);
     else if (neut_tess_face_iscurved (Tess, i)
-             && !strcmp (Tess.DomFaceType[Tess.FaceDom[i][1]], "sphere"))
+             && !strncmp (Tess.DomFaceType[Tess.FaceDom[i][1]], "sphere", 6))
       ut_string_string ("sphereproj", (*pMeshPara).face_op + i);
+    else if (neut_tess_face_iscurved (Tess, i)
+             && !strncmp (Tess.DomFaceType[Tess.FaceDom[i][1]], "torus", 5))
+      ut_string_string ("torusproj", (*pMeshPara).face_op + i);
     else
       ut_string_string ("planeproj", (*pMeshPara).face_op + i);
 
@@ -78,7 +81,7 @@ nem_meshing_para_faceproj (struct TESS Tess, struct NODES RNodes,
     if (!strcmp ((*pMeshPara).face_op[i], "copy"))
     {
       facecpy_qty++;
-      for (j = 1; j <= Tess.FaceVerQty[i]; j++)
+      for (j = 1; j <= Tess.FaceEdgeQty[i]; j++)
         ut_string_string ("copy",
                           (*pMeshPara).edge_op + Tess.FaceEdgeNb[i][j]);
     }

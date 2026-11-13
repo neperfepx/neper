@@ -3,4 +3,5 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nem_order (struct IN_M In, struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh);
+extern void nem_order_1 (struct NODES *pNodes, struct MESH *Mesh, struct NSET *NSet);
 extern void nem_order_str (struct IN_M In, struct MESHPARA MeshPara, struct NODES *pNodes, struct MESH *Mesh);

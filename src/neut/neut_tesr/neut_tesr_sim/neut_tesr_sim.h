@@ -12,7 +12,7 @@ extern "C"
 
 #endif				/* NEUT_TESR_SIM_H */
 
-extern void neut_tesr_sim (char *simdir, struct TESR Tesr, struct SIM *pSim);
+extern void neut_tesr_sim (struct TESR Tesr, struct SIM *pSim);
 
 #ifdef __cplusplus
 }

@@ -69,7 +69,7 @@ net_res_ori (struct IN_T In, struct TESS Tess, struct TESR Tesr)
           fprintf (file, REAL_PRINT_FORMAT5 " ", e[j]);
         fprintf (file, "\n");
       }
-      ol_e_free (e);
+      ol_e_free (&e);
 
       ut_free_1d_char (&cell);
     }

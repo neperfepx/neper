@@ -48,8 +48,9 @@ ut_stat_distribparam (double *data, int n, double step, double *pfirst,
   min = ut_array_1d_min (data, n);
   max = ut_array_1d_max (data, n);
 
-  (*pfirst) = step * floor (min / step);
-  last = step * floor (max / step);
+  // the bins are centred on first + i * step (see ut_stat_distrib)
+  (*pfirst) = step * floor (min / step + .5);
+  last = step * floor (max / step + .5);
 
   (*plength) = 1 + ut_num_d2ri ((last - (*pfirst)) / step);
 
@@ -65,7 +66,7 @@ ut_stat_distrib (double *data, int n, double step, double first, int length,
   ut_array_1d_zero (distrib, length);
   for (i = 0; i < n; i++)
   {
-    nb = (int) ((data[i] - first + .5 * step) / step);
+    nb = (int) floor ((data[i] - first + .5 * step) / step);
     if (nb >= 0 && nb < length)
       distrib[nb]++;
   }
@@ -82,6 +83,12 @@ ut_stat_scaletopercent_int (int *array, int size, int *percent)
   int i, sum;
 
   sum = ut_array_1d_int_sum (array, size);
+
+  if (sum == 0)
+  {
+    ut_array_1d_int_zero (percent, size);
+    return;
+  }
 
   for (i = 0; i < size; i++)
     percent[i] = ut_num_d2ri (100 * (double) array[i] / sum);

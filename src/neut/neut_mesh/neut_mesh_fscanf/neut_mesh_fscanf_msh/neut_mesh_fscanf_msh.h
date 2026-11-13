@@ -14,15 +14,18 @@ extern "C"
 				    struct MESH *pMesh1D,
 				    struct MESH *pMesh2D,
 				    struct MESH *pMesh3D,
-				    struct MESH *pMeshCo, int *ptopology);
+				    struct MESH *pMeshCo,
+				    struct MESH *pMeshFasets, struct NSET *pNSet,
+				    int *ptopology);
 
   extern void neut_mesh_fnscanf_msh (char *filename, struct NODES *pNodes,
 					 struct MESH *pMesh0D,
 					 struct MESH *pMesh1D,
 					 struct MESH *pMesh2D,
 					 struct MESH *pMesh3D,
-					 struct MESH *pMeshCo, int *ptopology,
-                                         char *mode);
+					 struct MESH *pMeshCo,
+					 struct MESH *pMeshFasets, struct NSET *pNSet,
+					 int *ptopology, char *mode);
 
 #endif				// NEUT_MESH_FSCANF_GMSH
 

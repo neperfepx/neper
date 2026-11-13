@@ -14,10 +14,6 @@
 
 #include"nem_meshing_1d.h"
 
-extern void nem_meshing_1d_pre (struct MESHPARA *, struct TESS,
-                                struct NODES RNodes, struct MESH *Mesh,
-                                struct NODES, double **);
-
 extern void nem_meshing_1d_edge (struct MESHPARA, struct TESS,
                                  struct NODES RNodes, struct MESH *Mesh,
                                  int, double, double,
@@ -43,10 +39,10 @@ extern void nem_mesh_1d_unitsegment (double cl1, double cl2, double clt,
 
 extern void nem_meshing_1d_edge_projontomesh (struct TESS Tess, int edge,
                                          struct NODES N0, struct MESH M0,
-                                         struct NODES *pN, struct MESH M);
+                                         struct NODES *pN);
 
 extern void nem_meshing_1d_edge_projontodomain (struct TESS Tess, int edge,
-                                                struct NODES *pN, struct MESH M);
+                                                struct NODES *pN);
 
 extern void nem_meshing_1d_edge_record (struct TESS Tess, int edge, struct NODES N,
                                         struct MESH M, int *master_id,
@@ -64,4 +60,3 @@ extern void nem_meshing_1d_edge_record_elts (int edge, struct MESH M,
 extern void nem_meshing_1d_post (struct NODES *pNodes, struct MESH *Mesh,
                                  int Node0DQty, double *NodeCl);
 
-extern void nem_meshing_1d_edge_proj_fixcl (struct MESH M, struct NODES *pN);

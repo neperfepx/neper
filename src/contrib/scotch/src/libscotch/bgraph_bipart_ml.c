@@ -1,4 +1,4 @@
-/* Copyright 2004,2007-2011,2014,2015 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007-2011,2014,2015,2018,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -54,6 +54,8 @@
 /**                                 to   : 27 mar 2011     **/
 /**                # Version 6.0  : from : 09 mar 2011     **/
 /**                                 to   : 16 aug 2015     **/
+/**                # Version 7.0  : from : 08 jun 2018     **/
+/**                                 to   : 17 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -61,7 +63,7 @@
 **  The defines and includes.
 */
 
-#define BGRAPH_BIPART_ML
+#define SCOTCH_BGRAPH_BIPART_ML
 
 #include "module.h"
 #include "common.h"
@@ -102,8 +104,8 @@ const BgraphBipartMlParam * const     paraptr)    /*+ Method parameters         
 
   *coarmultptr = NULL;                            /* Allocate multloctab along with coarse graph */
   if (graphCoarsen (&finegrafptr->s, &coargrafptr->s, NULL, coarmultptr,
-                    paraptr->coarnbr, paraptr->coarrat, GRAPHCOARSENNONE,
-                    NULL, NULL, 0, NULL) != 0)
+                    paraptr->coarnbr, paraptr->coarrat, GRAPHCOARSENNOCOMPACT,
+                    NULL, NULL, 0, finegrafptr->contptr) != 0)
     return (1);                                   /* Return if coarsening failed */
 
   if (finegrafptr->veextax != NULL) {             /* Merge external gains for coarsened vertices */
@@ -157,6 +159,7 @@ const BgraphBipartMlParam * const     paraptr)    /*+ Method parameters         
   coargrafptr->vfixload[0]   = finegrafptr->vfixload[0];
   coargrafptr->vfixload[1]   = finegrafptr->vfixload[1];
   coargrafptr->levlnum       = finegrafptr->levlnum + 1;
+  coargrafptr->contptr       = finegrafptr->contptr;
 
   return (0);
 }

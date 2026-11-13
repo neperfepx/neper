@@ -16,6 +16,9 @@ nem_meshing_para_cl (struct IN_M In, struct TESS *pTess, struct TESR *pTesr,
   {
     nem_meshing_para_cl_cell (clstring, pMeshPara, pTess);
 
+    if ((*pTess).Dim == 3 && strcmp (In.clpolystring, "default"))
+      nem_meshing_para_cl_poly (In.clpolystring, pMeshPara, pTess);
+
     if ((*pTess).Dim == 3)
     {
       (*pMeshPara).face_cl = ut_alloc_1d ((*pTess).FaceQty + 1);

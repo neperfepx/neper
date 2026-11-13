@@ -83,7 +83,7 @@ neut_mesh_elts_orimean (struct NODES Nodes, struct MESH Mesh,
 
   neut_mesh_elts_olset (Nodes, Mesh, elts, eltqty, &OSet);
 
-  ol_set_mean_iter (OSet, mean);
+  ol_set_mean (OSet, 100, mean);
 
   ol_set_free (&OSet);
 

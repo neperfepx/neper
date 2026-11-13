@@ -1,4 +1,4 @@
-/* Copyright 2004,2007-2011,2013-2015,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007-2011,2013-2015,2018,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -66,10 +66,10 @@
 /**                                 to   : 11 aug 2010     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 28 may 2018     **/
+/**                # Version 7.0  : from : 18 feb 2018     **/
+/**                                 to   : 14 jul 2026     **/
 /**                                                        **/
 /************************************************************/
-
-#define ARCH_H
 
 /*
 ** The defines.
@@ -93,7 +93,6 @@ typedef INT Anum;                                 /*+ Generic integer for archit
 
 #define ANUMMAX                     INTVALMAX
 #define ANUMSTRING                  INTSTRING
-#define ANUM_MPI                    COMM_INT      /*+ MPI type for Gnum is MPI type for INT +*/
 
 /*+ The domain number type. +*/
 
@@ -129,34 +128,52 @@ typedef struct ArchCoarsenMulti_ {
 
 /*+ The architecture class type. +*/
 
+union ArchDummy_;                                 /* Pre-definition of dummy union types for prototyping */
+union ArchDomDummy_;
+union ArchMatchDummy_;
+
+typedef int        (* ArchLoadFunc)      (union ArchDummy_ * const, FILE * const);
+typedef int        (* ArchSaveFunc)      (const union ArchDummy_ * const, FILE * const);
+typedef int        (* ArchFreeFunc)      (union ArchDummy_ * const);
+typedef int        (* ArchMatchInitFunc) (union ArchMatchDummy_ * const, const union ArchDummy_ * const);
+typedef void       (* ArchMatchExitFunc) (union ArchMatchDummy_ * const);
+typedef Anum       (* ArchMatchMateFunc) (union ArchMatchDummy_ * const, ArchCoarsenMulti ** const);
+typedef ArchDomNum (* ArchDomNumFunc)    (const union ArchDummy_ * const, const union ArchDomDummy_ * const);
+typedef int        (* ArchDomTermFunc)   (const union ArchDummy_ * const, union ArchDomDummy_ * const, const ArchDomNum);
+typedef Anum       (* ArchDomSizeFunc)   (const union ArchDummy_ * const, const union ArchDomDummy_ * const);
+typedef Anum       (* ArchDomWghtFunc)   (const union ArchDummy_ * const, const union ArchDomDummy_ * const);
+typedef Anum       (* ArchDomDistFunc)   (const union ArchDummy_ * const, const union ArchDomDummy_ * const, const union ArchDomDummy_ * const);
+typedef int        (* ArchDomFrstFunc)   (const union ArchDummy_ * const, union ArchDomDummy_ * const);
+typedef int        (* ArchDomLoadFunc)   (const union ArchDummy_ * const, union ArchDomDummy_ * const, FILE * const);
+typedef int        (* ArchDomSaveFunc)   (const union ArchDummy_ * const, const union ArchDomDummy_ * const, FILE * const);
+typedef int        (* ArchDomBipartFunc) (const union ArchDummy_ * const, const union ArchDomDummy_ * const, union ArchDomDummy_ * const, union ArchDomDummy_ * const);
+typedef int        (* ArchDomInclFunc)   (const union ArchDummy_ * const, const union ArchDomDummy_ * const, const union ArchDomDummy_ * const);
+
 typedef struct ArchClass_ {
   char *                    archname;             /*+ Architecture name                   +*/
   int                       flagval;              /*+ Architecture flags of the class     +*/
-  int                    (* archLoad)  ();        /*+ Architecture loading function       +*/
-  int                    (* archSave)  ();        /*+ Architecture saving function        +*/
-  int                    (* archFree)  ();        /*+ Architecture freeing function       +*/
-  int                    (* matchInit) ();        /*+ Architecture matching init function +*/
-  void                   (* matchExit) ();        /*+ Architecture matching exit function +*/
-  Anum                   (* matchMate) ();        /*+ Architecture matching function      +*/
-  ArchDomNum             (* domNum)    ();        /*+ Domain labeling function            +*/
-  int                    (* domTerm)   ();        /*+ Terminal domain building function   +*/
-  Anum                   (* domSize)   ();        /*+ Domain size function                +*/
-  Anum                   (* domWght)   ();        /*+ Domain weight function              +*/
-  Anum                   (* domDist)   ();        /*+ Distance computation function       +*/
-  int                    (* domFrst)   ();        /*+ Compute biggest domain              +*/
-  int                    (* domLoad)   ();        /*+ Domain loading routine              +*/
-  int                    (* domSave)   ();        /*+ Domain saving routine               +*/
-  int                    (* domBipart) ();        /*+ Domain bipartitioning routine       +*/
-  int                    (* domIncl)   ();        /*+ Domain inclusion routine            +*/
-#ifdef SCOTCH_PTSCOTCH
-  int                    (* domMpiType) ();       /*+ Domain MPI type building routine    +*/
-#endif /* SCOTCH_PTSCOTCH */
+  ArchLoadFunc              archLoad;             /*+ Architecture loading function       +*/
+  ArchSaveFunc              archSave;             /*+ Architecture saving function        +*/
+  ArchFreeFunc              archFree;             /*+ Architecture freeing function       +*/
+  ArchMatchInitFunc         matchInit;            /*+ Architecture matching init function +*/
+  ArchMatchExitFunc         matchExit;            /*+ Architecture matching exit function +*/
+  ArchMatchMateFunc         matchMate;            /*+ Architecture matching function      +*/
+  ArchDomNumFunc            domNum;               /*+ Domain labeling function            +*/
+  ArchDomTermFunc           domTerm;              /*+ Terminal domain building function   +*/
+  ArchDomSizeFunc           domSize;              /*+ Domain size function                +*/
+  ArchDomWghtFunc           domWght;              /*+ Domain weight function              +*/
+  ArchDomDistFunc           domDist;              /*+ Distance computation function       +*/
+  ArchDomFrstFunc           domFrst;              /*+ Compute biggest domain              +*/
+  ArchDomLoadFunc           domLoad;              /*+ Domain loading routine              +*/
+  ArchDomSaveFunc           domSave;              /*+ Domain saving routine               +*/
+  ArchDomBipartFunc         domBipart;            /*+ Domain bipartitioning routine       +*/
+  ArchDomInclFunc           domIncl;              /*+ Domain inclusion routine            +*/
   int                       domsizeof;            /*+ Size in bytes of domain data        +*/
 } ArchClass;
 
 /*+ The architecture union type. +*/
 
-typedef union {                                   /*+ Architecture data                           +*/
+typedef union ArchDummy_ {                        /*+ Architecture data                           +*/
   ArchCmplt                 cmplt;                /*+ Complete graph architecture                 +*/
   ArchCmpltw                cmpltw;               /*+ Weighted complete graph architecture        +*/
   ArchDeco                  deco;                 /*+ Type-1 decomposition-described architecture +*/
@@ -173,14 +190,14 @@ typedef union {                                   /*+ Architecture data         
 /*+ The architecture type. +*/
 
 typedef struct Arch_ {
-  const ArchClass *         class;                /*+ Pointer to architecture class         +*/
-  int                       flagval;              /*+ (Possibly updated) architecture flags +*/
-  ArchDummy                 data;                 /*+ Architecture data                     +*/
+  const ArchClass *         clasptr;              /*+ Pointer to architecture sequential class +*/
+  int                       flagval;              /*+ (Possibly updated) architecture flags    +*/
+  ArchDummy                 data;                 /*+ Architecture data                        +*/
 } Arch;
 
 /*+ The architecture domain union type. +*/
 
-typedef union {                                   /*+ The domain data                           +*/
+typedef union ArchDomDummy_ {                     /*+ The domain data                           +*/
   ArchCmpltDom              cmplt;                /*+ Complete graph domain                     +*/
   ArchCmpltwDom             cmpltw;               /*+ Weighted complete graph domain            +*/
   ArchDecoDom               deco;                 /*+ Type-1 decomposition-described domain     +*/
@@ -202,9 +219,10 @@ typedef struct ArchDom_ {
 
 /*+ The architecture match union type. +*/
 
-typedef union {                                   /*+ Architecture data                           +*/
+typedef union ArchMatchDummy_ {                   /*+ Architecture data                           +*/
   ArchCmpltMatch            cmplt;                /*+ Complete graph architecture                 +*/
 /*  ArchMatchCmpltw         cmpltw;                *+ Weighted complete graph architecture        +*/
+/*  ArchMatchCmpltws        cmpltws;               *+ Simple weighted complete graph architecture +*/
   ArchDecoMatch             deco;                 /*+ Type-1 decomposition-described architecture +*/
 /*  ArchMatchDist           dist;                  *+ Distance multiplicator pseudo-architecture  +*/
   ArchHcubMatch             hcub;                 /*+ Hypercube architecture                      +*/
@@ -231,6 +249,7 @@ int                         archSave            (const Arch * const, FILE * cons
 char *                      archName            (const Arch * const);
 const ArchClass *           archClass           (const char * const);
 const ArchClass *           archClass2          (const char * const, const int);
+int                         archClassNum        (const ArchClass * const);
 
 ArchDomNum                  archDomNum          (const Arch * const, const ArchDom * const);
 int                         archDomTerm         (const Arch * const, ArchDom * const, const ArchDomNum);
@@ -242,29 +261,26 @@ int                         archDomLoad         (const Arch * const, ArchDom * c
 int                         archDomSave         (const Arch * const, const ArchDom * const, FILE * const);
 int                         archDomBipart       (const Arch * const, const ArchDom * const, ArchDom * const, ArchDom * const);
 int                         archDomIncl         (const Arch * const, const ArchDom * const, const ArchDom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archDomMpiType      (const Arch * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 /*
 **  The macro definitions.
 */
 
-#define archDomSizeof(a)            ((a)->class->domsizeof)
-#define archName(a)                 (((a)->class == NULL) ? "" : (a)->class->archname)
+#define archDomSizeof(a)            ((a)->clasptr->domsizeof)
+#define archName(a)                 (((a)->clasptr == NULL) ? "" : (a)->clasptr->archname)
 #define archPart(a)                 ((((a)->flagval) & ARCHPART) != 0)
 #define archVar(a)                  ((((a)->flagval) & ARCHVAR) != 0)
-#define archArch(a)                 ((Arch *) ((char *) (a) - ((char *) (&(((Arch *) (NULL))->data)) - (char *) (NULL))))
+#define archArch(a)                 ((Arch *) ((byte *) (a) - ((byte *) (&(((Arch *) (NULL))->data)) - (byte *) (NULL))))
 
 #if ((! defined SCOTCH_DEBUG_ARCH2) || (defined ARCH))
-#define archDomNum2(arch,dom)       (((ArchDomNum (*) (const void * const, const void * const)) (arch)->class->domNum) ((const void * const) &(arch)->data, (const void * const) &(dom)->data))
-#define archDomTerm2(arch,dom,num)  (((int (*) (const void * const, void * const, const ArchDomNum)) (arch)->class->domTerm) ((void *) &(arch)->data, (void *) &(dom)->data, (num)))
-#define archDomSize2(arch,dom)      (((Anum (*) (const void * const, const void * const)) (arch)->class->domSize) ((void *) &(arch)->data, (void *) &(dom)->data))
-#define archDomWght2(arch,dom)      (((Anum (*) (const void * const, const void * const)) (arch)->class->domWght) ((void *) &(arch)->data, (void *) &(dom)->data))
-#define archDomDist2(arch,dom0,dom1) (((Anum (*) (const void * const, const void * const, const void * const)) (arch)->class->domDist) ((const void *) &(arch)->data, (const void *) &(dom0)->data, (const void *) &(dom1)->data))
-#define archDomFrst2(arch,dom)      (((int (*) (const void * const, void * const)) (arch)->class->domFrst) ((const void * const) &(arch)->data, (void * const) &(dom)->data))
-#define archDomBipart2(arch,dom,dom0,dom1) (((int (*) (const void * const, const void * const, void * const, void * const)) (arch)->class->domBipart) ((const void * const) &(arch)->data, (const void * const) &(dom)->data, (void * const) &(dom0)->data, (void * const) &(dom1)->data))
-#define archDomIncl2(arch,dom0,dom1) (((int (*) (const void * const, const void * const, void * const)) (arch)->class->domIncl) ((const void * const) &(arch)->data, (void * const) &(dom0)->data, (void * const) &(dom1)->data))
+#define archDomNum2(arch,dom)       (((ArchDomNum (*) (const void * const, const void * const)) (arch)->clasptr->domNum) ((const void * const) &(arch)->data, (const void * const) &(dom)->data))
+#define archDomTerm2(arch,dom,num)  (((int (*) (const void * const, void * const, const ArchDomNum)) (arch)->clasptr->domTerm) ((void *) &(arch)->data, (void *) &(dom)->data, (num)))
+#define archDomSize2(arch,dom)      (((Anum (*) (const void * const, const void * const)) (arch)->clasptr->domSize) ((void *) &(arch)->data, (void *) &(dom)->data))
+#define archDomWght2(arch,dom)      (((Anum (*) (const void * const, const void * const)) (arch)->clasptr->domWght) ((void *) &(arch)->data, (void *) &(dom)->data))
+#define archDomDist2(arch,dom0,dom1) (((Anum (*) (const void * const, const void * const, const void * const)) (arch)->clasptr->domDist) ((const void *) &(arch)->data, (const void *) &(dom0)->data, (const void *) &(dom1)->data))
+#define archDomFrst2(arch,dom)      (((int (*) (const void * const, void * const)) (arch)->clasptr->domFrst) ((const void * const) &(arch)->data, (void * const) &(dom)->data))
+#define archDomBipart2(arch,dom,dom0,dom1) (((int (*) (const void * const, const void * const, void * const, void * const)) (arch)->clasptr->domBipart) ((const void * const) &(arch)->data, (const void * const) &(dom)->data, (void * const) &(dom0)->data, (void * const) &(dom1)->data))
+#define archDomIncl2(arch,dom0,dom1) (((int (*) (const void * const, const void * const, void * const)) (arch)->clasptr->domIncl) ((const void * const) &(arch)->data, (void * const) &(dom0)->data, (void * const) &(dom1)->data))
 #endif
 #ifndef SCOTCH_DEBUG_ARCH2
 #define archDomNum                  archDomNum2
@@ -277,46 +293,24 @@ int                         archDomMpiType      (const Arch * const, MPI_Datatyp
 #define archDomIncl                 archDomIncl2
 #endif /* SCOTCH_DEBUG_ARCH2 */
 
-#ifdef SCOTCH_PTSCOTCH
-#define ARCHCLASSBLOCK(s,n,f)       { s, f,		   \
-                                      arch##n##ArchLoad,   \
-                                      arch##n##ArchSave,   \
-                                      arch##n##ArchFree,   \
-                                      arch##n##MatchInit,  \
-                                      arch##n##MatchExit,  \
-                                      arch##n##MatchMate,  \
-                                      arch##n##ArchLoad,   \
-                                      arch##n##DomTerm,    \
-                                      arch##n##DomSize,    \
-                                      arch##n##DomWght,    \
-                                      arch##n##DomDist,    \
-                                      arch##n##DomFrst,    \
-                                      arch##n##DomLoad,    \
-                                      arch##n##DomSave,    \
-                                      arch##n##DomBipart,  \
-                                      arch##n##DomIncl,    \
-                                      arch##n##DomMpiType, \
+#define ARCHCLASSBLOCK(n,s,f)       { s, f,                                   \
+                                      (ArchLoadFunc)      arch##n##ArchLoad,  \
+                                      (ArchSaveFunc)      arch##n##ArchSave,  \
+                                      (ArchFreeFunc)      arch##n##ArchFree,  \
+                                      (ArchMatchInitFunc) arch##n##MatchInit, \
+                                      (ArchMatchExitFunc) arch##n##MatchExit, \
+                                      (ArchMatchMateFunc) arch##n##MatchMate, \
+                                      (ArchDomNumFunc)    arch##n##DomNum,    \
+                                      (ArchDomTermFunc)   arch##n##DomTerm,   \
+                                      (ArchDomSizeFunc)   arch##n##DomSize,   \
+                                      (ArchDomWghtFunc)   arch##n##DomWght,   \
+                                      (ArchDomDistFunc)   arch##n##DomDist,   \
+                                      (ArchDomFrstFunc)   arch##n##DomFrst,   \
+                                      (ArchDomLoadFunc)   arch##n##DomLoad,   \
+                                      (ArchDomSaveFunc)   arch##n##DomSave,   \
+                                      (ArchDomBipartFunc) arch##n##DomBipart, \
+                                      (ArchDomInclFunc)   arch##n##DomIncl,   \
                                       sizeof (Arch##n##Dom) }
-#else /* SCOTCH_PTSCOTCH */
-#define ARCHCLASSBLOCK(s,n,f)       { s, f,		  \
-                                      arch##n##ArchLoad,  \
-                                      arch##n##ArchSave,  \
-                                      arch##n##ArchFree,  \
-                                      arch##n##MatchInit, \
-                                      arch##n##MatchExit, \
-                                      arch##n##MatchMate, \
-                                      arch##n##DomNum,    \
-                                      arch##n##DomTerm,   \
-                                      arch##n##DomSize,   \
-                                      arch##n##DomWght,   \
-                                      arch##n##DomDist,   \
-                                      arch##n##DomFrst,   \
-                                      arch##n##DomLoad,   \
-                                      arch##n##DomSave,   \
-                                      arch##n##DomBipart, \
-                                      arch##n##DomIncl,   \
-                                      sizeof (Arch##n##Dom) }
-#endif /* SCOTCH_PTSCOTCH */
 
 #define ARCHCLASSBLOCKNULL          { NULL, ARCHNONE }
 

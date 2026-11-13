@@ -171,8 +171,6 @@ neut_mesh_fscanf_msh_elts (FILE * file, char *mode, char *domain, int *node_nbs,
   if (status != 0)
     return status;
 
-  ut_free_1d_int (&node_nbs);
-
   if (leftelts != 0)
     ut_print_message (2, 0,
                       "Reading of mesh file failed! (Element quantity does not match (leftelts = %d.)\n",
@@ -248,6 +246,8 @@ neut_mesh_fscanf_msh_periodicity (FILE *file, struct NODES *pNodes)
 
     ut_array_1d_int_fscanf (file, (*pNodes).PerNodeShift[id], 3);
   }
+
+  neut_nodes_init_nodeslave (pNodes);
 
   // footer
   ut_file_skip (file, 1);
@@ -438,22 +438,57 @@ neut_mesh_fscanf_msh_groups (FILE *file, struct MESH *pMesh)
   return;
 }
 
+// Reading the nsets, recorded in *pNSet (if not NULL; skipped otherwise), with
+// node_nbs the file numbers of the nodes
 void
-neut_mesh_fscanf_msh_nsets (FILE *file)
+neut_mesh_fscanf_msh_nsets (FILE *file, int *node_nbs, struct NSET *pNSet)
 {
-  int i, qty, qty2;
+  int i, j, qty, qty2, node, maxnode = 0, *nodes_old_new = NULL;
+  char *name = ut_alloc_1d_char (1000);
 
   ut_file_skip (file, 1);
 
   if (fscanf (file, "%d", &qty) != 1)
     abort ();
 
+  if (pNSet)
+  {
+    neut_nset_free (pNSet);
+    neut_nset_set_zero (pNSet);
+
+    (*pNSet).qty = qty;
+    (*pNSet).names = ut_alloc_1d_pchar (qty + 1);
+    (*pNSet).NodeQty = ut_alloc_1d_int (qty + 1);
+    (*pNSet).nodes = ut_alloc_1d_pint (qty + 1);
+
+    maxnode = ut_array_1d_int_max (node_nbs + 1, node_nbs[0]);
+    nodes_old_new = ut_alloc_1d_int (maxnode + 1);
+    for (i = 1; i <= node_nbs[0]; i++)
+      nodes_old_new[node_nbs[i]] = i;
+  }
+
   for (i = 1; i <= qty; i++)
   {
-    ut_file_skip (file, 1);
-    if (fscanf (file, "%d", &qty2) != 1)
-      abort ();
-    ut_file_skip (file, qty2);
+    if (fscanf (file, "%999s", name) != 1 || fscanf (file, "%d", &qty2) != 1)
+      ut_print_message (2, 2, "Failed to read msh file.\n");
+
+    if (!pNSet)
+      ut_file_skip (file, qty2);
+
+    else
+    {
+      ut_string_string (name, (*pNSet).names + i);
+      (*pNSet).NodeQty[i] = qty2;
+      (*pNSet).nodes[i] = ut_alloc_1d_int (qty2);
+
+      for (j = 0; j < qty2; j++)
+      {
+        if (fscanf (file, "%d", &node) != 1 || node < 1 || node > maxnode
+            || !nodes_old_new[node])
+          ut_print_message (2, 2, "Failed to read msh file (nset %s).\n", name);
+        (*pNSet).nodes[i][j] = nodes_old_new[node];
+      }
+    }
   }
 
   if (!ut_file_nextstring_test (file, "$EndNSets"))
@@ -461,33 +496,140 @@ neut_mesh_fscanf_msh_nsets (FILE *file)
 
   ut_file_skip (file, 1);
 
+  ut_free_1d_int (&nodes_old_new);
+  ut_free_1d_char (&name);
+
   return;
 }
 
+// Reading the fasets (2D elts of the domain faces, by face), as written by
+// neut_mesh_fprintf_msh_fasets: for each faset, its label and elts, each
+// elt being given by the id of its 3D elt and its nodes (in reverse order
+// for file versions <= 2.3).  The fasets are recorded in *pMeshFasets (if
+// not NULL, otherwise they are skipped), and the 3D elts of the elts (EltId)
+// are recovered from *pMesh3D.  pMesh is the mesh of highest dimension and node_nbs are the
+// node numbers of the file.
 void
-neut_mesh_fscanf_msh_fasets (FILE *file, struct MESH *pMesh)
+neut_mesh_fscanf_msh_fasets (FILE *file, char *version, int *node_nbs,
+                             struct MESH *pMesh, struct MESH *pMesh3D,
+                             struct MESH *pMeshFasets)
 {
-  int i, qty, qty2, eltnodeqty;
+  int i, j, k, qty, eltqty, elt, eltnodeqty, eltorder, wordqty, record;
+  int major = 0, minor = 0, reverse;
+  int *nodes_old_new = NULL, *nodes = NULL;
+  char *label = ut_alloc_1d_char (1000);
+  long pos;
 
-  eltnodeqty = neut_elt_nodeqty ((*pMesh).EltType, 2, (*pMesh).EltOrder);
+  record = pMeshFasets && pMesh3D && (*pMesh3D).EltQty > 0;
+
+  if (version)
+    ut_string_version (version, &major, &minor, NULL);
+  reverse = major < 2 || (major == 2 && minor <= 3);
 
   ut_file_skip (file, 1);
 
   if (fscanf (file, "%d", &qty) != 1)
     abort ();
 
+  // elt order, from the first elt (the fasets are not necessarily of the
+  // order of the mesh)
+  pos = ftell (file);
+  eltqty = 0;
+  for (i = 1; i <= qty && eltqty == 0; i++)
+  {
+    if (fscanf (file, "%s", label) != 1 || fscanf (file, "%d", &eltqty) != 1)
+      abort ();
+    if (eltqty == 0)
+      continue;
+
+    ut_file_goto_nextline (file);
+    ut_file_nextlinenbwords (file, &wordqty);
+  }
+  fseek (file, pos, SEEK_SET);
+
+  eltorder = (*pMesh).EltOrder;
+  if (eltqty > 0)
+  {
+    for (eltorder = 1; eltorder <= 2; eltorder++)
+      if (neut_elt_nodeqty ((*pMesh).EltType, 2, eltorder) == wordqty - 1)
+        break;
+    if (eltorder > 2)
+      ut_print_message (2, 2, "Failed to read msh file (fasets).\n");
+  }
+
+  eltnodeqty = neut_elt_nodeqty ((*pMesh).EltType, 2, eltorder);
+  nodes = ut_alloc_1d_int (eltnodeqty);
+
+  if (record)
+  {
+    neut_mesh_reset (pMeshFasets);
+    (*pMeshFasets).Dimension = 2;
+    ut_string_string ((*pMesh).EltType, &(*pMeshFasets).EltType);
+    (*pMeshFasets).EltOrder = eltorder;
+    (*pMeshFasets).ElsetQty = qty;
+    (*pMeshFasets).Elsets = ut_alloc_1d_pint (qty + 1);
+    (*pMeshFasets).ElsetLabels = ut_alloc_1d_pchar (qty + 1);
+
+    nodes_old_new =
+      ut_alloc_1d_int (ut_array_1d_int_max (node_nbs + 1, node_nbs[0]) + 1);
+    for (i = 1; i <= node_nbs[0]; i++)
+      nodes_old_new[node_nbs[i]] = i;
+  }
+
   for (i = 1; i <= qty; i++)
   {
-    ut_file_skip (file, 1);
-    if (fscanf (file, "%d", &qty2) != 1)
+    if (fscanf (file, "%s", label) != 1 || fscanf (file, "%d", &eltqty) != 1)
       abort ();
-    ut_file_skip (file, qty2 * (1 + eltnodeqty));
+
+    if (!record)
+    {
+      ut_file_skip (file, eltqty * (1 + eltnodeqty));
+      continue;
+    }
+
+    ut_string_string (label, (*pMeshFasets).ElsetLabels + i);
+    (*pMeshFasets).Elsets[i] = ut_alloc_1d_int (eltqty + 1);
+
+    for (j = 1; j <= eltqty; j++)
+    {
+      ut_file_skip (file, 1);
+      for (k = 0; k < eltnodeqty; k++)
+        if (fscanf (file, "%d", nodes + (reverse ? eltnodeqty - 1 - k : k)) != 1)
+          abort ();
+
+      for (k = 0; k < eltnodeqty; k++)
+        nodes[k] = nodes_old_new[nodes[k]];
+
+      neut_mesh_addelt (pMeshFasets, nodes);
+      (*pMeshFasets).Elsets[i][++(*pMeshFasets).Elsets[i][0]] =
+        (*pMeshFasets).EltQty;
+    }
   }
 
   if (!ut_file_nextstring_test (file, "$EndFasets"))
     ut_print_message (2, 2, "Failed to read msh file.\n");
 
   ut_file_skip (file, 1);
+
+  // 3D elts of the elts
+  if (record)
+  {
+    if (!(*pMesh3D).NodeElts)
+      neut_mesh_init_nodeelts (pMesh3D, node_nbs[0]);
+
+    (*pMeshFasets).EltId = ut_alloc_1d_int ((*pMeshFasets).EltQty + 1);
+    for (elt = 1; elt <= (*pMeshFasets).EltQty; elt++)
+      if (neut_mesh_elt2d_elt3d (*pMeshFasets, elt, *pMesh3D,
+                                 (*pMeshFasets).EltId + elt) != 0)
+        ut_print_message (2, 2, "Failed to read msh file.\n");
+
+    neut_mesh_init_eltelset (pMeshFasets, NULL);
+    neut_mesh_init_nodeelts (pMeshFasets, node_nbs[0]);
+  }
+
+  ut_free_1d_int (&nodes_old_new);
+  ut_free_1d_int (&nodes);
+  ut_free_1d_char (&label);
 
   return;
 }

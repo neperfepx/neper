@@ -1,4 +1,4 @@
-/* Copyright 2010 ENSEIRB, INRIA & CNRS
+/* Copyright 2010,2021,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,14 +41,16 @@
 /**                                                        **/
 /**   DATES      : # Version 5.1  : from : 17 nov 2010     **/
 /**                                 to   : 17 nov 2010     **/
+/**                # Version 6.1  : from : 15 mar 2021     **/
+/**                                 to   : 15 mar 2021     **/
+/**                # Version 7.0  : from : 21 jan 2023     **/
+/**                                 to   : 06 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define LIBRARY
 
 #include "module.h"
 #include "common.h"
@@ -61,16 +63,28 @@
 /*                                      */
 /****************************************/
 
-/*+ This routine reserves a memory area
-*** of a size sufficient to store a
-*** graph mapping structure.
-*** It returns:
-*** - !NULL  : if the initialization succeeded.
-*** - NULL   : on error.
-+*/
+/* This routine reserves a memory area
+** of a size sufficient to store a
+** SCOTCH_Mapping structure.
+** It returns:
+** - !NULL  : if the allocation succeeded.
+** - NULL   : on error.
+*/
 
 SCOTCH_Mapping *
-SCOTCH_mapAlloc ()
+SCOTCH_mapAlloc (void)
 {
   return ((SCOTCH_Mapping *) memAlloc (sizeof (SCOTCH_Mapping)));
+}
+
+/* This routine returns the size, in bytes,
+** of a SCOTCH_Mapping structure.
+** It returns:
+** - > 0  : in all cases.
+*/
+
+int
+SCOTCH_mapSizeof (void)
+{
+  return (sizeof (SCOTCH_Mapping));
 }

@@ -45,23 +45,7 @@ neut_tess_compress_movepoly (struct TESS *pTess, int old, int new)
     (*pTess).FacePoly[face][pos] = new;
   }
 
-  if ((*pTess).CellId)
-    (*pTess).CellId[new] = (*pTess).CellId[old];
-  if ((*pTess).CellOri)
-    ut_array_1d_memcpy ((*pTess).CellOri[old], 4, (*pTess).CellOri[new]);
-  if ((*pTess).CellBody)
-    (*pTess).CellBody[new] = (*pTess).CellBody[old];
-  if ((*pTess).CellLamId)
-    (*pTess).CellLamId[new] = (*pTess).CellLamId[old];
-  if ((*pTess).CellModeId)
-    (*pTess).CellModeId[new] = (*pTess).CellModeId[old];
-  if ((*pTess).CellGroup)
-    (*pTess).CellGroup[new] = (*pTess).CellGroup[old];
-
-  if ((*pTess).SeedCoo)
-    ut_array_1d_memcpy ((*pTess).SeedCoo[old], 3, (*pTess).SeedCoo[new]);
-  if ((*pTess).SeedWeight)
-    (*pTess).SeedWeight[new] = (*pTess).SeedWeight[old];
+  neut_tess_compress_movecell (pTess, old, new);
 
   return;
 }
@@ -85,19 +69,21 @@ neut_tess_compress_moveface (struct TESS *pTess, int old, int new)
 
   (*pTess).FaceEdgeOri[new] =
     ut_realloc_1d_int ((*pTess).FaceEdgeOri[new],
-                       (*pTess).FaceVerQty[old] + 1);
+                       (*pTess).FaceEdgeQty[old] + 1);
 
   ut_array_1d_int_memcpy ((*pTess).FaceEdgeOri[old] + 1,
-                          (*pTess).FaceVerQty[old],
+                          (*pTess).FaceEdgeQty[old],
                           (*pTess).FaceEdgeOri[new] + 1);
 
   (*pTess).FaceEdgeNb[new] =
     ut_realloc_1d_int ((*pTess).FaceEdgeNb[new],
-                       (*pTess).FaceVerQty[old] + 1);
+                       (*pTess).FaceEdgeQty[old] + 1);
 
   ut_array_1d_int_memcpy ((*pTess).FaceEdgeNb[old] + 1,
-                          (*pTess).FaceVerQty[old],
+                          (*pTess).FaceEdgeQty[old],
                           (*pTess).FaceEdgeNb[new] + 1);
+
+  (*pTess).FaceEdgeQty[new] = (*pTess).FaceEdgeQty[old];
 
   (*pTess).FaceVerNb[new] =
     ut_realloc_1d_int ((*pTess).FaceVerNb[new], (*pTess).FaceVerQty[old] + 1);
@@ -113,9 +99,11 @@ neut_tess_compress_moveface (struct TESS *pTess, int old, int new)
     ut_array_1d_int_memcpy ((*pTess).FacePoly[old], 2,
                             (*pTess).FacePoly[new]);
 
-    /* correcting poly face parameters */
+    /* correcting poly face parameters (not for a domain face or a
+       periodic seed) */
     for (i = 0; i < 2; i++)
-      if ((*pTess).FacePoly[new][i] > 0)
+      if ((*pTess).FacePoly[new][i] > 0
+          && (*pTess).FacePoly[new][i] <= (*pTess).PolyQty)
       {
         poly = (*pTess).FacePoly[new][i];
 
@@ -135,7 +123,7 @@ neut_tess_compress_moveface (struct TESS *pTess, int old, int new)
   }
 
   /* correcting edge face parameters */
-  for (i = 1; i <= (*pTess).FaceVerQty[new]; i++)
+  for (i = 1; i <= (*pTess).FaceEdgeQty[new]; i++)
   {
     edge = (*pTess).FaceEdgeNb[new][i];
 
@@ -153,18 +141,7 @@ neut_tess_compress_moveface (struct TESS *pTess, int old, int new)
   }
 
   if ((*pTess).Dim == 2)
-  {
-    (*pTess).CellId[new] = (*pTess).CellId[old];
-    ut_array_1d_memcpy ((*pTess).CellOri[old], 4, (*pTess).CellOri[new]);
-    if ((*pTess).CellBody)
-      (*pTess).CellBody[new] = (*pTess).CellBody[old];
-    if ((*pTess).CellLamId)
-      (*pTess).CellLamId[new] = (*pTess).CellLamId[old];
-    if ((*pTess).CellModeId)
-      (*pTess).CellModeId[new] = (*pTess).CellModeId[old];
-    if ((*pTess).CellGroup)
-      (*pTess).CellGroup[new] = (*pTess).CellGroup[old];
-  }
+    neut_tess_compress_movecell (pTess, old, new);
 
   return;
 }
@@ -195,12 +172,19 @@ neut_tess_compress_moveedge (struct TESS *pTess, int old, int new)
   for (i = 0; i < (*pTess).EdgeFaceQty[new]; i++)
   {
     face = (*pTess).EdgeFaceNb[new][i];
+
+    // periodic seed (2D periodic tessellation)
+    if (face > (*pTess).FaceQty && (*pTess).Type
+        && !strcmp ((*pTess).Type, "periodic"))
+      continue;
+
     if (face > (*pTess).FaceQty)
       abort ();
 
     pos =
       ut_array_1d_int_eltpos ((*pTess).FaceEdgeNb[face] + 1,
-                              (*pTess).FaceVerQty[face], old);
+                              (*pTess).FaceEdgeQty[face], old);
+
 
     if (pos == -1)
     {
@@ -316,25 +300,31 @@ neut_tess_compress_movedomface (struct TESS *pTess, int old, int new)
                       (*pTess).DomFaceParmQty[new],
                       (*pTess).DomFaceParms[new]);
 
-  (*pTess).DomFaceVerQty[new] = (*pTess).DomFaceVerQty[old];
+  if ((*pTess).DomFaceVerQty)
+  {
+    (*pTess).DomFaceVerQty[new] = (*pTess).DomFaceVerQty[old];
 
-  (*pTess).DomFaceVerNb[new] =
-    ut_realloc_1d_int ((*pTess).DomFaceVerNb[new],
-                       (*pTess).DomFaceVerQty[new] + 1);
+    (*pTess).DomFaceVerNb[new] =
+      ut_realloc_1d_int ((*pTess).DomFaceVerNb[new],
+                         (*pTess).DomFaceVerQty[new] + 1);
 
-  ut_array_1d_int_memcpy ((*pTess).DomFaceVerNb[old] + 1,
-                          (*pTess).DomFaceVerQty[new],
-                          (*pTess).DomFaceVerNb[new] + 1);
+    ut_array_1d_int_memcpy ((*pTess).DomFaceVerNb[old] + 1,
+                            (*pTess).DomFaceVerQty[new],
+                            (*pTess).DomFaceVerNb[new] + 1);
+  }
 
-  (*pTess).DomFaceEdgeQty[new] = (*pTess).DomFaceEdgeQty[old];
+  if ((*pTess).DomFaceEdgeQty)
+  {
+    (*pTess).DomFaceEdgeQty[new] = (*pTess).DomFaceEdgeQty[old];
 
-  (*pTess).DomFaceEdgeNb[new] =
-    ut_realloc_1d_int ((*pTess).DomFaceEdgeNb[new],
-                       (*pTess).DomFaceEdgeQty[new] + 1);
+    (*pTess).DomFaceEdgeNb[new] =
+      ut_realloc_1d_int ((*pTess).DomFaceEdgeNb[new],
+                         (*pTess).DomFaceEdgeQty[new] + 1);
 
-  ut_array_1d_int_memcpy ((*pTess).DomFaceEdgeNb[old] + 1,
-                          (*pTess).DomFaceEdgeQty[new],
-                          (*pTess).DomFaceEdgeNb[new] + 1);
+    ut_array_1d_int_memcpy ((*pTess).DomFaceEdgeNb[old] + 1,
+                            (*pTess).DomFaceEdgeQty[new],
+                            (*pTess).DomFaceEdgeNb[new] + 1);
+  }
 
   (*pTess).DomTessFaceQty[new] = (*pTess).DomTessFaceQty[old];
 
@@ -442,6 +432,164 @@ neut_tess_compress_movedomver (struct TESS *pTess, int old, int new)
     ut_print_neperbug ();
 
   (*pTess).VerDom[ver][1] = new;
+
+  return;
+}
+
+/* The following functions renumber the periodicity of the vertices,
+ * edges or faces after their compression: old_new is the new number of
+ * each (old) entity (0 if it was deleted), and oldqty is the old number of
+ * entities.  A deleted entity must have no periodicity. */
+
+void
+neut_tess_compress_vers_per (struct TESS *pTess, int *old_new, int oldqty)
+{
+  int i, master, *masters = ut_alloc_1d_int ((*pTess).VerQty + 1);
+  int **shifts = ut_alloc_2d_int ((*pTess).VerQty + 1, 3);
+
+  for (i = 1; i <= oldqty; i++)
+    if (old_new[i] > 0)
+    {
+      master = (*pTess).PerVerMaster[i];
+      if (master > 0 && old_new[master] == 0)
+        ut_print_neperbug ();
+
+      masters[old_new[i]] = (master > 0) ? old_new[master] : 0;
+      ut_array_1d_int_memcpy ((*pTess).PerVerShift[i], 3, shifts[old_new[i]]);
+    }
+
+  ut_free_1d_int (&(*pTess).PerVerNb);
+  ut_free_1d_int (&(*pTess).PerVerMaster);
+  ut_free_2d_int (&(*pTess).PerVerShift, oldqty + 1);
+  ut_free_1d_int (&(*pTess).PerVerSlaveQty);
+  ut_free_2d_int (&(*pTess).PerVerSlaveNb, oldqty + 1);
+
+  (*pTess).PerVerMaster = masters;
+  (*pTess).PerVerShift = shifts;
+
+  (*pTess).PerVerQty = 0;
+  (*pTess).PerVerNb = ut_alloc_1d_int ((*pTess).VerQty + 1);
+  for (i = 1; i <= (*pTess).VerQty; i++)
+    if (masters[i] > 0)
+      (*pTess).PerVerNb[++(*pTess).PerVerQty] = i;
+  (*pTess).PerVerNb =
+    ut_realloc_1d_int ((*pTess).PerVerNb, (*pTess).PerVerQty + 1);
+
+  neut_tess_init_verslave (pTess);
+
+  return;
+}
+
+void
+neut_tess_compress_edges_per (struct TESS *pTess, int *old_new, int oldqty)
+{
+  int i, master, *masters = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
+  int **shifts = ut_alloc_2d_int ((*pTess).EdgeQty + 1, 3);
+  int *oris = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
+
+  for (i = 1; i <= oldqty; i++)
+    if (old_new[i] > 0)
+    {
+      master = (*pTess).PerEdgeMaster[i];
+      if (master > 0 && old_new[master] == 0)
+        ut_print_neperbug ();
+
+      masters[old_new[i]] = (master > 0) ? old_new[master] : 0;
+      ut_array_1d_int_memcpy ((*pTess).PerEdgeShift[i], 3,
+                              shifts[old_new[i]]);
+      oris[old_new[i]] = (*pTess).PerEdgeOri[i];
+    }
+
+  ut_free_1d_int (&(*pTess).PerEdgeNb);
+  ut_free_1d_int (&(*pTess).PerEdgeMaster);
+  ut_free_2d_int (&(*pTess).PerEdgeShift, oldqty + 1);
+  ut_free_1d_int (&(*pTess).PerEdgeOri);
+  ut_free_1d_int (&(*pTess).PerEdgeSlaveQty);
+  ut_free_2d_int (&(*pTess).PerEdgeSlaveNb, oldqty + 1);
+
+  (*pTess).PerEdgeMaster = masters;
+  (*pTess).PerEdgeShift = shifts;
+  (*pTess).PerEdgeOri = oris;
+
+  (*pTess).PerEdgeQty = 0;
+  (*pTess).PerEdgeNb = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
+  for (i = 1; i <= (*pTess).EdgeQty; i++)
+    if (masters[i] > 0)
+      (*pTess).PerEdgeNb[++(*pTess).PerEdgeQty] = i;
+  (*pTess).PerEdgeNb =
+    ut_realloc_1d_int ((*pTess).PerEdgeNb, (*pTess).PerEdgeQty + 1);
+
+  neut_tess_init_edgeslave (pTess);
+
+  return;
+}
+
+void
+neut_tess_compress_faces_per (struct TESS *pTess, int *old_new, int oldqty)
+{
+  int i, master, *masters = ut_alloc_1d_int ((*pTess).FaceQty + 1);
+  int **shifts = ut_alloc_2d_int ((*pTess).FaceQty + 1, 3);
+  int *oris = ut_alloc_1d_int ((*pTess).FaceQty + 1);
+
+  for (i = 1; i <= oldqty; i++)
+    if (old_new[i] > 0)
+    {
+      master = (*pTess).PerFaceMaster[i];
+      if (master > 0 && old_new[master] == 0)
+        ut_print_neperbug ();
+
+      masters[old_new[i]] = (master > 0) ? old_new[master] : 0;
+      ut_array_1d_int_memcpy ((*pTess).PerFaceShift[i], 3,
+                              shifts[old_new[i]]);
+      oris[old_new[i]] = (*pTess).PerFaceOri[i];
+    }
+
+  ut_free_1d_int (&(*pTess).PerFaceNb);
+  ut_free_1d_int (&(*pTess).PerFaceMaster);
+  ut_free_2d_int (&(*pTess).PerFaceShift, oldqty + 1);
+  ut_free_1d_int (&(*pTess).PerFaceOri);
+  ut_free_1d_int (&(*pTess).PerFaceSlaveNb);
+
+  (*pTess).PerFaceMaster = masters;
+  (*pTess).PerFaceShift = shifts;
+  (*pTess).PerFaceOri = oris;
+
+  (*pTess).PerFaceQty = 0;
+  (*pTess).PerFaceNb = ut_alloc_1d_int ((*pTess).FaceQty + 1);
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+    if (masters[i] > 0)
+      (*pTess).PerFaceNb[++(*pTess).PerFaceQty] = i;
+  (*pTess).PerFaceNb =
+    ut_realloc_1d_int ((*pTess).PerFaceNb, (*pTess).PerFaceQty + 1);
+
+  neut_tess_init_faceslave (pTess);
+
+  return;
+}
+
+// Freeing the data of the cells (and of their seeds) beyond the new
+// number of cells, oldqty being the previous one
+void
+neut_tess_compress_cells (struct TESS *pTess, int oldqty)
+{
+  int i;
+
+  if ((*pTess).CellOri)
+    (*pTess).CellOri =
+      ut_realloc_2d_delline ((*pTess).CellOri, oldqty + 1,
+                             (*pTess).CellQty + 1);
+  if ((*pTess).CellOriDistrib)
+    for (i = (*pTess).CellQty + 1; i <= oldqty; i++)
+      ut_free_1d_char ((*pTess).CellOriDistrib + i);
+  if ((*pTess).ScaleCellId)
+    (*pTess).ScaleCellId =
+      ut_realloc_2d_int_delline ((*pTess).ScaleCellId, oldqty + 1,
+                                 (*pTess).CellQty + 1);
+
+  // (in a periodic tessellation, the seeds also include the periodic seeds)
+  if ((*pTess).SeedCoo && (!(*pTess).Type || strcmp ((*pTess).Type, "periodic")))
+    (*pTess).SeedCoo =
+      ut_realloc_2d_delline ((*pTess).SeedCoo, oldqty + 1, (*pTess).CellQty + 1);
 
   return;
 }

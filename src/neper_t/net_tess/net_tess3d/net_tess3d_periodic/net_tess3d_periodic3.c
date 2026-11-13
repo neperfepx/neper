@@ -118,8 +118,8 @@ net_tess3d_periodic_rodrigues_pair (double **coo, int qty, char *crysym, int **p
         abort ();
     }
 
-  ol_q_free (q1);
-  ol_q_free (q2);
+  ol_q_free (&q1);
+  ol_q_free (&q2);
 
   return;
 }
@@ -154,8 +154,8 @@ net_tess3d_periodic_edge_rodrigues_peredgeori (struct TESS *pTess)
       (*pTess).PerEdgeOri[i] = (disori1 < OL_EPS) ? 1 : -1;
     }
 
-  ol_q_free (q1);
-  ol_q_free (q2);
+  ol_q_free (&q1);
+  ol_q_free (&q2);
   ut_free_1d_char (&crysym);
 
   return;

@@ -1,4 +1,4 @@
-/* Copyright 2004,2007 ENSEIRB, INRIA & CNRS
+/* Copyright 2004,2007,2020,2021 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,8 @@
 /**                                                        **/
 /**   DATES      : # Version 4.0  : from : 13 oct 2003     **/
 /**                                 to   : 13 oct 2003     **/
+/**                # Version 6.1  : from : 20 nov 2020     **/
+/**                                 to   : 28 feb 2021     **/
 /**                                                        **/
 /************************************************************/
 
@@ -64,3 +66,9 @@ typedef struct MeshGraphHash_ {
   Gnum                      vertnum;              /*+ Origin vertex (i.e. pass) number in mesh +*/
   Gnum                      vertend;              /*+ End vertex number in mesh                +*/
 } MeshGraphHash;
+
+typedef struct MeshGraphDualHash_ {
+  Gnum                      vertnum;              /*+ Origin vertex (i.e. pass) number in mesh                 +*/
+  Gnum                      vertend;              /*+ End vertex number in mesh                                +*/
+  Gnum                      nghbnbr;              /*+ number of neighbours to define relation between elements +*/
+} MeshGraphDualHash;

@@ -20,7 +20,7 @@ extern "C"
 /// \param size: dimension of A and B (A nxn, B n)
 /// \param x: vector x, solution
 /// \return 0 on success, -1 on failure
-/// \note Use the GSL
+/// \note Use the GSL for size > 4
   extern int ut_linalg_solve_LU (double **A, double *B, int size, double *X);
 
 #endif                          /* UT_LINALG_H */

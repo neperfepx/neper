@@ -32,8 +32,8 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
     for (j = 0; j < invalqty; j++)
     {
       status =
-        neut_mesh_var_val (Nodes, Mesh, pTess, NULL, NULL, NULL, NULL, 0,
-                           "node", i, invar[j], &vals, &valqty, &type);
+        neut_mesh_expr_val (Nodes, Mesh, pTess, NULL, NULL, NULL, NULL, 0,
+                            "node", i, invar[j], &vals, &valqty, &type);
 
       if (!status)
       {
@@ -63,7 +63,7 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
         ut_array_1d_fprintf_nonl (file, tmp, size, REAL_PRINT_FORMAT);
 
         ut_free_1d (&tmp);
-        ol_q_free (q);
+        ol_q_free (&q);
       }
       else
         ut_print_exprbug (invar[j]);
@@ -136,8 +136,8 @@ nem_stat_elts (FILE *file, char *entity, int dim, int realdim, char *format, str
     for (j = 0; j < invalqty; j++)
     {
       status =
-        neut_mesh_var_val (Nodes, Mesh, pTess, NULL, NULL, NULL, NULL, cl,
-                           entity2, i, invar[j], &vals, &valqty, &type);
+        neut_mesh_expr_val (Nodes, Mesh, pTess, NULL, NULL, NULL, NULL, cl,
+                            entity2, i, invar[j], &vals, &valqty, &type);
       if (!status)
         ut_array_1d_fprintf_nonl (file, vals, valqty,
                                   !strcmp (type, "%f") ? REAL_PRINT_FORMAT : type);
@@ -208,8 +208,8 @@ nem_stat_point (FILE * file, char *format, struct NODES Nodes,
     for (j = 0; j < invalqty; j++)
     {
       status =
-        neut_point_var_val (Point, i, Tess, Nodes, Mesh[dim], invar[j], &vals,
-                            &valqty, &type);
+        neut_point_expr_val (Point, i, Tess, Nodes, Mesh[dim], invar[j], &vals,
+                             &valqty, &type);
 
       if (!status)
         ut_array_1d_fprintf_nonl (file, vals, valqty,

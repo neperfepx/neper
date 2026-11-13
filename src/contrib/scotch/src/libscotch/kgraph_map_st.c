@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2009-2011,2014,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2009-2011,2014,2018,2021,2023,2024,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -52,14 +52,16 @@
 /**                                 to   : 29 mar 2011     **/
 /**                # Version 6.0  : from : 03 mar 2011     **/
 /**                                 to   : 04 aug 2018     **/
+/**                # Version 6.1  : from : 18 jul 2021     **/
+/**                                 to   : 18 jul 2021     **/
+/**                # Version 7.0  : from : 20 jan 2023     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define KGRAPH_MAP_ST
 
 #include "module.h"
 #include "common.h"
@@ -123,14 +125,14 @@ static union {
 } kgraphmapstdefaultrb = { { 1, 1, KGRAPHMAPRBPOLINGSIZE, &stratdummy, 0.05 } };
 
 static StratMethodTab       kgraphmapstmethtab[] = { /* Mapping methods array */
-                              { KGRAPHMAPSTMETHBD, "b",  kgraphMapBd, &kgraphmapstdefaultbd },
-                              { KGRAPHMAPSTMETHCP, "c",  kgraphMapCp, &kgraphmapstdefaultcp },
-                              { KGRAPHMAPSTMETHDF, "d",  kgraphMapDf, &kgraphmapstdefaultdf },
-                              { KGRAPHMAPSTMETHEX, "x",  kgraphMapEx, &kgraphmapstdefaultex },
-                              { KGRAPHMAPSTMETHFM, "f",  kgraphMapFm, &kgraphmapstdefaultfm },
-                              { KGRAPHMAPSTMETHML, "m",  kgraphMapMl, &kgraphmapstdefaultml },
-                              { KGRAPHMAPSTMETHRB, "r",  kgraphMapRb, &kgraphmapstdefaultrb },
-                              { -1,                NULL, NULL,        NULL } };
+                              { KGRAPHMAPSTMETHBD, "b",  (StratMethodFunc) kgraphMapBd, &kgraphmapstdefaultbd },
+                              { KGRAPHMAPSTMETHCP, "c",  (StratMethodFunc) kgraphMapCp, &kgraphmapstdefaultcp },
+                              { KGRAPHMAPSTMETHDF, "d",  (StratMethodFunc) kgraphMapDf, &kgraphmapstdefaultdf },
+                              { KGRAPHMAPSTMETHEX, "x",  (StratMethodFunc) kgraphMapEx, &kgraphmapstdefaultex },
+                              { KGRAPHMAPSTMETHFM, "f",  (StratMethodFunc) kgraphMapFm, &kgraphmapstdefaultfm },
+                              { KGRAPHMAPSTMETHML, "m",  (StratMethodFunc) kgraphMapMl, &kgraphmapstdefaultml },
+                              { KGRAPHMAPSTMETHRB, "r",  (StratMethodFunc) kgraphMapRb, &kgraphmapstdefaultrb },
+                              { -1,                NULL, (StratMethodFunc) NULL,        NULL } };
 
 static StratParamTab        kgraphmapstparatab[] = { /* Method parameter list */
                               { KGRAPHMAPSTMETHBD,  STRATPARAMINT,    "width",
@@ -258,136 +260,141 @@ StratTab                    kgraphmapststratab = { /* Strategy tables for graph 
 int
 kgraphMapSt (
 Kgraph * restrict const       grafptr,            /*+ Mapping graph    +*/
-const Strat * restrict const  strat)              /*+ Mapping strategy +*/
+const Strat * restrict const  straptr)            /*+ Mapping strategy +*/
 {
-  StratTest           val;                        /* Result of condition evaluation              */
-  KgraphStore         savetab[2];                 /* Results of the two strategies               */
-  Gnum                comploaddltasu[2];          /* Absolute sum of computation load delta      */
-  ArchDom             domnfrst;                   /* Largest domain in the architecture          */
-  Anum                partnbr;                    /* Number of processors in the target topology */
+  StratTest           testdat;                    /* Result of condition evaluation         */
+  KgraphStore         savetab[2];                 /* Results of the two strategies          */
+  Gnum                comploaddltasu[2];          /* Absolute sum of computation load delta */
   Anum                partnum;
   int                 o;
-  int                 o2;
+  int                 o0;
+  int                 o1;
 
 #ifdef SCOTCH_DEBUG_KGRAPH2
   if (sizeof (Gnum) != sizeof (INT)) {
     errorPrint ("kgraphMapSt: invalid type specification for parser variables");
-    return     (1);
+    return (1);
   }
   if ((sizeof (KgraphMapRbParam) > sizeof (StratNodeMethodData))) {
     errorPrint ("kgraphMapSt: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
 #ifdef SCOTCH_DEBUG_KGRAPH1
-  if ((strat->tabl != &kgraphmapststratab) &&
-      (strat       != &stratdummy)) {
+  if ((straptr->tablptr != &kgraphmapststratab) &&
+      (straptr          != &stratdummy)) {
     errorPrint ("kgraphMapSt: invalid parameter (1)");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_KGRAPH1 */
 
   o = 0;
-  switch (strat->type) {
+  switch (straptr->typeval) {
     case STRATNODECONCAT :
-      o = kgraphMapSt (grafptr, strat->data.concat.strat[0]); /* Apply first strategy          */
-      if (o == 0)                                 /* If it worked all right                    */
-        o |= kgraphMapSt (grafptr, strat->data.concat.strat[1]); /* Then apply second strategy */
+      o = kgraphMapSt (grafptr, straptr->data.concdat.stratab[0]); /* Apply first strategy          */
+      if (o == 0)                                 /* If it worked all right                         */
+        o |= kgraphMapSt (grafptr, straptr->data.concdat.stratab[1]); /* Then apply second strategy */
       break;
     case STRATNODECOND :
-      o = stratTestEval (strat->data.cond.test, &val, (void *) grafptr); /* Evaluate expression */
-      if (o == 0) {                               /* If evaluation was correct                  */
+      o = stratTestEval (straptr->data.conddat.testptr, &testdat, (void *) grafptr); /* Evaluate expression */
+      if (o == 0) {                               /* If evaluation was correct */
 #ifdef SCOTCH_DEBUG_KGRAPH2
-        if ((val.typetest != STRATTESTVAL) ||
-            (val.typenode != STRATPARAMLOG)) {
+        if ((testdat.testval != STRATTESTVAL) ||
+            (testdat.nodeval != STRATPARAMLOG)) {
           errorPrint ("kgraphMapSt: invalid test result");
           o = 1;
           break;
         }
 #endif /* SCOTCH_DEBUG_KGRAPH2 */
-        if (val.data.val.vallog == 1)             /* If expression is true                 */
-          o = kgraphMapSt (grafptr, strat->data.cond.strat[0]); /* Apply first strategy    */
-        else {                                    /* Else if expression is false           */
-          if (strat->data.cond.strat[1] != NULL)  /* And if there is an else statement     */
-            o = kgraphMapSt (grafptr, strat->data.cond.strat[1]); /* Apply second strategy */
+        if (testdat.data.val.vallog == 1)         /* If expression is true                        */
+          o = kgraphMapSt (grafptr, straptr->data.conddat.stratab[0]); /* Apply first strategy    */
+        else {                                    /* Else if expression is false                  */
+          if (straptr->data.conddat.stratab[1] != NULL) /* And if there is an else statement      */
+            o = kgraphMapSt (grafptr, straptr->data.conddat.stratab[1]); /* Apply second strategy */
         }
       }
       break;
     case STRATNODEEMPTY :
       break;
     case STRATNODESELECT :
-      archDomFrst (&grafptr->a, &domnfrst);       /* Get architecture domain   */
-      partnbr = archDomSize (&grafptr->a, &domnfrst); /* Get architecture size */
-
       if (((kgraphStoreInit (grafptr, &savetab[0])) != 0) || /* Allocate save areas */
           ((kgraphStoreInit (grafptr, &savetab[1])) != 0)) {
         errorPrint ("kgraphMapSt: out of memory");
         kgraphStoreExit (&savetab[0]);
-        return          (1);
+        return (1);
       }
 
-      kgraphStoreSave  (grafptr, &savetab[1]);    /* Save initial partition             */
-      o = kgraphMapSt  (grafptr, strat->data.select.strat[0]); /* Apply first strategy  */
-      kgraphStoreSave  (grafptr, &savetab[0]);    /* Save its result                    */
-      kgraphStoreUpdt  (grafptr, &savetab[1]);    /* Restore initial partition          */
-      o2 = kgraphMapSt (grafptr, strat->data.select.strat[1]); /* Apply second strategy */
+      kgraphStoreSave  (grafptr, &savetab[1]);    /* Save initial mapping                    */
+      o0 = kgraphMapSt (grafptr, straptr->data.seledat.stratab[0]); /* Apply first strategy  */
+      kgraphStoreSave  (grafptr, &savetab[0]);    /* Save its result                         */
+      kgraphStoreUpdt  (grafptr, &savetab[1]);    /* Restore initial mapping                 */
+      o1 = kgraphMapSt (grafptr, straptr->data.seledat.stratab[1]); /* Apply second strategy */
 
-      if ((o == 0) || (o2 == 0)) {                /* If at least one method has computed a partition */
-        Gnum                comploadadlt;
-        int                 b0;
-        int                 b1;
-
-        comploaddltasu[0] =
-        comploaddltasu[1] = 0;
-        b0 = o;                                   /* Assume that balance is invalid if partitioning has failed */
-        b1 = o2;
-        for (partnum = 0; partnum < partnbr; partnum ++) {
-          comploadadlt = abs (savetab[0].comploaddlt[partnum]);
-          if (comploadadlt > ((Gnum) ((double) savetab[0].comploadavg[partnum] * savetab[0].kbalval)))
-            b0 |= 1;
-          comploaddltasu[0] += comploadadlt;
-          comploadadlt = abs (grafptr->comploaddlt[partnum]);
-          if (comploadadlt > ((Gnum) ((double) grafptr->comploadavg[partnum] * grafptr->kbalval)))
-            b1 |= 1;
-          comploaddltasu[1] += comploadadlt;
+      if ((o0 | o1) != 0) {                       /* If at least one method failed */
+        if (o0 == 0)                              /* If first succeeded, take it   */
+          goto take0;
+        if (o1 != 0) {                            /* If none succeeded       */
+          kgraphStoreUpdt (grafptr, &savetab[1]); /* Restore initial mapping */
+          o = 1;                                  /* Indicate error          */
         }
-        do {                                      /* Do we want to restore partition 0? */
-          if (b0 > b1)
-            break;
-          if (b0 == b1) {                         /* If both are valid or invalid  */
-            if (b0 == 0) {                        /* If both are valid             */
-              if ( (savetab[0].commload >  grafptr->commload) || /* Compare on cut */
-                  ((savetab[0].commload == grafptr->commload) &&
-                   (comploaddltasu[0] > comploaddltasu[1])))
-                break;
-            }
-            else {                                /* If both are invalid               */
-              if ( (comploaddltasu[0] >  comploaddltasu[1]) || /* Compare on imbalance */
-                  ((comploaddltasu[0] == comploaddltasu[1]) &&
-                   (savetab[0].commload > grafptr->commload)))
-                break;
-            }
-          }
-
-          kgraphStoreUpdt (grafptr, &savetab[0]); /* Restore its result */
-        } while (0);
+        goto take1;                               /* If second succeeded, keep it; anyway, go freeing data structures */
       }
-      if (o2 < o)                                 /* o = min(o,o2): if one parts, then part   */
-        o = o2;                                   /* Else if one stops, then stop, else error */
 
-      kgraphStoreExit (&savetab[0]);              /* Free both save areas */
-      kgraphStoreExit (&savetab[1]);
+      comploaddltasu[0] = 0;
+      for (partnum = 0; partnum < savetab[0].domnnbr; partnum ++) {
+        Gnum                comploadadlt;
+
+        comploadadlt = ABS (savetab[0].comploaddlt[partnum]);
+        if (comploadadlt > ((Gnum) ((double) savetab[0].comploadavg[partnum] * savetab[0].kbalval)))
+          o0 = 1;
+        comploaddltasu[0] += comploadadlt;
+      }
+
+      comploaddltasu[1] = 0;
+      for (partnum = 0; partnum < grafptr->m.domnnbr; partnum ++) {
+        Gnum                comploadadlt;
+
+        comploadadlt = ABS (grafptr->comploaddlt[partnum]);
+        if (comploadadlt > ((Gnum) ((double) grafptr->comploadavg[partnum] * grafptr->kbalval)))
+          o1 = 1;
+        comploaddltasu[1] += comploadadlt;
+      }
+
+      if (o0 > o1)                                /* If first mapping is imbalanced  */
+        goto take1;                               /* Take the second one             */
+      if (o0 < o1)                                /* If second mapping is imbalanced */
+        goto take0;                               /* Take the first one              */
+
+      if (o0 == 0) {                              /* If both are valid       */
+        if ( (savetab[0].commload >  grafptr->commload) || /* Compare on cut */
+            ((savetab[0].commload == grafptr->commload) &&
+             (comploaddltasu[0] > comploaddltasu[1])))
+          goto take1;
+      }
+      else {                                      /* If both are invalid         */
+        if ( (comploaddltasu[0] >  comploaddltasu[1]) || /* Compare on imbalance */
+            ((comploaddltasu[0] == comploaddltasu[1]) &&
+             (savetab[0].commload > grafptr->commload)))
+          goto take1;
+      }
+
+take0:
+      kgraphStoreUpdt (grafptr, &savetab[0]);     /* Restore first mapping          */
+take1:                                            /* Keep second mapping by default */
+      kgraphStoreExit (&savetab[1]);              /* Free both save areas           */
+      kgraphStoreExit (&savetab[0]);
       break;
 #ifdef SCOTCH_DEBUG_KGRAPH1
     case STRATNODEMETHOD :
 #else /* SCOTCH_DEBUG_KGRAPH1 */
     default :
 #endif /* SCOTCH_DEBUG_KGRAPH1 */
-      return (strat->tabl->methtab[strat->data.method.meth].func (grafptr, (void *) &strat->data.method.data));
+      return (((KgraphMapFunc) (straptr->tablptr->methtab[straptr->data.methdat.methnum].funcptr))
+              (grafptr, (void *) &straptr->data.methdat.datadat));
 #ifdef SCOTCH_DEBUG_KGRAPH1
     default :
       errorPrint ("kgraphMapSt: invalid parameter (2)");
-      return     (1);
+      return (1);
 #endif /* SCOTCH_DEBUG_KGRAPH1 */
   }
   return (o);

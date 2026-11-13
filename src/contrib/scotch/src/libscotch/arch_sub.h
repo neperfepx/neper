@@ -35,12 +35,14 @@
 /**                                                        **/
 /**   AUTHOR     : Francois PELLEGRINI                     **/
 /**                                                        **/
-/**   FUNCTION   : These lines are the data declaration    **/
+/**   FUNCTION   : These lines are the data declarations   **/
 /**                for the sub-architecture meta-          **/
 /**                architecture functions.                 **/
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 13 mar 2015     **/
 /**                                 to   : 31 may 2018     **/
+/**                # Version 7.0  : from : 19 feb 2018     **/
+/**                                 to   : 19 feb 2018     **/
 /**                                                        **/
 /************************************************************/
 
@@ -124,8 +126,5 @@ int                         archSubDomLoad      (const ArchSub * const, ArchSubD
 int                         archSubDomSave      (const ArchSub * const, const ArchSubDom * const, FILE * const);
 int                         archSubDomBipart    (const ArchSub * const, const ArchSubDom * const, ArchSubDom * restrict const, ArchSubDom * restrict const);
 int                         archSubDomIncl      (const ArchSub * const, const ArchSubDom * const, const ArchSubDom * const);
-#ifdef SCOTCH_PTSCOTCH
-int                         archSubDomMpiType   (const ArchSub * const, MPI_Datatype * const);
-#endif /* SCOTCH_PTSCOTCH */
 
 #endif /* ARCH_NOPROTO     */

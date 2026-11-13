@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2018-2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2018-2020,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -51,14 +51,14 @@
 /**                                 to   : 30 apr 2018     **/
 /**                # Version 6.1  : from : 29 oct 2019     **/
 /**                                 to   : 18 jan 2020     **/
+/**                # Version 7.0  : from : 19 jan 2023     **/
+/**                                 to   : 11 sep 2024     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes.
 */
-
-#define HGRAPH_ORDER_HF
 
 #include "module.h"
 #include "common.h"
@@ -85,7 +85,7 @@
 
 int
 hgraphOrderHf (
-const Hgraph * restrict const             grafptr,
+Hgraph * restrict const                   grafptr,
 Order * restrict const                    ordeptr,
 const Gnum                                ordenum, /*+ Zero-based ordering number +*/
 OrderCblk * restrict const                cblkptr, /*+ Multiple column-block      +*/
@@ -137,7 +137,7 @@ const HgraphOrderHfParam * restrict const paraptr)
                      &headtab, (size_t) ((nbbuck + 2) * sizeof (Gnum)),
                      &iwtab,   (size_t) (iwlen * sizeof (Gnum)), NULL) == NULL) {
     errorPrint ("hgraphOrderHf: out of memory");
-    return     (1);
+    return (1);
   }
 
   hgraphOrderHxFill (grafptr, petab, lentab, iwtab, nvtab, elentab, &pfree);
@@ -148,7 +148,7 @@ const HgraphOrderHfParam * restrict const paraptr)
   if (ncmpa < 0) {
     errorPrint ("hgraphOrderHf: internal error");
     memFree    (petab);                           /* Free group leader */
-    return     (1);
+    return (1);
   }
 
   if (grafptr->s.velotax != NULL) {

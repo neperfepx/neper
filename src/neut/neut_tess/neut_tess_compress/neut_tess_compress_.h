@@ -11,7 +11,14 @@ extern void neut_tess_compress_movepoly (struct TESS *, int, int);
 extern void neut_tess_compress_moveface (struct TESS *, int, int);
 extern void neut_tess_compress_moveedge (struct TESS *, int, int);
 extern void neut_tess_compress_movever (struct TESS *, int, int);
+extern void neut_tess_compress_cells (struct TESS *, int);
+
+extern void neut_tess_compress_movecell (struct TESS *, int, int);
 
 extern void neut_tess_compress_movedomface (struct TESS *, int, int);
 extern void neut_tess_compress_movedomedge (struct TESS *, int, int);
 extern void neut_tess_compress_movedomver (struct TESS *, int, int);
+
+extern void neut_tess_compress_vers_per (struct TESS *pTess, int *old_new, int oldqty);
+extern void neut_tess_compress_edges_per (struct TESS *pTess, int *old_new, int oldqty);
+extern void neut_tess_compress_faces_per (struct TESS *pTess, int *old_new, int oldqty);

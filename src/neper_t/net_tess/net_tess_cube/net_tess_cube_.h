@@ -26,9 +26,9 @@ extern void net_tess_cube_vers (int *N, double **bbox, int ***verid,
 				struct TESS *pTess);
 extern void net_tess_cube_edges (int *N, int ***verid, int ****edgeid,
 				 struct TESS *pTess);
-extern void net_tess_cube_faces (int *N, int ***verid, int ****edgeid,
+extern void net_tess_cube_faces (int *N, int dim, int ***verid, int ****edgeid,
 				 int ****faceid, struct TESS *pTess);
-extern void net_tess_cube_polys (int *N, int ****faceid, int ***polyid,
+extern void net_tess_cube_polys (int *N, int dim, int ****faceid, int ***polyid,
 				 struct TESS *pTess);
 
 extern void net_tess_cube_facepoly (int *N, int ****faceid,

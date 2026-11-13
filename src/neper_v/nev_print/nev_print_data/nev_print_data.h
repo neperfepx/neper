@@ -8,7 +8,7 @@ extern void nev_print_data (struct IN_V In, struct SIM Sim,
                       struct POINT **, int,
 		      struct DATA *, struct DATA *,
 		      struct DATA *, struct DATA **,
-		      struct DATA *, struct DATA **);
+		      struct DATA *, struct DATA **, struct PRINT *);
 
 #include "nev_print_data_tess/nev_print_data_tess.h"
 #include "nev_print_data_tesr/nev_print_data_tesr.h"

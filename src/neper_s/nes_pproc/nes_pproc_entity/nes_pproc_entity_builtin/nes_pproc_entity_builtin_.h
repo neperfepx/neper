@@ -96,6 +96,11 @@ extern void nes_pproc_entity_builtin_elsets_gos (struct SIM *pSim, struct TESS T
                                      char *entity, char *res, int **elsets,
                                      int elsetqty, struct SIMRES *pSimRes);
 
+extern void nes_pproc_entity_builtin_odf_auxfile (char *file, char *expr, char *aux,
+                                                  char **pfilename);
+
+extern void nes_pproc_entity_builtin_elsets_gen_eq (char *res, double *t, double *peq);
+
 #ifdef __cplusplus
 }
 #endif

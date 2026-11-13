@@ -1,4 +1,4 @@
-/* Copyright 2010,2011,2016 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2010,2011,2016,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,8 @@
 /**                                 to   : 12 may 2010     **/
 /**                # Version 6.0  : from : 22 oct 2011     **/
 /**                                 to   : 25 aug 2016     **/
+/**                # Version 7.0  : from : 18 jan 2023     **/
+/**                                 to   : 18 jan 2023     **/
 /**                                                        **/
 /**   NOTES      : # A very pedagogic explanation of       **/
 /**                  Fibonacci heaps is available in       **/
@@ -57,7 +59,7 @@
 **  The defines and includes.
 */
 
-#define FIBO
+#define SCOTCH_FIBO
 
 #include "module.h"
 #include "common.h"
@@ -96,7 +98,7 @@ int                      (* cmpfptr) (const FiboNode * const, const FiboNode * c
 /* This routine flushes the contents of
 ** the given Fibonacci heap.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void
@@ -110,7 +112,7 @@ FiboHeap * const            treeptr)
 /* This routine flushes the contents of
 ** the given Fibonacci heap.
 ** It returns:
-** - VOID  : in all cases.
+** - void  : in all cases.
 */
 
 void

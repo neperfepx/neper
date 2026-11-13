@@ -20,9 +20,14 @@ net_dim (int dim, struct TESS *pTess)
   if (status != 0)
     ut_print_neperbug ();
 
-  neut_tess_domface_tess (*pTess, id, &T2);
+  // periodic tessellation: also carrying over the periodicity
+  if ((*pTess).Type && !strcmp ((*pTess).Type, "periodic"))
+    neut_tess_3dcolumnar_2d (*pTess, &T2);
+  else
+    neut_tess_domface_tess (*pTess, id, &T2);
 
   neut_tess_tess (T2, pTess);
+  neut_tess_free (&T2);
 
 #ifdef DEVEL_DEBUGGING_TEST
   if (neut_tess_test (*pTess, 0) != 0 || neut_tess_test_dom (*pTess, 0) != 0)

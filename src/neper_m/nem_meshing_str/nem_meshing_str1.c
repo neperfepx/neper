@@ -24,7 +24,7 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
   ut_print_message (0, 2, "%dD meshing... ", (*pTess).Dim);
 
   neut_mesh_str ((*pTess).Dim, MeshPara.msize, (*pTess).Periodic, pNodes, Mesh + (*pTess).Dim,
-                 NSet + (*pTess).Dim - 1);
+                 Mesh + 5, NSet + (*pTess).Dim - 1);
   neut_nodes_scale (pNodes, bboxsize[0], bboxsize[1], bboxsize[2]);
   neut_nodes_shift (pNodes, bbox[0][0], bbox[1][0], bbox[2][0]);
 
@@ -104,7 +104,7 @@ nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
   ut_print_message (0, 2, "%dD meshing... ", (*pTesr).Dim);
 
   neut_mesh_str ((*pTesr).Dim, msize, (*pTesr).Periodic, pNodes, Mesh + (*pTesr).Dim,
-                 NSet + (*pTesr).Dim - 1);
+                 Mesh + 5, NSet + (*pTesr).Dim - 1);
 
   neut_nodes_scale (pNodes, bboxsize[0], bboxsize[1],
                     (*pTesr).Dim == 3 ? bboxsize[2] : cl);

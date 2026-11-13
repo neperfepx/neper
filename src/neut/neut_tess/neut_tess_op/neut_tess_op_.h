@@ -49,3 +49,6 @@ extern void neut_tess_3dcolumnar_2d_renumber (struct TESS *pT,
 					      int *oldver_newver);
 
 extern void neut_tess_init_polyfaceori (struct TESS *pTess);
+
+extern void neut_tess_init_domedges_processedge (struct TESS Tess, int edge, int *pisdom);
+extern int neut_tess_domface_hasbase (struct TESS Tess, int domface);

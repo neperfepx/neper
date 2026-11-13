@@ -100,7 +100,7 @@ extern "C"
     // Coordinates of the seeds [1...SeedQty][0...2]
     double **SeedCoo;
 
-    // Laguerre weights of the seeds [1...SeedQty]
+    // Laguerre weights of the seeds [1...SeedQty] (power distance: d^2 - w)
     double *SeedWeight;
 
     // VERTEX INFORMATION ------------------------------------------------
@@ -199,10 +199,13 @@ extern "C"
     // Numbers of the vertices of the faces [1...FaceQty][1...FaceVerQty[i]]
     int **FaceVerNb;
 
-    // Numbers of the edges of the faces [1...FaceQty][1...FaceVerQty[i]]
+    // Number of edges of the faces [1...FaceQty]
+    int *FaceEdgeQty;
+
+    // Numbers of the edges of the faces [1...FaceQty][1...FaceEdgeQty[i]]
     int **FaceEdgeNb;
 
-    // Orientations of the edges of the faces [1...FaceQty][1...FaceVerQty[i]],
+    // Orientations of the edges of the faces [1...FaceQty][1...FaceEdgeQty[i]],
     // -1 or 1
     int **FaceEdgeOri;
 
@@ -257,6 +260,14 @@ extern "C"
 
     // Domain type ("cube", "cylinder", "sphere", "planes" or "cut")
     char *DomType;
+
+    // Number of domain primitives.  When non-zero, the domain is a faceted
+    // hull of the actual domain, which is obtained by cutting the hull by
+    // the primitives.
+    int DomPrimQty;
+
+    // Domain primitives [0...DomPrimQty-1]
+    struct PRIM *DomPrim;
 
     // Number of vertices of the domain
     int DomVerQty;

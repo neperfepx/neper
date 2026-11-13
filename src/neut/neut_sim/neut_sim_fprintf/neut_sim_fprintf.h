@@ -7,8 +7,15 @@
 
 #include"neut.h"
 
-/// writes a simulation report file
-extern void neut_sim_fprintf (char *dir, struct SIM Sim, char *mode);
+/// writes the entity and result definitions of a simulation directory
+extern void neut_sim_fprintf (struct SIM Sim, char *mode);
+
+/// writes the definition file of an entity, results/<entity>/<entity>.def
+extern void neut_sim_fprintf_entity (struct SIM Sim, int entity, char *mode);
+
+/// writes the definition file of a result, results/<entity>/<res>/<res>.def
+/// (if the result has an expression)
+extern void neut_sim_fprintf_res (struct SIM Sim, int entity, int res, char *mode);
 
 extern void neut_sim_fprintf_asy (char *dir, struct SIM Sim, char *mode);
 

@@ -57,14 +57,14 @@
 /**                                 to   : 30 nov 2007     **/
 /**                # Version 6.0  : from : 14 aug 2016     **/
 /**                                 to   : 21 may 2018     **/
+/**                # Version 7.0  : from : 17 jan 2023     **/
+/**                                 to   : 17 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
 /*
 **  The defines and includes
 */
-
-#define BGRAPH_BIPART_EX
 
 #include "module.h"
 #include "common.h"

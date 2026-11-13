@@ -28,7 +28,7 @@ nev_print_init_data (struct IN_V In, struct PRINT Print,
   if (Print.showtess && !neut_tess_isvoid (Tess))
   {
     for (i = 0; i <= 5; i++)
-      nev_print_init_data_tess (In, Print, Tess, TessData + i);
+      nev_print_init_data_tess (In, Tess, TessData + i);
     ut_string_string (Tess.CellCrySym, pcrysym);
   }
 
@@ -40,23 +40,32 @@ nev_print_init_data (struct IN_V In, struct PRINT Print,
   }
 
   if ((Print.shownode || Print.showmesh || Print.showslice) && !neut_nodes_isvoid (Nodes))
-    nev_print_init_data_nodes (In, Print, Nodes, *pcrysym, Nodes.NodeQty, pData);
+    nev_print_init_data_nodes (In, Nodes, *pcrysym, Nodes.NodeQty, pData);
 
   meshdim = neut_mesh_array_dim (Mesh);
   if ((Print.showmesh || Print.showslice) && meshdim > 0)
   {
+    // radii scale with the number of cells, as for tessellations
     neut_mesh_size (Nodes, Mesh[meshdim], &size);
     ut_string_string (Mesh[meshdim].ElsetCrySym, pcrysym);
 
-    for (i = 0; i <= meshdim; i++)
-      if (!neut_mesh_isvoid (Mesh[i]))
+    // (i = 4: cohesive elts)
+    for (i = 0; i <= 4; i++)
+      if ((i <= meshdim || i == 4) && !neut_mesh_isvoid (Mesh[i]))
         for (j = 0; j < 3; j++)
-          nev_print_init_data_mesh (In, Print, Nodes, Mesh[i], *pcrysym, size, Mesh[i].ElsetQty,
+          nev_print_init_data_mesh (In, Nodes, Mesh[i], *pcrysym, size, Mesh[meshdim].ElsetQty,
                                     entity[j], meshdim, MeshData[i] + j);
   }
 
   if (Print.showcsys)
-    nev_print_init_data_csys (In, *pcrysym, Print, pCsysData);
+  {
+    char *csyscrysym = NULL;
+
+    nev_print_init_crysym (In, Tess, Tesr, Points, PointQty, 0, &csyscrysym);
+    nev_print_init_data_csys (In, csyscrysym, pCsysData);
+
+    ut_free_1d_char (&csyscrysym);
+  }
 
   if (PointQty != Print.inputqty)
     abort ();
@@ -94,8 +103,10 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
   }
 
   if (dim >= 0 && (*pPrint).showmesh == -1)
-  {
     (*pPrint).showmesh = 1;
+
+  if (dim >= 0 && (*pPrint).showmesh == 1)
+  {
     if ((*pPrint).showtess == -1)
       (*pPrint).showtess = 0;
     if ((*pPrint).showtesr == -1)
@@ -157,6 +168,25 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
 
       (*pPrint).showelt0d[0] = (dim == 0) ? Mesh[0].EltQty : 0;
       ut_array_1d_int_set ((*pPrint).showelt0d + 1, Mesh[0].EltQty, dim == 0);
+    }
+
+    // cohesive elts: all shown by default
+    if ((*pPrint).showeltco[0] == -1)
+    {
+      (*pPrint).showeltco =
+        ut_realloc_1d_int ((*pPrint).showeltco, Mesh[4].EltQty + 1);
+
+      (*pPrint).showeltco[0] = Mesh[4].EltQty;
+      ut_array_1d_int_set ((*pPrint).showeltco + 1, Mesh[4].EltQty, 1);
+    }
+
+    if ((*pPrint).showelsetco[0] == -1)
+    {
+      (*pPrint).showelsetco =
+        ut_realloc_1d_int ((*pPrint).showelsetco, Mesh[4].ElsetQty + 1);
+
+      (*pPrint).showelsetco[0] = Mesh[4].ElsetQty;
+      ut_array_1d_int_set ((*pPrint).showelsetco + 1, Mesh[4].ElsetQty, 1);
     }
 
     if ((*pPrint).showelset3d[0] == -1)
@@ -307,15 +337,8 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
 void
 nev_print_init_scene (struct IN_V In, struct PRINT *pPrint)
 {
-  ut_string_string (In.colormode, &(*pPrint).colormode);
-
   if (!strcmp (In.scenebackground, "default"))
-  {
-    if (!strcmp (In.colormode, "bright"))
-      ut_string_string ("white", &(*pPrint).background);
-    else if (!strcmp (In.colormode, "dark"))
-      ut_string_string ("black", &(*pPrint).background);
-  }
+    ut_string_string ("white", &(*pPrint).background);
   else
     ut_string_string (In.scenebackground, &(*pPrint).background);
 
@@ -337,10 +360,9 @@ nev_print_init_camera (struct IN_V In, struct TESS Tess, struct TESR Tesr, struc
   else if (!neut_tesr_isvoid (Tesr))
     ut_string_string (Tesr.CellCrySym, &crysym);
 
-  neut_nodes_set_zero (&Nodes2);
-
   if (NodeData.CooData)
   {
+    neut_nodes_set_zero (&Nodes2);
     neut_nodes_memcpy (Nodes, &Nodes2);
 
     if (!strcmp (NodeData.CooDataType, "coo"))
@@ -432,6 +454,8 @@ nev_print_init_camera (struct IN_V In, struct TESS Tess, struct TESR Tesr, struc
   if (NodeData.CooData)
     neut_nodes_free (&Nodes2);
 
+  ut_free_1d_char (&crysym);
+
   return;
 }
 
@@ -503,7 +527,6 @@ nev_print_init_pf (struct IN_V In, struct TESS Tess, struct TESR Tesr,
   double *polef = ut_alloc_1d (3);
   char *fct = NULL;
   char **vars = NULL, **vals = NULL;
-  char *inputcrysym = NULL;
 
   ut_string_string (In.space, &(*pPf).space);
   ut_string_string (In.pfshape, &(*pPf).shape);
@@ -522,42 +545,7 @@ nev_print_init_pf (struct IN_V In, struct TESS Tess, struct TESR Tesr,
   }
   (*pPf).clustering = In.pfclustering;
 
-  if (!neut_tess_isvoid (Tess))
-    ut_string_string (Tess.CellCrySym, &inputcrysym);
-  else if (!neut_tesr_isvoid (Tesr))
-    ut_string_string (Tesr.CellCrySym, &inputcrysym);
-  for (i = 0; i < PointQty; i++)
-    if (Points[i].crysym)
-    {
-      ut_string_string (Points[i].crysym, &inputcrysym);
-      break;
-    }
-
-  int inputcrysymdef = 0;
-  if (inputcrysym && strcmp (inputcrysym, "triclinic"))
-    inputcrysymdef = 1;
-
-  if (inputcrysymdef)
-  {
-    if (In.crysym)
-    {
-      if (strcmp (inputcrysym, In.crysym))
-        ut_print_message (1, 2, "Enforcing %s crystal symmetry over input value (%s)\n",
-                          In.crysym, inputcrysym);
-
-      ut_string_string (In.crysym, &(*pPf).crysym);
-    }
-    else
-      ut_string_string (inputcrysym, &(*pPf).crysym);
-  }
-
-  else
-  {
-    if (In.crysym)
-      ut_string_string (In.crysym, &(*pPf).crysym);
-    else
-      ut_string_string ("cubic", &(*pPf).crysym);
-  }
+  nev_print_init_crysym (In, Tess, Tesr, Points, PointQty, 1, &(*pPf).crysym);
 
   if (!strcmp (In.pfpolestring, "default"))
   {
@@ -593,7 +581,18 @@ nev_print_init_pf (struct IN_V In, struct TESS Tess, struct TESR Tesr,
   }
 
   if (!strcmp (In.space, "pf"))
-    ol_vect_crysym_all (polef, (*pPf).crysym, &(*pPf).pfpoles, &(*pPf).pfpoleqty);
+  {
+    double **poles = NULL;
+
+    ol_vect_crysym_all (polef, (*pPf).crysym, &poles, &(*pPf).pfpoleqty);
+
+    // (pfpoles is indexed from 1)
+    (*pPf).pfpoles = ut_alloc_2d ((*pPf).pfpoleqty + 1, 3);
+    for (i = 0; i < (*pPf).pfpoleqty; i++)
+      ut_array_1d_memcpy (poles[i], 3, (*pPf).pfpoles[i + 1]);
+
+    ut_free_2d (&poles, (*pPf).pfpoleqty);
+  }
 
   else if (!strcmp (In.space, "ipf"))
   {
@@ -654,22 +653,18 @@ nev_print_init_pf (struct IN_V In, struct TESS Tess, struct TESR Tesr,
 
   ut_free_2d_char (&dirs, dirqty);
   ut_free_1d (&polef);
+  ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
-  ut_free_1d_char (&inputcrysym);
 
   return;
 }
 
 void
 nev_print_init_ori (struct IN_V In, struct TESS Tess, struct TESR Tesr,
-                    struct SIM *pSim, struct ORI *pOri)
+                    struct POINT *Points, int PointQty, struct SIM *pSim, struct ORI *pOri)
 {
-  ut_string_string ("cubic", &(*pOri).crysym);
-  if (Tess.CellCrySym)
-    ut_string_string (Tess.CellCrySym, &(*pOri).crysym);
-  else if (Tesr.CellCrySym)
-    ut_string_string (Tesr.CellCrySym, &(*pOri).crysym);
+  nev_print_init_crysym (In, Tess, Tesr, Points, PointQty, 1, &(*pOri).crysym);
 
   ut_string_string ((*pOri).Sp.space, &(*pOri).space);
 
@@ -683,6 +678,12 @@ nev_print_init_ori (struct IN_V In, struct TESS Tess, struct TESR Tesr,
       ut_string_string ("surface", &((*pOri).layout));
   }
   ut_string_string (In.orifield, &(*pOri).field);
+
+  ut_string_string (In.orisym, &(*pOri).sym);
+  if (strcmp ((*pOri).sym, "monoclinic") && strcmp ((*pOri).sym, "orthotropic"))
+    ut_print_message (2, 2, "Failed to process `-orisym %s'.\n", (*pOri).sym);
+  if ((*pOri).field && strcmp ((*pOri).sym, "monoclinic"))
+    ut_print_message (2, 2, "Option `-orisym' cannot be used with `-orifield'.\n");
 
   (*pOri).pSim = pSim;
 

@@ -13,13 +13,13 @@ nes_merge (struct IN_S In, struct SIM *pFullSim)
 
   neut_sim_set_zero (&Sim);
 
-  ut_sys_mkdir (In.simdir);
+  ut_sys_mkdir ("%s", In.simdir);
 
   ut_list_break (In.mergedir, NEUT_SEP_NODEP, &sims, &simqty);
 
   ut_print_message (0, 2, "Merging inputs...\n");
 
-  neut_sim_fscanf (sims[0], &Sim, "R");
+  neut_sim_fscanf (sims[0], &Sim);
 
   nes_merge_input (Sim, In.simdir);
 
@@ -28,7 +28,7 @@ nes_merge (struct IN_S In, struct SIM *pFullSim)
   stepqty = -1;
   for (i = 0; i < simqty; i++)
   {
-    neut_sim_fscanf (sims[i], &Sim, "R");
+    neut_sim_fscanf (sims[i], &Sim);
 
     for (j = !(i == 0); j <= Sim.StepQty; j++)
     {
@@ -47,7 +47,7 @@ nes_merge (struct IN_S In, struct SIM *pFullSim)
 
   ut_print_message (0, 2, "Merging results...\n");
 
-  nes_merge_post (In, sims[0], stepqty, Sim, pFullSim);
+  nes_merge_post (In, sims[0], pFullSim);
 
   ut_free_2d_char (&sims, simqty);
   neut_sim_free (&Sim);

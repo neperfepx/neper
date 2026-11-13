@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2009,2011,2014,2015 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2009,2011,2014,2015,2021,2023 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -49,6 +49,10 @@
 /**                                 to   : 11 nov 2009     **/
 /**                # Version 6.0  : from : 09 mar 2011     **/
 /**                                 to   : 16 aug 2015     **/
+/**                # Version 6.1  : from : 01 nov 2021     **/
+/**                                 to   : 21 nov 2021     **/
+/**                # Version 7.0  : from : 03 may 2019     **/
+/**                                 to   : 16 jan 2023     **/
 /**                                                        **/
 /************************************************************/
 
@@ -56,7 +60,7 @@
 **  The defines and includes.
 */
 
-#define VGRAPH_SEPARATE_ML
+#define SCOTCH_VGRAPH_SEPARATE_ML
 
 #include "module.h"
 #include "common.h"
@@ -95,13 +99,16 @@ const VgraphSeparateMlParam * const   paraptr)    /*+ Method parameters         
 {
   *coarmultptr = NULL;                            /* Allocate coarmulttab along with coarse graph */
   if (graphCoarsen (&finegrafptr->s, &coargrafptr->s, NULL, coarmultptr,
-                    paraptr->coarnbr, paraptr->coarval, GRAPHCOARSENNONE,
-                    NULL, NULL, 0, NULL) != 0)
+                    paraptr->coarnbr, paraptr->coarval, GRAPHCOARSENNOCOMPACT,
+                    NULL, NULL, 0, finegrafptr->contptr) != 0)
     return (1);                                   /* Return if coarsening failed */
 
-  coargrafptr->parttax = NULL;                    /* Do not allocate partition data yet      */
-  coargrafptr->frontab = finegrafptr->frontab;    /* Re-use frontier array for coarser graph */
-  coargrafptr->levlnum = finegrafptr->levlnum + 1; /* Graph level is coarsening level        */
+  coargrafptr->parttax    = NULL;                 /* Do not allocate partition data yet      */
+  coargrafptr->frontab    = finegrafptr->frontab; /* Re-use frontier array for coarser graph */
+  coargrafptr->dwgttab[0] = finegrafptr->dwgttab[0]; /* Preserve respective weights          */
+  coargrafptr->dwgttab[1] = finegrafptr->dwgttab[1];
+  coargrafptr->levlnum    = finegrafptr->levlnum + 1; /* Graph level is coarsening level */
+  coargrafptr->contptr    = finegrafptr->contptr; /* Use same execution context          */
 
   return (0);
 }
@@ -131,9 +138,10 @@ const GraphCoarsenMulti * restrict const  coarmulttab) /*+ Un-based multinode ar
   if (finegrafptr->parttax == NULL) {             /* If partition array not yet allocated */
     if ((finegrafptr->parttax = (GraphPart *) memAlloc (finegrafptr->s.vertnbr * sizeof (GraphPart))) == NULL) {
       errorPrint ("vgraphSeparateMlUncoarsen: out of memory");
-      return     (1);                             /* Allocated data will be freed along with graph structure */
+      return (1);                                 /* Allocated data will be freed along with graph structure */
     }
-    finegrafptr->parttax -= finegrafptr->s.baseval;
+    finegrafptr->parttax   -= finegrafptr->s.baseval;
+    finegrafptr->s.flagval |= VGRAPHFREEPART;
   }
 
   if (coargrafptr != NULL) {                      /* If coarser graph provided */
@@ -214,7 +222,6 @@ const VgraphSeparateMlParam * const paraptr)      /* Method parameters       */
         ((o = vgraphSeparateMlUncoarsen (grafptr, &coargrafdat, coarmulttab)) == 0) &&
         ((o = vgraphSeparateSt          (grafptr, paraptr->stratasc))         != 0)) /* Apply ascending strategy */
       errorPrint ("vgraphSeparateMl2: cannot apply ascending strategy");
-    coargrafdat.frontab = NULL;                   /* Prevent frontab of fine graph from being freed */
     vgraphExit (&coargrafdat);
   }
   else {                                          /* Cannot coarsen due to lack of memory or error */

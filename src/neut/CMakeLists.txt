@@ -34,18 +34,10 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 add_library(neut
-./neut_tesl/neut_tesl.c
-./neut_tesl/neut_tesl_tess/neut_tesl_tess3.c
-./neut_tesl/neut_tesl_tess/neut_tesl_tess2.c
-./neut_tesl/neut_tesl_tess/neut_tesl_tess1.c
-./neut_poly/neut_poly_polymod/neut_poly_polymod1.c
-./neut_poly/neut_poly_polymod/neut_poly_polymod2.c
-./neut_poly/neut_poly_polymod/neut_poly_polymod3.c
 ./neut_poly/neut_poly_fprintf/neut_poly_fprintf.c
 ./neut_poly/neut_poly_geom/neut_poly_geom.c
 ./neut_poly/neut_poly_op/neut_poly_op.c
 ./neut_poly/neut_poly_topo/neut_poly_topo.c
-./neut_polymod/neut_polymod.c
 ./neut_data/neut_data_fscanf/neut_data_fscanf2.c
 ./neut_data/neut_data_fscanf/neut_data_fscanf1.c
 ./neut_data/neut_data_gen/neut_data_gen1.cpp
@@ -117,9 +109,11 @@ add_library(neut
 ./neut_tess/neut_tess_compress/neut_tess_compress1.c
 ./neut_tess/neut_tess_compress/neut_tess_compress2.c
 ./neut_tess/neut_tess_compress/neut_tess_compress3.c
+./neut_tess/neut_tess_compress/neut_tess_compress4.c
 ./neut_tess/neut_tess_fprintf/neut_tess_fprintf3.c
 ./neut_tess/neut_tess_fprintf/neut_tess_fprintf2.c
 ./neut_tess/neut_tess_fprintf/neut_tess_fprintf1.c
+./neut_tess/neut_tess_tess/neut_tess_tess4.c
 ./neut_tess/neut_tess_tess/neut_tess_tess3.c
 ./neut_tess/neut_tess_tess/neut_tess_tess2.c
 ./neut_tess/neut_tess_tess/neut_tess_tess1.c
@@ -184,20 +178,19 @@ add_library(neut
 ./neut_sim/neut_sim_gen/neut_sim_gen1.c
 ./neut_sim/neut_sim_simres/neut_sim_simres1.c
 ./neut_sim/neut_sim_simres/neut_sim_simres2.c
+./neut_sim/neut_sim_simres/neut_sim_simres3.c
 ./neut_sim/neut_sim_fscanf/neut_sim_fscanf1.c
 ./neut_sim/neut_sim_fscanf/neut_sim_fscanf2.c
-./neut_sim/neut_sim_fscanf/neut_sim_fscanf_report/neut_sim_fscanf_report1.c
+./neut_sim/neut_sim_fscanf/neut_sim_fscanf3.c
+./neut_sim/neut_sim_fscanf/neut_sim_fscanf4.c
 ./neut_sim/neut_sim_fprintf/neut_sim_fprintf1.c
 ./neut_sim/neut_sim_fprintf/neut_sim_fprintf2.c
-./neut_fepxsim/neut_fepxsim_sim/neut_fepxsim_sim.c
-./neut_fepxsim/neut_fepxsim_fscanf/neut_fepxsim_fscanf1.c
-./neut_fepxsim/neut_fepxsim_op/neut_fepxsim_op.c
-./neut_fepxsim/neut_fepxsim_gen/neut_fepxsim_gen.c
 ./neut_ospace/neut_ospace1.cpp
 ./neut_ospace/neut_ospace2.cpp
 ./neut_odf/neut_odf1.cpp
 ./neut_odf/neut_odf2.cpp
 ./neut_odf/neut_odf3.cpp
+./neut_odf/neut_odf4.cpp
 ./neut_odf/neut_odf_fscanf/neut_odf_fscanf1.cpp
 ./neut_odf/neut_odf_fscanf/neut_odf_fscanf2.cpp
 ./neut_pf/neut_pf.c
@@ -206,6 +199,6 @@ add_library(neut
 ## Link libraries
 
 list (APPEND EXTRA_LIBS ut)
-list (APPEND EXTRA_LIBS orilib)
+list (APPEND EXTRA_LIBS orilib-lib)
 list (APPEND EXTRA_LIBS neper_t)
 target_link_libraries(neut ${EXTRA_LIBS})

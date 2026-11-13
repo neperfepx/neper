@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2008,2010,2011,2015,2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2008,2010,2011,2015,2018,2023,2026 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -63,6 +63,8 @@
 /**                                 to   : 11 aug 2010     **/
 /**                # Version 6.0  : from : 14 feb 2011     **/
 /**                                 to   : 15 may 2018     **/
+/**                # Version 7.0  : from : 19 feb 2018     **/
+/**                                 to   : 08 oct 2026     **/
 /**                                                        **/
 /**   NOTES      : # The vertices of the (dX,dY) mesh are  **/
 /**                  numbered as terminals so that         **/
@@ -80,18 +82,16 @@
 **  The defines and includes.
 */
 
-#define ARCH_MESH
-
 #include "module.h"
 #include "common.h"
 #include "arch.h"
 #include "arch_mesh.h"
 
-/***********************************************/
-/*                                             */
+/**********************************************/
+/*                                            */
 /* These are the 2-dimensional mesh routines. */
-/*                                             */
-/***********************************************/
+/*                                            */
+/**********************************************/
 
 /* This routine loads the
 ** bidimensional mesh architecture.
@@ -109,7 +109,7 @@ FILE * restrict const       stream)
   if ((sizeof (ArchMesh2)    > sizeof (ArchDummy)) ||
       (sizeof (ArchMesh2Dom) > sizeof (ArchDomDummy))) {
     errorPrint ("archMesh2ArchLoad: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
@@ -117,7 +117,7 @@ FILE * restrict const       stream)
       (intLoad (stream, &archptr->c[1]) != 1) ||
       (archptr->c[0] < 1) || (archptr->c[1] < 1)) {
     errorPrint ("archMesh2ArchLoad: bad input");
-    return     (1);
+    return (1);
   }
   archptr->dimnnbr = 2;
 
@@ -140,7 +140,7 @@ FILE * restrict const       stream)
   if ((sizeof (ArchMesh2)    > sizeof (ArchDummy)) ||
       (sizeof (ArchMesh2Dom) > sizeof (ArchDomDummy))) {
     errorPrint ("archMesh2ArchSave: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
@@ -148,7 +148,7 @@ FILE * restrict const       stream)
                (Anum) archptr->c[0],
                (Anum) archptr->c[1]) == EOF) {
     errorPrint ("archMesh2ArchSave: bad output");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -181,16 +181,15 @@ const ArchMesh2 * const     archptr,
 ArchMesh2Dom * const        domptr,
 const ArchDomNum            domnum)
 {
-  if (domnum < (archptr->c[0] * archptr->c[1])) { /* If valid label */
-    domptr->c[0][0] =                             /* Set the domain */
-    domptr->c[0][1] = domnum % archptr->c[0];
-    domptr->c[1][0] =
-    domptr->c[1][1] = domnum / archptr->c[0];
+  if (domnum >= (archptr->c[0] * archptr->c[1]))  /* If invalid label  */
+    return (1);                                   /* Cannot set domain */
 
-    return (0);
-  }
+  domptr->c[0][0] =                               /* Set domain */
+  domptr->c[0][1] = domnum % archptr->c[0];
+  domptr->c[1][0] =
+  domptr->c[1][1] = domnum / archptr->c[0];
 
-  return (1);                                     /* Cannot set domain */
+  return (0);
 }
 
 /* This function returns the number of
@@ -218,9 +217,9 @@ const ArchMesh2 * const    archptr,
 const ArchMesh2Dom * const dom0ptr,
 const ArchMesh2Dom * const dom1ptr)
 {
-  return (((abs (dom0ptr->c[0][0] + dom0ptr->c[0][1] -
+  return (((ABS (dom0ptr->c[0][0] + dom0ptr->c[0][1] -
                  dom1ptr->c[0][0] - dom1ptr->c[0][1]) + 1) / 2) +
-          ((abs (dom0ptr->c[1][0] + dom0ptr->c[1][1] -
+          ((ABS (dom0ptr->c[1][0] + dom0ptr->c[1][1] -
                  dom1ptr->c[1][0] - dom1ptr->c[1][1]) + 1) / 2));
 }
 
@@ -359,30 +358,11 @@ const ArchMesh2Dom * const  dom1ptr)
   return (0);
 }
 
-/* This function creates the MPI_Datatype for
-** 2D mesh domains.
-** It returns:
-** - 0  : if type could be created.
-** - 1  : on error.
-*/
-
-#ifdef SCOTCH_PTSCOTCH
-int
-archMesh2DomMpiType (
-const ArchMesh2 * const       archptr,
-MPI_Datatype * const          typeptr)
-{
-  MPI_Type_contiguous (4, ANUM_MPI, typeptr);
-
-  return (0);
-}
-#endif /* SCOTCH_PTSCOTCH */
-
-/***********************************************/
-/*                                             */
+/**********************************************/
+/*                                            */
 /* These are the 3-dimensional mesh routines. */
-/*                                             */
-/***********************************************/
+/*                                            */
+/**********************************************/
 
 /* This routine loads the
 ** tridimensional mesh architecture.
@@ -400,7 +380,7 @@ FILE * restrict const       stream)
   if ((sizeof (ArchMesh3)    > sizeof (ArchDummy)) ||
       (sizeof (ArchMesh3Dom) > sizeof (ArchDomDummy))) {
     errorPrint ("archMesh3ArchLoad: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
@@ -409,7 +389,7 @@ FILE * restrict const       stream)
       (intLoad (stream, &archptr->c[2]) != 1) ||
       (archptr->c[0] < 1) || (archptr->c[1] < 1) || (archptr->c[2] < 1)) {
     errorPrint ("archMesh3ArchLoad: bad input");
-    return     (1);
+    return (1);
   }
   archptr->dimnnbr = 3;
 
@@ -432,14 +412,14 @@ FILE * restrict const       stream)
   if ((sizeof (ArchMesh3)    > sizeof (ArchDummy)) ||
       (sizeof (ArchMesh3Dom) > sizeof (ArchDomDummy))) {
     errorPrint ("archMesh3ArchSave: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
   if (fprintf (stream, ANUMSTRING " " ANUMSTRING " " ANUMSTRING "\n",
                (Anum) archptr->c[0], (Anum) archptr->c[1], (Anum) archptr->c[2]) == EOF) {
     errorPrint ("archMesh3ArchSave: bad output");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -474,18 +454,17 @@ const ArchMesh3 * const     archptr,
 ArchMesh3Dom * const        domptr,
 const ArchDomNum            domnum)
 {
-  if (domnum < (archptr->c[0] * archptr->c[1] * archptr->c[2])) { /* If valid label */
-    domptr->c[0][0] =                             /* Set the domain                 */
-    domptr->c[0][1] = domnum % archptr->c[0];
-    domptr->c[1][0] =
-    domptr->c[1][1] = (domnum / archptr->c[0]) % archptr->c[1];
-    domptr->c[2][0] =
-    domptr->c[2][1] = domnum / (archptr->c[0] * archptr->c[1]);
+  if (domnum >= (archptr->c[0] * archptr->c[1] * archptr->c[2])) /* If invalid label */
+    return (1);                                   /* Cannot set domain               */
 
-    return (0);
-  }
+  domptr->c[0][0] =                               /* Set domain */
+  domptr->c[0][1] = domnum % archptr->c[0];
+  domptr->c[1][0] =
+  domptr->c[1][1] = (domnum / archptr->c[0]) % archptr->c[1];
+  domptr->c[2][0] =
+  domptr->c[2][1] = domnum / (archptr->c[0] * archptr->c[1]);
 
-  return (1);                                     /* Cannot set domain */
+  return (0);
 }
 
 /* This function returns the number of
@@ -513,11 +492,11 @@ const ArchMesh3 * const     archptr,
 const ArchMesh3Dom * const  dom0ptr,
 const ArchMesh3Dom * const  dom1ptr)
 {
-  return (((abs (dom0ptr->c[0][0] + dom0ptr->c[0][1] -
+  return (((ABS (dom0ptr->c[0][0] + dom0ptr->c[0][1] -
                  dom1ptr->c[0][0] - dom1ptr->c[0][1]) + 1) / 2) +
-          ((abs (dom0ptr->c[1][0] + dom0ptr->c[1][1] -
+          ((ABS (dom0ptr->c[1][0] + dom0ptr->c[1][1] -
                  dom1ptr->c[1][0] - dom1ptr->c[1][1]) + 1) / 2) +
-          ((abs (dom0ptr->c[2][0] + dom0ptr->c[2][1] -
+          ((ABS (dom0ptr->c[2][0] + dom0ptr->c[2][1] -
                  dom1ptr->c[2][0] - dom1ptr->c[2][1]) + 1) / 2));
 }
 
@@ -622,25 +601,6 @@ const ArchMesh3Dom * const  dom1ptr)
   return (0);
 }
 
-/* This function creates the MPI_Datatype for
-** 3D mesh domains.
-** It returns:
-** - 0  : if type could be created.
-** - 1  : on error.
-*/
-
-#ifdef SCOTCH_PTSCOTCH
-int
-archMesh3DomMpiType (
-const ArchMesh3 * const       archptr,
-MPI_Datatype * const          typeptr)
-{
-  MPI_Type_contiguous (6, ANUM_MPI, typeptr);
-
-  return (0);
-}
-#endif /* SCOTCH_PTSCOTCH */
-
 /**********************************************/
 /*                                            */
 /* These are the x-dimensional mesh routines. */
@@ -665,29 +625,29 @@ FILE * restrict const       stream)
   if ((sizeof (ArchMeshX)    > sizeof (ArchDummy)) ||
       (sizeof (ArchMeshXDom) > sizeof (ArchDomDummy))) {
     errorPrint ("archMeshXArchLoad: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
   if ((intLoad (stream, &archptr->dimnnbr) != 1) ||
       (archptr->dimnnbr > ARCHMESHDIMNMAX)) {
     errorPrint ("archMeshXArchLoad: bad input (1)");
-    return     (1);
+    return (1);
   }
 
   for (dimnnum = 0; dimnnum < archptr->dimnnbr; dimnnum ++) {
     if ((intLoad (stream, &archptr->c[dimnnum]) != 1) ||
         (archptr->c[dimnnum] < 1)) {
       errorPrint ("archMeshXArchLoad: bad input (2)");
-      return     (1);
+      return (1);
     }
   }
 
   return (0);
 }
 
-/* This routine saves the
-** tridimensional torus architecture.
+/* This routine saves the X-dimensional mesh
+** architecture.
 ** It returns:
 ** - 0   : if the architecture has been successfully written.
 ** - !0  : on error.
@@ -704,27 +664,27 @@ FILE * restrict const       stream)
   if ((sizeof (ArchMeshX)    > sizeof (ArchDummy)) ||
       (sizeof (ArchMeshXDom) > sizeof (ArchDomDummy))) {
     errorPrint ("archMeshXArchSave: invalid type specification");
-    return     (1);
+    return (1);
   }
 #endif /* SCOTCH_DEBUG_ARCH1 */
 
   if (fprintf (stream, ANUMSTRING " ",
                (Anum) archptr->dimnnbr) == EOF) {
     errorPrint ("archMeshXArchSave: bad output (1)");
-    return     (1);
+    return (1);
   }
 
   for (dimnnum = 0; dimnnum < archptr->dimnnbr; dimnnum ++) {
     if (fprintf (stream, ANUMSTRING " ",
                (Anum) archptr->c[dimnnum]) == EOF) {
       errorPrint ("archMeshXArchSave: bad output (2)");
-      return     (1);
+      return (1);
     }
   }
 
   if (fprintf (stream, "\n") == EOF) {
     errorPrint ("archMeshArchSave: bad output (3)");
-    return     (1);
+    return (1);
   }
 
   return (0);
@@ -757,7 +717,7 @@ const ArchMeshX * restrict const  archptr)
 
   if ((matcptr->multtab = memAlloc (multnbr * sizeof (ArchCoarsenMulti))) == NULL) {
     errorPrint ("archMeshXMatchInit: out of memory");
-    return     (1);
+    return (1);
   }
 
   matcptr->dimnnbr = dimnnbr;                     /* Set number of dimensions                       */
@@ -858,7 +818,7 @@ ArchCoarsenMulti ** restrict const  multptr)
 #ifdef SCOTCH_DEBUG_ARCH2
   if (coarvertnum * indxnbr != finevertnbr * ((indxnbr + 1) >> 1)) {
     errorPrint ("archMeshXMatchMate: internal error");
-    return     (-1);
+    return (-1);
   }
 #endif /* SCOTCH_DEBUG_ARCH2 */
 
@@ -903,7 +863,7 @@ const ArchDomNum            domnnum)
   Anum                dimnnum;
   Anum                domntmp;
 
-  for (dimnnum = 0, domntmp = domnnum; dimnnum < archptr->dimnnbr; dimnnum ++) { /* Set the domain */
+  for (dimnnum = 0, domntmp = domnnum; dimnnum < archptr->dimnnbr; dimnnum ++) { /* Set domain */
     domnptr->c[dimnnum][0] =
     domnptr->c[dimnnum][1] = domntmp % archptr->c[dimnnum];
     domntmp /= archptr->c[dimnnum];
@@ -949,12 +909,12 @@ const ArchMeshXDom * const  dom1ptr)
   Anum                disttmp;
 
   for (dimnnum = 0, distval = 0; dimnnum < archptr->dimnnbr; dimnnum ++) {
-    disttmp = abs (dom0ptr->c[dimnnum][0] + dom0ptr->c[dimnnum][1] -
-                   dom1ptr->c[dimnnum][0] - dom1ptr->c[dimnnum][1]);
-    distval += (disttmp > archptr->c[dimnnum]) ? (2 * archptr->c[dimnnum] - disttmp) : disttmp;
+    disttmp = ((ABS (dom0ptr->c[dimnnum][0] + dom0ptr->c[dimnnum][1] -
+                     dom1ptr->c[dimnnum][0] - dom1ptr->c[dimnnum][1]) + 1) / 2);
+    distval += disttmp;
   }
 
-  return (distval >> 1);
+  return (distval);
 }
 
 /* This function sets the biggest
@@ -1001,7 +961,7 @@ FILE * restrict const         stream)
         (domptr->c[dimnnum][0] > domptr->c[dimnnum][1])  ||
         (domptr->c[dimnnum][0] < 0)) {
       errorPrint ("archMeshXDomLoad: bad input");
-      return     (1);
+      return (1);
     }
   }
 
@@ -1028,7 +988,7 @@ FILE * restrict const       stream)
                  (Anum) domptr->c[dimnnum][0],
                  (Anum) domptr->c[dimnnum][1]) == EOF) {
       errorPrint ("archMeshXDomSave: bad output");
-      return     (1);
+      return (1);
     }
   }
 
@@ -1118,22 +1078,3 @@ const ArchMeshXDom * const  dom1ptr)
 
   return (1);
 }
-
-/* This function creates the MPI_Datatype for
-** xD torus domains.
-** It returns:
-** - 0  : if type could be created.
-** - 1  : on error.
-*/
-
-#ifdef SCOTCH_PTSCOTCH
-int
-archMeshXDomMpiType (
-const ArchMeshX * const     archptr,
-MPI_Datatype * const        typeptr)
-{
-  MPI_Type_contiguous (2 * archptr->dimnnbr, ANUM_MPI, typeptr);
-
-  return (0);
-}
-#endif /* SCOTCH_PTSCOTCH */

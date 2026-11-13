@@ -13,11 +13,11 @@ nev_print_pf (struct IN_V In, struct PF *pPf, char *basename, struct PRINT Print
               struct DATA CsysData,
               struct POINT *Points, int PointQty, struct DATA *PointData)
 {
-  int i, ptqty, imagewidth, imageheight, *ptcells = NULL, density_plotted, id;
+  int i, j, ptqty, imagewidth, imageheight, *ptcells = NULL, density_plotted, id;
   double *wgts = NULL, **pts = NULL, *ptwgts = NULL;
   int *cellptqty = NULL;
   double ***cellpts = NULL;
-  char *outdir = NULL, *filename = NULL, *filename2 = NULL;
+  char *filename = NULL, *filename2 = NULL;
   char *pole_string = ut_alloc_1d_char (1000);
   FILE *file = NULL;
   struct DATA *pData = NULL;
@@ -37,10 +37,9 @@ nev_print_pf (struct IN_V In, struct PF *pPf, char *basename, struct PRINT Print
 
   (void) steps;
 
-  neut_print_outdir (In.outdir, Sim, "pf", &outdir);
 
-  ut_file_dir_basename_extension_filename (outdir, basename, "asy", &filename);
-  ut_file_dir_basename_extension_filename (outdir, basename, "level", &filename2);
+  ut_file_dir_basename_extension_filename (".", basename, "asy", &filename);
+  ut_file_dir_basename_extension_filename (".", basename, "level", &filename2);
 
   if (isfirststep)
   {
@@ -55,9 +54,9 @@ nev_print_pf (struct IN_V In, struct PF *pPf, char *basename, struct PRINT Print
 
     nev_print_pf_background (*pPf, file, Print);
 
-    nev_print_pf_csys (Print, *pPf, file, CsysData);
+    nev_print_pf_csys (*pPf, file, CsysData);
 
-    nev_print_pf_border (file, Print, pPf);
+    nev_print_pf_border (file, pPf);
   }
 
   else
@@ -100,15 +99,21 @@ nev_print_pf (struct IN_V In, struct PF *pPf, char *basename, struct PRINT Print
 
     ut_free_2d (&data, cellqty);
     ut_free_1d_char (&type);
-    // free cellptqty
-    // free cellpts
+    for (j = 0; j <= cellqty; j++)
+      ut_free_2d (cellpts + j, cellptqty[j]);
+    free (cellpts);
+    ut_free_1d_int (&cellptqty);
+    ut_free_1d (&wgts);
+    ut_free_2d (&pts, ptqty);
+    ut_free_1d_int (&ptcells);
+    ut_free_1d (&ptwgts);
   }
 
   if (isfirststep)
   {
     nev_print_pf_polestring (*pPf, pData, &pole_string);
 
-    nev_print_pf_pole_proj (Print, *pPf, file, pole_string);
+    nev_print_pf_pole_proj (*pPf, file, pole_string);
   }
 
   // nev_print_pf_compress (InPF, &pts, &ptwgts, &ptqty);
@@ -139,10 +144,11 @@ nev_print_pf (struct IN_V In, struct PF *pPf, char *basename, struct PRINT Print
   ut_free_2d (&pts, ptqty);
   ut_free_1d_int (&ptcells);
   ut_free_1d (&ptwgts);
-  ut_free_1d_char (&outdir);
   ut_free_1d_char (&pole_string);
   ut_free_1d_char (&type);
   ut_free_1d_char (&value);
+
+  neut_datainput_free (&DataInput);
 
   return;
 }

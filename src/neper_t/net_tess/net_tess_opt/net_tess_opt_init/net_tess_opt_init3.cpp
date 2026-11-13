@@ -101,67 +101,35 @@ net_tess_opt_init_parms_algo (struct IN_T In, int level, struct MTESS MTess,
                               struct TESS *Tess, int dtess, int dcell,
                               struct TOPT *pTOpt)
 {
-  char *optialgo = NULL;
-
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.optialgo[neut_topt_typepos (*pTOpt)][level],
-                                           &optialgo);
-  ut_list_break (optialgo, NEUT_SEP_NODEP, &(*pTOpt).algoname,
-                 &(*pTOpt).algoqty);
+                                           &(*pTOpt).algoname);
 
-#ifdef HAVE_NLOPT
-  int i;
-  (*pTOpt).algo =
-    (nlopt_algorithm *) calloc ((*pTOpt).algoqty, sizeof (nlopt_algorithm));
-
-  for (i = 0; i < (*pTOpt).algoqty; i++)
+  // subplex[(<subspaces>)]: subspaces of the subplex algorithm
+  if (!strncmp ((*pTOpt).algoname, "subplex", 7))
   {
-    if (!strcmp ((*pTOpt).algoname[i], "neldermead"))
-      (*pTOpt).algo[i] = NLOPT_LN_NELDERMEAD;
-    else if (!strcmp ((*pTOpt).algoname[i], "subplex"))
-      (*pTOpt).algo[i] = NLOPT_LN_SBPLX;
-    else if (!strcmp ((*pTOpt).algoname[i], "cobyla"))
-      (*pTOpt).algo[i] = NLOPT_LN_COBYLA;
-    else if (!strcmp ((*pTOpt).algoname[i], "bobyqa"))
-      (*pTOpt).algo[i] = NLOPT_LN_BOBYQA;
-    else if (!strcmp ((*pTOpt).algoname[i], "newuoa"))
-      (*pTOpt).algo[i] = NLOPT_LN_NEWUOA_BOUND;
-    else if (!strcmp ((*pTOpt).algoname[i], "praxis"))
-      (*pTOpt).algo[i] = NLOPT_LN_PRAXIS;
-    else if (!strncmp ((*pTOpt).algoname[i], "random", 5))
-      (*pTOpt).algo[i] = NLOPT_LN_PRAXIS;
-    else if (!strncmp ((*pTOpt).algoname[i], "lloyd", 5))
-      (*pTOpt).algo[i] = NLOPT_LN_PRAXIS;
+    if (!strcmp ((*pTOpt).algoname, "subplex(rowan)"))
+      ut_string_string ("rowan", &(*pTOpt).subplexsubspaces);
+    else if (!strcmp ((*pTOpt).algoname, "subplex(perseed)"))
+      ut_string_string ("perseed", &(*pTOpt).subplexsubspaces);
+    // cell errors are only available for a morphology optimization
+    else if (!strcmp ((*pTOpt).algoname, "subplex"))
+      ut_string_string (!strcmp ((*pTOpt).optitype, "morpho") ? "percellerror" : "rowan",
+                        &(*pTOpt).subplexsubspaces);
+    else if (!strcmp ((*pTOpt).algoname, "subplex(percellerror)")
+             && !strcmp ((*pTOpt).optitype, "morpho"))
+      ut_string_string ("percellerror", &(*pTOpt).subplexsubspaces);
     else
-      abort ();
+      ut_print_message (2, 3, "Unknown optimization algorithm `%s'.\n",
+                        (*pTOpt).algoname);
+
+    ut_string_string ("subplex", &(*pTOpt).algoname);
   }
-#endif // HAVE_NLOPT
 
-  return;
-}
-
-void
-net_tess_opt_init_parms_algomaxiter (struct IN_T In, int level,
-                                     struct TOPT *pTOpt)
-{
-  int i, qty, varqty = 1;
-  char **vars = ut_alloc_1d_pchar (varqty);
-  double *vals = ut_alloc_1d (varqty);
-
-  (*pTOpt).algomaxiter = ut_alloc_1d_int ((*pTOpt).algoqty);
-
-  ut_list_break ((*pTOpt).dof, NEUT_SEP_NODEP, NULL, &qty);
-  qty *= (*pTOpt).seedoptiqty;
-
-  ut_string_string ("varnb", vars);
-  vals[0] = qty;
-
-  for (i = 0; i < (*pTOpt).algoqty; i++)
-    ut_math_eval_int (In.optialgomaxiter[level], varqty, vars, vals,
-                      (*pTOpt).algomaxiter + i);
-
-  ut_free_2d_char (&vars, varqty);
-  ut_free_1d (&vals);
+  else if (strncmp ((*pTOpt).algoname, "random", 5)
+           && strncmp ((*pTOpt).algoname, "lloyd", 5))
+    ut_print_message (2, 3, "Unknown optimization algorithm `%s'.\n",
+                      (*pTOpt).algoname);
 
   return;
 }
@@ -215,7 +183,10 @@ net_tess_opt_init_parms_objective (char *optiobjective,
     if (!strncmp (parts[j][0], "gen", 3))
       ut_string_string (parts[j][1], &(*pTOpt).objective);
 
-  // ut_free_3d_char (&parts, PartQty1, 2);
+  // parts[i] has PartQty2[i] elements
+  for (i = 0; i < PartQty1; i++)
+    ut_free_2d_char (parts + i, PartQty2[i]);
+  free (parts);
   ut_free_1d_int (&PartQty2);
   ut_free_1d_int (&found);
 
@@ -335,10 +306,6 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
     }
   }
 
-  else if (strstr ((*pTOpt).tarvar[id], "sel"))
-    neut_tess_cellavdiameq ((*pTOpt).Dom0, (*pTOpt).CellQty,
-                            &((*pTOpt).tarrefval[id]));
-
   else
     (*pTOpt).tarrefval[id] = 1;
 
@@ -384,6 +351,10 @@ net_tess_opt_init_target_grid (struct IN_T In, int level, struct MTESS MTess,
     ut_print_message (2, 3, "Variable `%s' not found in `-morphooptigrid'.\n",
                       (*pTOpt).tarvar[var]);
 
+  for (i = 0; i < qty; i++)
+    ut_free_2d_char (parts + i, qty2[i]);
+  free (parts);
+  ut_free_1d_int (&qty2);
   ut_free_1d_char (&string);
 
   return;
@@ -445,6 +416,10 @@ net_tess_opt_init_target_cvl (struct IN_T In, int level, struct MTESS MTess,
     ut_array_1d_scale ((*pTOpt).cvl[var].y, (*pTOpt).cvl[var].size, 1. / sum);
   }
 
+  for (i = 0; i < qty; i++)
+    ut_free_2d_char (parts + i, qty2[i]);
+  free (parts);
+  ut_free_1d_int (&qty2);
   ut_free_1d_char (&string);
 
   return;
@@ -523,11 +498,14 @@ net_tess_opt_init_bounds_seeds (struct TOPT *pTOpt)
       }
       else if (!strcmp (dofs[i], "w"))
       {
-        (*pTOpt).boundl[k] = ((*pTOpt).SSet).SeedWeight[seed] - (*pTOpt).dist;
-        (*pTOpt).boundu[k] = ((*pTOpt).SSet).SeedWeight[seed] + (*pTOpt).dist;
+        // the optimization variable is sqrt (w), while the input bounds apply to w
+        (*pTOpt).boundl[k] = sqrt (((*pTOpt).SSet).SeedWeight[seed]) - (*pTOpt).dist;
+        (*pTOpt).boundu[k] = sqrt (((*pTOpt).SSet).SeedWeight[seed]) + (*pTOpt).dist;
         (*pTOpt).boundl[k] = ut_num_max (0, (*pTOpt).boundl[k]);
-        (*pTOpt).boundl[k] = ut_num_max ((*pTOpt).boundl[k], boundl_input[i][j]);
-        (*pTOpt).boundu[k] = ut_num_min ((*pTOpt).boundu[k], boundu_input[i][j]);
+        (*pTOpt).boundl[k] = ut_num_max ((*pTOpt).boundl[k],
+                                         sqrt (ut_num_max (0, boundl_input[i][j])));
+        (*pTOpt).boundu[k] = ut_num_min ((*pTOpt).boundu[k],
+                                         sqrt (ut_num_max (0, boundu_input[i][j])));
         k++;
       }
       else

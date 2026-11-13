@@ -93,9 +93,13 @@ net_mtess_flatten_edge_domface (struct MTESS MTess, struct TESS *Tess,
 
     // free'ing memory
     for (t = 0; t < TessQty; t++)
+    {
       for (j = 0; j < EdgeQty[t]; j++)
         ut_free_1d_int (&EdgeVerNb[t][j]);
+      ut_free_1d_pint (EdgeVerNb + t);
+    }
     ut_free_1d_ppint (&EdgeVerNb);
+    ut_free_2d (&VerCoo, VerQty);
 
     ut_free_2d_int (&EdgeVerQty, TessQty);
     ut_free_2d_int (&EdgeNb, TessQty);
@@ -136,6 +140,7 @@ net_mtess_flatten_edge_domedge (struct MTESS MTess, struct TESS *Tess,
     // free'ing memory
     ut_free_2d_int (&EdgeNb, TessQty);
     EdgeNb = NULL;
+    ut_free_2d_int (&EdgeOri, TessQty);
     ut_free_1d_int (&EdgeQty);
     ut_free_1d_int (&TessNb);
   }
@@ -147,7 +152,8 @@ net_mtess_flatten_edge_domedge (struct MTESS MTess, struct TESS *Tess,
 
 void
 net_mtess_flatten_edge_init_fedgetessedge (struct TESS *Tess, int *CTessIds,
-                                           int CTessQty, struct TESS *pFTess,
+                                           int CTessQty, int *VTessIds,
+                                           int VTessQty, struct TESS *pFTess,
                                            struct TESSE *TessE,
                                            struct FLATTEN *pFlatten)
 {
@@ -176,9 +182,10 @@ net_mtess_flatten_edge_init_fedgetessedge (struct TESS *Tess, int *CTessIds,
   (*pFlatten).EdgeTessEdgeQty = ut_alloc_1d_int ((*pFTess).EdgeQty + 1);
   (*pFlatten).EdgeTessEdgeNb = ut_alloc_2d_pint ((*pFTess).EdgeQty + 1, 1);
   (*pFlatten).EdgeTessEdgeNb[0][0] = NULL;
-  for (i = 0; i < CTessQty; i++)
+  // (the virtual tessellations have unflattened edges)
+  for (i = 0; i < CTessQty + VTessQty; i++)
   {
-    id = CTessIds[i];
+    id = (i < CTessQty) ? CTessIds[i] : VTessIds[i - CTessQty];
 
     for (j = 1; j <= Tess[id].EdgeQty; j++)
       for (k = 0; k < TessE[id].EdgeFEdgeQty[j]; k++)

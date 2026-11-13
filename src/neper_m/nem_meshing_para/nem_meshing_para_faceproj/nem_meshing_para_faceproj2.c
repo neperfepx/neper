@@ -14,7 +14,7 @@ nem_meshing_para_faceproj_eq (struct TESS Tess, struct NODES RNodes,
   int *nodes = NULL;
   double **nodecoos = NULL;
   double theta;
-  double *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
   double **g = ol_g_alloc ();
   int itermax = 1000;
   double *n = ut_alloc_1d (3);
@@ -59,8 +59,9 @@ nem_meshing_para_faceproj_eq (struct TESS Tess, struct NODES RNodes,
     theta = 2 + 88 * pow ((double) iter / (double) itermax, 2);
     if (status == 1)
     {
-      ol_nb_r (drand48 (), drand48 (), r);
-      ol_rtheta_g (r, theta, g);
+      ol_nb_r (drand48 (), drand48 (), rtheta);
+      rtheta[3] = theta;
+      ol_rtheta_g (rtheta, g);
       ol_g_vect_vect (g, Tess.FaceEq[face] + 1, face_eq + 1);
     }
 
@@ -78,8 +79,8 @@ nem_meshing_para_faceproj_eq (struct TESS Tess, struct NODES RNodes,
     res = -1;
 
   ut_free_1d_int (&nodes);
-  ol_r_free (r);
-  ol_g_free (g);
+  ol_rtheta_free (&rtheta);
+  ol_g_free (&g);
   ut_free_1d (&n);
   ut_free_2d (&nodecoos, NodeQty);
 

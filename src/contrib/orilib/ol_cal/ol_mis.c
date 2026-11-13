@@ -17,12 +17,62 @@ ol_g_lng (double **g, double **lng)
 }
 
 void
+ol_lng_g (double **lng, double **g)
+{
+  // g = exp (lng) = I + sin (theta) / theta lng + (1 - cos (theta)) / theta^2 lng^2
+  // (Rodrigues' formula), where theta is the rotation angle
+  int i, j, k;
+  double theta, a, b, W[3][3], W2[3][3];
+
+  theta = 0;
+  for (i = 0; i < 3; i++)
+    for (j = 0; j < 3; j++)
+    {
+      W[i][j] = lng[i][j];
+      theta += lng[i][j] * lng[i][j];
+    }
+  theta = sqrt (theta / 2);
+
+  if (theta > OL_EPS_RAD)
+  {
+    a = sin (theta) / theta;
+    b = (1 - cos (theta)) / (theta * theta);
+  }
+  else
+  {
+    a = 1;
+    b = 0.5;
+  }
+
+  for (i = 0; i < 3; i++)
+    for (j = 0; j < 3; j++)
+    {
+      W2[i][j] = 0;
+      for (k = 0; k < 3; k++)
+        W2[i][j] += W[i][k] * W[k][j];
+    }
+
+  for (i = 0; i < 3; i++)
+    for (j = 0; j < 3; j++)
+      g[i][j] = (i == j) + a * W[i][j] + b * W2[i][j];
+
+  return;
+}
+
+void
 ol_q_lnq (double *q, double *lnq)
 {
-  double theta;
+  /* quaternion logarithm: q and -q are different (|lnq| in [0, pi]) */
+  double ang = ut_num_acos (q[0]);
+  double norm = ut_array_1d_norm (q + 1, 3);
 
-  ol_q_rtheta_rad (q, lnq, &theta);
-  ut_array_1d_scale (lnq, 3, theta / 2);
+  if (norm > 0)
+  {
+    ut_array_1d_memcpy (q + 1, 3, lnq);
+    ut_array_1d_scale (lnq, 3, ang / norm);
+  }
+  else
+    ut_array_1d_set_3 (lnq, ang, 0, 0);     /* q = +/-1: zero or pi, about any axis */
 
   return;
 }
@@ -30,20 +80,20 @@ ol_q_lnq (double *q, double *lnq)
 void
 ol_lnq_q (double *lnq, double *q)
 {
-  double theta, *r = ol_r_alloc ();
+  double *rtheta = ol_rtheta_alloc ();
 
   if (ut_array_1d_norm (lnq, 3) > OL_EPS_RAD)
   {
-    theta = 2 * ut_array_1d_norm (lnq, 3);
-    ut_array_1d_memcpy (lnq, 3, r);
-    ol_r_set_unit (r);
+    ut_array_1d_memcpy (lnq, 3, rtheta);
+    ol_r_set_unit (rtheta);
+    rtheta[3] = 2 * ut_array_1d_norm (lnq, 3);
 
-    ol_rtheta_q (r, theta, q);
+    ol_rtheta_q_rad (rtheta, q);
   }
   else
     ol_q_set_id (q);
 
-  ol_r_free (r);
+  ol_rtheta_free (&rtheta);
 
   return;
 }

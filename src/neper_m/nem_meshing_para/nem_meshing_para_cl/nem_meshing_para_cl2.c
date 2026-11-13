@@ -27,9 +27,30 @@ nem_meshing_para_cl_cell (char *clstring, struct MESHPARA *pMeshPara,
 }
 
 int
+nem_meshing_para_cl_poly (char *clstring, struct MESHPARA *pMeshPara,
+                          struct TESS *pTess)
+{
+  // the default (input) values are made relative, as clstring
+  if (!strcmp ((*pMeshPara).cltype, "rel"))
+    nem_meshing_para_cl2rcl (pMeshPara, *pTess, "poly", (*pMeshPara).poly_cl);
+
+  neut_tess_entity_expr_val (pTess, "poly", clstring, (*pMeshPara).poly_cl, NULL);
+
+  if (!strcmp ((*pMeshPara).cltype, "rel"))
+    nem_meshing_para_rcl2cl (pMeshPara, (*pTess).PolyQty, (*pTess).Dim,
+                             (*pMeshPara).poly_cl);
+
+  return 0;
+}
+
+int
 nem_meshing_para_cl_face (char *clstring, struct MESHPARA *pMeshPara,
                           struct TESS *pTess)
 {
+  // the default (input) values are made relative, as clstring
+  if (!strcmp ((*pMeshPara).cltype, "rel"))
+    nem_meshing_para_cl2rcl (pMeshPara, *pTess, "face", (*pMeshPara).face_cl);
+
   neut_tess_entity_expr_val (pTess, "face", clstring, (*pMeshPara).face_cl, NULL);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
@@ -45,6 +66,10 @@ nem_meshing_para_cl_edge (char *clstring, struct MESHPARA *pMeshPara,
   if (!(*pMeshPara).edge_cl)
     (*pMeshPara).edge_cl = ut_alloc_1d ((*pTess).FaceQty + 1);
 
+  // the default (input) values are made relative, as clstring
+  if (!strcmp ((*pMeshPara).cltype, "rel"))
+    nem_meshing_para_cl2rcl (pMeshPara, *pTess, "edge", (*pMeshPara).edge_cl);
+
   neut_tess_entity_expr_val (pTess, "edge", clstring, (*pMeshPara).edge_cl, NULL);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
@@ -59,6 +84,10 @@ nem_meshing_para_cl_ver (char *clstring, struct MESHPARA *pMeshPara,
 {
   if (!(*pMeshPara).ver_cl)
     (*pMeshPara).ver_cl = ut_alloc_1d ((*pTess).FaceQty + 1);
+
+  // the default (input) values are made relative, as clstring
+  if (!strcmp ((*pMeshPara).cltype, "rel"))
+    nem_meshing_para_cl2rcl (pMeshPara, *pTess, "ver", (*pMeshPara).ver_cl);
 
   neut_tess_entity_expr_val (pTess, "ver", clstring, (*pMeshPara).ver_cl, NULL);
 

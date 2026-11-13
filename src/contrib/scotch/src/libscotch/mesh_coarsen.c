@@ -1,4 +1,4 @@
-/* Copyright 2004,2007,2020 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2004,2007,2019,2020,2023,2024 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -44,6 +44,8 @@
 /**                                 to   : 12 sep 2007     **/
 /**                # Version 6.0  : from : 23 jan 2020     **/
 /**                                 to   : 23 jan 2020     **/
+/**                # Version 7.0  : from : 12 sep 2019     **/
+/**                                 to   : 30 nov 2024     **/
 /**                                                        **/
 /**   NOTES      : # The coarsening process is as follows. **/
 /**                  First, node collapsing is performed,  **/
@@ -58,7 +60,7 @@
 **  The defines and includes.
 */
 
-#define MESH_COARSEN
+#define SCOTCH_MESH_COARSEN
 
 #include "module.h"
 #include "common.h"
@@ -70,8 +72,8 @@
 **  The static variables.
 */
 
-static void              (* meshCoarFuncTab[MESHCOARSENNBR]) () = { /* Tables of matching routines */
-                             meshCoarsenMatchNg };
+static MeshCoarsenFunc      meshCoarsenFuncTab[MESHCOARSENNBR] = { /* Table of matching routines */
+                              (MeshCoarsenFunc) meshCoarsenMatchNg };
 
 /***************************/
 /*                         */
@@ -96,7 +98,8 @@ Mesh * restrict const         coarmeshptr,        /*+ Coarse mesh to build      
 Gnum * restrict * const       finecoarptr,        /*+ Pointer to multinode data      +*/
 const Gnum                    coarnbr,            /*+ Minimum number of coarse nodes +*/
 const double                  coarrat,            /*+ Maximum contraction ratio      +*/
-const MeshCoarsenType         coartype)           /*+ Matching type                  +*/
+const MeshCoarsenType         coartype,           /*+ Matching type                  +*/
+Context * restrict const      contptr)            /*+ Execution context              +*/
 {
   Gnum                        coarhashsiz;        /* Size of the hash table                      */
   Gnum                        coarhashmsk;        /* Mask for access to hash table               */
@@ -125,7 +128,7 @@ const MeshCoarsenType         coartype)           /*+ Matching type             
 #ifdef SCOTCH_DEBUG_MESH2
   if (coartype >= MESHCOARSENNBR) {
     errorPrint ("meshCoarsen: invalid parameter");
-    return     (2);
+    return (2);
   }
 #endif /* SCOTCH_DEBUG_MESH2 */
 
@@ -136,7 +139,7 @@ const MeshCoarsenType         coartype)           /*+ Matching type             
   finevertnbr = finemeshptr->velmnbr + finemeshptr->vnodnbr;
   if ((finecoartax = (Gnum *) memAlloc (finevertnbr * sizeof (Gnum))) == NULL) {
     errorPrint ("meshCoarsen: out of memory (1)"); /* Allocate coarse mesh uncoarsening array */
-    return     (2);
+    return (2);
   }
   memSet (finecoartax, ~0, finevertnbr * sizeof (Gnum));
   finecoartax -= finemeshptr->baseval;            /* Set based access to finecoartax */
@@ -154,13 +157,13 @@ const MeshCoarsenType         coartype)           /*+ Matching type             
         &finemulttax, (size_t) ( finemeshptr->velmnbr * sizeof (MeshCoarsenMult)), NULL) == NULL) {
     errorPrint ("meshCoarsen: out of memory (2)"); /* Allocate coarser mesh structure */
     memFree    (finecoartax + finemeshptr->baseval);
-    return     (2);
+    return (2);
   }
   memSet (coarhngbtab, ~0, coarhashsiz * sizeof (MeshCoarsenHngb));
   memSet (coarhbdgtab, ~0, coarhashsiz * sizeof (MeshCoarsenHbdg));
   finemulttax -= coarmeshptr->baseval;
 
-  meshCoarFuncTab[coartype] (finemeshptr, finemulttax, finecoartax, &coarvelmnbr, &coarvnodnbr, &coaredgenbr); /* Call proper matching function */
+  meshCoarsenFuncTab[coartype] (finemeshptr, finemulttax, finecoartax, &coarvelmnbr, &coarvnodnbr, &coaredgenbr, contptr); /* Call proper matching function */
 
 #ifndef DEAD_CODE
   coarvnodnbr = finemeshptr->vnodnbr;             /* TODO : coarvnodnbr estimator is wrong : too tight */
@@ -338,7 +341,7 @@ const MeshCoarsenType         coartype)           /*+ Matching type             
 #ifdef SCOTCH_DEBUG_MESH2
   if (meshCheck (coarmeshptr) != 0) {             /* Check mesh consistency */
     errorPrint ("meshCoarsen: internal error (7)");
-    return     (2);
+    return (2);
   }
 #endif /* SCOTCH_DEBUG_MESH2 */
 
@@ -376,7 +379,8 @@ MeshCoarsenMult * restrict const  finemulttax,    /* Array of fine multielements
 Gnum * restrict const             finecoartax,    /* Fine to coarse vertex array                                */
 Gnum * restrict const             coarvelmptr,    /* Pointer to number of coarse element vertices               */
 Gnum * restrict const             coarvnodptr,    /* Pointer to (upper bound on) number of coarse node vertices */
-Gnum * restrict const             coaredgeptr)    /* Pointer to (upper bound on) number of edges                */
+Gnum * restrict const             coaredgeptr,    /* Pointer to (upper bound on) number of edges                */
+Context * restrict const          contptr)
 {
   Gnum                          coarvelmnum;      /* Number of current coarse element vertex */
   Gnum                          finepertbas;      /* Index of base of perturbation area      */
@@ -424,7 +428,6 @@ Gnum * restrict const             coaredgeptr)    /* Pointer to (upper bound on)
           finecoartax[finevelmnum] = coarvelmnum;
           finemulttax[coarvelmnum].finevelmnum[0] =
           finemulttax[coarvelmnum].finevelmnum[1] = finevelmnum;
-fprintf (stderr, "++ %ld %ld\n", (long) finevelmnum, (long) finemeshptr->velotax[finevelmnum]); /* TODO REMOVE */
           coarvelmnum ++;                         /* One more single vertex created */
         }
         continue;
@@ -504,8 +507,8 @@ fprintf (stderr, "++ %ld %ld\n", (long) finevelmnum, (long) finemeshptr->velotax
     }
   }
 
-  for (finepertbas = finemeshptr->velmbas,        /* Run cache-friendly perturbation on elements  */
-       finepertnbr = 2 + intRandVal (MESHCOARSENPERTPRIME - 2); /* Compute perturbation area size */
+  for (finepertbas = finemeshptr->velmbas,        /* Run cache-friendly perturbation on elements                  */
+       finepertnbr = 2 + contextIntRandVal (contptr, MESHCOARSENPERTPRIME - 2); /* Compute perturbation area size */
        finepertbas < finemeshptr->velmnnd; finepertbas += finepertnbr) {
     Gnum                finepertval;              /* Current index in perturbation area */
 

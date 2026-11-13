@@ -1,4 +1,4 @@
-/* Copyright 2018 IPB, Universite de Bordeaux, INRIA & CNRS
+/* Copyright 2018,2019,2023,2025 IPB, Universite de Bordeaux, INRIA & CNRS
 **
 ** This file is part of the Scotch software package for static mapping,
 ** graph partitioning and sparse matrix ordering.
@@ -41,6 +41,8 @@
 /**                                                        **/
 /**   DATES      : # Version 6.0  : from : 14 jan 2018     **/
 /**                                 to   : 21 apr 2018     **/
+/**                # Version 7.0  : from : 07 may 2019     **/
+/**                                 to   : 15 oct 2025     **/
 /**                                                        **/
 /************************************************************/
 
@@ -48,10 +50,9 @@
 **  The defines and includes.
 */
 
-#define LIBRARY
-
 #include "module.h"
 #include "common.h"
+#include "context.h"
 #include "graph.h"
 #include "scotch.h"
 
@@ -81,10 +82,18 @@ const SCOTCH_Num                    vnumnbr,
 const SCOTCH_Num * restrict const   vnumtab,
 SCOTCH_Graph * restrict const       indgrafptr)
 {
-  return (graphInduceList ((const Graph * restrict const) orggrafptr,
-                           (const Gnum) vnumnbr,
-                           (const Gnum * restrict const) vnumtab,
-                           (Graph * const) indgrafptr));
+  int                 o;
+
+  const Graph * const srcorggrafptr = (Graph *) CONTEXTOBJECT (orggrafptr);
+  Graph * const       srcindgrafptr = (Graph *) CONTEXTOBJECT (indgrafptr);
+
+  o = graphInduceList (srcorggrafptr,
+                       (const Gnum) vnumnbr,
+                       (const Gnum * restrict const) vnumtab,
+                       srcindgrafptr);
+  srcindgrafptr->vnumtax = NULL;                  /* Neutralize vnumtax for subsequent operations */
+
+  return (o);
 }
 
 /* This routine builds the graph induced
@@ -107,9 +116,17 @@ const SCOTCH_GraphPart2 * restrict const  parttab,
 const SCOTCH_GraphPart2                   partval,
 SCOTCH_Graph * restrict const             indgrafptr)
 {
-  return (graphInducePart ((const Graph * restrict const) orggrafptr,
-                           ((GraphPart * restrict const) parttab) - ((const Graph * const) orggrafptr)->baseval,
-                           (const Gnum) vnumnbr,
-                           (const GraphPart) partval,
-                           (Graph * restrict const) indgrafptr));
+  int                 o;
+
+  const Graph * const srcorggrafptr = (Graph *) CONTEXTOBJECT (orggrafptr);
+  Graph * const       srcindgrafptr = (Graph *) CONTEXTOBJECT (indgrafptr);
+
+  o = graphInducePart (srcorggrafptr,
+                       ((GraphPart * restrict const) parttab) - srcorggrafptr->baseval,
+                       (const Gnum) vnumnbr,
+                       (const GraphPart) partval,
+                       srcindgrafptr);
+  srcindgrafptr->vnumtax = NULL;                  /* Neutralize vnumtax for subsequent operations */
+
+  return (o);
 }
