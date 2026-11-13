@@ -1,0 +1,90 @@
+name: Build and publish the website
+
+# website:        published sources, deployed to https://neper.info, with the documentation of main
+# website-devel:  working sources, built as a preview (not deployed), with the documentation of devel
+#
+# Only the website branch of the public repository neperfepx/neper is deployed; elsewhere (e.g. in
+# the private neperfepx/neper-dev), any branch is built as a preview.
+
+on:
+  push:
+    branches:
+      - website
+      - website-devel
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: website-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      DOC_REF: ${{ github.ref_name == 'website' && 'main' || 'devel' }}
+    steps:
+      - name: Check out the website sources
+        uses: actions/checkout@v6
+        with:
+          path: site
+
+      - name: Check out the documentation
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.DOC_REF }}
+          path: neper
+          sparse-checkout: |
+            doc
+            VERSIONS
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Sphinx and the theme
+        run: pip install -r site/requirements.txt
+
+      - name: Build the website
+        working-directory: site
+        run: make html NEPER_REPO=../neper DOC_REF=HEAD
+
+      - name: Upload the website for deployment
+        if: github.ref_name == 'website' && github.repository == 'neperfepx/neper'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site/build/html
+
+      - name: Upload the website as a preview
+        if: ${{ !(github.ref_name == 'website' && github.repository == 'neperfepx/neper') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-preview
+          path: site/build/html
+          retention-days: 7
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.ref_name == 'website' && github.repository == 'neperfepx/neper'
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Set up GitHub Pages
+        uses: actions/configure-pages@v6
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
