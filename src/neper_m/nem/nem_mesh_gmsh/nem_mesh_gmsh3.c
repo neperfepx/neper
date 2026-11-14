@@ -2,7 +2,6 @@
 /* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
-#define _GNU_SOURCE             // pipe2
 #include"nem_mesh_gmsh_.h"
 
 /* Gmsh is called as a library, by worker processes.  The Gmsh library is
@@ -78,6 +77,9 @@ struct NEM_GMSH_WORKER
 };
 
 static struct NEM_GMSH_WORKER nem_gmsh_workers[NEM_GMSH_WORKER_MAX];
+
+// held while a worker is started (see nem_gmsh_worker_start)
+static pthread_mutex_t nem_gmsh_worker_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // message buffer
 struct NEM_GMSH_BUF
@@ -540,19 +542,16 @@ nem_gmsh_worker_exe (char *exe, unsigned int size)
 // and output: a file descriptor equal to its target is not duplicated by
 // posix_spawn_file_actions_adddup2, and on macOS it then keeps its
 // close-on-exec flag (the first worker, whose pipe was often 3 and 4, then
-// had no input, and every face it meshed failed)
+// had no input, and every face it meshed failed).  The pipe is first
+// created without the close-on-exec flag (pipe2 is not available on
+// macOS), so that it must be called under nem_gmsh_worker_mutex.
 static int
 nem_gmsh_worker_pipe (int *fds)
 {
   int i, tmp[2];
 
-#if defined(__linux__)
-  if (pipe2 (tmp, O_CLOEXEC))
-    return -1;
-#else
   if (pipe (tmp))
     return -1;
-#endif
 
   for (i = 0; i < 2; i++)
     fds[i] = fcntl (tmp[i], F_DUPFD_CLOEXEC, NEM_GMSH_WORKER_OUT + 1);
@@ -571,6 +570,11 @@ nem_gmsh_worker_pipe (int *fds)
   return 0;
 }
 
+// starts a worker; the workers are started one at a time (under
+// nem_gmsh_worker_mutex), so that a worker does not inherit the pipe of
+// another one while it is created (see nem_gmsh_worker_pipe): the other
+// worker would then not get the end of its input when stopped, and the
+// calling process would wait for it forever
 static int
 nem_gmsh_worker_start (struct NEM_GMSH_WORKER *pWorker)
 {
@@ -582,9 +586,26 @@ nem_gmsh_worker_start (struct NEM_GMSH_WORKER *pWorker)
   // writing to a dead worker must not kill the calling process
   signal (SIGPIPE, SIG_IGN);
 
-  if (nem_gmsh_worker_exe (exe, PATH_MAX + 1) || nem_gmsh_worker_pipe (in)
-      || nem_gmsh_worker_pipe (out))
+  if (nem_gmsh_worker_exe (exe, PATH_MAX + 1))
   {
+    ut_free_1d_char (&exe);
+    return -1;
+  }
+
+  pthread_mutex_lock (&nem_gmsh_worker_mutex);
+
+  if (nem_gmsh_worker_pipe (in))
+  {
+    pthread_mutex_unlock (&nem_gmsh_worker_mutex);
+    ut_free_1d_char (&exe);
+    return -1;
+  }
+
+  if (nem_gmsh_worker_pipe (out))
+  {
+    close (in[0]);
+    close (in[1]);
+    pthread_mutex_unlock (&nem_gmsh_worker_mutex);
     ut_free_1d_char (&exe);
     return -1;
   }
@@ -600,6 +621,8 @@ nem_gmsh_worker_start (struct NEM_GMSH_WORKER *pWorker)
                                     O_WRONLY, 0);
 
   status = posix_spawn (&(*pWorker).pid, exe, &actions, NULL, argv, environ);
+
+  pthread_mutex_unlock (&nem_gmsh_worker_mutex);
 
   posix_spawn_file_actions_destroy (&actions);
   close (in[0]);
