@@ -381,14 +381,6 @@ Advanced Visualization
 
    .. grid-item::
 
-      .. figure:: imgs/gallery/adv-stack.png
-         :class: neper-gallery-img
-         :target: imgs/gallery/adv-stack-full.png
-
-         Stacked tessellations
-
-   .. grid-item::
-
       .. figure:: imgs/gallery/adv-tess-mesh.png
          :class: neper-gallery-img
          :target: imgs/gallery/adv-tess-mesh-full.png
@@ -440,3 +432,15 @@ The same ⟨111⟩-fiber-textured tessellation in real space, pole figure space 
          :target: imgs/gallery/adv-ori-rod-full.png
 
          Rodrigues space
+
+.. grid:: 1 2 3 3
+   :gutter: 4
+   :class-container: neper-gallery
+
+   .. grid-item::
+
+      .. figure:: imgs/gallery/adv-stack.png
+         :class: neper-gallery-img
+         :target: imgs/gallery/adv-stack-full.png
+
+         Stacked tessellations
