@@ -1,7 +1,9 @@
 New in 7.0.1 (unreleased):
 - module -M: fixed failures and hangs of the Gmsh workers on macOS (pipe
   file descriptors kept apart from those of the workers, and workers
-  started one at a time).
+  started one at a time), restored -part <n>:<m> (<n> partitions of
+  <m> subpartitions each, e.g. for <n> nodes of <m> cores; no longer
+  limited to powers of 2).
 
 New in 7.0.0 (2026-11-13):
 - module -T: made the cylinder and sphere domains exact (curved, also

@@ -22,12 +22,12 @@
 #include "nem_partition.h"
 
 #ifdef HAVE_LIBSCOTCH
-extern void nem_partition_init (struct IN_M In, struct PART *pPart);
+extern void nem_partition_init (struct IN_M In, SCOTCH_Arch * pArch, struct PART *pPart);
 
 extern void nem_partition_prep (struct NODES *pNodes, struct MESH *Mesh,
 				struct PART *pPart, SCOTCH_Mesh * pSCMesh);
 
-extern void nem_partition_nodes (SCOTCH_Mesh *, struct NODES *, struct MESH *,
+extern void nem_partition_nodes (SCOTCH_Mesh *, SCOTCH_Arch *, struct NODES *, struct MESH *,
 				 struct PART *);
 
 extern void nem_partition_elts (struct NODES *, struct MESH *, struct PART *);

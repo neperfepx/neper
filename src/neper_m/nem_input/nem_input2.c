@@ -78,67 +78,28 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   if (!strcmp ((*pIn).faset, "all"))
     ut_string_string ("faces", &(*pIn).faset);
 
+  // -part: <n> or <n>:<m>, with <n> and <m> positive integers (-part 0: no partitioning)
   if ((*pIn).partstring)
   {
-    int i;
+    int i, qty, status = 0;
+    char **list = NULL;
     char *format = ut_alloc_1d_char (10);
 
-    ut_string_format ((*pIn).partstring, format);
+    ut_list_break ((*pIn).partstring, NEUT_SEP_DEP, &list, &qty);
 
-    if (format[strlen (format) - 1] != 'd')
+    for (i = 0; i < qty; i++)
     {
-      if (format[strlen (format) - 1] == 's')
-      {
-        char **list = NULL;
-        int qty;
-
-        ut_list_break ((*pIn).partstring, NEUT_SEP_DEP, &list, &qty);
-        if (qty == 1)
-        {
-          if (ut_file_exist ((*pIn).partstring) != 1)
-            ut_print_message (2, 0, "option -part %s: file not found.\n",
-                              (*pIn).partstring);
-        }
-        else if (qty == 2)
-        {
-          for (i = 0; i < 2; i++)
-          {
-            ut_string_format (list[i], format);
-            if (format[strlen (format) - 1] != 'd')
-              ut_print_message (2, 0,
-                                "option `-part %s': argument not valid.\n",
-                                (*pIn).partstring);
-          }
-
-          for (i = 0; i < 2; i++)
-          {
-            double tmp, tmp2;
-            sscanf (list[i], "%lf", &tmp);
-            tmp2 = log (tmp) / log (2);
-            tmp2 = fabs (tmp2 / ut_num_d2ri (tmp2) - 1);
-            if (tmp2 > 1e-6)
-              ut_print_message (2, 2,
-                                "option `-part %s': power of 2 inputs required.\n",
-                                (*pIn).partstring);
-          }
-        }
-        else
-          ut_print_message (2, 0, "option `-part %s': argument not valid.\n",
-                            (*pIn).partstring);
-
-        ut_free_2d_char (&list, qty);
-      }
+      ut_string_format (list[i], format);
+      if (strcmp (format, "%d") || atoi (list[i]) < (qty == 1 ? 0 : 1))
+        status = -1;
     }
 
-    ut_free_1d_char (&format);
+    if (qty < 1 || qty > 2 || status)
+      ut_print_message (2, 0, "Option -part: `%s' is not valid (expected <n> or <n>:<m>).\n",
+                        (*pIn).partstring);
 
-    /*
-       if ((*pIn).partmode == 1 && ut_file_exist ((*pIn).partarchfile) == 0)
-       {
-       ut_print_message (2, 0, "Architecture file does not exist.\n");
-       abort ();
-       }
-     */
+    ut_free_2d_char (&list, qty);
+    ut_free_1d_char (&format);
   }
 
   /* Recording body */

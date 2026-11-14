@@ -26,7 +26,7 @@ Remeshing can also be applied to generate a new, good-quality mesh from a mesh c
 
 For mapped meshing, mesh cleaning options enable the merging of duplicate nodes, or the duplication of nodes that would create a singular behavior in simulations (options :option:`-dupnodemerge` and :option:`-singnodedup`).
 
-Mesh partitioning allows for the division of the mesh nodes and elements into several sets while minimizing the interfaces between them [#partitioning]_, as needed for parallel simulations with FEPX.  Partitioning can return any number of partitions (option :option:`-part`).
+Mesh partitioning allows for the division of the mesh nodes and elements into several sets while minimizing the interfaces between them [#partitioning]_, as needed for parallel simulations with FEPX.  Partitioning can return any number of partitions, possibly divided into subpartitions according to a parallel computer architecture (option :option:`-part`).
 
 In the output mesh, the individual entities of the tessellations (the vertices, edges, faces and polyhedra) can be described by element sets (option :option:`-dim`).  Node sets of the vertices, edges and faces located on the boundary of the tessellation are also provided for prescribing the boundary conditions (option :option:`-nset`).  The surface element sets are also provided (option :option:`-faset`).  Element sets other than those corresponding to the tessellation cells can be defined (option :option:`-elset`). The mesh order can be 1 or 2 (option :option:`-order`, default :data:`2`).  Statistical data can be obtained on the meshes (options :data:`-stat*`).
 
@@ -407,9 +407,9 @@ Mesh Partitioning Options
 
 Mesh partitioning is achieved using the `libscotch <https://www.labri.fr/perso/pelegrin/scotch>`_ library. The principle of mesh partitioning is to create partitions of the same size, in terms of nodes and elements, while minimizing the interfaces between them. This attempts to distribute an equal load to all computation units and minimizes communications between them, and therefore minimizes the total computation time of simulations.  Partitioning is applied to the higher-dimension mesh and does not change node and element numbering.  This is done using option :option:`-part`.
 
-.. option:: -part <part_number>
+.. option:: -part <part_number>|<part_number>:<subpart_number>
 
-  Specify the number of partitions, which can be any integer value.
+  Specify the number of partitions, which can be any integer value, or a number of partitions and a number of subpartitions per partition.  Using a number of partitions is generally sufficient.  Using :data:`\<part_number\>:\<subpart_number\>` corresponds to a computer cluster made of :data:`\<part_number\>` nodes (or "processors") of :data:`\<subpart_number\>` cores each, for which communications between cores of a same node are faster than communications between cores of different nodes.  The mesh is divided into :data:`\<part_number\>` partitions, each divided into :data:`\<subpart_number\>` subpartitions, which minimizes the communications between partitions (considered 10 times more costly than those between subpartitions of a same partition).  The subpartitions are numbered consecutively within each partition (subpartitions 1 to :data:`\<subpart_number\>` belong to the first partition, etc.), for a total of :data:`\<part_number\>` :math:`\times` :data:`\<subpart_number\>` partitions in the output files.  This reduces the communications between nodes, provided that the MPI processes are placed by node (consecutive processes on the same node); the effect on the simulation time depends on the solver and the computer.
 
   **Default value**: -.
 

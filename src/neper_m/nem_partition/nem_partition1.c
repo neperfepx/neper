@@ -13,21 +13,25 @@ nem_partition (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh,
   int dim = neut_mesh_array_dim (Mesh);
 
   SCOTCH_Mesh SCMesh;
+  SCOTCH_Arch Arch;
 
   ut_print_message (0, 2, "Initializing...\n");
-  nem_partition_init (In, pPart);
+  SCOTCH_archInit (&Arch);
+  nem_partition_init (In, &Arch, pPart);
 
   ut_print_message (0, 2, "Preparing data...\n");
   nem_partition_prep (pNodes, Mesh, pPart, &SCMesh);
 
   ut_print_message (0, 2, "Partitioning nodes...\n");
-  nem_partition_nodes (&SCMesh, pNodes, Mesh, pPart);
+  nem_partition_nodes (&SCMesh, &Arch, pNodes, Mesh, pPart);
 
   ut_print_message (0, 2, "Partitioning elements...\n");
   nem_partition_elts (pNodes, Mesh, pPart);
 
   ut_print_message (0, 2, "Partitioning properties:\n");
   nem_partition_stats ((*pPart).qty, Mesh[dim], *pPart);
+
+  SCOTCH_archExit (&Arch);
 
   return;
 }

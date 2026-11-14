@@ -7,18 +7,27 @@
 #ifdef HAVE_LIBSCOTCH
 
 void
-nem_partition_init (struct IN_M In, struct PART *pPart)
+nem_partition_init (struct IN_M In, SCOTCH_Arch * pArch, struct PART *pPart)
 {
-  char *format = ut_alloc_1d_char (10);
+  int status, n = 1, m = 1;
 
-  ut_string_format (In.partstring, format);
+  // <n>:<m> (checked at input) is <n> partitions of <m> subpartitions each
+  sscanf (In.partstring, "%d:%d", &n, &m);
+  (*pPart).qty = n * m;
 
-  if (strcmp (format, "%d") || sscanf (In.partstring, "%d", &(*pPart).qty) != 1
-      || (*pPart).qty < 1)
-    ut_print_message (2, 2, "Option -part: `%s' is not a valid number of partitions.\n",
-                      In.partstring);
+  SCOTCH_Num sizetab[2] = { n, m };
+  SCOTCH_Num linktab[2] = { 10, 1 };
 
-  ut_free_1d_char (&format);
+  // <n>: complete graph (all partition pairs have the same communication cost)
+  // <n>:<m>: tree of <n> branches of <m> leaves each, the communication cost between
+  // leaves of different branches being 10 times that between leaves of a same branch
+  if (m == 1)
+    status = SCOTCH_archCmplt (pArch, (*pPart).qty);
+  else
+    status = SCOTCH_archTleaf (pArch, 2, sizetab, linktab);
+
+  if (status)
+    ut_print_message (2, 2, "Option -part: failed to set up the partitioning.\n");
 
   return;
 }
@@ -53,7 +62,7 @@ nem_partition_prep (struct NODES *pNodes, struct MESH *Mesh,
 }
 
 void
-nem_partition_nodes (SCOTCH_Mesh * pSCMesh, struct NODES *pNodes,
+nem_partition_nodes (SCOTCH_Mesh * pSCMesh, SCOTCH_Arch * pArch, struct NODES *pNodes,
                      struct MESH *Mesh, struct PART *pPart)
 {
   SCOTCH_Num *parttab;
@@ -100,6 +109,10 @@ nem_partition_nodes (SCOTCH_Mesh * pSCMesh, struct NODES *pNodes,
 #ifdef HAVE_OPENMP
   threadqty = omp_get_max_threads ();
 #endif
+  // the mapping onto a tree architecture (-part <n>:<m>) is not reproducible when
+  // multithreaded (Scotch 7.0.17, even with SCOTCH_OPTIONNUMDETERMINISTIC)
+  if (strcmp (SCOTCH_archName (pArch), "cmplt"))
+    threadqty = 1;
 
   SCOTCH_contextInit (&Context);
   SCOTCH_contextThreadSpawn (&Context, threadqty, NULL);
@@ -108,7 +121,7 @@ nem_partition_nodes (SCOTCH_Mesh * pSCMesh, struct NODES *pNodes,
   pGraph = &ContextGraph;
 #endif
 
-  SCOTCH_graphPart (pGraph, (*pPart).qty, &Strat, parttab + 1);
+  SCOTCH_graphMap (pGraph, pArch, &Strat, parttab + 1);
 
 #if SCOTCH_VERSION >= 7
   SCOTCH_graphExit (&ContextGraph);
