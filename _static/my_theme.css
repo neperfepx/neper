@@ -233,3 +233,18 @@ a:has(> code.xref):hover {
   color: var(--pst-color-text-muted);
   font-size: 0.8rem;
 }
+
+/* Mobile navigation drawer: fit the visible height (100dvh) rather than the height
+   without the browser toolbar (100vh), otherwise the drawer is taller than the
+   screen and the browser shifts it up, under its toolbar, when focusing the first link */
+.bd-sidebar-primary {
+  height: 100dvh;
+  max-height: 100dvh;
+}
+
+@media (min-width: 960px) {
+  .bd-sidebar-primary {
+    height: auto;
+    max-height: calc(100dvh - var(--pst-header-height));
+  }
+}
