@@ -54,6 +54,10 @@ jobs:
             -DGMSH_LIBRARY=$PWD/gmsh-sdk/lib/gmsh.dll.lib \
             -DBUILD_TESTING_MODE=Minimal
 
+      - name: Show the configure log
+        if: failure()
+        run: cat build/CMakeFiles/CMakeConfigureLog.yaml
+
       - name: Build Neper executable
         run: cmake --build build
 
