@@ -38,7 +38,7 @@ neut_sys_data (char **pdata, int verbosity)
   {
     char *tmp = ut_string_paste (bindir, (char *) "/../share/neper/");
     if (ut_sys_isdir (tmp))
-      dir = realpath (tmp, NULL);
+      dir = ut_sys_realpath (tmp);
     if (dir)
     {
       // realpath () allocates with malloc and strips the trailing slash
@@ -98,6 +98,16 @@ neut_sys_exedir (char **pdir)
   if (tmp && !_NSGetExecutablePath (tmp, &size))
     path = realpath (tmp, NULL);
   free (tmp);
+#elif defined(_WIN32)
+  // (windows.h is not included here: it defines a POINT type)
+  char *tmp = NULL;
+  if (!ut_sys_currentbin_path (&tmp))
+    path = ut_sys_realpath (tmp);
+  ut_free_1d_char (&tmp);
+  // (separators as on other systems)
+  for (p = path; p && *p; p++)
+    if (*p == '\\')
+      *p = '/';
 #endif
 
   if (!path)

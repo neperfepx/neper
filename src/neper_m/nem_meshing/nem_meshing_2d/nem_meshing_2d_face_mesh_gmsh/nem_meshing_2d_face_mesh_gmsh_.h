@@ -12,7 +12,9 @@
 #include"neper_config.h"
 
 #ifdef HAVE_OPENMP
+#ifdef _OPENMP
 #include<omp.h>
+#endif
 #endif // HAVE_OPENMP
 
 #include"ut.h"

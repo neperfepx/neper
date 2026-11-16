@@ -8,15 +8,8 @@ int
 neut_povray_check (char *povray)
 {
   int status;
-  char *binary = NULL, *command = NULL;
 
-  ut_sys_shellquote (povray, &binary);
-  ut_string_sprintf (&command, "command -v %s > /dev/null 2>&1", binary);
-
-  status = system (command);
-
-  ut_free_1d_char (&binary);
-  ut_free_1d_char (&command);
+  status = ut_sys_which (povray);
 
   return status;
 }

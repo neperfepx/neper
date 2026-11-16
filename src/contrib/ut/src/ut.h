@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include "ut_config.h"
+#include "ut_compat/ut_compat.h"
 #include "ut_alloc/ut_alloc.h"
 #include "ut_arg/ut_arg.h"
 #include "ut_array/ut_array.h"

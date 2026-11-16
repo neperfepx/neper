@@ -4,6 +4,9 @@ New in 7.0.1 (unreleased):
   started one at a time), restored -part <n>:<m> (<n> partitions of
   <m> subpartitions each, e.g. for <n> nodes of <m> cores; no longer
   limited to powers of 2).
+- general: added the build on Windows (MinGW-w64, without Scotch, so
+  without -part), fixed the build info listing libscotch when built
+  without Scotch.
 
 New in 7.0.0 (2026-11-13):
 - module -T: made the cylinder and sphere domains exact (curved, also

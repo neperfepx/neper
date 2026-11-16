@@ -169,7 +169,7 @@ nev_print_ori (struct IN_V In, struct ORI *pOri, char *basename, struct PRINT Pr
     char *command = NULL, *quoted = NULL;
 
     // ImageMagick 7 (magick) if it runs, or 6 (convert, deprecated in 7)
-    ut_string_string (system ("magick -version > /dev/null 2>&1") ? "convert" : "magick",
+    ut_string_string (ut_sys_system ("magick -version > " UT_NULL_DEVICE " 2>&1") ? "convert" : "magick",
                       &command);
     for (i = 0; i < qty; i++)
     {
@@ -184,7 +184,7 @@ nev_print_ori (struct IN_V In, struct ORI *pOri, char *basename, struct PRINT Pr
     ut_sys_shellquote (final_png, &quoted);
     ut_string_sprintf (&command, "%s +append %s", command, quoted);
 
-    status = system (command);
+    status = ut_sys_system (command);
     if (status)
       ut_print_message (2, 2, "File `%s' could not be generated (is ImageMagick's `magick' or `convert' available?).\n", final_png);
 

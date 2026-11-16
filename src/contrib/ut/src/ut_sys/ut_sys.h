@@ -55,8 +55,33 @@ extern "C"
   extern void ut_sys_ctrlc_begin (struct timeval *pctrlc_t);
   extern void ut_sys_ctrlc_end (struct timeval *pctrlc_t);
 
+  /// \brief Runs a command (as system), also on Windows
+  extern int ut_sys_system (const char *command);
+  /// \brief Tests whether a program is found (0 if found, as system)
+  extern int ut_sys_which (const char *program);
+
+#ifdef _WIN32
+#include <stdint.h>
+  /// \brief Processes and pipes (Windows), for workers: starts exe with
+  /// arg, and pipes to its input and from its output (file descriptors pin
+  /// and pout), process in pprocess
+  extern int ut_sys_win_spawn (const char *exe, const char *arg, int *pin, int *pout,
+                               intptr_t *pprocess);
+  /// \brief In a worker: its input and output (from its arguments), and a
+  /// watchdog that ends it when its parent has ended
+  extern int ut_sys_win_child_init (int argc, char **argv, int *pin, int *pout);
+  /// \brief Waits for data to read (1), until a timeout (0, in ms, negative
+  /// for none), or a broken pipe (-1)
+  extern int ut_sys_win_readable (int fd, int timeout_ms);
+  extern int ut_sys_win_running (intptr_t process);
+  extern void ut_sys_win_kill (intptr_t process);
+  extern void ut_sys_win_wait (intptr_t process);
+#endif
+
 #endif                          /* UT_SYS_H */
 
 #ifdef __cplusplus
 }
+
+
 #endif

@@ -32,7 +32,7 @@ ut_file_nblines (const char *filename)
   FILE *file;
   char trash[10000];
 
-  file = fopen (filename, "r");
+  file = fopen (filename, "rb");
   if (!file)
     return -1;
 
@@ -159,7 +159,7 @@ ut_file_exist (const char *name, ...)
 
   if (qty > 0 && vals[0])
   {
-    file = fopen (vals[0], "r");
+    file = fopen (vals[0], "rb");
     if (file == NULL)
       res = 0;
     else
@@ -189,7 +189,9 @@ ut_file_open (const char *name, const char *mode)
 
   if (mode[0] == 'r' || mode[0] == 'R')
   {
-    file = fopen (name2, "r");
+    // (binary mode, as for writing: on Windows, files are read as on the
+    // other systems, and positions (ftell, fseek) are reliable)
+    file = fopen (name2, "rb");
     if (file == NULL)
     {
       ut_print_lineheader (2);
@@ -220,7 +222,9 @@ ut_file_open (const char *name, const char *mode)
       ut_free_1d_char (&dir);
     }
 
-    file = fopen (name2, "w");
+    // (binary mode: no effect on POSIX systems, and on Windows, line ends
+    // written as on the other systems, \n)
+    file = fopen (name2, "wb");
     if (file == NULL)
     {
       ut_print_lineheader (2);
@@ -231,7 +235,7 @@ ut_file_open (const char *name, const char *mode)
   }
   else if (mode[0] == 'a' || mode[0] == 'A')
   {
-    file = fopen (name2, "a");
+    file = fopen (name2, "ab");
     if (file == NULL)
     {
       ut_print_lineheader (2);

@@ -8,15 +8,8 @@ int
 neut_asy_check (char *asy)
 {
   int status;
-  char *binary = NULL, *command = NULL;
 
-  ut_sys_shellquote (asy, &binary);
-  ut_string_sprintf (&command, "command -v %s > /dev/null 2>&1", binary);
-
-  status = system (command);
-
-  ut_free_1d_char (&binary);
-  ut_free_1d_char (&command);
+  status = ut_sys_which (asy);
 
   return status;
 }
@@ -69,7 +62,7 @@ neut_asy_convert (char *asymptote, char *filename, int imagewidth, int imageheig
       ut_string_sprintf (&command, "%s -f %s -antialias=4 -render %f %s -o %s", binary, formats[i],
                          imageheight * .00492046785641154627, input, output);
 
-      if (system (command) == -1 || !ut_file_exist (filename2))
+      if (ut_sys_system (command) == -1 || !ut_file_exist (filename2))
         ut_print_message (2, 3, "File `%s' could not be generated!  To debug: use option `-imageformat asy' and run command `%s'.\n",
                           filename2, command);
 

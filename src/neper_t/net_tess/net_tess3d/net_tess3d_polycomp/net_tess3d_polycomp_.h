@@ -13,7 +13,9 @@ extern "C"
 #include<sys/time.h>
 
 #ifdef HAVE_OPENMP
+#ifdef _OPENMP
 #include<omp.h>
+#endif
 #endif
 
 #include"neut_t.h"

@@ -84,7 +84,7 @@ neut_mesh_fprintf_msh_header (FILE * file, char *mode, char *version)
 
   fprintf (file, "$MeshFormat\n");
   if (!strcmp (version, "msh") || !strcmp (version, "msh2") || version[0] == '2')
-    fprintf (file, "2.2 %d %ld\n", filetype, sizeof (double));
+    fprintf (file, "2.2 %d %d\n", filetype, (int) sizeof (double));
   else
     abort ();
 

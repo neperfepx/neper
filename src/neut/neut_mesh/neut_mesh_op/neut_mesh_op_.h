@@ -7,4 +7,6 @@
 #include<limits.h>
 #include<string.h>
 #include"neut.h"
+#ifdef _OPENMP
 #include"omp.h"
+#endif

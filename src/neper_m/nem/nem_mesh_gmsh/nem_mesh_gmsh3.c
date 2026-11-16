@@ -45,11 +45,16 @@
  * ends execution (see ut_sys_ctrlc_begin). */
 
 #include<fcntl.h>
-#include<poll.h>
 #include<pthread.h>
 #include<signal.h>
+#ifndef _WIN32
+#include<poll.h>
 #include<spawn.h>
 #include<sys/wait.h>
+#else
+#include<io.h>
+#include<stdint.h>
+#endif
 #include<errno.h>
 #include<limits.h>
 #ifdef __APPLE__
@@ -57,7 +62,9 @@
 #endif
 #include<gmshc.h>
 
+#ifndef _WIN32
 extern char **environ;
+#endif
 
 // Gmsh API version (>= 4.9, see CMakeLists.txt), for its changes:
 // gmshOptionRestoreDefaults (4.13)
@@ -65,13 +72,26 @@ extern char **environ;
   (GMSH_API_VERSION_MAJOR > (major) \
    || (GMSH_API_VERSION_MAJOR == (major) && GMSH_API_VERSION_MINOR >= (minor)))
 
+#ifndef _WIN32
 #define NEM_GMSH_WORKER_IN 3
 #define NEM_GMSH_WORKER_OUT 4
+#else
+// (on Windows, the worker's file descriptors are set from its arguments, see
+// ut_sys_win_spawn)
+static int nem_gmsh_worker_fdin = -1;
+static int nem_gmsh_worker_fdout = -1;
+#define NEM_GMSH_WORKER_IN nem_gmsh_worker_fdin
+#define NEM_GMSH_WORKER_OUT nem_gmsh_worker_fdout
+#endif
 #define NEM_GMSH_WORKER_MAX 1024
 
 struct NEM_GMSH_WORKER
 {
+#ifndef _WIN32
   pid_t pid;                    // pid, 0 if not running
+#else
+  intptr_t pid;                 // process (handle), 0 if not running
+#endif
   int in;                       // file descriptor of the worker's input
   int out;                      // file descriptor of the worker's output
 };
@@ -456,6 +476,7 @@ nem_gmsh_worker_mesh (int out, int dim, int recombine)
   return status ? -1 : 0;
 }
 
+#ifndef _WIN32
 // watchdog of a worker: ends the worker when the calling process (its
 // parent) has ended, i.e. when the worker has been reparented
 static void *
@@ -470,12 +491,15 @@ nem_gmsh_worker_watchdog (void *data)
 
   return NULL;
 }
+#endif
 
 int
 nem_gmsh_worker (void)
 {
   int ierr, head[3];
   double headd[3];
+
+#ifndef _WIN32
   static pid_t parent;
   pthread_t watchdog;
 
@@ -483,6 +507,11 @@ nem_gmsh_worker (void)
   if (pthread_create (&watchdog, NULL, nem_gmsh_worker_watchdog, &parent))
     return EXIT_FAILURE;
   pthread_detach (watchdog);
+#else
+  if (ut_sys_win_child_init (__argc, __argv, &nem_gmsh_worker_fdin,
+                             &nem_gmsh_worker_fdout))
+    return EXIT_FAILURE;
+#endif
 
   nem_gmsh_initialize (&ierr);
   if (ierr)
@@ -521,9 +550,16 @@ nem_gmsh_worker (void)
 static int
 nem_gmsh_worker_exe (char *exe, unsigned int size)
 {
-#ifdef __APPLE__
+#if defined(__APPLE__)
   uint32_t qty = size;
   return _NSGetExecutablePath (exe, &qty);
+#elif defined(_WIN32)
+  char *path = NULL;
+  int status = ut_sys_currentbin_path (&path);
+  if (!status && strlen (path) < size)
+    strcpy (exe, path);
+  ut_free_1d_char (&path);
+  return status;
 #else
   ssize_t qty = readlink ("/proc/self/exe", exe, size - 1);
 
@@ -545,6 +581,7 @@ nem_gmsh_worker_exe (char *exe, unsigned int size)
 // had no input, and every face it meshed failed).  The pipe is first
 // created without the close-on-exec flag (pipe2 is not available on
 // macOS), so that it must be called under nem_gmsh_worker_mutex.
+#ifndef _WIN32
 static int
 nem_gmsh_worker_pipe (int *fds)
 {
@@ -569,6 +606,7 @@ nem_gmsh_worker_pipe (int *fds)
 
   return 0;
 }
+#endif
 
 // starts a worker; the workers are started one at a time (under
 // nem_gmsh_worker_mutex), so that a worker does not inherit the pipe of
@@ -578,19 +616,29 @@ nem_gmsh_worker_pipe (int *fds)
 static int
 nem_gmsh_worker_start (struct NEM_GMSH_WORKER *pWorker)
 {
-  int in[2], out[2], status;
   char *exe = ut_alloc_1d_char (PATH_MAX + 1);
-  char *argv[3] = { (char *) "neper", (char *) NEM_GMSH_WORKER_ARG, NULL };
-  posix_spawn_file_actions_t actions;
-
-  // writing to a dead worker must not kill the calling process
-  signal (SIGPIPE, SIG_IGN);
 
   if (nem_gmsh_worker_exe (exe, PATH_MAX + 1))
   {
     ut_free_1d_char (&exe);
     return -1;
   }
+
+#ifdef _WIN32
+  // (only the worker's pipes are inherited, see ut_sys_win_spawn)
+  int status = ut_sys_win_spawn (exe, NEM_GMSH_WORKER_ARG, &(*pWorker).in,
+                                 &(*pWorker).out, &(*pWorker).pid);
+  ut_free_1d_char (&exe);
+  if (status)
+    (*pWorker).pid = 0;
+  return status ? -1 : 0;
+#else
+  int in[2], out[2], status;
+  char *argv[3] = { (char *) "neper", (char *) NEM_GMSH_WORKER_ARG, NULL };
+  posix_spawn_file_actions_t actions;
+
+  // writing to a dead worker must not kill the calling process
+  signal (SIGPIPE, SIG_IGN);
 
   pthread_mutex_lock (&nem_gmsh_worker_mutex);
 
@@ -641,6 +689,7 @@ nem_gmsh_worker_start (struct NEM_GMSH_WORKER *pWorker)
   (*pWorker).out = out[0];
 
   return 0;
+#endif
 }
 
 static void
@@ -649,12 +698,21 @@ nem_gmsh_worker_stop (struct NEM_GMSH_WORKER *pWorker, int force)
   if (!(*pWorker).pid)
     return;
 
+#ifndef _WIN32
   if (force)
     kill ((*pWorker).pid, SIGKILL);
 
   close ((*pWorker).in);        // the worker exits when its input is closed
   close ((*pWorker).out);
   waitpid ((*pWorker).pid, NULL, 0);
+#else
+  if (force)
+    ut_sys_win_kill ((*pWorker).pid);
+
+  close ((*pWorker).in);        // the worker exits when its input is closed
+  close ((*pWorker).out);
+  ut_sys_win_wait ((*pWorker).pid);
+#endif
 
   (*pWorker).pid = 0;
 
@@ -670,10 +728,12 @@ nem_gmsh_worker_read (struct NEM_GMSH_WORKER *pWorker, void *data,
   int timeout;
   double remaining;
   ssize_t qty;
+#ifndef _WIN32
   struct pollfd pfd;
 
   pfd.fd = (*pWorker).out;
   pfd.events = POLLIN;
+#endif
 
   while (size > 0)
   {
@@ -682,9 +742,13 @@ nem_gmsh_worker_read (struct NEM_GMSH_WORKER *pWorker, void *data,
       return -1;
     timeout = (remaining < INT_MAX / 1000) ? (int) (1000 * remaining) + 1 : -1;
 
+#ifndef _WIN32
     qty = poll (&pfd, 1, timeout);
     if (qty < 0 && errno == EINTR)
       continue;
+#else
+    qty = ut_sys_win_readable ((*pWorker).out, timeout);
+#endif
     if (qty <= 0)
       return -1;
 
@@ -758,8 +822,12 @@ nem_mesh_gmsh_lib_request (int dim, int eltnodeqty, struct NEM_GMSH_BUF Buf,
   neut_mesh_reset (pM);
 
   // a worker that has ended while idle (Ctrl+C) is started again
+#ifndef _WIN32
   if ((*pWorker).pid
       && waitpid ((*pWorker).pid, NULL, WNOHANG) == (*pWorker).pid)
+#else
+  if ((*pWorker).pid && !ut_sys_win_running ((*pWorker).pid))
+#endif
   {
     close ((*pWorker).in);
     close ((*pWorker).out);

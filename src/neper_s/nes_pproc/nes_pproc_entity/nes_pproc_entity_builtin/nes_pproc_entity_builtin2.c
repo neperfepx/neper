@@ -5,7 +5,9 @@
 #include "nes_pproc_entity_builtin_.h"
 
 #ifdef HAVE_OPENMP
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #endif
 
 int

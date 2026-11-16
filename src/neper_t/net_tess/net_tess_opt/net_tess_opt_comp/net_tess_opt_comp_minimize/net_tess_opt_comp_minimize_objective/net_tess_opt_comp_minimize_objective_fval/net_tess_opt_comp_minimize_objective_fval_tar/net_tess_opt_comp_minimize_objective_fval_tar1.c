@@ -4,7 +4,9 @@
 
 #include "net_tess_opt_comp_minimize_objective_fval_tar_.h"
 #ifdef HAVE_OPENMP
+#ifdef _OPENMP
 #include<omp.h>
+#endif
 #endif /* HAVE_OPENMP */
 
 void

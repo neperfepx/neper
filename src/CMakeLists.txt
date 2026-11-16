@@ -257,6 +257,8 @@ set(MESSAGE_QUIET ON)
 
 add_subdirectory(contrib/openGJK EXCLUDE_FROM_ALL)
 if (HAVE_MUPARSER)
+  # (muParser uses OpenMP as Neper does)
+  set(ENABLE_OPENMP ${HAVE_OPENMP} CACHE BOOL "Enable OpenMP for multithreading (muParser)" FORCE)
   add_subdirectory(contrib/muparser EXCLUDE_FROM_ALL)
 endif()
 add_subdirectory(contrib/ut/src EXCLUDE_FROM_ALL)
@@ -404,6 +406,13 @@ file(GLOB_RECURSE tests_s ../tests/S/*/*.cmake)
 file(GLOB_RECURSE tests_v ../tests/V/*/*.cmake)
 
 if(BUILD_TESTING)
+  # (cross-compiled: the program is run by the emulator, e.g. Wine)
+  if(CMAKE_CROSSCOMPILING_EMULATOR)
+    set(TEST_PROG "${CMAKE_CROSSCOMPILING_EMULATOR}\\;$<TARGET_FILE:neper>")
+  else()
+    set(TEST_PROG "$<TARGET_FILE:neper>")
+  endif()
+
   foreach(test ${tests_t} ${tests_m} ${tests_s} ${tests_v})
     get_filename_component(test_name ${test} NAME)
     string(REPLACE ".cmake" "" test_name ${test_name})
@@ -412,7 +421,7 @@ if(BUILD_TESTING)
     string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/../tests/" "" test_label ${test_dir})
     add_test(NAME ${test_label}
              COMMAND ${CMAKE_COMMAND}
-             -Dtest_prog=$<TARGET_FILE:neper>
+             -Dtest_prog=${TEST_PROG}
              -Dtest_mode=${BUILD_TESTING_MODE}
              -P ${test}
              WORKING_DIRECTORY ${test_dir})

@@ -356,9 +356,9 @@ neut_print_pov2png (char *povray, char *filename, int imagewidth,
 
   ut_string_sprintf (&args, "%s Input_File_Name=%s +O%s +W%d +H%d -D +A0.2", binary, input, output,
                      imagewidth, imageheight);
-  ut_string_sprintf (&command, "%s 2>/dev/null", args);
+  ut_string_sprintf (&command, "%s 2>" UT_NULL_DEVICE, args);
 
-  if (system (command) == -1 || !ut_file_exist (pngfilename))
+  if (ut_sys_system (command) == -1 || !ut_file_exist (pngfilename))
     ut_print_message (2, 3, "File `%s' could not be generated!  To debug: use option `-imageformat pov' and run command `%s'.\n",
                       pngfilename, args);
 

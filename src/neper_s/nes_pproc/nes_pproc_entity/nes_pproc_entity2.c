@@ -5,12 +5,18 @@
 #include "nes_pproc_entity_.h"
 
 #ifdef HAVE_OPENMP
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #endif
 
 #include <signal.h>
 #include <unistd.h>
+#ifndef _WIN32
 #include <sys/wait.h>
+#else
+#include <process.h>
+#endif
 
 // directory of the result being computed, and its parent directory
 static char *nes_pproc_entity_failure_resdir = NULL;
@@ -21,14 +27,13 @@ static char *nes_pproc_entity_failure_dir = NULL;
 static void
 nes_pproc_entity_failure (int sig)
 {
-  pid_t pid;
-
   (void) sig;
 
   if (!nes_pproc_entity_failure_resdir)
     return;
 
-  pid = fork ();
+#ifndef _WIN32
+  pid_t pid = fork ();
 
   if (!pid)
   {
@@ -38,6 +43,16 @@ nes_pproc_entity_failure (int sig)
 
   if (pid > 0)
     waitpid (pid, NULL, 0);
+#else
+  // (no fork: rmdir of cmd, with backslashes, from a stack buffer)
+  char path[4096];
+  size_t i;
+  for (i = 0; i + 1 < sizeof (path) && nes_pproc_entity_failure_resdir[i]; i++)
+    path[i] = nes_pproc_entity_failure_resdir[i] == '/' ? '\\'
+            : nes_pproc_entity_failure_resdir[i];
+  path[i] = '\0';
+  _spawnlp (_P_WAIT, "cmd", "cmd", "/c", "rmdir", "/s", "/q", path, (char *) NULL);
+#endif
 
   // only removes an empty directory
   if (rmdir (nes_pproc_entity_failure_dir))
@@ -181,7 +196,8 @@ nes_pproc_entity_remove (struct SIM *pSim, char *entity, char *result)
         remove (file);
       }
     }
-    remove (SimRes.dir);
+    // (rmdir: remove does not remove directories on Windows)
+    rmdir (SimRes.dir);
 
     neut_sim_rmres (pSim, entity, result);
     neut_sim_fprintf (*pSim, "W");

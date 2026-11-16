@@ -57,6 +57,7 @@ endif()
 
 add_library(ut
   ut_alloc/ut_alloc.c
+  ut_compat/ut_compat.c
   ut_arg/ut_arg.c
   ut_array/ut_array.c
   ut_color/ut_color.c

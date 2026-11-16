@@ -21,8 +21,9 @@ main (int argc, char **argv)
   char **modlist = NULL, *mod = NULL, **fargv = NULL, *rcfile = NULL;
   struct timeval beg_time, end_time;
 
-  // Gmsh worker process (see nem_mesh_gmsh_lib)
-  if (argc == 2 && !strcmp (argv[1], "--gmsh-worker"))
+  // Gmsh worker process (see nem_mesh_gmsh_lib; on Windows, followed by its
+  // pipes and parent, see ut_sys_win_spawn)
+  if (argc >= 2 && !strcmp (argv[1], "--gmsh-worker"))
     return nem_gmsh_worker ();
 
   gettimeofday (&beg_time, NULL);
@@ -220,7 +221,11 @@ neper_head (char *neper_version)
   alldeps = 0;
 #endif
 
+#ifdef HAVE_LIBSCOTCH
   strcat (deps, "|libscotch");
+#else
+  alldeps = 0;
+#endif
 
   ut_print_message (0, 0, "Built with: %s%s\n", deps + 1,
                     alldeps ? " (full)" : "");
@@ -280,9 +285,10 @@ neper_diff (int argc, char **argv)
   if (argc == 5)
     eps = atof (argv[4]);
 
-  while (fscanf (file1, "%s", string1) == 1)
+  // (width: a token of binary data can be longer than the strings)
+  while (fscanf (file1, "%9999s", string1) == 1)
   {
-    status = fscanf (file2, "%s", string2);
+    status = fscanf (file2, "%9999s", string2);
 
     if (status != 1)
     {
@@ -290,7 +296,9 @@ neper_diff (int argc, char **argv)
       break;
     }
 
-    else if (sscanf (string1, "%lf", &val1))
+    // (== 1: sscanf returns EOF, -1, for an empty string, e.g. a token of
+    // binary data that begins with a null byte)
+    else if (sscanf (string1, "%lf", &val1) == 1)
     {
       status = sscanf (string2, "%lf", &val2);
       if (status != 1 || (!ut_num_equal (val1, val2, eps) && !ut_num_requal (val1, val2, eps)))

@@ -105,7 +105,7 @@ nev_print_real_png_tess_curvedmesh (struct TESS Tess, struct NODES *pNodes,
   // meshing, with the standard output disabled
   fflush (stdout);
   stdout_fd = dup (STDOUT_FILENO);
-  null_fd = open ("/dev/null", O_WRONLY);
+  null_fd = open (UT_NULL_DEVICE, O_WRONLY);
   dup2 (null_fd, STDOUT_FILENO);
   close (null_fd);
 

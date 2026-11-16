@@ -6,7 +6,9 @@
 #include "neut_oset/neut_oset.hpp"
 
 #ifdef HAVE_OPENMP
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #endif
 
 int

@@ -7,7 +7,9 @@
 #include<string.h>
 #include<sys/types.h>
 #include<signal.h>
+#ifndef _WIN32
 #include<sys/wait.h>
+#endif
 
 #include"neut.h"
 #include"neut_gmsh.h"
