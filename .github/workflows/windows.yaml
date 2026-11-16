@@ -1,0 +1,75 @@
+name: Build Neper executable on Windows for x86_64
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    name: Build Neper executable on Windows
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install MinGW-w64 GCC (with OpenMP) and CMake
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
+            curl
+            unzip
+
+      # (the Gmsh SDK for Windows: headers, DLL and import library)
+      - name: Install Gmsh
+        run: |
+          curl -sSfL -o gmsh-sdk.zip https://gmsh.info/bin/Windows/gmsh-4.15.0-Windows64-sdk.zip
+          unzip -q gmsh-sdk.zip
+          mv gmsh-4.15.0-Windows64-sdk gmsh-sdk
+
+      # (no Scotch, not ported to Windows; built-in GSL; tests in Minimal
+      # mode, as the meshes of the Gmsh build for Windows differ from the
+      # references)
+      - name: Generate the build files
+        run: |
+          cmake -S src -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DHAVE_LIBSCOTCH=OFF -DFORCE_BUILTIN_GSL=ON \
+            -DGMSH_INCLUDE_DIR=$PWD/gmsh-sdk/include \
+            -DGMSH_LIBRARY=$PWD/gmsh-sdk/lib/gmsh.dll.lib \
+            -DBUILD_TESTING_MODE=Minimal
+
+      - name: Build Neper executable
+        run: cmake --build build
+
+      # (the DLLs needed by neper.exe, next to it: Gmsh's and the MinGW-w64
+      # runtime)
+      - name: Gather the DLLs
+        run: |
+          cp gmsh-sdk/lib/gmsh-*.dll build/
+          for dll in $(ldd build/neper.exe | awk '/\/mingw64\// {print $3}'); do
+            cp "$dll" build/
+          done
+          ls build/*.dll
+
+      - name: Run tests
+        continue-on-error: true
+        working-directory: build
+        env:
+          OMP_NUM_THREADS: 2
+        run: ctest --output-on-failure
+
+      - name: Upload Neper executable
+        uses: actions/upload-artifact@v7
+        with:
+          name: neper-windows-x86_64
+          path: |
+            build/neper.exe
+            build/*.dll
+          retention-days: ${{ github.event.repository.private && 1 || 7 }}

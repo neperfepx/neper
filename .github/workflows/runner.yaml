@@ -28,3 +28,8 @@ jobs:
     name: MacOS
     if: github.repository == 'neperfepx/neper'
     uses: ./.github/workflows/macos.yaml
+
+  windows:
+    name: Windows
+    if: github.repository == 'neperfepx/neper'
+    uses: ./.github/workflows/windows.yaml
