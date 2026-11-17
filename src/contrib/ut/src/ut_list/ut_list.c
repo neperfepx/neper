@@ -44,7 +44,7 @@ ut_list_append (char **pstring, const char *add)
 void
 ut_list_break (const char *string0, const char *sep, char ***pparts, int *pqty)
 {
-  int i, pos, bracket, len;
+  int i, pos, bracket, len, drive;
   char **tmp = NULL, *val = NULL, *part = NULL;
   char *string = NULL;
 
@@ -77,8 +77,17 @@ ut_list_break (const char *string0, const char *sep, char ***pparts, int *pqty)
     if (bracket < 0)
       ut_print_message (2, 0, "Unbalanced parentheses in `%s'.\n", string);
 
+    // on Windows, the colon of a drive letter, at the beginning of an item
+    // (e.g. C:\dir\file.tess:scale(2)), does not separate
+    drive = 0;
+#ifdef _WIN32
+    drive = !part && strlen (val) == 1 && isalpha (val[0])
+         && !strncmp (string + pos, sep, strlen (sep)) && !strcmp (sep, ":")
+         && (string[pos + 1] == '\\' || string[pos + 1] == '/');
+#endif
+
     ut_list_append (&part, val);
-    if (bracket > 0)
+    if (bracket > 0 || drive)
       ut_list_append (&part, sep);
     else
     {
