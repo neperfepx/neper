@@ -92,8 +92,6 @@ To make Neper available locally to the user, run:
 
 This procedure uses the default configuration options and should work out of the box if the required dependencies are available in standard system locations.
 
-.. attention:: Since version 4.11, either :command:`make install` or :command:`make userinstall` must be run for proper installation.  Copying the :file:`neper` binary to :file:`~/bin` for a local installation is no longer sufficient.
-
 .. _building_windows:
 
 Building on Windows
