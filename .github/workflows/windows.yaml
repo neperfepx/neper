@@ -96,3 +96,42 @@ jobs:
           name: neper-windows-x86_64
           path: neper-windows
           retention-days: ${{ github.event.repository.private && 1 || 7 }}
+
+  # (the conda package for Windows, built and tested with rattler-build from
+  # conda/recipe, with conda-forge's MinGW-w64 compilers and Gmsh)
+  conda:
+    name: Build the conda package on Windows
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Enable long paths and keep line ends
+        run: |
+          git config --system core.longpaths true
+          git config --system core.autocrlf false
+          New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+            -Name LongPathsEnabled -Value 1 -PropertyType DWORD -Force
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install rattler-build
+        run: |
+          Invoke-WebRequest -OutFile rattler-build.exe `
+            https://github.com/prefix-dev/rattler-build/releases/latest/download/rattler-build-x86_64-pc-windows-msvc.exe
+          .\rattler-build.exe --version
+
+      # (output in a short directory, as the source paths are long)
+      - name: Build and test the conda package
+        run: |
+          .\rattler-build.exe build -r conda/recipe -m conda/recipe/variants-win.yaml `
+            -c conda-forge --output-dir D:\o
+
+      - name: Upload the conda package
+        uses: actions/upload-artifact@v7
+        with:
+          name: neper-conda-win-64
+          path: D:\o\win-64\*.conda
+          retention-days: ${{ github.event.repository.private && 1 || 7 }}
