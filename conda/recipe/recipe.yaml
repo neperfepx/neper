@@ -14,32 +14,21 @@ source:
 
 build:
   number: 0
+  skip:
+    - win
 
 requirements:
   build:
-    # (Windows: MinGW-w64 GCC, with OpenMP)
-    - if: win
-      then:
-        - ${{ compiler('m2w64_c') }}
-        - ${{ compiler('m2w64_cxx') }}
-        - ${{ stdlib('m2w64_c') }}
-        - ninja
-      else:
-        - ${{ compiler('c') }}
-        - ${{ compiler('cxx') }}
-        - ${{ stdlib('c') }}
-        - make
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - ${{ stdlib('c') }}
     - cmake
+    - make
   host:
-    # Gmsh library (libgmsh and gmshc.h), version >= 4.9 (on Windows, built
-    # with MSVC, used through its C interface)
+    # Gmsh library (libgmsh and gmshc.h), version >= 4.9
     - gmsh >=4.9
-    # (Windows: GSL built in, and no Scotch, whose packages are MSVC static
-    # libraries)
-    - if: unix
-      then:
-        - gsl
-        - scotch
+    - gsl
+    - scotch
     - if: linux
       then: libgomp
     - if: osx
@@ -47,28 +36,11 @@ requirements:
   run:
     # the Gmsh library changes name (soname) at each minor version
     - ${{ pin_compatible('gmsh', upper_bound='x.x') }}
-    # image generation (neper -V; not available on Windows, installed
-    # separately)
-    - if: unix
-      then: povray
+    # image generation (neper -V)
+    - povray
 
 tests:
-  - if: win
-    then:
-      script:
-        - neper --version
-        - neper --data
-        - if not exist "%LIBRARY_PREFIX%\share\neper\orispace\cubic\fr.tess" exit 1
-        - neper -T -n 10 -o n10
-        - neper -M n10.tess
-        - if not exist n10.msh exit 1
-        # (absolute path, with a drive letter)
-        - neper -M "%CD%\n10.tess" -o n10abs
-        - if not exist n10abs.msh exit 1
-        - echo 0 30 0 | orilib ol_e_q
-  - if: unix
-    then:
-      script:
+  - script:
       - neper --version
       - test "$(neper --data)" = "${PREFIX}/share/neper/"
       - test -f "${PREFIX}/share/neper/orispace/cubic/fr.tess"
