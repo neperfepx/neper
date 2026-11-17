@@ -14,25 +14,18 @@ Neper can be installed using conda, which is the simplest method (see :ref:`inst
 Conda Package
 -------------
 
-Neper is available as a conda package from `conda-forge <https://conda-forge.org>`_, for Linux and macOS.  No compilation and no administrator rights are needed.
+Neper is available as a conda package from `conda-forge <https://conda-forge.org>`_, for Linux, macOS and Windows.  No compilation and no administrator rights are needed.
 
-If conda is not available on your system (command :program:`conda`), install it first, using `Miniforge <https://github.com/conda-forge/miniforge>`_:
+If conda is not available on your system (command :program:`conda`), install it first, for example using `Miniforge <https://github.com/conda-forge/miniforge>`_.
 
-.. code-block:: console
-
-  $ curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-  $ bash Miniforge3-$(uname)-$(uname -m).sh
-
-Accept the license and the default installation directory (:file:`$HOME/miniforge3`), and answer :data:`yes` to the last question, about initializing conda, so that :program:`conda` is available in new terminals.  Then, open a new terminal (or run :command:`source ~/.bashrc`, for Bash).  The terminal prompt then starts with :data:`(base)`, which is the default conda environment.  The installer file can be removed.
-
-Then, install Neper in a new environment (named :data:`neper` here) and activate it:
+Install Neper in a new environment (named :data:`neper` here) and activate it:
 
 .. code-block:: console
 
   $ conda create -n neper -c conda-forge neper
   $ conda activate neper
 
-This also installs the required programs and libraries: Gmsh, POV-Ray, etc.  Asymptote and ImageMagick, which are needed only for some outputs of :ref:`neper_v` (see :ref:`fine_configuration`), are not installed.
+This also installs the required programs and libraries: Gmsh, POV-Ray, etc.  Asymptote and ImageMagick, which are needed only for some outputs of :ref:`neper_v` (see :ref:`fine_configuration`), are not installed.  On Windows, POV-Ray is not installed either (it is not available from conda-forge for Windows), so that the PNG images of :ref:`neper_v` need a separate installation of POV-Ray (see option :option:`-povray`), and option :option:`-part` of :ref:`neper_m` is not available.
 
 Neper can then be run as :program:`neper` in the activated environment, and updated by:
 
@@ -40,7 +33,7 @@ Neper can then be run as :program:`neper` in the activated environment, and upda
 
   $ conda update -n neper -c conda-forge neper
 
-Neper and `FEPX <https://fepx.info>`_ can also be installed together, in the same environment (named :data:`neperfepx` here), to generate meshes with Neper, simulate them with FEPX and post-process the results with Neper:
+On Linux and macOS, Neper and `FEPX <https://fepx.info>`_ can also be installed together, in the same environment (named :data:`neperfepx` here), to generate meshes with Neper, simulate them with FEPX and post-process the results with Neper:
 
 .. code-block:: console
 

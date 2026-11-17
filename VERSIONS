@@ -7,7 +7,8 @@ New in 7.0.1 (unreleased):
 - general: added the build on Windows (MinGW-w64, without Scotch, so
   without -part), made the tests default to the Minimal mode on macOS
   and Windows (as documented), fixed the build info listing libscotch
-  when built without Scotch.
+  when built without Scotch, documented the installation with conda on
+  Windows.
 
 New in 7.0.0 (2026-11-13):
 - module -T: made the cylinder and sphere domains exact (curved, also
