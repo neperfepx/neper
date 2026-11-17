@@ -3,7 +3,7 @@
 Installation
 ============
 
-Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system.  Neper is also known to run on macOS and on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we neither test nor support this usage and multithreading must be turned off (which slows down execution significantly).
+Neper is written in (mostly ANSI) C and a little C++, and it runs on Linux, macOS and Microsoft Windows (built with MinGW-w64, see :ref:`building_windows`; it also runs under the Windows subsystem for Linux, WSL, as on Linux).
 
 When installed, Neper consists of the :program:`neper` binary, which can be called from the command line, and data files, which are used by the binary.  At runtime, :program:`neper` looks for its data files in :code:`$NEPER_DATA_DIR`, :file:`../share/neper` relative to the directory of the :program:`neper` binary (so that an installed binary uses its own data files), :file:`$HOME/.local/share/neper` and :file:`\<prefix\>/share/neper`, successively, where :file:`\<prefix\>` is the installation prefix (:file:`/usr/local` by default, see below).  The data directory is printed by :command:`neper --data`.
 
@@ -66,7 +66,7 @@ Compilation is performed via `CMake <https://cmake.org>`_ (no root privileges ne
   .. code-block:: console
 
     $ cd build
-    $ cmake ..    (on Windows: cmake -DHAVE_OPENMP=OFF ..)
+    $ cmake ..
 
 - Build Neper:
 
@@ -93,6 +93,39 @@ To make Neper available locally to the user, run:
 This procedure uses the default configuration options and should work out of the box if the required dependencies are available in standard system locations.
 
 .. attention:: Since version 4.11, either :command:`make install` or :command:`make userinstall` must be run for proper installation.  Copying the :file:`neper` binary to :file:`~/bin` for a local installation is no longer sufficient.
+
+.. _building_windows:
+
+Building on Windows
+~~~~~~~~~~~~~~~~~~~
+
+On Windows, Neper is built with the MinGW-w64 GCC compiler (with OpenMP), as provided by `MSYS2 <https://www.msys2.org>`_, and the Gmsh SDK for Windows, without libscotch (so that option :option:`-part` of :ref:`neper_m` is not available):
+
+- Install MSYS2, open its :program:`MINGW64` terminal, and install the compiler, OpenMP, CMake, Ninja and Git:
+
+  .. code-block:: console
+
+    $ pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-libgomp mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja git
+
+- Download the Gmsh SDK for Windows (:file:`gmsh-\<version\>-Windows64-sdk.zip`, from the `Gmsh website <https://gmsh.info>`_) and extract it, e.g. as :file:`gmsh-sdk`.
+
+- Get Neper's source code.  When cloning the Git repository, enable long paths (some file paths are longer than Windows' default limit) and keep the line ends of the files unchanged:
+
+  .. code-block:: console
+
+    $ git clone -c core.longpaths=true -c core.autocrlf=false https://github.com/neperfepx/neper.git
+
+- Build and install Neper, here in directory :file:`neper-install`:
+
+  .. code-block:: console
+
+    $ cmake -S neper/src -B build -G Ninja -DHAVE_LIBSCOTCH=OFF -DFORCE_BUILTIN_GSL=ON \
+        -DGMSH_INCLUDE_DIR=$PWD/gmsh-sdk/include -DGMSH_LIBRARY=$PWD/gmsh-sdk/lib/gmsh.dll.lib
+    $ cmake --build build
+    $ cmake --install build --prefix neper-install
+    $ cp gmsh-sdk/lib/gmsh-*.dll neper-install/bin/
+
+This installs :program:`neper.exe` and :program:`orilib.exe` in :file:`neper-install/bin` and the data files in :file:`neper-install/share/neper`.  :program:`neper.exe` needs the Gmsh DLL (copied above) and the DLLs of the MinGW-w64 runtime (in :file:`C:\\msys64\\mingw64\\bin`, available in the :program:`MINGW64` terminal; to run Neper elsewhere, copy :file:`libgomp-1.dll`, :file:`libstdc++-6.dll`, :file:`libgcc_s_seh-1.dll` and :file:`libwinpthread-1.dll` to :file:`neper-install/bin`).  POV-Ray, Asymptote and ImageMagick (see below) are run as on other systems, as :program:`povray`, :program:`asy` and :program:`magick` (or as specified with options :option:`-povray` and :option:`-asymptote`).  Neper writes files with Unix line ends, as on other systems, and its input files should have Unix line ends too.
 
 .. _fine_configuration:
 
@@ -216,11 +249,11 @@ or (equivalently):
 
   $ ctest
 
-This runs the tests in :code:`Normal` mode (:code:`Minimal` on macOS), for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) libscotch 6.0, Gmsh 4.9.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, change the testing mode to :code:`Minimal`.  The testing mode is controlled by variable :code:`BUILD_TESTING_MODE`, which may be changed as described in :ref:`fine_configuration`.
+This runs the tests in :code:`Normal` mode (:code:`Minimal` on macOS and Windows), for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) libscotch 6.0, Gmsh 4.9.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, change the testing mode to :code:`Minimal`.  The testing mode is controlled by variable :code:`BUILD_TESTING_MODE`, which may be changed as described in :ref:`fine_configuration`.
 
 - The :code:`Normal` mode checks if the program completes without error and if the produced output is the same as the reference output.  It is the default mode on Linux.
 
-- The :code:`Minimal` mode only checks if the program completes without error. This mode may be useful when installing on a machine which has program or library versions different from the ones with which the reference output was generated.  It is the default mode on macOS.
+- The :code:`Minimal` mode only checks if the program completes without error. This mode may be useful when installing on a machine which has program or library versions different from the ones with which the reference output was generated.  It is the default mode on macOS and Windows.
 
 - The :code:`Writing` mode overwrites the reference outputs with the generated output.  This mode may be useful when installing on a machine which has program or library versions different from the ones with which the reference output was generated and the user needs a reference output before making changes to the source code.
 

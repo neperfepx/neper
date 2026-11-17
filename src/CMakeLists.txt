@@ -32,7 +32,13 @@ if(NOT CMAKE_BUILD_TYPE)
   endif()
 endif()
 
-set(BUILD_TESTING_MODE "Normal" CACHE STRING "Choose the testing mode: Normal Minimal Writing")
+# (Minimal on macOS and Windows, where the libraries, Gmsh notably, give
+# outputs slightly different from the references, generated on Linux)
+if(APPLE OR WIN32)
+  set(BUILD_TESTING_MODE "Minimal" CACHE STRING "Choose the testing mode: Normal Minimal Writing")
+else()
+  set(BUILD_TESTING_MODE "Normal" CACHE STRING "Choose the testing mode: Normal Minimal Writing")
+endif()
 
 # should we use the optional libraries?
 set(HAVE_OPENMP    ON  CACHE BOOL "Use OpenMP")
@@ -324,7 +330,7 @@ install(TARGETS neper DESTINATION bin
 # the orilib program (Orilib's functions from the command line, also used by
 # the Python interface), built and installed with neper
 add_dependencies(neper orilib-prog)
-install(PROGRAMS ${CMAKE_BINARY_DIR}/orilib DESTINATION bin
+install(PROGRAMS ${CMAKE_BINARY_DIR}/orilib${CMAKE_EXECUTABLE_SUFFIX} DESTINATION bin
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
                GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
