@@ -3,7 +3,7 @@
 Installation
 ============
 
-Neper is written in (mostly ANSI) C and a little C++, and it runs on Linux, macOS and Microsoft Windows (built with MinGW-w64, see :ref:`building_windows`; it also runs under the Windows subsystem for Linux, WSL, as on Linux).
+Neper is written in (mostly ANSI) C and a little C++, and it runs on Linux, macOS and Microsoft Windows (see :ref:`building_windows`).
 
 When installed, Neper consists of the :program:`neper` binary, which can be called from the command line, and data files, which are used by the binary.  At runtime, :program:`neper` looks for its data files in :code:`$NEPER_DATA_DIR`, :file:`../share/neper` relative to the directory of the :program:`neper` binary (so that an installed binary uses its own data files), :file:`$HOME/.local/share/neper` and :file:`\<prefix\>/share/neper`, successively, where :file:`\<prefix\>` is the installation prefix (:file:`/usr/local` by default, see below).  The data directory is printed by :command:`neper --data`.
 
