@@ -52,7 +52,12 @@ Neper and `FEPX <https://fepx.info>`_ can also be installed together, in the sam
 Building from Source
 --------------------
 
-Compilation is performed via `CMake <https://cmake.org>`_ (no root privileges needed):
+Compilation is performed via `CMake <https://cmake.org>`_ (no root privileges needed).
+
+.. _building_linux_macos:
+
+Building on Linux and macOS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Create a :file:`build` directory, for instance as a subdirectory of Neper's :file:`src` directory:
 
