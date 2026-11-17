@@ -79,13 +79,20 @@ jobs:
         working-directory: build
         env:
           OMP_NUM_THREADS: 2
+          NEPER_DATA_DIR: ${{ github.workspace }}/src/data
         run: ctest --output-on-failure
+
+      # (an installed tree: bin, with neper.exe, orilib.exe and the DLLs, and
+      # share/neper, with the data files, found by neper.exe next to bin)
+      - name: Install Neper
+        run: |
+          cmake --install build --prefix neper-windows
+          cp build/*.dll neper-windows/bin/
+          neper-windows/bin/neper.exe --data
 
       - name: Upload Neper executable
         uses: actions/upload-artifact@v7
         with:
           name: neper-windows-x86_64
-          path: |
-            build/neper.exe
-            build/*.dll
+          path: neper-windows
           retention-days: ${{ github.event.repository.private && 1 || 7 }}
