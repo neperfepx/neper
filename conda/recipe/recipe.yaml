@@ -56,7 +56,7 @@ tests:
 about:
   homepage: https://neper.info
   repository: https://github.com/neperfepx/neper
-  documentation: https://neper.info/docs
+  documentation: https://neper.info/doc/
   license: GPL-3.0-only
   license_file:
     - COPYING

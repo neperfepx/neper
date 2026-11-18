@@ -29,7 +29,7 @@ sim.write("elsets", "myres", values)          # usable by -S and -V
 ```
 
 The package runs the `neper` program, which must be installed separately
-(see the [installation instructions](https://neper.info/docs)); it is
+(see the [installation instructions](https://neper.info/doc/installation.html)); it is
 looked for in `NEPER_EXECUTABLE`, then in the `PATH`.
 
 ## Installation

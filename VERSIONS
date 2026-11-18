@@ -4,6 +4,9 @@ New in 7.0.1 (unreleased):
   started one at a time), restored -part <n>:<m> (<n> partitions of
   <m> subpartitions each, e.g. for <n> nodes of <m> cores; no longer
   limited to powers of 2).
+- general: fixed the address of the documentation (neper.info/doc) in
+  the Python package and the conda recipe, and that of the reference
+  paper.
 
 New in 7.0.0 (2026-11-13):
 - module -T: made the cylinder and sphere domains exact (curved, also

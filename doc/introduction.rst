@@ -46,7 +46,7 @@ Several complementary resources describing Neper are available:
 
 - The four Neper reference papers (see also :ref:`citing`):
 
-  .. [CMAME2011] `R. Quey, P.R. Dawson and F. Barbe, Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing, Comput. Methods Appl. Mech. Engrg., vol. 200, pp. 1729-1745, 2011, <https://neper.info/docs/neper-reference-paper.pdf>`_ describes the regularization and meshing methodologies;
+  .. [CMAME2011] `R. Quey, P.R. Dawson and F. Barbe, Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing, Comput. Methods Appl. Mech. Engrg., vol. 200, pp. 1729-1745, 2011, <https://neper.info/neper-reference-paper.pdf>`_ describes the regularization and meshing methodologies;
 
   .. [CMAME2018] `R. Quey and L. Renversade, Optimal polyhedral description of 3D polycrystals: Method and application to statistical and synchrotron X-ray diffraction data, Comput. Methods Appl. Mech. Engrg., vol. 330, pp. 308-333, 2018, <https://doi.org/10.1016/j.cma.2017.10.029>`_ describes tessellation generation from experimental properties;
 

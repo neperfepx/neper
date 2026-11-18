@@ -21,7 +21,7 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://neper.info"
-Documentation = "https://neper.info/docs"
+Documentation = "https://neper.info/doc/"
 Repository = "https://github.com/neperfepx/neper"
 
 [tool.setuptools]
