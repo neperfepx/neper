@@ -7,7 +7,7 @@
 void
 net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
 {
-  int i, curved, PrimQty = 0;
+  int i, curved, PrimQty = 0, first = 1;
   struct POLY Poly;
   struct PRIM *Prim = NULL;
   char *domain = NULL, **strings = NULL;
@@ -49,7 +49,31 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
 
   // custom
   else if (ut_file_exist (strings[0]))
+  {
     net_domain_fromfile (strings[0], pDomain);
+
+    // a 2D tessellation is turned into a thin 3D domain (see
+    // net_domain_cubeparms), from its domain or, if extracted first, from a cell
+    if ((*pDomain).Dim == 2)
+    {
+      int face = 0, eqqty = 0;
+      double **eqs = NULL;
+
+      if (stringqty > 1 && !strncmp (strings[1], "cell(", 5))
+      {
+        face = atoi (strings[1] + 5);
+        first = 2;
+      }
+
+      if (net_domain_fromtess_2d (*pDomain, face, &eqs, &eqqty, &Poly))
+        ut_print_message (2, 3, "Failed to set the domain (it must be convex).\n");
+
+      net_domain_clip (&Poly, eqs, eqqty);
+      neut_tess_reset (pDomain);
+
+      ut_free_2d (&eqs, eqqty);
+    }
+  }
 
   else if (!strcmp (domain, "planes"))
     net_domain_planes_string (strings[0], In.dim, &Poly);
@@ -77,7 +101,7 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
 
   (*pMTess).DomTessFaceNb[0] = ut_alloc_2d_int ((*pDomain).FaceQty + 1, 2);
 
-  for (i = 1; i < stringqty; i++)
+  for (i = first; i < stringqty; i++)
     net_domain_transform (pDomain, In.dim, strings[i]);
 
   for (i = 1; i <= (*pDomain).FaceQty; i++)
@@ -107,12 +131,14 @@ net_domain_fromtess (struct TESS Tess, struct TESS *pDomain)
   neut_poly_set_zero (&Poly);
 
   if (Tess.Dim == 3 && Tess.DomFaceQty > 0)
+  {
     status = net_domain_fromtess_3d (Tess, &eqs, &eqqty, &Prim, &PrimQty);
-  else if (Tess.Dim == 2 && Tess.DomEdgeQty > 0)
-    status = net_domain_fromtess_2d (Tess, &eqs, &eqqty, &Poly);
 
-  if (!status)
-    status = net_domain_fromtess_convex (Tess, eqs, eqqty);
+    if (!status)
+      status = net_domain_fromtess_convex (Tess, eqs, eqqty);
+  }
+  else if (Tess.Dim == 2 && Tess.DomEdgeQty > 0)
+    status = net_domain_fromtess_2d (Tess, 0, &eqs, &eqqty, &Poly);
 
   if (!status)
   {

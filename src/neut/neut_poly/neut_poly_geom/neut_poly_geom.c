@@ -16,7 +16,7 @@ neut_poly_bbox (struct POLY Poly, double **bbox)
     for (i = 1; i <= Poly.VerQty; i++)
     {
       bbox[j][0] = ut_num_min (bbox[j][0], Poly.VerCoo[i][j]);
-      bbox[j][1] = ut_num_min (bbox[j][1], Poly.VerCoo[i][j]);
+      bbox[j][1] = ut_num_max (bbox[j][1], Poly.VerCoo[i][j]);
     }
 
   return;

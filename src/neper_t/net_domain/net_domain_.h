@@ -23,7 +23,7 @@ extern void net_domain_fromfile (char *filename, struct TESS *pDomain);
 
 extern int net_domain_fromtess_3d (struct TESS Tess, double ***peqs, int *peqqty,
                                    struct PRIM **pPrim, int *pPrimQty);
-extern int net_domain_fromtess_2d (struct TESS Tess, double ***peqs, int *peqqty,
+extern int net_domain_fromtess_2d (struct TESS Tess, int face, double ***peqs, int *peqqty,
                                    struct POLY *pPoly);
 extern int net_domain_fromtess_convex (struct TESS Tess, double **eqs, int eqqty);
 extern double net_domain_fromtess_bbox (struct TESS Tess, double **bbox);

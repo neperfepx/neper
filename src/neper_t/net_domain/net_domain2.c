@@ -77,83 +77,129 @@ net_domain_fromtess_3d (struct TESS Tess, double ***peqs, int *peqqty,
 }
 
 // net_domain_fromtess_2d returns the plane equations of the domain of a 2D
-// tessellation, i.e. those of its edges and of the z planes of a thin domain
-// (see net_domain_cubeparms).  Returns 0 on success and -1 otherwise.
+// tessellation or, if face > 0, of one of its cells (faces), i.e. those of its
+// edges and of the z planes of a thin domain (see net_domain_cubeparms).
+// Returns 0 on success and -1 otherwise, which includes a non-convex domain.
 int
-net_domain_fromtess_2d (struct TESS Tess, double ***peqs, int *peqqty,
+net_domain_fromtess_2d (struct TESS Tess, int face, double ***peqs, int *peqqty,
                         struct POLY *pPoly)
 {
-  int i, j, ver;
+  int i, j, verqty, edgeqty, status = 0;
   double thickness, size = 0, z, norm;
   double *c = ut_alloc_1d (3), *v = ut_alloc_1d (3), **bbox = ut_alloc_2d (3, 2);
+  double **vercoo = NULL;
+  int **edgevers = NULL;
 
-  if (Tess.DomVerQty == 0)
+  // vertex coordinates and edge vertices (positions in vercoo)
+  if (face == 0)
   {
-    ut_free_1d (&c);
-    ut_free_1d (&v);
-    ut_free_2d (&bbox, 3);
-    return -1;
+    verqty = Tess.DomVerQty;
+    edgeqty = Tess.DomEdgeQty;
+    vercoo = ut_alloc_2d (verqty + 1, 3);
+    edgevers = ut_alloc_2d_int (edgeqty + 1, 2);
+    for (i = 1; i <= verqty; i++)
+      ut_array_1d_memcpy (Tess.DomVerCoo[i], 3, vercoo[i]);
+    for (i = 1; i <= edgeqty; i++)
+    {
+      if (Tess.DomEdgeVerQty[i] != 2 || strcmp (Tess.DomEdgeType[i], "line"))
+        status = -1;
+      ut_array_1d_int_memcpy (Tess.DomEdgeVerNb[i], 2, edgevers[i]);
+    }
+  }
+  else
+  {
+    if (face < 1 || face > Tess.FaceQty)
+      ut_print_message (2, 3, "Cell %d does not exist.\n", face);
+
+    verqty = edgeqty = Tess.FaceVerQty[face];
+    vercoo = ut_alloc_2d (verqty + 1, 3);
+    edgevers = ut_alloc_2d_int (edgeqty + 1, 2);
+    for (i = 1; i <= verqty; i++)
+    {
+      ut_array_1d_memcpy (Tess.VerCoo[Tess.FaceVerNb[face][i]], 3, vercoo[i]);
+      edgevers[i][0] = i;
+      edgevers[i][1] = ut_array_rotpos (1, verqty, i, 1);
+    }
   }
 
-  size = net_domain_fromtess_bbox (Tess, bbox);
-  z = Tess.DomVerCoo[1][2];
+  if (verqty < 3)
+    status = -1;
 
-  for (i = 1; i <= Tess.DomVerQty; i++)
+  if (!status)
   {
-    if (fabs (Tess.DomVerCoo[i][2] - z) > 1e-6 * size)
-      size = 0;
-    ut_array_1d_add (c, Tess.DomVerCoo[i], 3, c);
-  }
-  ut_array_1d_scale (c, 3, 1. / Tess.DomVerQty);
+    for (j = 0; j < 3; j++)
+    {
+      bbox[j][0] = DBL_MAX;
+      bbox[j][1] = -DBL_MAX;
+    }
+    for (i = 1; i <= verqty; i++)
+      for (j = 0; j < 3; j++)
+      {
+        bbox[j][0] = ut_num_min (bbox[j][0], vercoo[i][j]);
+        bbox[j][1] = ut_num_max (bbox[j][1], vercoo[i][j]);
+      }
+    size = ut_num_min (bbox[0][1] - bbox[0][0], bbox[1][1] - bbox[1][0]);
 
-  for (i = 1; i <= Tess.DomEdgeQty; i++)
-    if (Tess.DomEdgeVerQty[i] != 2 || strcmp (Tess.DomEdgeType[i], "line"))
-      size = 0;
+    z = vercoo[1][2];
+    for (i = 1; i <= verqty; i++)
+    {
+      if (fabs (vercoo[i][2] - z) > 1e-6 * size)
+        status = -1;
+      ut_array_1d_add (c, vercoo[i], 3, c);
+    }
+    ut_array_1d_scale (c, 3, 1. / verqty);
 
-  if (size == 0)
-  {
-    ut_free_1d (&c);
-    ut_free_1d (&v);
-    ut_free_2d (&bbox, 3);
-    return -1;
-  }
-
-  (*peqqty) = Tess.DomEdgeQty + 2;
-  (*peqs) = ut_alloc_2d (*peqqty, 4);
-
-  thickness = 1e-6 * ut_num_min (bbox[0][1] - bbox[0][0], bbox[1][1] - bbox[1][0]);
-
-  (*peqs)[0][0] = -z;
-  (*peqs)[0][3] = -1;
-  (*peqs)[1][0] = z + thickness;
-  (*peqs)[1][3] = 1;
-
-  for (i = 1; i <= Tess.DomEdgeQty; i++)
-  {
-    double *eq = (*peqs)[i + 1];
-
-    ver = Tess.DomEdgeVerNb[i][0];
-    ut_array_1d_sub (Tess.DomVerCoo[ver], Tess.DomVerCoo[Tess.DomEdgeVerNb[i][1]], 3, v);
-
-    norm = ut_array_1d_norm (v, 2);
-    eq[1] = v[1] / norm;
-    eq[2] = -v[0] / norm;
-    for (j = 0; j < 2; j++)
-      eq[0] += eq[j + 1] * Tess.DomVerCoo[ver][j];
-
-    // normal pointing outwards
-    if (eq[1] * c[0] + eq[2] * c[1] > eq[0])
-      ut_array_1d_scale (eq, 4, -1);
+    if (size <= 0)
+      status = -1;
   }
 
-  (*pPoly).PseudoDim = 2;
-  (*pPoly).PseudoSize = thickness;
+  if (!status)
+  {
+    (*peqqty) = edgeqty + 2;
+    (*peqs) = ut_alloc_2d (*peqqty, 4);
+
+    thickness = 1e-6 * size;
+
+    (*peqs)[0][0] = -z;
+    (*peqs)[0][3] = -1;
+    (*peqs)[1][0] = z + thickness;
+    (*peqs)[1][3] = 1;
+
+    for (i = 1; i <= edgeqty; i++)
+    {
+      double *eq = (*peqs)[i + 1];
+      double *coo = vercoo[edgevers[i][0]];
+
+      ut_array_1d_sub (coo, vercoo[edgevers[i][1]], 3, v);
+
+      norm = ut_array_1d_norm (v, 2);
+      eq[1] = v[1] / norm;
+      eq[2] = -v[0] / norm;
+      for (j = 0; j < 2; j++)
+        eq[0] += eq[j + 1] * coo[j];
+
+      // normal pointing outwards
+      if (eq[1] * c[0] + eq[2] * c[1] > eq[0])
+        ut_array_1d_scale (eq, 4, -1);
+    }
+
+    // convexity: all vertices in the half-spaces
+    for (i = 2; i < *peqqty && !status; i++)
+      for (j = 1; j <= verqty && !status; j++)
+        if (ut_vector_scalprod ((*peqs)[i] + 1, vercoo[j]) > (*peqs)[i][0] + 1e-6 * size)
+          status = -1;
+
+    (*pPoly).PseudoDim = 2;
+    (*pPoly).PseudoSize = thickness;
+  }
 
   ut_free_1d (&c);
   ut_free_1d (&v);
   ut_free_2d (&bbox, 3);
+  ut_free_2d (&vercoo, verqty + 1);
+  ut_free_2d_int (&edgevers, edgeqty + 1);
 
-  return 0;
+  return status;
 }
 
 // net_domain_fromtess_convex returns 0 if all domain vertices are in the
@@ -562,7 +608,30 @@ net_domain_planes_string (char *domain, int dim, struct POLY *pPoly)
   double **eqs = NULL;
 
   net_domain_planesparms (domain, dim, &eqs, &eqqty);
+
+  // in 2D, the domain is a thin 3D domain (see net_domain_cubeparms), whose
+  // thickness is set relative to its in-plane size, as for square
+  if (dim == 2)
+  {
+    double **bbox = ut_alloc_2d (3, 2);
+    struct POLY Poly;
+
+    neut_poly_set_zero (&Poly);
+    net_domain_planes (eqs + 2, eqqty - 2, &Poly);
+    neut_poly_bbox (Poly, bbox);
+    eqs[1][0] = 1e-6 * ut_num_min (bbox[0][1] - bbox[0][0], bbox[1][1] - bbox[1][0]);
+
+    neut_poly_free (&Poly);
+    ut_free_2d (&bbox, 3);
+  }
+
   net_domain_planes (eqs, eqqty, pPoly);
+
+  if (dim == 2)
+  {
+    (*pPoly).PseudoDim = 2;
+    (*pPoly).PseudoSize = eqs[1][0];
+  }
 
   ut_free_2d (&eqs, eqqty);
 
@@ -603,7 +672,6 @@ net_domain_planesparms (char *domain, int dim, double ***peqs, int *peqqty)
   {
     (*peqs)[0][3] = -1;
     (*peqs)[1][3] = 1;
-    (*peqs)[1][0] = 1e-6;
   }
 
   // recording faces
@@ -711,6 +779,9 @@ net_domain_transform (struct TESS *pPoly, int dim, char *string)
   {
     if (varqty != 1)
       ut_print_message (2, 3, "Failed to parse expression `%s'.\n", string);
+
+    if (atoi (vars[0]) < 1 || atoi (vars[0]) > (*pPoly).PolyQty)
+      ut_print_message (2, 3, "Cell %s does not exist.\n", vars[0]);
 
     neut_tess_poly_tess (*pPoly, atoi (vars[0]), pPoly);
   }

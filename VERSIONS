@@ -1,4 +1,8 @@
 New in 7.0.1 (unreleased):
+- module -T: fixed -morpho with a 2D -domain planes (failed with
+  out-of-range values), fixed a 2D -domain file(<file.tess>) with or
+  without :cell(<id>) (crashed), checked the cell of -domain
+  :cell(<id>).
 - module -M: fixed failures and hangs of the Gmsh workers on macOS (pipe
   file descriptors kept apart from those of the workers, and workers
   started one at a time), restored -part <n>:<m> (<n> partitions of
