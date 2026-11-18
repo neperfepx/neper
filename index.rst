@@ -75,10 +75,6 @@ Neper: Polycrystal Generation, Meshing and Post-Processing
 
       Images of tessellations, meshes and simulation results.
 
-.. tip::
-
-  Neper can also be used from Python: the modules run as Python functions, and tessellations, meshes and simulation results are read into NumPy arrays.  See :doc:`doc/python`.
-
 .. note::
 
   See also `FEPX <https://fepx.info>`_, Neper's companion program: a finite element software package for polycrystal plasticity, whose meshes Neper generates and whose results it post-processes.
