@@ -17,6 +17,8 @@ The simplest way to install Neper (Linux and macOS) is from `conda-forge <https:
   $ conda create -n neper -c conda-forge neper
   $ conda activate neper
 
+.. note:: If the command fails, or installs an earlier version, conda-forge has not published the package of the latest release yet.
+
 See :ref:`installing_conda` for details.
 
 Current Official Release
