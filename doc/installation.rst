@@ -32,6 +32,8 @@ Then, install Neper in a new environment (named :data:`neper` here) and activate
   $ conda create -n neper -c conda-forge neper
   $ conda activate neper
 
+.. note:: If the command fails, or installs an earlier version, conda-forge has not published the package of the latest release yet.
+
 This also installs the required programs and libraries: Gmsh, POV-Ray, etc.  Asymptote and ImageMagick, which are needed only for some outputs of :ref:`neper_v` (see :ref:`fine_configuration`), are not installed.
 
 Neper can then be run as :program:`neper` in the activated environment, and updated by:
