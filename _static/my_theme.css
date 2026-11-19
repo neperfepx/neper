@@ -125,6 +125,17 @@ img.neper-card-img-right {
   font-size: 0.9rem;
 }
 
+.neper-app-clear {
+  margin-left: 0.5rem;
+  padding: 0;
+  font-size: 0.85rem;
+  border: 0;
+  background: none;
+  color: var(--pst-color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .neper-tag {
   display: inline-block;
   margin-left: 0.3rem;

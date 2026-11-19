@@ -1,4 +1,6 @@
-// Search box, field filter and journal filter of the application papers (applications.rst)
+// Search box, field filter and journal filter of the application papers (applications.rst).
+// Several fields or journals can be selected: a paper is shown if it has any of the
+// selected fields and is in any of the selected journals.
 document.addEventListener('DOMContentLoaded', function () {
   var box = document.getElementById('neper-app-filter');
   if (!box) return;
@@ -60,8 +62,8 @@ document.addEventListener('DOMContentLoaded', function () {
   input.className = 'neper-app-search';
   box.appendChild(input);
 
-  // Filters: one active field and one active journal at most
-  var active = { field: null, journal: null };
+  // Filters: the selected fields and journals (none selected: no filtering)
+  var active = { field: {}, journal: {} };
   var buttons = { field: {}, journal: {} };
 
   function row(kind, title, keys, label, count) {
@@ -74,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
     keys.forEach(function (k) {
       var b = document.createElement('button');
       b.type = 'button';
+      b.setAttribute('aria-pressed', 'false');
       b.className = 'neper-tag' + (kind === 'journal' && k !== OTHERS ? ' neper-journal' : '');
       b.textContent = label(k) + ' (' + count(k) + ')';
       b.addEventListener('click', function () { toggle(kind, k); });
@@ -90,12 +93,31 @@ document.addEventListener('DOMContentLoaded', function () {
   var count = document.createElement('p');
   count.className = 'neper-app-count';
   box.appendChild(count);
+  var clear = document.createElement('button');
+  clear.type = 'button';
+  clear.className = 'neper-app-clear';
+  clear.textContent = 'Clear filters';
+  clear.hidden = true;
+  clear.addEventListener('click', function () {
+    active = { field: {}, journal: {} };
+    ['field', 'journal'].forEach(function (kind) {
+      Object.keys(buttons[kind]).forEach(function (o) {
+        buttons[kind][o].classList.remove('active');
+        buttons[kind][o].setAttribute('aria-pressed', 'false');
+      });
+    });
+    clear.hidden = true;
+    apply();
+  });
+  count.appendChild(clear);
 
   function toggle(kind, k) {
-    active[kind] = (active[kind] === k) ? null : k;
+    if (active[kind][k]) delete active[kind][k]; else active[kind][k] = true;
     Object.keys(buttons[kind]).forEach(function (o) {
-      buttons[kind][o].classList.toggle('active', o === active[kind]);
+      buttons[kind][o].classList.toggle('active', !!active[kind][o]);
+      buttons[kind][o].setAttribute('aria-pressed', String(!!active[kind][o]));
     });
+    clear.hidden = !Object.keys(active.field).length && !Object.keys(active.journal).length;
     apply();
   }
 
@@ -118,10 +140,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function apply() {
     var q = norm(input.value).replace(/\s+/g, ' ').trim();
+    var fields = Object.keys(active.field), jsel = Object.keys(active.journal);
     var inFilters = function (p) {
-      return (!active.field || p.tags.indexOf(active.field) >= 0) &&
-             (!active.journal || p.journal === active.journal ||
-              (active.journal === OTHERS && !main[p.journal]));
+      return (!fields.length || fields.some(function (k) { return p.tags.indexOf(k) >= 0; })) &&
+             (!jsel.length || jsel.some(function (j) {
+               return p.journal === j || (j === OTHERS && !main[p.journal]);
+             }));
     };
     var has = function (p, t) { return p.text.indexOf(t) >= 0; };
     var words = terms(q);
@@ -139,9 +163,13 @@ document.addEventListener('DOMContentLoaded', function () {
       if (ok) { shown++; perSection.set(p.section, true); }
     });
     sections.forEach(function (s) { s.hidden = !perSection.get(s); });
-    count.textContent = (shown === papers.length)
-      ? papers.length + ' papers'
-      : shown + ' of ' + papers.length + ' papers';
+    count.firstChild && count.firstChild.nodeType === 3
+      ? count.firstChild.textContent = msg(shown)
+      : count.insertBefore(document.createTextNode(msg(shown)), count.firstChild);
+  }
+
+  function msg(shown) {
+    return (shown === papers.length ? papers.length : shown + ' of ' + papers.length) + ' papers ';
   }
 
   input.addEventListener('input', apply);
