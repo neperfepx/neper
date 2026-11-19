@@ -67,6 +67,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2027
 ----
 
+- N Sheng and S Khazaie, *Quantifying the impact of grain size distribution models on ultrasonic attenuation in polycrystals*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2026.108315.
 - SK Gaddam, S Natarajan, AK Kanjarla, *Octree-based scaled boundary finite element framework for crystal plasticity: An open-source ABAQUS implementation*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2026.119427.
 - Q Deng, F Zheng, YY Jiao, Y Zhang, B Gong and W Wu, *A Cover-based Enhanced Direct Search Approach for Contact Detection of Convex Polyhedral Blocks and Its Application with 3D DDA*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2026.108644.
 - T Kaiser and A Menzel, *FFT-based computational homogenisation and asymptotic expansion analysis of thermoelectric solids*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2026.119364.
@@ -74,6 +75,10 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- X Wang, Y Zhou, C He, G Xu, J Yang and Z Liu, *Brazilian test anisotropy of layered crystalline rocks simulated by a coupled 3D grain-based and bedding-plane DEM model*, **Computational Particle Mechanics**, https://doi.org/10.1016/j.cpms.2026.09.014.
+- P Chen, K Chen, R Luo, X Lian, J Hou, Z Tian and Y Wang, *Investigation on the dynamic mechanical behavior and thermal damage mechanism of rocks under confining pressure after high-temperature treatment*, **Scientific Reports**, https://doi.org/10.1038/s41598-026-75279-5.
+- ACM de Souza, S Moyne, C Doudard, L Saint-Sulpice and S Calloch, *Crystal plasticity analysis of dissipation under low-amplitude cyclic loading: from slip-band activation to self-heating curves*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104860.
+- S Zhou, W Zhang, W Li and J Wang, *Multi-scale modeling of blasting-induced fracture in polycrystalline granite with grain boundary effects*, **Journal of Vibroengineering**, https://doi.org/10.21595/jve.2026.25904.
 - R Cai, C Jia, Z Jiang, C Sang, M Yang, L Yang, C Zheng, P Wang and D Li, *Cementite-Lamella Morphology and Inter-Nodule Compatibility Govern Hierarchical Plasticity in Pearlitic Steel*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104832.
 - P Alizadeh, A Hekmatnejad, A Pena, LH Poh, *Microstructural disorder and fabric anisotropy in heterogeneous brittle rock materials: distinct controls on crack initiation and peak strength*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.112675.
 - J Tai, D Hu, Z Hu, A Saini, P Zuo, HY Chia, G Peng, WY Yeong, W Yan and Z Fan, *A physical framework linking ultrasonic scattering to strain localization in additively manufactured alloys*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2026.108303.
@@ -184,6 +189,11 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Elastic moduli of 2D random Voronoi polycrystals: hierarchical estimates versus numerical simulations: D.-C. Pham et al. DC Pham, AB Tran, HNT Nguyen, LD Vu, MHT Vuong - Zeitschrift für angewandte …, 2025
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
+.. Deep learning driven framework for optimization of polycrystalline microstructures under competing strength requirements, A Gupta, I Saha, L Graham-Brady, TA Zaki - arXiv preprint arXiv:2610.09461, 2026 (uses Neper)
+.. VoroDuce: Massively Parallel 3D Voronoi Simplification with Volume-Aware Edge Collapse, F Windisch, L Radl, T Köhler, S Govindarajan, M Pur, A Tagliasacchi, M Steinberger - arXiv preprint arXiv:2610.21811, 2026 (uses Neper)
+.. Zero-group-velocity modes in textured steel plates: experiments and elastic modeling, C Grünsteidl, C Kerschbaummayr, G Yan, G Watzl, F Rudinger, E Scherleitner, M Sonnleitner, C Hoflehner - arXiv preprint arXiv:2610.29693, 2026 (uses Neper)
+.. Multiplicity of elastic wave propagation in random polycrystals, M Huang, SI Rokhlin, MJS Lowe - arXiv preprint arXiv:2611.04058, 2026 (uses Neper)
+.. Testing and modeling the compressibility of crushable rockfill based on particle scale descriptors, C Maurer, C Ovalle, E Saez - conference paper, https://publications.polymtl.ca/70079/, 2025 (uses Neper)
 
 - S Zhang, S Qiu, Q Jiang, Y Kou, H Zhang and Z Xie, *Deformation failure mechanism and support effect in deep fractured rock masses*, **Bulletin of Engineering Geology and the Environment**, https://doi.org/10.1007/s10064-025-04627-y.
 - SS Acar and T Yalçinkaya, *Polycrystalline plasticity analysis of cyclic loading and stress relaxation in 316H austenitic stainless steel*, **Computer Methods in Materials Science**, https://doi.org/10.7494/cmms.2025.3.1025.
