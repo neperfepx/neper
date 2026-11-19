@@ -354,6 +354,7 @@ Papers by year
 2024
 ----
 
+- W Hao, C Sui, G Cheng, J Li, Y Sang, C Zhao, Y Zhou, Z Zang, Y Zhao, X He and C Wang, *High-Strength Polycrystalline Covalent Organic Framework with Abnormal Thermal Transport Insensitive to Grain Boundary*, **Nano Letters**, https://doi.org/10.1021/acs.nanolett.4c00570. :tag:`phys`
 - IG de Moraes, J Fischbacher, Y Hong, C Naud, H Okuno, A Masseboeuf, T Devillers, T Schrefl and NM Dempsey, *Nanofabrication, characterisation and modelling of soft-in-hard FeCo–FePt magnetic nanocomposites*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2024.119970. :tag:`char` :tag:`phys`
 - Q Dollé and D Weisz-Patrault, *Very fast simulation of growth competition between columnar dendritic grains during melt pool solidification*, **Computational Materials Science**, https://doi.org/10.1016/j.commatsci.2024.113112. :tag:`am` :tag:`proc`
 - S Zhang, S Qiu, Q Jiang, Y Kou, L Jia and H Wang, *Mechanical and cracking behavior of granite specimens containing various inclusions*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2024.106122. :tag:`rock` :tag:`frac`
@@ -459,7 +460,7 @@ Papers by year
 - L Gan, B Zhu, C Ling, D Li and EP Busso, *Micro-mechanics investigation of heterogeneous deformation fields and crack initiation driven by the local stored energy density in austenitic stainless steel welded joints*, **Journal of the Mechanics and Physics of Solids**, https://doi.org/10.1016/j.jmps.2024.105652. :tag:`frac` :tag:`proc`
 - A Patra and CN Tomé, *A Dislocation Density-Based Crystal Plasticity Constitutive Model: Comparison of VPSC Effective Medium Predictions with ρ-CP Finite Element Predictions*, **Modelling and Simulation in Materials Science and Engineering**, https://doi.org/10.1088/1361-651X/ad3e99. :tag:`cp`
 - S El Shawish, *Extending intergranular normal-stress distributions using symmetries of linear-elastic polycrystalline materials*, **Acta Mechanica**, https://doi.org/10.1007/s00707-024-03930-1. :tag:`rock`
-- L Zaikovska, M Ekh and J Moverare, *Three-Dimensional Columnar Microstructure Representation Using 2D Electron Backscatter Diffraction Data for Additive-Manufactured Haynes® 282®*, **Materials**, https://doi.org/10.1021/acs.nanolett.4c00570. :tag:`waves` :tag:`am` :tag:`char`
+- L Zaikovska, M Ekh and J Moverare, *Three-Dimensional Columnar Microstructure Representation Using 2D Electron Backscatter Diffraction Data for Additive-Manufactured Haynes® 282®*, **Materials**, https://doi.org/10.3390/ma17071659. :tag:`am` :tag:`char`
 - A Bolyachkin, E Dengina, H Sepehri-Amin, T Ohkubo and K Hono, *Micromagnetic simulations of Nd-Fe-B hot-deformed magnets subjected to eutectic grain boundary diffusion process*, **Scripta Materialia**, https://doi.org/10.1016/j.scriptamat.2024.116095. :tag:`phys`
 - Y Zhang, S Geng, K Zhang and B Zheng, *Capacity fading and inter/intra-granular fracture of polycrystalline cathode particle induced by charge/discharge cycles: A numerical study*, **Journal of Power Sources**, https://doi.org/10.1016/j.jpowsour.2024.234412. :tag:`rock` :tag:`frac`
 - X Gao, X Lu, X Zhang, M Qian, A-b Li, H Wang, C Liu, B Gong, W Ouyang and H-W Peng, *Effect of Bricks-and-Mortar Architecture on Fracture Behavior of SiCp/Al Composite: A Finite Element Analysis*, **Applied Composite Materials**, https://doi.org/10.1007/s10443-024-10221-4. :tag:`frac`
@@ -577,7 +578,7 @@ Papers by year
 - KE N'souglo, K Kowalczyk-Gajewska, M Marvi-Mashhadi and JA Rodriguez-Martinez, *The effect of initial texture on multiple necking formation in polycrystalline thin rings subjected to dynamic expansion*, **Mechanics of Materials**, https://doi.org/10.1016/j.mechmat.2023.104616. :tag:`cp`
 - T Fischer, CFO Dahlberg and P Hedström, *Sensitivity of local cyclic deformation in lath martensite to flow rule and slip system in crystal plasticity*, **Computational Materials Science**, https://doi.org/10.1016/j.commatsci.2023.112106. :tag:`cp` :tag:`proc`
 - P Trusov, N Kondratev, M Baldin and D Bezverkhy, *A Multilevel Physically Based Model of Recrystallization: Analysis of the Influence of Subgrain Coalescence at Grain Boundaries on the Formation of Recrystallization Nuclei in Metals*, **Materials**, https://doi.org/10.3390/ma16072810. :tag:`rock` :tag:`proc`
-  - Y Liu, F Yu, Y Wang, *Mechanical Anisotropy of Selective Laser Melted Ti-6Al-4V Using a Reduced-order Crystal Plasticity Finite Element Model*, **Chinese Journal of Mechanical Engineering: Additive Manufacturing Frontiers**, https://doi.org/10.1016/j.cjmeam.2023.100062.
+- Y Liu, F Yu and Y Wang, *Mechanical Anisotropy of Selective Laser Melted Ti-6Al-4V Using a Reduced-order Crystal Plasticity Finite Element Model*, **Chinese Journal of Mechanical Engineering: Additive Manufacturing Frontiers**, https://doi.org/10.1016/j.cjmeam.2023.100062. :tag:`cp` :tag:`am`
 - F Ghanbari, EG Rodriguez, D Millán, F Simonetti, AP Argüelles and C Peco, *Modeling of wave propagation in polycrystalline ice with hierarchical density gradients*, **Finite Elements in Analysis and Design**, https://doi.org/10.1016/j.finel.2023.103916. :tag:`waves` :tag:`phys`
 - S Lee, H Cho, CA Bronkhorst, R Pokharel, DW Brown, B Clausen, SC Vogel, V Anghel, GT Gray III and JR Mayeur, *Deformation, dislocation evolution and the non-Schmid effect in body-centered-cubic single-and polycrystal tantalum*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2023.103529. :tag:`cp`
 - W Liu, J Huang, Y Pang, K Zhu, S Li and J Ma, *Multi-scale modelling of evolving plastic anisotropy during Al-alloy sheet forming*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2023.108168. :tag:`proc`
@@ -661,12 +662,12 @@ Papers by year
 - RRP Purushottam Raj Purohit, S Tardif, O Castelnau, J Eymery, R Guinebretière, O Robach, T Ors and J-S Micha, *LaueNN: neural-network-based hkl recognition of Laue spots and its application to polycrystalline materials*, **Journal of Applied Crystallography**, https://doi.org/10.1107/S1600576722004198. :tag:`meth`
 - A Deva and RE García, *Apparent microstructurally induced phase separation in porous LiNi1/3Mn1/3Co1/3O2 cathodes*, **Journal of Power Sources**, https://doi.org/10.1016/j.jpowsour.2022.231609. :tag:`other`
 - C Fang, J Gong, M Jia, Z Nie, B Li and A Mohammed, *Investigating the effects of elongation and flatness on the shear behaviour of breakable granular materials via the DEM*, **Granular Matter**, https://doi.org/10.1007/s10035-022-01237-3. :tag:`rock`
-  - A Vijay and F Sadeghi, *A Crystal Plasticity and Cohesive Element Model for Rolling Contact Fatigue of Bearing Steels*, **Tribology International**, https://doi.org/10.1016/j.triboint.2022.107607.
+- A Vijay and F Sadeghi, *A Crystal Plasticity and Cohesive Element Model for Rolling Contact Fatigue of Bearing Steels*, **Tribology International**, https://doi.org/10.1016/j.triboint.2022.107607. :tag:`cp` :tag:`frac`
 - M Wojciechowski, *On generalized boundary conditions for mesoscopic volumes in computational homogenization*, **Composite Structures**, https://doi.org/10.1016/j.compstruct.2022.115718. :tag:`meth`
 - AI Blair and DP Hampshire, *Critical current density of superconducting-normal-superconducting Josephson junctions and polycrystalline superconductors in high magnetic fields*, **Physical Review Research**, https://doi.org/10.1103/PhysRevResearch.4.023123. :tag:`phys`
 - Z Fang, L Wang, Z Wang and Y He, *A Comparison of Two Methods Modeling High-Temperature Fatigue Crack Initiation in Ferrite–Pearlite Steel*, **Crystals**, https://doi.org/10.3390/cryst12050718. :tag:`frac`
 - KL Auth, J Brouzoulis and M Ekh, *A fully coupled chemo-mechanical cohesive zone model for oxygen embrittlement of nickel-based superalloys*, **Journal of the Mechanics and Physics of Solids**, https://doi.org/10.1016/j.jmps.2022.104880. :tag:`frac`
-- K Song, K Wang, L Zhang, L Zhao, L Xu, Y Han and K Hao, *Insighte on low cycle fatigue crack formation and propagation mechanism: a microstructurally-sensitive modeling*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103295. :tag:`cp` :tag:`frac`
+- K Song, K Wang, L Zhang, L Zhao, L Xu, Y Han and K Hao, *Insights on low cycle fatigue crack formation and propagation mechanism: a microstructurally-sensitive modeling*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103295. :tag:`cp` :tag:`frac`
 - M Renouf, L Daridon and A Chrysochoos, *A damage criterion based on energy balance for isotropic cohesive zone model*, **Journal of Theoretical, Computational and Applied Mechanics**, https://doi.org/10.46298/jtcam.7056. :tag:`frac`
 - Y Liu, W Wan and FPE Dunne, *Characterisation and modelling of micro-and macroscale creep and strain rate sensitivity in Zircaloy-4*, **Materials Science and Engineering A**, https://doi.org/10.1016/j.msea.2022.142981. :tag:`cp` :tag:`char`
 - D Zhang, H Li, X Guo, Y Yang, X Yang and Z Feng, *An insight into size effect on fracture behavior of Inconel 718 cross-scaled foils*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103274. :tag:`cp` :tag:`frac`
@@ -838,6 +839,7 @@ Papers by year
 2019
 ----
 
+- SC Aduloju and TJ Truster, *On topology-based cohesive interface element insertion along periodic boundary surfaces*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2018.10.037. :tag:`frac`
 - B Vengatachalam, LH Poh, ZS Liu, QH Qin and S Swaddiwudhipong, *Three dimensional modelling of closed-cell aluminium foams with predictive macroscopic behaviour*, **Mechanics of Materials**, https://doi.org/10.1016/j.mechmat.2019.103067. :tag:`phys`
 - M Gusenbauer, J Fischbacher, A Kovacs, H Oezelt, S Bance, P Zhao, TG Woodcock and T Schrefl, *Automated meshing of electron backscatter diffraction data and application to finite element micromagnetics*, **Journal of Magnetism and Magnetic Materials**, https://doi.org/10.1016/j.jmmm.2019.165256. :tag:`char` :tag:`meth` :tag:`phys`
 - HB Boubaker, C Mareau, Y Ayed, G Germain and F Guerin, *Development of a Hyperelastic Constitutive Model Based on the Crystal Plasticity Theory for the Simulation of Machining Operations*, **Procedia CIRP**, https://doi.org/10.1016/j.procir.2019.04.336. :tag:`cp` :tag:`proc`
@@ -1012,7 +1014,7 @@ Papers by year
 - MR Murshed and SI Ranganathan, *Scaling laws in elastic polycrystals with individual grains belonging to any crystal class*, **Acta Mechanica**, https://doi.org/10.1007/s00707-016-1774-3. :tag:`other`
 - H Oezelt, E Kirk, P Wohlhuter, E Muller, LJ Heyderman, A Kovacs and T Schrefl, *Vortex motion in amorphous ferrimagnetic thin film elements*, **AIP Advances**, https://doi.org/10.1063/1.4973295. :tag:`phys`
 - S Gupta, AJ Beaudoin and J Chevy, *Strain rate jump induced negative strain rate sensitivity (NSRS) in aluminum alloy 2024: Experiments and constitutive modeling*, **Materials Science and Engineering A**, https://doi.org/10.1016/j.msea.2016.12.010. :tag:`other`
-- Y Lv, H Li, X Zhu and W Liu, *Discrete element method simulation of random grain-based models*, **Cluster Computing**, https://doi.org/10.1007/s10586-016-0705-3. :tag:`rock`
+- Y Lv, H Li, X Zhu and W Liu, *Discrete element method simulation of random Voronoi grain-based models*, **Cluster Computing**, https://doi.org/10.1007/s10586-016-0705-3. :tag:`rock`
 - CH Pham, S Thuillier and P-Y Manach, *Prediction of flow stress and surface roughness of stainless steel sheets considering an inhomogeneous microstructure*, **Materials Science and Engineering A**, https://doi.org/10.1016/j.msea.2016.09.101. :tag:`other`
 - M Toifl, P Hartlieb, R Meisels, T Antretter and F Kuchar, *Numerical study of the influence of irradiation parameters on the microwave-induced stresses in granite*, **Minerals Engineering**, https://doi.org/10.1016/j.mineng.2016.09.011. :tag:`rock`
 - F Adzima, T Balan, PY Manach, N Bonnet and L Tabourot, *Crystal plasticity and phenomenological approaches for the simulation of deformation behavior in thin copper alloy sheets*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2016.06.003. :tag:`cp`
@@ -1020,6 +1022,7 @@ Papers by year
 2016
 ----
 
+- I Benedetti and V Gulizzi, *A Novel Numerical Formulation for Crystal Plasticity*, **Key Engineering Materials**, https://doi.org/10.4028/www.scientific.net/kem.713.317. :tag:`cp`
 - A Van Pamel, PB Nagy and MJS Lowe, *On the dimensionality of elastic wave scattering within heterogeneous media*, **The Journal of the Acoustical Society of America**, https://doi.org/10.1121/1.4971383. :tag:`waves`
 - V Gulizzi and I Benedetti, *Micro-cracking of brittle polycrystalline materials with initial damage*, **European Journal of Computational Mechanics**, https://doi.org/10.1080/17797179.2016.1181032. :tag:`frac`
 - K Chatterjee, A Venkataraman, T Garbaciak, J Rotella, MD Sangid, AJ Beaudoin, P Kenesei, JS Park and AL Pilchak, *Study of grain-level deformation and residual stresses in Ti-7Al under combined bending and tension using high energy diffraction microscopy (HEDM)*, **International Journal of Solids and Structures**, https://doi.org/10.1016/j.ijsolstr.2016.05.010. :tag:`cp` :tag:`char`
@@ -1039,7 +1042,7 @@ Papers by year
 - P Baudoin, V Magnier, A El Bartali, J.-F Witz, Ph Dufrenoy, F Demilly and E Charkaluk, *Numerical investigation of fatigue strength of grain size gradient materials under heterogeneous stress states in a notched specimen*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2016.01.022. :tag:`frac`
 - E Svenning, M Fagerström and F Larsson, *On computational homogenization of microscale crack propagation*, **International Journal for Numerical Methods in Engineering**, https://doi.org/10.1002/nme.5220. :tag:`frac` :tag:`meth`
 - M Toifl, R Meisels, P Hartlieb, F Kuchar and Th Antretter, *3D numerical study on microwave induced stresses in inhomogeneous hard rocks*, **Minerals Engineering**, https://doi.org/10.1016/j.mineng.2016.01.001. :tag:`rock`
-- R Brommesson, M Ekh and C Joseph, *3D grain structure modelling of intragranular fracture in forged Haynes 282*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2015.12.030. :tag:`rock` :tag:`frac`
+- R Brommesson, M Ekh and C Joseph, *3D grain structure modelling of intergranular fracture in forged Haynes 282*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2015.12.030. :tag:`rock` :tag:`frac`
 - T Auger, S Hémery, M Bourcier, C Berdin, M Martin and I Robertson, *Crack path in liquid metal embrittlement: experiments with steels and modeling*, **Fracture and Structural Integrity**, https://doi.org/10.3221/igf-esis.35.29. :tag:`frac`
 - S El Shawish and L Cizelj, *Numerical investigation of grain misorientations at and close to the free surface of FCC polycrystalline metals*, **Computational Materials Science**, https://doi.org/10.1016/j.commatsci.2015.11.032. :tag:`other`
 - E Renner, Y Gaillard, F Richard, F Amiot and P Delobelle, *Sensitivity of the residual topography to single crystal plasticity parameters in Berkovich nanoindentation on FCC nickel*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2015.10.002. :tag:`cp`
@@ -1081,6 +1084,7 @@ Papers by year
 2013
 ----
 
+- I Benedetti and MH Aliabadi, *A three-dimensional cohesive-frictional grain-boundary micromechanical model for intergranular degradation and failure in polycrystalline materials*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2013.05.023. :tag:`frac`
 - I Benedetti and F Barbe, *Modelling Polycrystalline Materials: An Overview of Three-Dimensional Grain-Scale Mechanical Models*, **Journal of Multiscale Modelling**, https://doi.org/10.1142/s1756973713500029. :tag:`cp` :tag:`meth`
 - A Fernández, A Jérusalem, I Gutiérrez-Urrutia and MT Pérez-Prado, *Three-dimensional investigation of grain boundary-twin interactions in a Mg AZ31 alloy by electron backscatter diffraction and continuum modeling*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2013.09.005. :tag:`waves` :tag:`char`
 - SL Wong, J-S Park, M P Miller and P R Dawson, *A framework for generating synthetic diffraction images from deforming polycrystals using crystal-based finite element formulations*, **Computational Materials Science**, https://doi.org/10.1016/j.commatsci.2013.03.019. :tag:`char` :tag:`proc`
@@ -1092,7 +1096,7 @@ Papers by year
 - J Montalvo-Urquizo, P Bobrov, A Schmidt and W Wosniok, *Elastic responses of texturized microscale materials using FEM simulations and stochastic material properties*, **Mechanics of Materials**, https://doi.org/10.1016/j.mechmat.2011.11.008. :tag:`other`
 - CN N'Guyen, F Barbe, N Osipov, G Cailletaud, B Marini and C Petry, *Micromechanical local approach to brittle failure in bainite high resolution polycrystals: a short presentation*, **Computational Materials Science**, https://doi.org/10.1016/j.commatsci.2012.03.034. :tag:`frac` :tag:`proc`
 - A Maitre, D Ledue, F Barbe and R Patte, *Temperature effect in polycrystalline exchange-biased bilayers: A Monte Carlo study*, **Journal of Applied Physics**, https://doi.org/10.1063/1.3672066. :tag:`proc`
-- R Quey, PR Dawson and JH Driver, *Orientation fragmentation in hot-deformed polycrystalline aluminium: Experiment and simulation*, **Journal of the Mechanics and Physics of Solids**, https://doi.org/10.1016/j.jmps.2011.11.005. :tag:`other`
+- R Quey, PR Dawson and JH Driver, *Grain orientation fragmentation in hot-deformed aluminium: Experiment and simulation*, **Journal of the Mechanics and Physics of Solids**, https://doi.org/10.1016/j.jmps.2011.11.005. :tag:`other`
 - A Tahimi, F Barbe, L Taleb, R Quey and A Guillet, *Evaluation of microstructure-based transformation plasticity models from experiments on 100C6 steel*, **Computational Materials Science**, https://doi.org/10.1016/j.commatsci.2011.01.052. :tag:`cp` :tag:`proc`
 
 2011
@@ -1100,6 +1104,11 @@ Papers by year
 
 - R Quey, PR Dawson and F Barbe, *Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2011.01.002. :tag:`meth`
 - F Barbe and R Quey, *A numerical modelling of 3D polycrystal-to-polycrystal diffusive phase transformations involving crystal plasticity*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2010.09.008. :tag:`cp` :tag:`proc`
+
+2010
+----
+
+- R Quey, F Barbe, H Hoang and L Taleb, *Effect of the random spatial distribution of nuclei on the transformation plasticity in diffusively transforming steel*, **International Journal of Microstructure and Materials Properties**, https://doi.org/10.1504/ijmmp.2010.037612. :tag:`cp` :tag:`proc`
 
 2009
 ----
