@@ -13,8 +13,10 @@ permissions:
   contents: read
 
 jobs:
+  # The website is built in the public repository only, as the builds and tests below
   website:
     name: Website
+    if: github.repository == 'neperfepx/neper'
     uses: ./.github/workflows/website.yaml
 
   # The builds and tests run in the public repository only, where they are free: in the private
