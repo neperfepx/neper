@@ -82,6 +82,7 @@ def tag_role(name, rawtext, text, lineno, inliner, options=None, content=None):
 def setup(app):
     app.add_role('tag', tag_role)
     app.add_js_file('applications.js')
+    app.add_js_file('applications-chart.js')
     app.add_css_file('my_theme.css')
     # Light mode only, whatever a previous visit saved in the browser
     app.add_js_file(None, body="""
