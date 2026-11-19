@@ -363,23 +363,24 @@ neut_sim_entity_id_res_val (struct SIM Sim, char *entity, int id, char *res, dou
 void
 neut_sim_testinputs (struct SIM Sim, struct TESS Tess, struct MESH *Mesh)
 {
+  int dim, qty[4];
+  const char *entity[4] = { "vertices", "edges", "faces", "polyhedra" };
+  // the tessellation and mesh may be loaded directly, with no file names
+  // in Sim
+  char *tess = Sim.tess ? Sim.tess : (char *) "The tessellation";
+  char *msh = Sim.msh ? Sim.msh : (char *) "the mesh";
+
   if (!neut_tess_isvoid (Tess))
   {
-    if (!neut_mesh_isvoid (Mesh[0]))
-      if (Tess.VerQty != Mesh[0].ElsetQty)
-        ut_print_message (1, 2, "%s and %s do not match (0D).\n", Sim.tess, Sim.msh);
+    qty[0] = Tess.VerQty;
+    qty[1] = Tess.EdgeQty;
+    qty[2] = Tess.FaceQty;
+    qty[3] = Tess.PolyQty;
 
-    if (!neut_mesh_isvoid (Mesh[1]))
-      if (Tess.EdgeQty != Mesh[1].ElsetQty)
-        ut_print_message (1, 2, "%s and %s do not match (1D).\n", Sim.tess, Sim.msh);
-
-    if (!neut_mesh_isvoid (Mesh[2]))
-      if (Tess.FaceQty != Mesh[2].ElsetQty)
-        ut_print_message (1, 2, "%s and %s do not match (2D).\n", Sim.tess, Sim.msh);
-
-    if (!neut_mesh_isvoid (Mesh[3]))
-      if (Tess.PolyQty != Mesh[3].ElsetQty)
-        ut_print_message (1, 2, "%s and %s do not match (3D).\n", Sim.tess, Sim.msh);
+    for (dim = 0; dim <= 3; dim++)
+      if (!neut_mesh_isvoid (Mesh[dim]) && qty[dim] != Mesh[dim].ElsetQty)
+        ut_print_message (1, 2, "%s and %s do not match (%dD: %d %s and %d elsets).\n",
+                          tess, msh, dim, qty[dim], entity[dim], Mesh[dim].ElsetQty);
   }
 
   return;

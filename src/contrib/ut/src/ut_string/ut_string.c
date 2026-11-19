@@ -714,7 +714,10 @@ ut_string_real (char *string, double *pres)
     sscanf (string, "%lf", pres);
 
   else if (format[strlen (format) - 1] == 's')
-    ut_math_eval (string, 0, NULL, NULL, pres);
+  {
+    if (ut_math_eval (string, 0, NULL, NULL, pres))
+      ut_print_message (2, 0, "Failed to process expression `%s'.\n", string);
+  }
   else
     abort ();
 

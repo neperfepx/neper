@@ -811,7 +811,9 @@ neut_tess_init_facetopo_fromedge (struct TESS *pTess)
   return;
 }
 
-void
+// returns 0 on success, or the first face whose edges do not form a single
+// loop (e.g. a face with a hole)
+int
 neut_tess_init_facetopo_fromver (struct TESS *pTess)
 {
   int i, j, k, edge, ver, pos;
@@ -850,7 +852,10 @@ neut_tess_init_facetopo_fromver (struct TESS *pTess)
         }
 
       if (perm[j] == 0)
-        ut_print_neperbug ();
+      {
+        ut_free_1d_int (&perm);
+        return i;
+      }
     }
 
     ut_array_1d_int_permute ((*pTess).FaceEdgeNb[i],
@@ -886,7 +891,7 @@ neut_tess_init_facetopo_fromver (struct TESS *pTess)
         ver = (*pTess).EdgeVerNb[edge][0];
       }
       else
-        ut_print_neperbug ();
+        return i;
     }
   }
 
@@ -910,7 +915,7 @@ neut_tess_init_facetopo_fromver (struct TESS *pTess)
 
   (*pTess).FacePtCoo = ut_alloc_2d ((*pTess).FaceQty + 1, 3);
 
-  return;
+  return 0;
 }
 
 double

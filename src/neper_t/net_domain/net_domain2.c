@@ -627,6 +627,8 @@ net_domain_planes_string (char *domain, int dim, struct POLY *pPoly)
 
   net_domain_planes (eqs, eqqty, pPoly);
 
+  net_domain_planes_check (*pPoly);
+
   if (dim == 2)
   {
     (*pPoly).PseudoDim = 2;
@@ -655,7 +657,7 @@ net_domain_planesparms (char *domain, int dim, double ***peqs, int *peqqty)
   file = ut_file_open (filename, "r");
 
   if (fscanf (file, "%d", peqqty) != 1)
-    abort ();
+    ut_print_message (2, 3, "Failed to read the number of planes in `%s'.\n", filename);
 
   if (dim == 2)
   {
@@ -677,7 +679,8 @@ net_domain_planesparms (char *domain, int dim, double ***peqs, int *peqqty)
   // recording faces
   for (i = shift; i < *peqqty; i++)
   {
-    ut_array_1d_fscanf (file, (*peqs)[i], 4);
+    if (ut_array_1d_fscanf (file, (*peqs)[i], 4) != 1)
+      ut_print_message (2, 3, "Failed to read plane %d in `%s'.\n", i - shift + 1, filename);
     if (ut_array_1d_norm ((*peqs)[i] + 1, 3) == 0)
       ut_print_message (2, 3, "Face %d: normal norm is zero.\n", i - 1);
     ut_array_1d_scale ((*peqs)[i], 4, 1. / ut_vector_norm ((*peqs)[i] + 1));

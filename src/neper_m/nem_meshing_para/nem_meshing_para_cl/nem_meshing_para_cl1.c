@@ -94,11 +94,14 @@ nem_meshing_para_cl (struct IN_M In, struct TESS *pTess, struct TESR *pTesr,
 
     if (!strcmp ((*pMeshPara).elttype, "tri"))
     {
-      (*pMeshPara).face_cl = ut_alloc_1d ((*pTess).FaceQty + 1);
       (*pMeshPara).edge_cl = ut_alloc_1d ((*pTess).EdgeQty + 1);
       (*pMeshPara).ver_cl = ut_alloc_1d ((*pTess).VerQty + 1);
-      neut_tess_val_poly2face ((*pTess), (*pMeshPara).poly_cl,
-                               (*pMeshPara).face_cl);
+      if ((*pTess).Dim == 3)
+      {
+        (*pMeshPara).face_cl = ut_alloc_1d ((*pTess).FaceQty + 1);
+        neut_tess_val_poly2face ((*pTess), (*pMeshPara).poly_cl,
+                                 (*pMeshPara).face_cl);
+      }
       neut_tess_val_face2edge ((*pTess), (*pMeshPara).face_cl,
                                (*pMeshPara).edge_cl);
       neut_tess_val_edge2ver ((*pTess), (*pMeshPara).edge_cl,

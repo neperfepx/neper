@@ -30,12 +30,13 @@ net_transform_tess_cut_pre_prim (char *expr, struct PRIM **pPrim, int *pPrimQty,
       if (qty2 != 6)
         ut_print_exprbug (tmp[i]);
 
-      sprintf (tmp0[0], "hspace(%g,-1,0,0)", -atof (tmp2[0]));
-      sprintf (tmp0[1], "hspace(%g,1,0,0)", atof (tmp2[1]));
-      sprintf (tmp0[2], "hspace(%g,0,-1,0)", -atof (tmp2[2]));
-      sprintf (tmp0[3], "hspace(%g,0,1,0)", atof (tmp2[3]));
-      sprintf (tmp0[4], "hspace(%g,0,0,-1)", -atof (tmp2[4]));
-      sprintf (tmp0[5], "hspace(%g,0,0,1)", atof (tmp2[5]));
+      // removing the outside of the cube: x <= xmin, -x <= -xmax, etc.
+      sprintf (tmp0[0], "hspace(%.17g,1,0,0)", atof (tmp2[0]));
+      sprintf (tmp0[1], "hspace(%.17g,-1,0,0)", -atof (tmp2[1]));
+      sprintf (tmp0[2], "hspace(%.17g,0,1,0)", atof (tmp2[2]));
+      sprintf (tmp0[3], "hspace(%.17g,0,-1,0)", -atof (tmp2[3]));
+      sprintf (tmp0[4], "hspace(%.17g,0,0,1)", atof (tmp2[4]));
+      sprintf (tmp0[5], "hspace(%.17g,0,0,-1)", -atof (tmp2[5]));
 
       for (j = 0; j < 6; j++)
       {

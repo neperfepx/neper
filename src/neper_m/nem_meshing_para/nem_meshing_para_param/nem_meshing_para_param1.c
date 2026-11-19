@@ -27,8 +27,8 @@ nem_meshing_para_param (struct IN_M In, struct TESS Tess, struct TESR *pTesr,
   if (In.mesh && !neut_mesh_isvoid (RMesh[Tess.Dim]))
   {
     (*pMeshPara).input = 'm';
-    dim = 3;
-    cellqty = RMesh[3].ElsetQty;
+    dim = Tess.Dim;
+    cellqty = RMesh[dim].ElsetQty;
   }
   else if (In.tess)
   {
@@ -57,7 +57,7 @@ nem_meshing_para_param (struct IN_M In, struct TESS Tess, struct TESR *pTesr,
     else if ((*pMeshPara).input == 'v')
       neut_tesr_size (*pTesr, &size);
     else if ((*pMeshPara).input == 'm')
-      neut_mesh_volume (RNodes, RMesh[3], &size);
+      neut_mesh_size (RNodes, RMesh[dim], &size);
     else
       abort ();
   }

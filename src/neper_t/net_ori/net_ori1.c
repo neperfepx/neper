@@ -81,6 +81,8 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
       else if (!strncmp (ori, "file(", 5))
       {
         net_ori_file (ori, OSets + i);
+        if ((int) OSets[i].size < qty[i])
+          ut_print_message (2, 3, "The file contains %d orientations, fewer than the %d cells.\n", (int) OSets[i].size, qty[i]);
         ut_string_string (oricrysym, &(OSets[i].crysym));
       }
 

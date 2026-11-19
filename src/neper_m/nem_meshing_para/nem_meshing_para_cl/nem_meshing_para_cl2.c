@@ -129,16 +129,23 @@ nem_meshing_para_cl_poly_mesh (char *clstring, struct MESHPARA *pMeshPara,
                                struct TESS *pTess)
 {
   char *elset = ut_alloc_1d_char (100);
+  double **pcell_cl = NULL;
+
+  if ((*pTess).Dim == 3)
+    pcell_cl = &((*pMeshPara).poly_cl);
+  else if ((*pTess).Dim == 2)
+    pcell_cl = &((*pMeshPara).face_cl);
+  else
+    abort ();
 
   sprintf (elset, "elset%dd", (*pTess).Dim);
 
-  (*pMeshPara).poly_cl = ut_alloc_1d ((*pTess).PolyQty + 1);
+  (*pcell_cl) = ut_alloc_1d ((*pTess).CellQty + 1);
   neut_mesh_entity_expr_val (Nodes, Mesh, pTess, NULL, NULL, NULL, NULL, elset,
-                             clstring, (*pMeshPara).poly_cl, NULL);
+                             clstring, *pcell_cl, NULL);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
-    nem_meshing_para_rcl2cl (pMeshPara, (*pTess).CellQty, (*pTess).Dim,
-                             (*pMeshPara).poly_cl);
+    nem_meshing_para_rcl2cl (pMeshPara, (*pTess).CellQty, (*pTess).Dim, *pcell_cl);
 
   ut_free_1d_char (&elset);
 

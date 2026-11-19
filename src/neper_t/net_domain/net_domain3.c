@@ -415,3 +415,24 @@ net_domain_fromtess_hull (struct TESS Tess, int domface, struct PRIM Prim,
 
   return;
 }
+
+// checking that the domain is not empty and is bounded (the initial domain
+// is a cube of half-size 1e6, see net_domain_clip)
+void
+net_domain_planes_check (struct POLY Poly)
+{
+  int i;
+  double **bbox = ut_alloc_2d (3, 2);
+
+  if (Poly.VerQty == 0)
+    ut_print_message (2, 3, "The planes do not bound any region (empty domain).  Check that they are written as `<d> <a> <b> <c>', with outward normals, and that they define a convex region.\n");
+
+  neut_poly_bbox (Poly, bbox);
+  for (i = 0; i < 3; i++)
+    if (bbox[i][0] < -0.999e6 || bbox[i][1] > 0.999e6)
+      ut_print_message (2, 3, "The planes do not bound a closed region (unbounded domain).\n");
+
+  ut_free_2d (&bbox, 3);
+
+  return;
+}

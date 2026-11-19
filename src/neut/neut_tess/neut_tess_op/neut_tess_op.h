@@ -105,7 +105,7 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_tess_init_facetopo_fromver (struct TESS *pTess);
+  extern int neut_tess_init_facetopo_fromver (struct TESS *pTess);
 
 /// \brief Initialize BoundingBox
 ///

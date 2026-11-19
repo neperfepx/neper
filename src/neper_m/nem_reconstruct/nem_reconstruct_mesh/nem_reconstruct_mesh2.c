@@ -250,7 +250,10 @@ nem_reconstruct_mesh_0d (struct NODES Nodes, struct MESH *Mesh, int mode,
           ut_array_1d_int_reverseelts ((*pTess).EdgeVerNb[i], 2);
       }
 
-      neut_tess_init_facetopo_fromver (pTess);
+      int face = neut_tess_init_facetopo_fromver (pTess);
+      if (face)
+        ut_print_message (2, 3, "\n%s %d has a boundary made of several closed lines (e.g. it encloses another cell, or crosses a periodic boundary), which is not supported.  For a raster tessellation, use -elttype quadgrid or hexgrid, or remove the enclosed cells (-T -transform rmcell).\n",
+                          (*pTess).Dim == 2 ? "Cell" : "Face", face);
     }
 
     ut_free_2d_int (&VerEdgeNb, VerQty);

@@ -2,15 +2,35 @@ New in 7.0.1 (unreleased):
 - module -T: fixed -morpho with a 2D -domain planes (failed with
   out-of-range values), fixed a 2D -domain file(<file.tess>) with or
   without :cell(<id>) (crashed), checked the cell of -domain
-  :cell(<id>).
+  :cell(<id>), fixed -transform
+  cut(cubei(<xmin>,<xmax>,<ymin>,<ymax>,<zmin>,<zmax>)) (empty
+  tessellation), added error messages for a -domain planes(<file>) whose
+  planes define an empty or unbounded domain or cannot be read
+  (crashed), added error messages for -ori with an unknown value (e.g. a
+  file name without file()) and for orientation files that cannot be
+  read (wrong number of values per line, header, unknown descriptor or
+  label, fewer orientations than cells; crashed or wrong orientations).
 - module -M: fixed failures and hangs of the Gmsh workers on macOS (pipe
   file descriptors kept apart from those of the workers, and workers
   started one at a time), restored -part <n>:<m> (<n> partitions of
   <m> subpartitions each, e.g. for <n> nodes of <m> cores; no longer
-  limited to powers of 2).
+  limited to powers of 2), fixed the meshing of a 2D tessellation with
+  an input mesh (-M <file.tess>,<file.msh>; crashed), added an error
+  message for the free meshing of 2D raster tessellations with a cell
+  whose boundary is made of several closed lines (a cell enclosing
+  another one, or a periodic tessellation; "bug in Neper").
+- module -V: fixed the warning on a tessellation and a mesh that do not
+  match ("(null) and (null)"; now with the numbers of entities and
+  elsets).
+- module -S: fixed -rescell gos of raster tessellations (computed
+  relative to the identity instead of the average orientation of the
+  cell), fixed -rescell ori of raster tessellations with only voxel
+  orientations (crashed).
 - general: fixed the address of the documentation (neper.info/doc) in
   the Python package and the conda recipe, and that of the reference
-  paper.
+  paper, added an error message for real values given as expressions
+  that cannot be processed (e.g. -domain 'cube("1,1",1)'; the value was
+  undefined).
 
 New in 7.0.0 (2026-11-13):
 - module -T: made the cylinder and sphere domains exact (curved, also

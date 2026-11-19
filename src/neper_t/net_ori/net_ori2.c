@@ -269,11 +269,11 @@ net_ori_label (long random, char *label, struct OL_SET *pOSet)
 
   status = ol_label_q (parts[0], q);
 
-  if (!status)
-    for (i = 0; i < (int) (*pOSet).size; i++)
-      ol_q_memcpy (q, (*pOSet).q[i]);
-  else
-    abort ();
+  if (status)
+    ut_print_message (2, 3, "Unknown orientation `%s' (orientations are loaded from a file with `file(<file_name>)').\n", parts[0]);
+
+  for (i = 0; i < (int) (*pOSet).size; i++)
+    ol_q_memcpy (q, (*pOSet).q[i]);
 
   if (partqty == 2)
     net_ori_addspread (parts[1], random, pOSet);
@@ -288,7 +288,7 @@ void
 net_ori_file (char *filename_in, struct OL_SET *pOSet)
 {
   unsigned int i;
-  int des_size, status;
+  int des_size, status, wordqty;
   char *des = NULL, *conv = NULL, *tmp = NULL;
   double *vect = ut_alloc_1d (4);
   double **g = ol_g_alloc ();
@@ -315,75 +315,101 @@ net_ori_file (char *filename_in, struct OL_SET *pOSet)
     ut_string_string (NEUT_DEFAULT_ORIDES, &des);
   else if (varqty == 2)
   {
-    if (!ut_string_strcmp (vars[1], "des"))
+    if (vars[1] && !ut_string_strcmp (vars[1], "des"))
     {
       ut_list_break_2 (vals[1], NEUT_SEP_DEP, &des, &tmp);
       if (tmp)
         ut_string_string (tmp, &conv);
     }
     else
-      abort ();
+      ut_print_message (2, 3, "Failed to process expression `%s'.\n", filename_in);
   }
+  else if (varqty > 2)
+    ut_print_message (2, 3, "Failed to process expression `%s'.\n", filename_in);
 
   if ((*pOSet).size > 0)
     ol_set_free (pOSet);
 
   des_size = ol_des_size (des);
   if (des_size < 0)
-    abort ();
-  (*pOSet) = ol_set_alloc (ut_file_nbwords (filename) / des_size, NULL);
+    ut_print_message (2, 3, "Unknown orientation descriptor `%s'.\n", des);
+
+  wordqty = ut_file_nbwords (filename);
+  if (wordqty % des_size)
+    ut_print_message (2, 3, "File `%s' contains %d values, which is not a multiple of %d (the number of values of descriptor `%s').\n", filename, wordqty, des_size, des);
+
+  (*pOSet) = ol_set_alloc (wordqty / des_size, NULL);
 
   fp = ut_file_open (filename, "r");
 
+  // checking the number of values of the first line (a rotation matrix can
+  // also be written on 3 lines)
+  {
+    char *line = ut_alloc_1d_char (10000);
+    int lineqty;
+
+    while (fgets (line, 10000, fp) && ut_string_nbwords (line) == 0);
+    lineqty = ut_string_nbwords (line);
+    if (lineqty != des_size && !(!strcmp (des, "rotmat") && lineqty == 3))
+      ut_print_message (2, 3, "The first line of `%s' contains %d values instead of %d (the number of values of descriptor `%s').\n", filename, lineqty, des_size, des);
+
+    rewind (fp);
+    ut_free_1d_char (&line);
+  }
+
   for (i = 0; i < (*pOSet).size; i++)
   {
+    status = 1;
+
     if (!strcmp (des, "label"))
     {
       if (fscanf (fp, "%s", label) != 1)
-        abort ();
-      status = ol_label_q (label, (*pOSet).q[i]);
-      if (status != 0)
-        abort ();
+        status = 0;
+      else if (ol_label_q (label, (*pOSet).q[i]))
+        ut_print_message (2, 3, "Unknown orientation label `%s' in `%s'.\n", label, filename);
     }
     else if (!strcmp (des, "euler-bunge"))
     {
-      ol_e_fscanf (fp, vect);
+      status = ol_e_fscanf (fp, vect);
       ol_e_q (vect, (*pOSet).q[i]);
     }
     else if (!strcmp (des, "euler-kocks"))
     {
-      ol_e_fscanf (fp, vect);
+      status = ol_e_fscanf (fp, vect);
       ol_ek_e (vect, vect);
       ol_e_q (vect, (*pOSet).q[i]);
     }
     else if (!strcmp (des, "euler-roe"))
     {
-      ol_e_fscanf (fp, vect);
+      status = ol_e_fscanf (fp, vect);
       ol_er_e (vect, vect);
       ol_e_q (vect, (*pOSet).q[i]);
     }
     else if (!strcmp (des, "axis-angle"))
     {
-      ol_rtheta_fscanf (fp, vect);
+      status = ol_rtheta_fscanf (fp, vect);
       ol_rtheta_q (vect, (*pOSet).q[i]);
     }
     else if (!strcmp (des, "quaternion"))
     {
-      ol_q_fscanf (fp, vect);
+      status = ol_q_fscanf (fp, vect);
       ol_q_q (vect, (*pOSet).q[i]);
     }
     else if (!strcmp (des, "rodrigues"))
     {
-      ol_R_fscanf (fp, vect);
+      status = ol_R_fscanf (fp, vect);
       ol_R_q (vect, (*pOSet).q[i]);
     }
     else if (!strcmp (des, "rotmat"))
     {
-      ol_g_fscanf (fp, g);
+      status = ol_g_fscanf (fp, g);
       ol_g_q (g, (*pOSet).q[i]);
     }
     else
-      abort ();
+      ut_print_message (2, 3, "Unsupported orientation descriptor `%s'.\n", des);
+
+    if (!status)
+      ut_print_message (2, 3, "Failed to read orientation %d in `%s'.\n", i + 1, filename);
   }
 
   if (!strcmp (conv, "active"))

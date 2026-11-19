@@ -10,8 +10,9 @@ neut_tesr_sim (struct TESR Tesr, struct SIM *pSim)
 {
   (*pSim).CellQty = Tesr.CellQty;
 
+  // the default descriptor, for voxel orientations only
   if (!(*pSim).OriDes)
-    ut_string_string (Tesr.CellOriDes, &((*pSim).OriDes));
+    ut_string_string (Tesr.CellOriDes ? Tesr.CellOriDes : "rodrigues", &((*pSim).OriDes));
 
   neut_sim_init_memberqty (pSim);
 

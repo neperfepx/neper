@@ -306,6 +306,11 @@ nes_pproc_entity_builtin_cells_gos (struct SIM *pSim, struct TESS Tess,
   double gos;
   char *prev = ut_alloc_1d_char (1000);
   FILE *file = NULL;
+  int alloc = !Tesr.CellOri;
+
+  // the gos is relative to the average orientation of the cell
+  if (!neut_tesr_isvoid (Tesr) && Tesr.VoxOri)
+    neut_tesr_oriaverage (&Tesr);
 
   ut_print_progress (stdout, 0, (*pSim).StepQty + 1, (char *) "%3.0f%%", prev);
 
@@ -341,6 +346,8 @@ nes_pproc_entity_builtin_cells_gos (struct SIM *pSim, struct TESS Tess,
   neut_sim_fprintf (*pSim, (char *) "W");
 
   ut_free_1d_char (&prev);
+  if (alloc)
+    ut_free_2d (&Tesr.CellOri, Tesr.CellQty + 1);
 
   return;
 }
