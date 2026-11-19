@@ -61,6 +61,11 @@ document.addEventListener('DOMContentLoaded', function () {
   input.setAttribute('aria-label', 'Search the application papers');
   input.className = 'neper-app-search';
   box.appendChild(input);
+  var hint = document.createElement('p');
+  hint.className = 'neper-app-hint';
+  hint.innerHTML = 'Several words: papers with all of them. <code>OR</code> for either, ' +
+    '<code>-word</code> to exclude, <code>"exact phrase"</code>.';
+  box.appendChild(hint);
 
   // Filters: the selected fields and journals (none selected: no filtering)
   var active = { field: {}, journal: {} };
@@ -131,11 +136,25 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Terms of a query: "quoted phrases" and single words
-  function terms(q) {
-    var t = [], re = /"([^"]+)"|(\S+)/g, m;
-    while ((m = re.exec(q))) t.push((m[1] || m[2]).replace(/\s+/g, ' ').trim());
-    return t.filter(Boolean);
+  // A query: terms ("quoted phrases" or single words) that must all match (AND, or just
+  // spaces), alternatives separated by OR, and terms to exclude written -term or -"phrase".
+  // AND and OR are operators only in capitals.  Returns a list of alternatives, each a
+  // list of {t: normalized text, not: true|false}, and whether operators were used.
+  function parse(raw) {
+    var alts = [[]], ops = false, re = /(-?)"([^"]*)"?|(\S+)/g, m;
+    while ((m = re.exec(raw))) {
+      var word = m[3];
+      if (word === 'OR') { ops = true; if (alts[alts.length - 1].length) alts.push([]); continue; }
+      if (word === 'AND') { ops = true; continue; }
+      var not = !!m[1], t = m[2] !== undefined ? m[2] : word;
+      if (m[2] !== undefined) ops = true;
+      if (word && word.length > 1 && word[0] === '-') { not = true; t = word.slice(1); }
+      if (not) ops = true;
+      t = norm(t).replace(/\s+/g, ' ').trim();
+      if (t) alts[alts.length - 1].push({ t: t, not: not });
+    }
+    alts = alts.filter(function (a) { return a.length; });
+    return { alts: alts, ops: ops };
   }
 
   function apply() {
@@ -148,11 +167,16 @@ document.addEventListener('DOMContentLoaded', function () {
              }));
     };
     var has = function (p, t) { return p.text.indexOf(t) >= 0; };
-    var words = terms(q);
-    var match = function (p) { return words.every(function (w) { return has(p, w); }); };
-    // A query of several words matches as a phrase first ("international journal of
-    // plasticity"), and as separate words when the phrase is found nowhere ("huang ultrasonics")
-    if (words.length > 1 && q.indexOf('"') < 0 &&
+    var query = parse(input.value);
+    var match = function (p) {
+      return !query.alts.length || query.alts.some(function (a) {
+        return a.every(function (w) { return has(p, w.t) !== w.not; });
+      });
+    };
+    // Without operators, a query of several words matches as a phrase first ("international
+    // journal of plasticity"), and as separate words when the phrase is found nowhere
+    // ("huang ultrasonics")
+    if (!query.ops && query.alts.length === 1 && query.alts[0].length > 1 &&
         papers.some(function (p) { return inFilters(p) && has(p, q); })) {
       match = function (p) { return has(p, q); };
     }

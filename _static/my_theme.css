@@ -102,6 +102,16 @@ img.neper-card-img-right {
   color: var(--pst-color-text-base);
 }
 
+.neper-app-hint {
+  margin: 0.3rem 0 0;
+  color: var(--pst-color-text-muted);
+  font-size: 0.8rem;
+}
+
+.neper-app-hint code {
+  font-size: 0.75rem;
+}
+
 .neper-app-chips {
   display: flex;
   flex-wrap: wrap;
