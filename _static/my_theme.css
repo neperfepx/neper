@@ -86,6 +86,74 @@ img.neper-card-img-right {
   margin-bottom: 0.5rem;
 }
 
+/* Application papers: search box, tag filter and tags */
+#neper-app-filter {
+  margin: 1.5rem 0 1rem;
+}
+
+.neper-app-search {
+  width: 100%;
+  max-width: 36rem;
+  padding: 0.45rem 0.7rem;
+  font-size: 1rem;
+  border: 1px solid var(--pst-color-border);
+  border-radius: 0.3rem;
+  background: var(--pst-color-background);
+  color: var(--pst-color-text-base);
+}
+
+.neper-app-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0 0.5rem;
+}
+
+.neper-app-chips-title {
+  align-self: center;
+  min-width: 4.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.neper-app-chips .neper-journal {
+  font-style: italic;
+}
+
+.neper-app-count {
+  color: var(--pst-color-text-muted);
+  font-size: 0.9rem;
+}
+
+.neper-tag {
+  display: inline-block;
+  margin-left: 0.3rem;
+  padding: 0.05rem 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  white-space: nowrap;
+  border: 1px solid var(--pst-color-border);
+  border-radius: 1rem;
+  background: var(--pst-color-surface);
+  color: var(--pst-color-text-muted);
+  cursor: pointer;
+}
+
+.neper-app-chips .neper-tag {
+  margin-left: 0;
+  font-size: 0.85rem;
+}
+
+.neper-tag:hover,
+.neper-tag.active {
+  border-color: var(--pst-color-primary);
+  color: var(--pst-color-primary);
+}
+
+.neper-tag.active {
+  background: var(--pst-color-primary-bg);
+}
+
 /* Gallery: images of various shapes in tiles of the same size */
 .neper-gallery {
   margin-bottom: 2rem;

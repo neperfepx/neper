@@ -1,0 +1,149 @@
+// Search box, field filter and journal filter of the application papers (applications.rst)
+document.addEventListener('DOMContentLoaded', function () {
+  var box = document.getElementById('neper-app-filter');
+  if (!box) return;
+
+  // Journals with at least this number of papers get a filter button
+  // (<div id="neper-app-filter" data-min-journal-papers="N">, 10 by default)
+  var MIN_JOURNAL_PAPERS = parseInt(box.dataset.minJournalPapers, 10) || 10;
+
+  var norm = function (s) {
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  };
+
+  // The year sections and their papers
+  var sections = Array.prototype.filter.call(document.querySelectorAll('section'), function (s) {
+    var h = s.querySelector(':scope > h2');
+    return h && /^\s*\d{4}\s*$/.test(h.textContent.replace('#', ''));
+  });
+  var papers = [];
+  sections.forEach(function (s) {
+    s.querySelectorAll(':scope > ul > li').forEach(function (li) {
+      var tags = Array.prototype.map.call(li.querySelectorAll('.neper-tag'), function (t) {
+        return t.dataset.tag;
+      });
+      var strong = li.querySelector('strong');
+      papers.push({ li: li, section: s, text: norm(li.textContent), tags: tags,
+                    journal: strong ? strong.textContent.trim() : '' });
+    });
+  });
+
+  // Fields (tags): labels and counts, the largest first and "other" last
+  var labels = {}, counts = {}, fields = [];
+  papers.forEach(function (p) {
+    p.li.querySelectorAll('.neper-tag').forEach(function (t) {
+      var k = t.dataset.tag;
+      if (!(k in labels)) { labels[k] = t.textContent; counts[k] = 0; fields.push(k); }
+      counts[k]++;
+    });
+  });
+  fields.sort(function (a, b) {
+    return a === 'other' ? 1 : b === 'other' ? -1 : counts[b] - counts[a];
+  });
+
+  // Main journals, the largest first
+  var jcounts = {};
+  papers.forEach(function (p) { if (p.journal) jcounts[p.journal] = (jcounts[p.journal] || 0) + 1; });
+  var journals = Object.keys(jcounts).filter(function (j) { return jcounts[j] >= MIN_JOURNAL_PAPERS; });
+  journals.sort(function (a, b) { return jcounts[b] - jcounts[a] || a.localeCompare(b); });
+  // All other journals (and entries without a journal) under one button
+  var OTHERS = '\u0000others';
+  var main = {};
+  journals.forEach(function (j) { main[j] = true; });
+  var nothers = papers.filter(function (p) { return !main[p.journal]; }).length;
+  if (nothers) journals.push(OTHERS);
+
+  var input = document.createElement('input');
+  input.type = 'search';
+  input.placeholder = 'Search authors, titles, journals…';
+  input.setAttribute('aria-label', 'Search the application papers');
+  input.className = 'neper-app-search';
+  box.appendChild(input);
+
+  // Filters: one active field and one active journal at most
+  var active = { field: null, journal: null };
+  var buttons = { field: {}, journal: {} };
+
+  function row(kind, title, keys, label, count) {
+    var div = document.createElement('div');
+    div.className = 'neper-app-chips';
+    var name = document.createElement('span');
+    name.className = 'neper-app-chips-title';
+    name.textContent = title;
+    div.appendChild(name);
+    keys.forEach(function (k) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'neper-tag' + (kind === 'journal' && k !== OTHERS ? ' neper-journal' : '');
+      b.textContent = label(k) + ' (' + count(k) + ')';
+      b.addEventListener('click', function () { toggle(kind, k); });
+      div.appendChild(b);
+      buttons[kind][k] = b;
+    });
+    box.appendChild(div);
+  }
+  row('field', 'Fields', fields, function (k) { return labels[k]; }, function (k) { return counts[k]; });
+  row('journal', 'Journals', journals,
+      function (j) { return j === OTHERS ? 'other' : j; },
+      function (j) { return j === OTHERS ? nothers : jcounts[j]; });
+
+  var count = document.createElement('p');
+  count.className = 'neper-app-count';
+  box.appendChild(count);
+
+  function toggle(kind, k) {
+    active[kind] = (active[kind] === k) ? null : k;
+    Object.keys(buttons[kind]).forEach(function (o) {
+      buttons[kind][o].classList.toggle('active', o === active[kind]);
+    });
+    apply();
+  }
+
+  // A tag in a paper entry also filters
+  papers.forEach(function (p) {
+    p.li.querySelectorAll('.neper-tag').forEach(function (t) {
+      t.addEventListener('click', function () {
+        toggle('field', t.dataset.tag);
+        box.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  });
+
+  // Terms of a query: "quoted phrases" and single words
+  function terms(q) {
+    var t = [], re = /"([^"]+)"|(\S+)/g, m;
+    while ((m = re.exec(q))) t.push((m[1] || m[2]).replace(/\s+/g, ' ').trim());
+    return t.filter(Boolean);
+  }
+
+  function apply() {
+    var q = norm(input.value).replace(/\s+/g, ' ').trim();
+    var inFilters = function (p) {
+      return (!active.field || p.tags.indexOf(active.field) >= 0) &&
+             (!active.journal || p.journal === active.journal ||
+              (active.journal === OTHERS && !main[p.journal]));
+    };
+    var has = function (p, t) { return p.text.indexOf(t) >= 0; };
+    var words = terms(q);
+    var match = function (p) { return words.every(function (w) { return has(p, w); }); };
+    // A query of several words matches as a phrase first ("international journal of
+    // plasticity"), and as separate words when the phrase is found nowhere ("huang ultrasonics")
+    if (words.length > 1 && q.indexOf('"') < 0 &&
+        papers.some(function (p) { return inFilters(p) && has(p, q); })) {
+      match = function (p) { return has(p, q); };
+    }
+    var shown = 0, perSection = new Map();
+    papers.forEach(function (p) {
+      var ok = inFilters(p) && match(p);
+      p.li.hidden = !ok;
+      if (ok) { shown++; perSection.set(p.section, true); }
+    });
+    sections.forEach(function (s) { s.hidden = !perSection.get(s); });
+    count.textContent = (shown === papers.length)
+      ? papers.length + ' papers'
+      : shown + ' of ' + papers.length + ' papers';
+  }
+
+  input.addEventListener('input', apply);
+  apply();
+});
