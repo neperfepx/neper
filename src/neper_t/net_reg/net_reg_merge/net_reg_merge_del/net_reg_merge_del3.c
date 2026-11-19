@@ -300,8 +300,15 @@ UpdateVerCooBary (struct TESS *pTess, int delver, int newver, int verbosity)
 
   eqs = ut_alloc_2d (domedgeqty + 1, 4);
 
+  // the plane of the (2D) tessellation, from its first non-empty face
+  // (face 1 can be empty, e.g. removed by a cut)
   eqqty = 1;
-  ut_array_1d_memcpy ((*pTess).FaceEq[1], 4, eqs[0]);
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+    if ((*pTess).FaceVerQty[i] > 0)
+    {
+      ut_array_1d_memcpy ((*pTess).FaceEq[i], 4, eqs[0]);
+      break;
+    }
 
   for (i = 0; i < domedgeqty; i++)
   {
@@ -315,20 +322,21 @@ UpdateVerCooBary (struct TESS *pTess, int delver, int newver, int verbosity)
         printf ("domedge = %d domver1 = %d domver2 = %d\n", domedge, domver1, domver2);
       if (domver1 > 0 && domver2 > 0 && !strstr ((*pTess).DomEdgeLabel[domedge], "cut"))
       {
-        eqqty++;
         ut_space_points_uvect ((*pTess).DomVerCoo[domver1],
                                (*pTess).DomVerCoo[domver2], v);
         ut_vector_vectprod (v, eqs[0] + 1, n);
         ut_space_point_normal_plane ((*pTess).DomVerCoo[domver1], n,
-                                     eqs[i + 1]);
+                                     eqs[eqqty++]);
       }
     }
 
+    // (the equations are recorded contiguously, as only the first eqqty
+    // are used; a skipped domain edge left a null equation)
     else
       neut_primparms_point_tangentplane ((*pTess).DomEdgeType[domedge],
                                          (*pTess).DomEdgeParms[domedge],
                                          (*pTess).VerCoo[newver],
-                                         eqs[i + 1]);
+                                         eqs[eqqty++]);
   }
 
   if (verbosity)

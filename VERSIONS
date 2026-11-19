@@ -14,7 +14,8 @@ New in 7.0.1 (unreleased):
   circular holes), ignored the z range of cube in a 2D -transform cut
   and fixed its x and y bounds on the domain boundary (failed), fixed
   -transform cut(cube(...)) with a zero radius (sharp edges and corners;
-  "couldn't find tangent plane").
+  "couldn't find tangent plane"), fixed -reg of cut domains (singular
+  matrix, e.g. 2D cut domains or cut domains with an empty first cell).
 - module -M: fixed failures and hangs of the Gmsh workers on macOS (pipe
   file descriptors kept apart from those of the workers, and workers
   started one at a time), restored -part <n>:<m> (<n> partitions of
