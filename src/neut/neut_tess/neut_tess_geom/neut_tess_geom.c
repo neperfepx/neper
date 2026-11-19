@@ -1804,6 +1804,21 @@ neut_tess_face_angles (struct TESS Tess, int face, double **pangles)
 
   neut_tess_face_normal_fromver (Tess, face, n);
 
+  // in 3D, the normal of the face equation (as recorded at the end of
+  // regularization: the plane fitted to the vertices, or the tangent plane
+  // on a curved domain face), oriented from the vertex order
+  if (Tess.Dim == 3)
+  {
+    double *eq = ut_alloc_1d (4);
+
+    neut_tess_face_eq (Tess, face, eq);
+    if (ut_array_1d_scalprod (eq + 1, n, 3) < 0)
+      ut_array_1d_scale (eq + 1, 3, -1);
+    ut_array_1d_memcpy (eq + 1, 3, n);
+
+    ut_free_1d (&eq);
+  }
+
   // the vertices are in counterclockwise order about n, so that the turn
   // angle from the incoming edge (d1) to the outgoing edge (d2) is positive
   // at a convex corner and negative at a reflex corner

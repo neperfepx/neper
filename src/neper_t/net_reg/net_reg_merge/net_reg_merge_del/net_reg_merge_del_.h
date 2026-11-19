@@ -16,10 +16,18 @@
 
 #include"net_reg_merge_del.h"
 
+// maximum interior angle of the faces, in degrees (just above 180, for the
+// round-off errors of straight angles), and at a corner that was straight
+// in the initial tessellation
+#define NET_REG_MAXANGLE (180 + 1e-6)
+#define NET_REG_MAXANGLE_STRAIGHT (180 + 10)
+
 extern int net_reg_merge_del_test (struct TESS Tess, int edge, int delcell,
                                    int verbosity);
 extern int net_reg_merge_del_test_link (struct TESS Tess, int edge);
 extern int net_reg_merge_del_testfold (struct TESS Tess, int ver, double maxangle);
+extern int net_reg_merge_del_testangles (struct TESS Tess, int *vers, int verqty,
+                                         int **facestraightvers);
 extern int net_reg_merge_del_test_tet (struct TESS Tess, int poly, int edge);
 extern int net_reg_merge_del_delpoly (struct TESS *pTess, int poly, int verbosity);
 extern int net_reg_merge_del_isvermaster (struct TESS Tess, int ver, int master);
@@ -30,7 +38,7 @@ extern int net_reg_merge_del_constraints_compatible (double **constraint,
 extern void net_reg_merge_del_optimcoo (struct TESS *pTess, int ver,
                                         int *vers, int **offsets, int verqty,
                                         int periodic, double target,
-                                        double *pff);
+                                        int **facestraightvers, double *pff);
 extern void net_reg_merge_del_buffer (struct TESS Tess, int *edges, int edgeqty, int *vers, int verqty, int **buf, struct TESS *pTessBuf);
 extern void net_reg_merge_del_buffer_add (int **buffer, int *vals, int valqty);
 

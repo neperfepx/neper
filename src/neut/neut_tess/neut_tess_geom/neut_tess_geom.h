@@ -236,8 +236,9 @@ extern "C"
 
 /// \brief Get the interior angles of a face, in degrees
 ///
-/// The angles are measured about the normal of neut_tess_face_normal_fromver,
-/// at the vertices FaceVerNb[face][1...FaceVerQty[face]], in
+/// The angles are measured about the normal of the face equation of
+/// neut_tess_face_eq (3D) or of neut_tess_face_normal_fromver (2D), oriented
+/// from the vertex order, at the vertices FaceVerNb[face][1...FaceVerQty[face]], in
 /// (*pangles)[0...FaceVerQty[face]-1]; an angle higher than 180 is a
 /// reflex angle.
   extern void neut_tess_face_angles (struct TESS Tess, int face,

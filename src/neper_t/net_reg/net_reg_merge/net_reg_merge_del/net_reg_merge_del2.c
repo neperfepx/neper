@@ -749,3 +749,85 @@ net_reg_merge_del_domfacefaceqty (struct TESS Tess, int **pqty)
 
   return;
 }
+
+// Testing the interior angles of the faces of vertices (a vertex and its
+// periodic copies), at all their corners: an angle must not be higher than
+// NET_REG_MAXANGLE (no reflex angle), or than NET_REG_MAXANGLE_STRAIGHT at
+// a corner that was straight in the initial tessellation (facestraightvers,
+// e.g. in a multiscale tessellation, where any move of its vertex makes the
+// angle slightly reflex or convex).  The corners whose two edges are on the
+// domain boundary but not on a same straight domain entity (planar domain
+// face in 3D, straight domain edge in 2D), where a non-convex or curved
+// domain can make the angle reflex, are not tested.  Returns 0 if the
+// angles are valid, -1 otherwise.
+int
+net_reg_merge_del_testangles (struct TESS Tess, int *vers, int verqty,
+                              int **facestraightvers)
+{
+  int i, j, k, l, face, ver, edge, edgeqty, edges[2], faceqty = 0, *faces = NULL;
+  int domdim = Tess.Dim - 1, straight, status = 0;
+  double max, *angles = NULL;
+
+  for (i = 0; i < verqty && !status; i++)
+  {
+    neut_tess_ver_faces (Tess, vers[i], &faces, &faceqty);
+
+    for (j = 0; j < faceqty && !status; j++)
+    {
+      face = faces[j];
+      // (not the periodic seeds of a 2D periodic tessellation)
+      if (face < 1 || face > Tess.FaceQty || Tess.FaceState[face] == -1
+          || Tess.FaceVerQty[face] < 3)
+        continue;
+
+      neut_tess_face_angles (Tess, face, &angles);
+
+      for (k = 0; k < Tess.FaceVerQty[face] && !status; k++)
+      {
+        ver = Tess.FaceVerNb[face][k + 1];
+
+        max = (facestraightvers
+               && ut_array_1d_int_eltpos (facestraightvers[face] + 1,
+                                          facestraightvers[face][0], ver) != -1)
+          ? NET_REG_MAXANGLE_STRAIGHT : NET_REG_MAXANGLE;
+
+        if (angles[k] <= max)
+          continue;
+
+        // edges of the face at the corner
+        edgeqty = 0;
+        for (l = 1; l <= Tess.FaceEdgeQty[face] && edgeqty < 2; l++)
+        {
+          edge = Tess.FaceEdgeNb[face][l];
+          if (Tess.EdgeVerNb[edge][0] == ver || Tess.EdgeVerNb[edge][1] == ver)
+            edges[edgeqty++] = edge;
+        }
+        if (edgeqty != 2)
+          continue;
+
+        if (Tess.EdgeDom[edges[0]][0] != -1 && Tess.EdgeDom[edges[1]][0] != -1)
+        {
+          if (Tess.EdgeDom[edges[0]][0] != domdim
+              || Tess.EdgeDom[edges[1]][0] != domdim
+              || Tess.EdgeDom[edges[0]][1] != Tess.EdgeDom[edges[1]][1])
+            continue;
+
+          if (domdim == 2)
+            straight = !strncmp (Tess.DomFaceType[Tess.EdgeDom[edges[0]][1]], "plane", 5);
+          else
+            straight = !Tess.DomEdgeType || !Tess.DomEdgeType[Tess.EdgeDom[edges[0]][1]]
+                       || !strcmp (Tess.DomEdgeType[Tess.EdgeDom[edges[0]][1]], "line");
+          if (!straight)
+            continue;
+        }
+
+        status = -1;
+      }
+    }
+  }
+
+  ut_free_1d_int (&faces);
+  ut_free_1d (&angles);
+
+  return status;
+}
