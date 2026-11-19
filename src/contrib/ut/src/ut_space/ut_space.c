@@ -3116,7 +3116,46 @@ ut_space_point_cube_tangentplane (double *coo, double *parms, double *plane)
 
   side = ut_space_point_cube_side (coo, parms, plane);
 
-  if (side == 1)
+  // cube of zero radius (sharp edges and corners): the tangent plane goes
+  // through the point of the cube closest to coo (obtained by clamping),
+  // normal to their difference, or, if coo is on the cube, is the plane of
+  // one of its faces containing coo
+  if (side == 1 && rad <= 0)
+  {
+    double norm, *P = ut_alloc_1d (3);
+
+    for (i = 0; i < 3; i++)
+      P[i] = ut_num_min (ut_num_max (coo[i], min[i]), max[i]);
+
+    ut_array_1d_sub (P, coo, 3, v);
+    norm = ut_array_1d_norm (v, 3);
+
+    ut_array_1d_zero (plane, 4);
+    if (norm > eps)
+    {
+      ut_array_1d_scale (v, 3, 1. / norm);
+      ut_array_1d_memcpy (v, 3, plane + 1);
+      plane[0] = ut_array_1d_scalprod (plane + 1, P, 3);
+    }
+    else
+      for (i = 0; i < 3; i++)
+        if (fabs (coo[i] - min[i]) < eps)
+        {
+          ut_array_1d_set_4 (plane, -min[i], 0, 0, 0);
+          plane[i + 1] = -1;
+          break;
+        }
+        else if (fabs (coo[i] - max[i]) < eps)
+        {
+          ut_array_1d_set_4 (plane, max[i], 0, 0, 0);
+          plane[i + 1] = 1;
+          break;
+        }
+
+    ut_free_1d (&P);
+  }
+
+  else if (side == 1)
   {
     // testing corners from the outside
 

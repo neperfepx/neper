@@ -9,7 +9,12 @@ New in 7.0.1 (unreleased):
   (crashed), added error messages for -ori with an unknown value (e.g. a
   file name without file()) and for orientation files that cannot be
   read (wrong number of values per line, header, unknown descriptor or
-  label, fewer orientations than cells; crashed or wrong orientations).
+  label, fewer orientations than cells; crashed or wrong orientations),
+  fixed -transform cut of 2D tessellations (crashed since 7.0; e.g.
+  circular holes), ignored the z range of cube in a 2D -transform cut
+  and fixed its x and y bounds on the domain boundary (failed), fixed
+  -transform cut(cube(...)) with a zero radius (sharp edges and corners;
+  "couldn't find tangent plane").
 - module -M: fixed failures and hangs of the Gmsh workers on macOS (pipe
   file descriptors kept apart from those of the workers, and workers
   started one at a time), restored -part <n>:<m> (<n> partitions of

@@ -318,13 +318,17 @@ neut_tess_domface_tess_cells (struct TESS Tess, int *oldface_newface,
       face_oldpoly[i] =
         oldface_newface ? Tess.FacePoly[newface_oldface[i]][0] : Tess.
         FacePoly[i][0];
+    // an empty cell (e.g. removed by a cut, see neut_tess_3dcolumnar_2d,
+    // where face i comes from polyhedron i) keeps its data
+    else if (oldface_newface)
+      face_oldpoly[i] = i;
 
   (*pT).CellQty = (*pT).FaceQty;
 
   (*pT).CellId = ut_alloc_1d_int ((*pT).CellQty + 1);
   ut_array_1d_int_set_id ((*pT).CellId, (*pT).CellQty + 1);
   for (i = 1; i <= (*pT).CellQty; i++)
-    (*pT).CellId[i] = neut_tess_cell_id (Tess, face_oldpoly[i]);
+    (*pT).CellId[i] = (*pT).FaceVerQty[i] ? neut_tess_cell_id (Tess, face_oldpoly[i]) : 0;
 
   (*pT).ScaleCellId = ut_alloc_2d_int ((*pT).CellQty + 1, (*pT).ScaleQty + 1);
   for (i = 1; i <= (*pT).CellQty; i++)
@@ -908,7 +912,8 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface, struct TESS *pT,
                             (*pT).DomTessEdgeQty[i],
                             (*pT).DomTessEdgeNb[i] + 1);
 
-    otherdomface = (Tess.DomEdgeFaceNb[i][0] == domface) ? Tess.DomEdgeFaceNb[i][1] : Tess.DomEdgeFaceNb[i][0];
+    otherdomface = (Tess.DomEdgeFaceNb[oldedge][0] == domface) ? Tess.DomEdgeFaceNb[oldedge][1]
+                                                               : Tess.DomEdgeFaceNb[oldedge][0];
 
     if (!strcmp (Tess.DomFaceType[otherdomface], "plane"))
     {
@@ -924,8 +929,14 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface, struct TESS *pT,
     }
   }
 
-  // Domain vertices
-  (*pT).DomVerQty = Tess.DomFaceVerQty[domface];
+  // Domain vertices (a closed domain edge, e.g. a circle, has no domain
+  // vertices, recorded as -1)
+  int *domvers = ut_alloc_1d_int (Tess.DomFaceVerQty[domface] + 1);
+  (*pT).DomVerQty = 0;
+  for (i = 1; i <= Tess.DomFaceVerQty[domface]; i++)
+    if (Tess.DomFaceVerNb[domface][i] > 0)
+      domvers[++(*pT).DomVerQty] = Tess.DomFaceVerNb[domface][i];
+
   (*pT).DomVerCoo = ut_alloc_2d ((*pT).DomVerQty + 1, 3);
   (*pT).DomVerLabel = ut_alloc_1d_pchar ((*pT).DomVerQty + 1);
   (*pT).DomVerEdgeQty = ut_alloc_1d_int ((*pT).DomVerQty + 1);
@@ -933,7 +944,7 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface, struct TESS *pT,
   (*pT).DomTessVerNb = ut_alloc_1d_int ((*pT).DomVerQty + 1);
   for (i = 1; i <= (*pT).DomVerQty; i++)
   {
-    oldver = Tess.DomFaceVerNb[domface][i];
+    oldver = domvers[i];
     olddver_newdver[oldver] = i;
 
     (*pT).DomVerLabel[i] =
@@ -951,7 +962,7 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface, struct TESS *pT,
   }
 
   // Renumbering domain faces in domain edges
-  for (i = 1; i <= (*pT).DomVerQty; i++)
+  for (i = 1; i <= (*pT).DomEdgeQty; i++)
     (*pT).DomEdgeFaceNb[i][0] = 1;
 
   // Renumbering domain edges in domain vertices
@@ -967,10 +978,12 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface, struct TESS *pT,
     ut_array_1d_int_sort ((*pT).DomVerEdgeNb[i], (*pT).DomVerEdgeQty[i]);
   }
 
-  // Renumbering domain vertices in domain edges
+  // Renumbering domain vertices in domain edges (a closed domain edge, e.g.
+  // a circle, has no domain vertices, recorded as -1)
   for (i = 1; i <= (*pT).DomEdgeQty; i++)
     for (j = 0; j < (*pT).DomEdgeVerQty[i]; j++)
-      (*pT).DomEdgeVerNb[i][j] = olddver_newdver[(*pT).DomEdgeVerNb[i][j]];
+      if ((*pT).DomEdgeVerNb[i][j] > 0)
+        (*pT).DomEdgeVerNb[i][j] = olddver_newdver[(*pT).DomEdgeVerNb[i][j]];
 
   // Renumbering edges in domain edges
   for (i = 1; i <= (*pT).DomEdgeQty; i++)
@@ -1021,6 +1034,7 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface, struct TESS *pT,
 
   ut_free_1d_int (&olddedge_newdedge);
   ut_free_1d_int (&olddver_newdver);
+  ut_free_1d_int (&domvers);
 
   return;
 }

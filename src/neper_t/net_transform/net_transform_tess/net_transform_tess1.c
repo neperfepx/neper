@@ -59,7 +59,10 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
     else if (!strncmp (parts[i], "cut", 3))
     {
       ut_print_message (0, 2, "Cutting (new algorithm)...\n");
-      net_transform_tess_cut (parts[i], *pDom, pTess);
+      if ((*pTess).Dim == 2)
+        net_transform_tess_cut2d (In, *pDom, parts[i], pTess);
+      else
+        net_transform_tess_cut (parts[i], *pDom, pTess);
       domchanged = 1;
     }
 

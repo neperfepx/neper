@@ -4,6 +4,7 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<limits.h>
 
 #include"neut_t.h"
 
@@ -20,6 +21,8 @@
 extern void net_transform_tess_ori (char *ori, struct TESS *pTess);
 extern void net_transform_tess_crysym (char *ori, struct TESS *pTess);
 extern void net_transform_tess_renamedomface (char *expr, struct TESS *pTess);
+extern void net_transform_tess_cut2d (struct IN_T In, struct TESS Dom, char *expr,
+                                     struct TESS *pTess);
 extern void net_transform_tess_rmseed (struct IN_T In, struct TESS Dom, char *expr,
                                        struct TESS *pTess);
 

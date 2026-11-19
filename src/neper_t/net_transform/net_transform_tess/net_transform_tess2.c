@@ -157,6 +157,8 @@ net_transform_tess_rmseed (struct IN_T In, struct TESS Dom, char *expr,
         ut_string_string ((*pTess).DomType, &Old.DomType);
 
       net_transform_tess_rmseed_tess (In, Dom, SSet, pTess);
+      if (Old.Dim == 2)
+        net_tess_3dto2d (pTess);
 
       net_transform_tess_rmseed_celldata (Old, old_new, pTess);
 
@@ -174,6 +176,103 @@ net_transform_tess_rmseed (struct IN_T In, struct TESS Dom, char *expr,
 
   ut_free_1d_char (&fct);
   ut_free_2d_char (&exprs, exprqty);
+  ut_free_1d_int (&periodic);
+
+  return;
+}
+
+// net_transform_tess_cut2d cuts a 2D tessellation, which is first recomputed
+// as a thin 3D tessellation (see net_transform_tess_rmseed), as the cut works
+// on polyhedra.
+void
+net_transform_tess_cut2d (struct IN_T In, struct TESS Dom, char *expr, struct TESS *pTess)
+{
+  int i, j, dim, pseudodim, PrimQty, *id = ut_alloc_1d_int ((*pTess).CellQty + 1);
+  int *periodic = ut_alloc_1d_int (3);
+  double size, **bbox = ut_alloc_2d (3, 2);
+  struct SEEDSET SSet;
+  struct TESS Old;
+  struct PRIM *Prim = NULL;
+  char *expr2 = NULL;
+
+  if (Dom.CellQty == 0)
+    ut_print_message (2, 3, "The domain could not be recovered from the tessellation.\n");
+  if ((*pTess).CellLamId)
+    ut_print_message (2, 3, "Not available for 2D lamellar tessellations.\n");
+
+  // In.periodic is not set with -loadtess (In is a copy)
+  if ((*pTess).Periodic)
+    ut_array_1d_int_memcpy ((*pTess).Periodic, 3, periodic);
+  In.periodic = periodic;
+
+  neut_seedset_set_zero (&SSet);
+  neut_tess_set_zero (&Old);
+
+  for (i = 1; i <= (*pTess).CellQty; i++)
+    id[i] = i;
+
+  net_transform_tess_rmseed_seedset (*pTess, id, Dom, &SSet);
+
+  neut_tess_tess_gen (*pTess, &Old);
+  neut_tess_tess_cell (*pTess, &Old);
+
+  net_transform_tess_rmseed_tess (In, Dom, SSet, pTess);
+
+  // (the general data of Old, copied with the cell data, are those of the
+  // 2D tessellation)
+  dim = (*pTess).Dim;
+  pseudodim = (*pTess).PseudoDim;
+  net_transform_tess_rmseed_celldata (Old, id, pTess);
+  (*pTess).Dim = dim;
+  (*pTess).PseudoDim = pseudodim;
+
+  // the z range of the cubes is ignored, and so are the half-spaces normal
+  // to z (e.g. from cubei), as they could coincide with the faces of the
+  // thin 3D tessellation; similarly, the x and y bounds of the cubes that
+  // are on (or beyond) the bounding box of the domain are moved away from it
+  // (which does not change the result)
+  // (the algorithm option is ignored, see net_transform_tess_cut)
+  ut_string_string (expr, &expr2);
+  ut_string_fnrs (expr2, ",algo=direct", "", INT_MAX);
+  ut_string_fnrs (expr2, ",algo=legacy", "", INT_MAX);
+  net_transform_tess_cut_pre_prim (expr2, &Prim, &PrimQty, 1);
+
+  neut_tess_bbox (*pTess, bbox);
+  size = ut_num_max (bbox[0][1] - bbox[0][0], bbox[1][1] - bbox[1][0]);
+  for (i = 0; i < PrimQty; i++)
+    if (!strncmp (Prim[i].Type, "cube", 4))
+    {
+      for (j = 0; j < 2; j++)
+      {
+        if (Prim[i].Parms[2 * j] <= bbox[j][0] + 1e-9 * size)
+          Prim[i].Parms[2 * j] = bbox[j][0] - size;
+        if (Prim[i].Parms[2 * j + 1] >= bbox[j][1] - 1e-9 * size)
+          Prim[i].Parms[2 * j + 1] = bbox[j][1] + size;
+      }
+      Prim[i].Parms[4] = bbox[2][0] - size;
+      Prim[i].Parms[5] = bbox[2][1] + size;
+    }
+    else if (!strncmp (Prim[i].Type, "hspace", 6)
+             && fabs (Prim[i].Parms[1]) + fabs (Prim[i].Parms[2]) == 0)
+    {
+      neut_prim_free (Prim + i);
+      memmove (Prim + i, Prim + i + 1, (PrimQty - i - 1) * sizeof (struct PRIM));
+      PrimQty--;
+      i--;
+    }
+
+  net_transform_tess_cut_prim (Prim, PrimQty, pTess);
+
+  net_tess_3dto2d (pTess);
+
+  neut_seedset_free (&SSet);
+  neut_tess_free (&Old);
+  for (i = 0; i < PrimQty; i++)
+    neut_prim_free (Prim + i);
+  free (Prim);
+  ut_free_2d (&bbox, 3);
+  ut_free_1d_char (&expr2);
+  ut_free_1d_int (&id);
   ut_free_1d_int (&periodic);
 
   return;

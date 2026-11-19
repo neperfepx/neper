@@ -38,11 +38,11 @@ net_transform_tess_rmseed_seedset (struct TESS Tess, int *old_new,
 
 // net_transform_tess_rmseed_tess recomputes a tessellation from a seed set,
 // as done at generation (see net_tess), but for the cut by a curved domain.
+// The tessellation is 3D (thin, for a 2D tessellation, see net_tess_3dto2d).
 void
 net_transform_tess_rmseed_tess (struct IN_T In, struct TESS Dom,
                                 struct SEEDSET SSet, struct TESS *pTess)
 {
-  int dim = (*pTess).Dim;
   struct TESS DomPer;
 
   neut_tess_set_zero (&DomPer);
@@ -58,9 +58,6 @@ net_transform_tess_rmseed_tess (struct IN_T In, struct TESS Dom,
   }
   else
     net_tess3d (Dom, 1, SSet, 1, NULL, pTess);
-
-  if (dim == 2)
-    net_tess_3dto2d (pTess);
 
   neut_tess_free (&DomPer);
 

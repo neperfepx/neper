@@ -726,6 +726,8 @@ Transformation Options
 
     The algorithm can be :data:`direct` (the default) or :data:`legacy` (the algorithm used in versions up to 5.0).
 
+    In 2D, the primitives are taken as their sections in the plane of the tessellation; the :math:`z` range of :data:`cube` is ignored.
+
   - :data:`planecut(<d>,<a>,<b>,<c>)`: cut by the (oriented) plane of equation :math:`a\,x+b\,y+c\,z=d`.
 
   - :data:`crop(<primitive>)`: crop by a primitive. The primitive can be:
