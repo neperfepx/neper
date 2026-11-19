@@ -468,15 +468,22 @@ nev_print_mesh_size_cellqty (struct NODES Nodes, struct MESH *Mesh, double *psiz
   return;
 }
 
+// default radii of the mesh entities of dimension dim, for a mesh of
+// dimension meshdim.  A 2D mesh is shown frontally, with an orthographic
+// projection, so that it appears larger than a 3D mesh (seen in
+// perspective, at an angle): its radii are scaled by NEV_DEFRAD_2DFACT, and
+// its element edges are shown as the element edges of the surface of a 3D
+// mesh, so that they appear about as thick.
 int
-nev_print_mesh_defrad (double size, int cellqty, int dim, double *prad)
+nev_print_mesh_defrad (double size, int cellqty, int dim, int meshdim, double *prad)
 {
   int status = 0;
+  double fact = (meshdim == 2) ? NEV_DEFRAD_2DFACT : 1;
 
   if (dim == 0)
-    (*prad) = nev_print_defrad (size, cellqty, NEV_DEFRAD_VER);
+    (*prad) = fact * nev_print_defrad (size, cellqty, NEV_DEFRAD_VER);
   else if (dim == 1)
-    (*prad) = nev_print_defrad (size, cellqty, NEV_DEFRAD_EDGE);
+    (*prad) = fact * nev_print_defrad (size, cellqty, NEV_DEFRAD_EDGE);
   else if (dim == 2 || dim == 3) // used by pf
     (*prad) = 0.02;
   else
@@ -489,16 +496,20 @@ nev_print_mesh_defrad (double size, int cellqty, int dim, double *prad)
 }
 
 int
-nev_print_mesh_defedgerad (double size, int cellqty, int dim, char *space, double *prad)
+nev_print_mesh_defedgerad (double size, int cellqty, int dim, int meshdim, char *space,
+                           double *prad)
 {
   int status = 0, real = !space || !strcmp (space, "real");
+  double fact = (meshdim == 2) ? NEV_DEFRAD_2DFACT : 1;
 
   if (dim == 0)
-    (*prad) = nev_print_defrad (size, cellqty, NEV_DEFRAD_VER);
+    (*prad) = fact * nev_print_defrad (size, cellqty, NEV_DEFRAD_VER);
   else if (dim == 1)
-    (*prad) = nev_print_defrad (size, cellqty, NEV_DEFRAD_EDGE);
+    (*prad) = fact * nev_print_defrad (size, cellqty, NEV_DEFRAD_EDGE);
   else if (dim == 2)
-    (*prad) = real ? nev_print_defrad (size, cellqty, NEV_DEFRAD_ELT2DEDGE) : 0.01;
+    (*prad) = real ? fact * nev_print_defrad (size, cellqty, meshdim == 2 ? NEV_DEFRAD_ELT3DEDGE
+                                                                          : NEV_DEFRAD_ELT2DEDGE)
+                   : 0.01;
   else if (dim == 3)
     (*prad) = real ? nev_print_defrad (size, cellqty, NEV_DEFRAD_ELT3DEDGE) : 0.01;
   else

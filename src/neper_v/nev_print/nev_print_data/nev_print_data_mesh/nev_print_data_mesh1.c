@@ -29,9 +29,10 @@ nev_print_data_mesh (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes,
     nev_print_mesh_size_cellqty (*pNodes, *pMesh, &size, &cellqty);
 
     if (dim <= 3 && strstr (entity, "edge"))
-      nev_print_mesh_defedgerad (size, cellqty, dim, space, &defrad);
+      nev_print_mesh_defedgerad (size, cellqty, dim, neut_mesh_array_dim (*pMesh), space,
+                                 &defrad);
     else if (dim <= 3)
-      nev_print_mesh_defrad (size, cellqty, dim, &defrad);
+      nev_print_mesh_defrad (size, cellqty, dim, neut_mesh_array_dim (*pMesh), &defrad);
 
     nev_print_rad_default (value, defrad, &tmp);
     ut_string_string (tmp, &value);

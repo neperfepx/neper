@@ -29,6 +29,7 @@ nev_print_data_domain (struct TESS Tess, struct NODES Nodes, struct MESH *Mesh,
 
     size = 1;
     cellqty = 1;
+    int meshdim = Mesh ? neut_mesh_array_dim (Mesh) : -1;
     if (Mesh && neut_mesh_array_dim (Mesh) > 0)
       nev_print_mesh_size_cellqty (Nodes, Mesh, &size, &cellqty);
     else if (!neut_tess_isvoid (Tess))
@@ -37,9 +38,9 @@ nev_print_data_domain (struct TESS Tess, struct NODES Nodes, struct MESH *Mesh,
       cellqty = Tess.CellQty;
     }
 
-    nev_print_mesh_defrad (size, cellqty, 1, vals + 2);
-    nev_print_mesh_defedgerad (size, cellqty, 2, space, vals + 3);
-    nev_print_mesh_defedgerad (size, cellqty, 3, space, vals + 4);
+    nev_print_mesh_defrad (size, cellqty, 1, meshdim, vals + 2);
+    nev_print_mesh_defedgerad (size, cellqty, 2, meshdim, space, vals + 3);
+    nev_print_mesh_defedgerad (size, cellqty, 3, meshdim, space, vals + 4);
 
     nev_print_rad_vars (value, 5, vars, vals, &tmp);
     ut_string_real (tmp, &(*pPrint).domainrad);

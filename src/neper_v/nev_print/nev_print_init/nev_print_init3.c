@@ -196,7 +196,7 @@ nev_print_init_data_mesh (struct IN_V In, struct NODES Nodes, struct MESH Mesh, 
   }
 
   // (Qty: number of cells, as for tessellations)
-  if (!nev_print_mesh_defrad (size, Qty, Mesh.Dimension, &rad))
+  if (!nev_print_mesh_defrad (size, Qty, Mesh.Dimension, dim, &rad))
     ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
 
   if (!(*pData).BCol)
@@ -205,7 +205,7 @@ nev_print_init_data_mesh (struct IN_V In, struct NODES Nodes, struct MESH Mesh, 
   }
 
   if ((*pData).BRad < 0)
-    nev_print_mesh_defedgerad (size, Qty, Mesh.Dimension, In.space, &(*pData).BRad);
+    nev_print_mesh_defedgerad (size, Qty, Mesh.Dimension, dim, In.space, &(*pData).BRad);
 
   if ((*pData).ColDataType)
   {

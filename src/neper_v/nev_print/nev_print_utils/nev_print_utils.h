@@ -10,6 +10,7 @@
 #define NEV_DEFRAD_ELT2DEDGE  0.01000
 #define NEV_DEFRAD_ELT3DEDGE  0.00707
 #define NEV_DEFRAD_NODE       0.1
+#define NEV_DEFRAD_2DFACT     0.56     // factor on the radii of 2D meshes
 #define NEV_DEFRAD_DOMAIN     2        // factor on the edge radius
 #endif
 
@@ -31,8 +32,10 @@ extern double nev_print_defrad (double size, int cellqty, double fact);
 extern int nev_print_tess_defrad (struct TESS Tess, int dim, double *prad);
 extern void nev_print_mesh_size_cellqty (struct NODES Nodes, struct MESH *Mesh,
                                          double *psize, int *pcellqty);
-extern int nev_print_mesh_defrad (double size, int cellqty, int dim, double *prad);
-extern int nev_print_mesh_defedgerad (double size, int cellqty, int dim, char *space,
+extern int nev_print_mesh_defrad (double size, int cellqty, int dim, int meshdim,
+                                  double *prad);
+extern int nev_print_mesh_defedgerad (double size, int cellqty, int dim, int meshdim,
+                                      char *space,
                                       double *prad);
 extern double nev_print_nodes_defrad (int nodeqty);
 extern double nev_print_domain_defrad (struct TESS Tess);

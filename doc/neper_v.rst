@@ -455,7 +455,7 @@ The following options enable the definition of the properties (color, size, etc.
 
   In an expression, :data:`default` is the default radius (not for :data:`eltcoedge`), e.g. :data:`(domtype==1)?default*1.5:default` for thicker 1D elements on the domain edges, or :data:`default*2` for :data:`*edge*`.
 
-  **Default value**: mesh dependent; the radii scale with the domain size and the number of cells (elsets of the highest dimension), so that the 0D and 1D elements have the same radii as the vertices and edges of the tessellation, except for the nodes, whose radius is :math:`0.1/N^{1/4}`, where :math:`N` is the number of nodes.
+  **Default value**: mesh dependent; the radii scale with the domain size and the number of cells (elsets of the highest dimension), so that the 0D and 1D elements of a 3D mesh have the same radii as the vertices and edges of the tessellation, except for the nodes, whose radius is :math:`0.1/N^{1/4}`, where :math:`N` is the number of nodes.  As a 2D mesh is viewed frontally, the radii of a 2D mesh are scaled by 0.56, and its element edges have the radius of the element edges of a 3D mesh, so that they appear about as thick as for a 3D mesh.
 
 The following options enable the loading of node positions.
 

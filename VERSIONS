@@ -27,7 +27,9 @@ New in 7.0.1 (unreleased):
   another one, or a periodic tessellation; "bug in Neper").
 - module -V: fixed the warning on a tessellation and a mesh that do not
   match ("(null) and (null)"; now with the numbers of entities and
-  elsets).
+  elsets), made the default radii of the 1D elements and element edges
+  of 2D meshes thinner (they appeared about twice as thick as for 3D
+  meshes).
 - module -S: fixed -rescell gos of raster tessellations (computed
   relative to the identity instead of the average orientation of the
   cell), fixed -rescell ori of raster tessellations with only voxel
