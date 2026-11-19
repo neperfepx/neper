@@ -39,7 +39,10 @@ if ("${test_mode}" MATCHES "Normal" AND NOT "${test_mode_force_minimal}" EQUAL 1
   endif()
 
   foreach(ref_file ${ref_files})
-    string(REPLACE "ref" "test" test_file ${ref_file})
+    # (only the ref of the file or directory name, ref.* or ref-*, not one
+    # elsewhere in the path, e.g. in the name of a parent directory)
+    string(REGEX REPLACE "/ref([.-][^/]*)$" "/test\\1" test_file ${ref_file})
+    string(REGEX REPLACE "^(.*)/ref([.-][^/]*/)" "\\1/test\\2" test_file ${test_file})
     if (NOT "${test_file}" MATCHES ".png")
       if ("${test_mode_diff}" MATCHES "hard")
         execute_process(COMMAND ${CMAKE_COMMAND} -E compare_files
