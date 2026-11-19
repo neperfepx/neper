@@ -90,20 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
       r.n++;
       p.tags.forEach(function (k) { r.v[seriesOf[k]] += 1 / p.tags.length; });
     });
-    var list = Object.keys(byYear).map(function (y) { return byYear[y]; });
-    if (!share) return list;
-    // Shares: the first years, with few papers, are grouped into one bar
-    var i = 0, g = { label: '', year: 0, n: 0, v: series.map(function () { return 0; }) };
-    while (i < list.length - 1 && list[i].n < 10) {
-      g.n += list[i].n;
-      list[i].v.forEach(function (v, j) { g.v[j] += v; });
-      i++;
-    }
-    if (i > 1) {
-      g.label = list[0].year + '–' + String(list[i - 1].year).slice(2);
-      return [g].concat(list.slice(i));
-    }
-    return list;
+    return Object.keys(byYear).map(function (y) { return byYear[y]; });
   }
 
   function draw() {
