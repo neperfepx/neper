@@ -407,9 +407,9 @@ These options can be used to set the cell morphology.
 
 .. option:: -morphooptideltamax <deltamax> (secondary option)
 
-  Specify the maximal value by which each variable is allowed to change during optimization.  For the weights, it applies to their square roots, which are the actual optimization variables and are homogeneous to the coordinates.  The argument can be a real value (:math:`\geq 0`), a mathematical expression based on :data:`avdiameq`, the average equivalent cell diameter, or :data:`HUGE_VAL` (no limit).  The default value keeps the seeds close to the domain: a seed far from the domain, of a large weight, makes cells whose faces are nearly parallel, which cannot be computed reliably.
+  Specify the maximal value by which each variable is allowed to change during optimization.  For the weights, it applies to their square roots, which are the actual optimization variables and are homogeneous to the coordinates.  The argument can be a real value (:math:`\geq 0`), a mathematical expression based on :data:`avdiameq`, the average equivalent cell diameter, and :data:`domsize`, the average size of the domain (the average of the dimensions of its bounding box), or :data:`HUGE_VAL` (no limit).
 
-  **Default value**: :data:`10*avdiameq`.
+  **Default value**: :data:`domsize`.
 
 .. option:: -morphooptiboundlower <dof1>:<lower_bound>,<dof2>:<lower_bound> (secondary option)
 

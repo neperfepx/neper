@@ -741,25 +741,35 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
 
   ut_math_eval (string, 1, vars, vals, &((*pTOpt).inistep));
 
-  // computing deltamax (same variables as inistep).  For the morphology, it
-  // is 10 times the average cell size by default, which keeps the seeds
-  // close to the domain: a seed can otherwise drift far away with a large
-  // weight (which leaves its cell nearly unchanged), and the faces of its
-  // cell are then nearly parallel and cannot be computed reliably.
+  // computing deltamax (same variables as inistep, and domsize, the average
+  // size of the domain).  For the morphology, it is the average size of the
+  // domain by default, which keeps the seeds close to the domain: a seed can
+  // otherwise drift far away with a large weight (which leaves its cell
+  // nearly unchanged), and the faces of its cell are then nearly parallel and
+  // cannot be computed reliably.
+  double *bboxsize = ut_alloc_1d (3);
+  neut_tess_bboxsize ((*pTOpt).Dom, bboxsize);
+
+  vars = ut_realloc_2d_char_addline (vars, 2, 10);
+  vals = ut_realloc_1d (vals, 2);
+  strcpy (vars[1], "domsize");
+  vals[1] = ut_array_1d_mean (bboxsize, (*pTOpt).Dim);
+
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.optideltamax[optiid][level],
                                            &string);
 
   if (!strcmp (string, "default"))
-    ut_string_string (!strcmp ((*pTOpt).optitype, "morpho") ? "10*avdiameq" : "HUGE_VAL",
-                      &string);
+    ut_string_string (!strcmp ((*pTOpt).optitype, "morpho") ? "domsize" : "HUGE_VAL", &string);
 
   if (!strcmp (string, "HUGE_VAL"))
     (*pTOpt).dist = HUGE_VAL;
   else
-    ut_math_eval (string, 1, vars, vals, &((*pTOpt).dist));
+    ut_math_eval (string, 2, vars, vals, &((*pTOpt).dist));
 
-  ut_free_2d_char (&vars, 1);
+  ut_free_1d (&bboxsize);
+
+  ut_free_2d_char (&vars, 2);
   ut_free_1d (&vals);
 
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
