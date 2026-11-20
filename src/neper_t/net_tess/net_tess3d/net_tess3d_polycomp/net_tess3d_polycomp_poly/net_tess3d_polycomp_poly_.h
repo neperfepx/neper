@@ -17,6 +17,10 @@ extern "C"
 
 #include"net_tess3d_polycomp_poly.h"
 
+// determinant of the unit normals of 3 faces below which their intersection
+// is ill-conditioned (see net_tess3d_polycomp_poly_cut_mod_inter_planes)
+#define NET_POLYCOMP_DETEPS 1e-6
+
   extern int net_tess3d_polycomp_poly_test (struct SEEDSET SSet, int id, int nid, double nweight,
                                             double maxdist);
   extern double net_tess3d_polycomp_poly_maxdist (struct POLY Poly, double *coo);
@@ -74,7 +78,8 @@ extern "C"
   extern void net_tess3d_polycomp_poly_cut_mod_newver_coo (struct POLY *pPoly, double *coo);
   extern void net_tess3d_polycomp_poly_cut_mod_newfaceaddver_qty (struct POLY *pPoly);
   extern void net_tess3d_polycomp_poly_cut_mod_newfaceaddver_nb (struct POLY *pPoly);
-  extern void net_tess3d_polycomp_poly_cut_mod_inter_planes (struct POLY Poly, int p1, int p2,
+  extern void net_tess3d_polycomp_poly_cut_mod_inter_planes (struct POLY Poly, int **FaceVerNbCpy,
+                                                             int *FaceVerQtyCpy, int p1, int p2,
                                                              int p3, double *inter);
   extern void net_tess3d_polycomp_poly_cut_mod_inter_prim (struct POLY Poly, struct PRIM *pPrim,
                                                            int **FaceVerNbCpy, int *FaceVerQtyCpy,

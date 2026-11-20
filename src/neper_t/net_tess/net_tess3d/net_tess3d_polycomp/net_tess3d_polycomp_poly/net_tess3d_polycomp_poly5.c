@@ -270,15 +270,24 @@ net_tess3d_polycomp_poly_cut_mod_newfaceaddver_nb (struct POLY *pPoly)
   return;
 }
 
-/* Intersection of 3 face planes */
+/* net_tess3d_polycomp_poly_cut_mod_inter_planes computes the intersection of
+ * the planes of faces p1, p2 and p3, i.e. of the initial edge common to faces
+ * p1 and p2 (from FaceVerNbCpy and FaceVerQtyCpy) and the plane of new face
+ * p3.  If the 3 planes are nearly dependent (e.g. faces p1 and p2 are
+ * coplanar, or face p3 is nearly parallel to one of them, as for the cell of a
+ * seed far from the domain and of a large weight), their intersection is
+ * ill-conditioned, and it is computed as that of the edge and the plane of
+ * face p3, which is well-defined since the edge crosses the plane, if the
+ * edge is found.
+ */
 void
-net_tess3d_polycomp_poly_cut_mod_inter_planes (struct POLY Poly, int p1, int p2, int p3,
+net_tess3d_polycomp_poly_cut_mod_inter_planes (struct POLY Poly, int **FaceVerNbCpy,
+                                               int *FaceVerQtyCpy, int p1, int p2, int p3,
                                                double *inter)
 {
-  int i;
-  double a[3][3], B[3];
+  int i, status, verqty, *vers = NULL;
+  double a[3][3], B[3], det;
   double *A[3] = { a[0], a[1], a[2] };
-  double det;
 
   for (i = 0; i < 3; i++)
   {
@@ -290,41 +299,35 @@ net_tess3d_polycomp_poly_cut_mod_inter_planes (struct POLY Poly, int p1, int p2,
   B[1] = Poly.FaceEq[p2][0];
   B[2] = Poly.FaceEq[p3][0];
 
-  det = ut_mat_det_33 (A);
+  det = ut_mat_det_33 (A)
+        / (ut_vector_norm (A[0]) * ut_vector_norm (A[1]) * ut_vector_norm (A[2]));
 
-  if (ut_num_equal (det, 0, 1e-15))     // the 2 first faces must be coplanar
+  status = ut_linalg_solve_LU (A, B, 3, inter);
+
+  if (!status && fabs (det) >= NET_POLYCOMP_DETEPS)
+    return;
+
+  if (FaceVerNbCpy)
   {
-    if (!ut_space_planes_equal (Poly.FaceEq[p1], Poly.FaceEq[p2]))
-      ut_print_neperbug ();
-
-    int verqty, *vers = ut_alloc_1d_int (2);
-
+    vers = ut_alloc_1d_int (FaceVerQtyCpy[p1]);
+    ut_array_1d_int_inter (FaceVerNbCpy[p1] + 1, FaceVerQtyCpy[p1],
+                           FaceVerNbCpy[p2] + 1, FaceVerQtyCpy[p2], vers, &verqty);
+  }
+  else
+  {
+    vers = ut_alloc_1d_int (Poly.FaceVerQty[p1]);
     ut_array_1d_int_inter (Poly.FaceVerNb[p1] + 1, Poly.FaceVerQty[p1],
-                           Poly.FaceVerNb[p2] + 1, Poly.FaceVerQty[p2],
-                           vers, &verqty);
-
-    // seems that verqty != 2 should not happen...
-    if (verqty == 2)
-    {
-      double *v = ut_alloc_1d (3);
-      ut_array_1d_sub (Poly.VerCoo[vers[0]], Poly.VerCoo[vers[1]], 3,
-                       v);
-      ut_array_1d_normalize (v, 3);
-
-      ut_vector_vectprod (A[0], v, A[1]);
-
-      B[1] = ut_array_1d_scalprod (A[1], Poly.VerCoo[vers[0]], 3);
-
-      if (ut_num_equal (ut_mat_det_33 (A), 0, 1e-12))   // Fix did not work
-        ut_print_neperbug ();
-
-      ut_free_1d (&v);
-    }
-
-    ut_free_1d_int (&vers);
+                           Poly.FaceVerNb[p2] + 1, Poly.FaceVerQty[p2], vers, &verqty);
   }
 
-  ut_linalg_solve_LU (A, B, 3, inter);
+  // (if the edge is not found, the solution of the system is kept)
+  if (verqty == 2)
+    ut_space_segment_plane_intersect (Poly.VerCoo[vers[0]], Poly.VerCoo[vers[1]],
+                                      Poly.FaceEq[p3], inter);
+  else if (status)
+    ut_print_neperbug ();
+
+  ut_free_1d_int (&vers);
 
   return;
 }

@@ -1730,7 +1730,7 @@ void
 ut_print_neperbug ()
 {
   ut_print_messagewnc (2, 72,
-                       "You have discovered a bug in Neper!  Please file an issue at https://github.com/rquey/neper/issues.  Thank you.\n");
+                       "You have discovered a bug in Neper!  Please file an issue at https://github.com/neperfepx/neper/issues.  Thank you.\n");
 
   return;
 }

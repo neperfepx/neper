@@ -691,16 +691,6 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
                         parts[i][0]);
   }
 
-  if (!strcmp (In.optideltamax[optiid][level], "HUGE_VAL"))
-    (*pTOpt).dist = HUGE_VAL;
-  else
-  {
-    net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
-                                             In.optideltamax[optiid][level],
-                                             &string);
-    sscanf (string, "%lf", &((*pTOpt).dist));
-  }
-
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.optiboundl[optiid][level],
                                            &((*pTOpt).boundlstring));
@@ -750,6 +740,24 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
     abort ();
 
   ut_math_eval (string, 1, vars, vals, &((*pTOpt).inistep));
+
+  // computing deltamax (same variables as inistep).  For the morphology, it
+  // is 10 times the average cell size by default, which keeps the seeds
+  // close to the domain: a seed can otherwise drift far away with a large
+  // weight (which leaves its cell nearly unchanged), and the faces of its
+  // cell are then nearly parallel and cannot be computed reliably.
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
+                                           In.optideltamax[optiid][level],
+                                           &string);
+
+  if (!strcmp (string, "default"))
+    ut_string_string (!strcmp ((*pTOpt).optitype, "morpho") ? "10*avdiameq" : "HUGE_VAL",
+                      &string);
+
+  if (!strcmp (string, "HUGE_VAL"))
+    (*pTOpt).dist = HUGE_VAL;
+  else
+    ut_math_eval (string, 1, vars, vals, &((*pTOpt).dist));
 
   ut_free_2d_char (&vars, 1);
   ut_free_1d (&vals);

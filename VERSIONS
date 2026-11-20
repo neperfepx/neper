@@ -18,7 +18,10 @@ New in 7.0.1 (unreleased):
   matrix, e.g. 2D cut domains or cut domains with an empty first cell),
   fixed -reg giving faces reflex angles (non-convex faces, e.g. on the
   domain boundary), added an error message for -tesrformat with an
-  unknown value (crashed).
+  unknown value (crashed), fixed -morpho failing for large -n and wide
+  distributions (seeds drifting far from the domain; "bug in Neper" or
+  "degenerated configuration"; -morphooptideltamax now defaults to
+  10*avdiameq and accepts expressions of avdiameq).
 - module -M: fixed failures and hangs of the Gmsh workers on macOS (pipe
   file descriptors kept apart from those of the workers, and workers
   started one at a time), restored -part <n>:<m> (<n> partitions of

@@ -308,7 +308,8 @@ net_tess3d_polycomp_poly_cut_mod_curvedface (struct POLY *pPoly)
 /* net_tess3d_polycomp_poly_cut_mod_inter computes the intersection between faces p1, p2
  * and p3 of the polyhedron, p3 being the new face, of primitive pPrim (NULL
  * for a plane).  If pPrim is NULL, it is computed as the intersection of the
- * 3 face planes, and otherwise as the intersection between the initial edge
+ * 3 face planes (see net_tess3d_polycomp_poly_cut_mod_inter_planes), and
+ * otherwise as the intersection between the initial edge
  * common to p1 and p2 (from FaceVerNbCpy and FaceVerQtyCpy) and the
  * primitive.
  */
@@ -317,7 +318,8 @@ net_tess3d_polycomp_poly_cut_mod_inter (struct POLY Poly, struct PRIM *pPrim, in
                                         int *FaceVerQtyCpy, int p1, int p2, int p3, double *inter)
 {
   if (!pPrim)
-    net_tess3d_polycomp_poly_cut_mod_inter_planes (Poly, p1, p2, p3, inter);
+    net_tess3d_polycomp_poly_cut_mod_inter_planes (Poly, FaceVerNbCpy, FaceVerQtyCpy, p1, p2, p3,
+                                                   inter);
   else
     net_tess3d_polycomp_poly_cut_mod_inter_prim (Poly, pPrim, FaceVerNbCpy, FaceVerQtyCpy, p1, p2,
                                                  p3, inter);
