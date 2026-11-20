@@ -1793,6 +1793,56 @@ neut_tess_face_normal_fromver (struct TESS Tess, int face, double *n)
 }
 
 void
+neut_tess_face_angles (struct TESS Tess, int face, double **pangles)
+{
+  int i, qty = Tess.FaceVerQty[face];
+  double *n = ut_alloc_1d (3), *d1 = ut_alloc_1d (3), *d2 = ut_alloc_1d (3);
+  double *v = ut_alloc_1d (3);
+  double *prev, *cur, *next;
+
+  (*pangles) = ut_realloc_1d (*pangles, qty);
+
+  neut_tess_face_normal_fromver (Tess, face, n);
+
+  // in 3D, the normal of the face equation (as recorded at the end of
+  // regularization: the plane fitted to the vertices, or the tangent plane
+  // on a curved domain face), oriented from the vertex order
+  if (Tess.Dim == 3)
+  {
+    double *eq = ut_alloc_1d (4);
+
+    neut_tess_face_eq (Tess, face, eq);
+    if (ut_array_1d_scalprod (eq + 1, n, 3) < 0)
+      ut_array_1d_scale (eq + 1, 3, -1);
+    ut_array_1d_memcpy (eq + 1, 3, n);
+
+    ut_free_1d (&eq);
+  }
+
+  // the vertices are in counterclockwise order about n, so that the turn
+  // angle from the incoming edge (d1) to the outgoing edge (d2) is positive
+  // at a convex corner and negative at a reflex corner
+  for (i = 0; i < qty; i++)
+  {
+    prev = Tess.VerCoo[Tess.FaceVerNb[face][ut_array_rotpos (1, qty, i + 1, -1)]];
+    cur = Tess.VerCoo[Tess.FaceVerNb[face][i + 1]];
+    next = Tess.VerCoo[Tess.FaceVerNb[face][ut_array_rotpos (1, qty, i + 1, 1)]];
+    ut_array_1d_sub (prev, cur, 3, d1);
+    ut_array_1d_sub (cur, next, 3, d2);
+    ut_vector_vectprod (d1, d2, v);
+    (*pangles)[i] = 180 - atan2 (ut_array_1d_scalprod (v, n, 3),
+                                 ut_array_1d_scalprod (d1, d2, 3)) * 180 / M_PI;
+  }
+
+  ut_free_1d (&n);
+  ut_free_1d (&d1);
+  ut_free_1d (&d2);
+  ut_free_1d (&v);
+
+  return;
+}
+
+void
 neut_tess_face_dihangle (struct TESS Tess, int face, int id, double *pangle)
 {
   int id_prev, id_next;

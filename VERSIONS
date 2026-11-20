@@ -15,7 +15,9 @@ New in 7.0.1 (unreleased):
   and fixed its x and y bounds on the domain boundary (failed), fixed
   -transform cut(cube(...)) with a zero radius (sharp edges and corners;
   "couldn't find tangent plane"), fixed -reg of cut domains (singular
-  matrix, e.g. 2D cut domains or cut domains with an empty first cell).
+  matrix, e.g. 2D cut domains or cut domains with an empty first cell),
+  fixed -reg giving faces reflex angles (non-convex faces, e.g. on the
+  domain boundary).
 - module -M: fixed failures and hangs of the Gmsh workers on macOS (pipe
   file descriptors kept apart from those of the workers, and workers
   started one at a time), restored -part <n>:<m> (<n> partitions of

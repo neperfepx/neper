@@ -9,13 +9,18 @@
 // flatness fault is higher than fftarget (but lower than twice
 // fftarget), the position of the new vertex is optimized to decrease it,
 // and the Tess test is not carried out (-1 is returned) if it is higher
-// than fflimit.  If delcell == 1, the deletion can delete a cell (a
-// triangular cell in 2D or a tetrahedral cell in 3D).
+// than fflimit.  If a face gets a reflex angle (see
+// net_reg_merge_del_testangles; facestraightvers are the vertices of the
+// straight corners of the faces of the initial tessellation), the
+// flatness fault is set to 888.8, so that the deletion is not accepted.
+// If delcell == 1, the deletion can delete a cell (a triangular cell in
+// 2D or a tetrahedral cell in 3D).
 // In a periodic tessellation, all copies of the edge are deleted, and
 // all copies of the resulting vertex are set accordingly.
 int
 net_reg_merge_del (struct TESS *pTess, int edge, int *pver, double *pmaxff,
-                   double fftarget, double fflimit, int delcell, int **buf,
+                   double fftarget, double fflimit, int **facestraightvers,
+                   int delcell, int **buf,
                    struct TESS *pTessBuf, int verbosity)
 {
   int i, j, test, status = 0, periodic, master, *shift = ut_alloc_1d_int (3);
@@ -205,7 +210,8 @@ net_reg_merge_del (struct TESS *pTess, int edge, int *pver, double *pmaxff,
     // (only for a flatness fault close enough to the target)
     if (*pmaxff > fftarget && *pmaxff < 2 * fftarget)
       net_reg_merge_del_optimcoo (pTess, *pver, vers, veroffsets, verqty,
-                                  periodic, fftarget, pmaxff);
+                                  periodic, fftarget, facestraightvers,
+                                  pmaxff);
 
     for (i = 0; i < verqty; i++)
       net_tess_reg_ver_facedom (pTess, vers[i]);
@@ -240,6 +246,13 @@ net_reg_merge_del (struct TESS *pTess, int edge, int *pver, double *pmaxff,
         (*pmaxff) = 888.8;
       }
     }
+
+    // a face must not get a reflex angle (it is then not accepted, as for
+    // a too high flatness fault)
+    if (test == 0 && *pmaxff < fftarget
+        && net_reg_merge_del_testangles (*pTess, vers, verqty,
+                                         facestraightvers) != 0)
+      (*pmaxff) = 888.8;
   }
 
   if (verbosity >= 2)
@@ -694,11 +707,13 @@ net_reg_merge_del_optimcoo_ff (struct TESS *pTess, int *vers, int verqty)
 // periodic tessellation), from its current position and value (*pff),
 // down to target.  A compass search is used, in the space allowed by the
 // domain (the vertex can be on a planar domain face or a straight domain
-// edge, and is fixed if it is a domain vertex).
+// edge, and is fixed if it is a domain vertex).  A position that gives a
+// face a reflex angle is not accepted (see net_reg_merge_del_testangles).
 void
 net_reg_merge_del_optimcoo (struct TESS *pTess, int ver, int *vers,
                             int **offsets, int verqty, int periodic,
-                            double target, double *pff)
+                            double target, int **facestraightvers,
+                            double *pff)
 {
   int i, j, dirqty, iter, improved, id;
   double h, h0, ff, *x0 = ut_alloc_1d (3);
@@ -772,7 +787,9 @@ net_reg_merge_del_optimcoo (struct TESS *pTess, int ver, int *vers,
 
           ff = net_reg_merge_del_optimcoo_ff (pTess, vers, verqty);
 
-          if (ff < *pff)
+          if (ff < *pff
+              && net_reg_merge_del_testangles (*pTess, vers, verqty,
+                                               facestraightvers) == 0)
           {
             (*pff) = ff;
             improved = 1;

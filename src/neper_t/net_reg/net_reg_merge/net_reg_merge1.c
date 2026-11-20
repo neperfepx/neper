@@ -48,11 +48,13 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
 
       testtess =
         net_reg_merge_del (pTess, edge, &newver, &fmax, Reg.fmax, DBL_MAX,
-                           Reg.delcell, bufs[0], TessBufs, verbosity);
+                           Reg.FaceStraightVers, Reg.delcell, bufs[0],
+                           TessBufs, verbosity);
 
       if ((*pTess).Dim == 2)
       {
-        if (testtess < 0)
+        // (fmax is set only for a reflex angle)
+        if (testtess < 0 || fmax >= Reg.fmax)
           net_reg_merge_undel (pTess, bufs[0], TessBufs[0]);
         else
           ThisDelQty = 1;
@@ -85,7 +87,8 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
             for (i = 0; i < seqqty; i++)
             {
               net_reg_merge_del (pTess, seq[i], &newver, &fmax, Reg.fmax,
-                                 DBL_MAX, Reg.delcell, NULL, NULL, verbosity);
+                                 DBL_MAX, Reg.FaceStraightVers, Reg.delcell,
+                                 NULL, NULL, verbosity);
               (*pTess).EdgeDel[seq[i]] = 1;
             }
           }
@@ -184,8 +187,9 @@ net_reg_merge_search_vernbs (struct TESS *pTess, struct REG Reg, int ver,
     // an acceptable flatness fault)
     test =
       net_reg_merge_del (pTess, edge, &newver, &ff, Reg.fmax,
-                         (depth == 1) ? Reg.fmax : DBL_MAX, Reg.delcell,
-                         bufs[0], TessBufs, 0);
+                         (depth == 1) ? Reg.fmax : DBL_MAX,
+                         Reg.FaceStraightVers, Reg.delcell, bufs[0],
+                         TessBufs, 0);
 
     seqqty2 = 0;
     if (test == 0 && ff < Reg.fmax)
