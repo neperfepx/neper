@@ -51,7 +51,7 @@ net_input_options_default (struct IN_T *pIn)
 
   (*pIn).optideltamaxstring = ut_alloc_1d_pchar (2);
   for (i = 0; i < (*pIn).optiqty; i++)
-    ut_string_string ("HUGE_VAL", (*pIn).optideltamaxstring + i);
+    ut_string_string ("default", (*pIn).optideltamaxstring + i);
 
   (*pIn).optiboundlstring = ut_alloc_1d_pchar (2);
   for (i = 0; i < (*pIn).optiqty; i++)
