@@ -40,6 +40,20 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
     ut_free_2d_char (&formats, qty);
   }
 
+  // checking the raster format (an unknown format aborted while writing)
+  {
+    int k, valid = 0;
+    const char *valids[] = { "default", "ascii", "binary8", "binary16", "binary16_big",
+                             "binary32", "binary32_big" };
+
+    for (k = 0; !valid && k < (int) (sizeof (valids) / sizeof (valids[0])); k++)
+      if (!strcmp ((*pIn).tesrformat, valids[k]))
+        valid = 1;
+    if (!valid)
+      ut_print_message (2, 0, "Unknown format `%s' (option -tesrformat).\n",
+                        (*pIn).tesrformat);
+  }
+
   tess_out = 0;
   tesr_out = 0;
   ori_out = 0;
