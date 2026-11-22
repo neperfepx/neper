@@ -47,14 +47,13 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
       minmaxff = 0;
 
       testtess =
-        net_reg_merge_del (pTess, edge, &newver, &fmax, Reg.fmax, DBL_MAX,
-                           Reg.FaceStraightVers, Reg.delcell, bufs[0],
+        net_reg_merge_del (pTess, edge, &newver, &fmax, DBL_MAX,
+                           Reg.delcell, bufs[0],
                            TessBufs, verbosity);
 
       if ((*pTess).Dim == 2)
       {
-        // (fmax is set only for a reflex angle)
-        if (testtess < 0 || fmax >= Reg.fmax)
+        if (testtess < 0)
           net_reg_merge_undel (pTess, bufs[0], TessBufs[0]);
         else
           ThisDelQty = 1;
@@ -79,8 +78,7 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
           {
             ThisDelQty = 2;
 
-            net_reg_merge_del (pTess, edge2, &newver, &fmax, Reg.fmax,
-                               DBL_MAX, Reg.FaceStraightVers, Reg.delcell,
+            net_reg_merge_del (pTess, edge2, &newver, &fmax, DBL_MAX, Reg.delcell,
                                NULL, NULL, verbosity);
             (*pTess).EdgeDel[edge2] = 1;
           }
@@ -168,8 +166,8 @@ net_reg_merge_search_vernbs (struct TESS *pTess, struct REG Reg, int ver,
     // (the tessellation needs to be tested only for an acceptable
     // flatness fault)
     test =
-      net_reg_merge_del (pTess, edge, &newver, &ff, Reg.fmax, Reg.fmax,
-                         Reg.FaceStraightVers, Reg.delcell, buf,
+      net_reg_merge_del (pTess, edge, &newver, &ff, Reg.fmax,
+                         Reg.delcell, buf,
                          pTessBuf, 0);
 
     net_reg_merge_undel (pTess, buf, *pTessBuf);

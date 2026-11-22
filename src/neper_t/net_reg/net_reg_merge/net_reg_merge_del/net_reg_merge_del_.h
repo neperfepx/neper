@@ -19,15 +19,11 @@
 // maximum interior angle of the faces, in degrees (just above 180, for the
 // round-off errors of straight angles), and at a corner that was straight
 // in the initial tessellation
-#define NET_REG_MAXANGLE (180 + 1e-6)
-#define NET_REG_MAXANGLE_STRAIGHT (180 + 10)
 
 extern int net_reg_merge_del_test (struct TESS Tess, int edge, int delcell,
                                    int verbosity);
 extern int net_reg_merge_del_test_link (struct TESS Tess, int edge);
 extern int net_reg_merge_del_testfold (struct TESS Tess, int ver, double maxangle);
-extern int net_reg_merge_del_testangles (struct TESS Tess, int *vers, int verqty,
-                                         int **facestraightvers);
 extern int net_reg_merge_del_test_tet (struct TESS Tess, int poly, int edge);
 extern int net_reg_merge_del_delpoly (struct TESS *pTess, int poly, int verbosity);
 extern int net_reg_merge_del_isvermaster (struct TESS Tess, int ver, int master);

@@ -7,18 +7,14 @@
 // Delete an edge.  Returns 0 for success, -1 if the Tess test fails
 // and -2 if the edge deletion aborted.  In 3D, the Tess test is not
 // carried out (-1 is returned) if the maximum face flatness fault is
-// higher than fflimit.  If the flatness fault is lower than fftarget and
-// a face gets a reflex angle (see
-// net_reg_merge_del_testangles; facestraightvers are the vertices of the
-// straight corners of the faces of the initial tessellation), the
-// flatness fault is set to 888.8, so that the deletion is not accepted.
+// higher than fflimit.
 // If delcell == 1, the deletion can delete a cell (a triangular cell in
 // 2D or a tetrahedral cell in 3D).
 // In a periodic tessellation, all copies of the edge are deleted, and
 // all copies of the resulting vertex are set accordingly.
 int
 net_reg_merge_del (struct TESS *pTess, int edge, int *pver, double *pmaxff,
-                   double fftarget, double fflimit, int **facestraightvers,
+                   double fflimit,
                    int delcell, int **buf,
                    struct TESS *pTessBuf, int verbosity)
 {
@@ -239,13 +235,6 @@ net_reg_merge_del (struct TESS *pTess, int edge, int *pver, double *pmaxff,
         (*pmaxff) = 888.8;
       }
     }
-
-    // a face must not get a reflex angle (it is then not accepted, as for
-    // a too high flatness fault)
-    if (test == 0 && *pmaxff < fftarget
-        && net_reg_merge_del_testangles (*pTess, vers, verqty,
-                                         facestraightvers) != 0)
-      (*pmaxff) = 888.8;
   }
 
   if (verbosity >= 2)

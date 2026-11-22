@@ -22,13 +22,6 @@ extern "C"
     double *PolySel;
     double *FaceSel;
     double *EdgeSel;
-
-    // vertices of the straight corners of the faces of the initial
-    // tessellation (e.g. of a multiscale tessellation), which can become
-    // slightly reflex, [1...FaceQty][0...]: [i][0] is the number of
-    // vertices of face i, and [i][1...] are the vertices
-    int FaceQty;
-    int **FaceStraightVers;
   };
   typedef struct REG REG;
 

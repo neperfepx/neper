@@ -8,7 +8,7 @@ extern "C"
 #endif
 
   extern int net_reg_merge_del (struct TESS *, int, int *, double *,
-				double, double, int **facestraightvers,
+				double,
 				int delcell, int **, struct TESS *,
 				int verbosity);
 

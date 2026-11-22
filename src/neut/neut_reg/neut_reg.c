@@ -15,8 +15,6 @@ net_reg_set_zero (struct REG *pReg)
   (*pReg).PolySel = NULL;
   (*pReg).FaceSel = NULL;
   (*pReg).EdgeSel = NULL;
-  (*pReg).FaceQty = 0;
-  (*pReg).FaceStraightVers = NULL;
 
   return;
 }
@@ -28,7 +26,6 @@ net_reg_free (struct REG Reg)
   ut_free_1d (&Reg.PolySel);
   ut_free_1d (&Reg.FaceSel);
   ut_free_1d (&Reg.EdgeSel);
-  ut_free_2d_int (&Reg.FaceStraightVers, Reg.FaceQty + 1);
 
   return;
 }
