@@ -21,7 +21,12 @@ New in 7.0.1 (unreleased):
   unknown value (crashed), fixed -morpho failing for large -n and wide
   distributions (seeds drifting far from the domain; "bug in Neper" or
   "degenerated configuration"; -morphooptideltamax now defaults to the
-  average domain size and accepts expressions of avdiameq and domsize).
+  average domain size and accepts expressions of avdiameq and domsize),
+  restored the regularization of Neper 5 (no optimization of the
+  position of the new vertex and, when an edge deletion fails, deletion
+  of a single additional small edge), as that of Neper 7.0 changed the
+  cell shapes much more (face rotations up to 58 degrees, volume changes
+  up to 87%).
 - module -M: fixed failures and hangs of the Gmsh workers on macOS (pipe
   file descriptors kept apart from those of the workers, and workers
   started one at a time), restored -part <n>:<m> (<n> partitions of

@@ -12,8 +12,8 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
   double lratio1;
   double fmax, minmaxff = 0;
   int ThisDelQty, DelQty = 0;
-  int depth = 3;               // maximum number of edges deleted together
-  int seqqty, *seq = ut_alloc_1d_int (depth);
+  int depth = 2;               // maximum number of edges deleted together
+  int edge2;
   int ***bufs = ut_alloc_1d_ppint (depth);
   struct TESS *TessBufs = calloc (depth, sizeof (struct TESS));
 
@@ -43,7 +43,7 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
         break;
 
       ThisDelQty = 0;
-      seqqty = 0;
+      edge2 = 0;
       minmaxff = 0;
 
       testtess =
@@ -63,8 +63,8 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
       else if ((*pTess).Dim == 3)
       {
         // the deletion is kept if it leads to a valid tessellation of
-        // acceptable face flatness fault, otherwise edges of the new
-        // vertex are deleted as well, which can be needed to obtain a
+        // acceptable face flatness fault, otherwise an edge of the new
+        // vertex is deleted as well, which can be needed to obtain a
         // valid tessellation (when 2 faces would share 2 successive
         // edges) or which can reduce the flatness fault.
         if (testtess == 0 && fmax < Reg.fmax)
@@ -72,25 +72,17 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
 
         else if (testtess != -2)
         {
-          // (iterative deepening: as few edges as possible are deleted)
-          minmaxff = DBL_MAX;
-          for (i = 1; i < depth && minmaxff >= Reg.fmax; i++)
-            minmaxff =
-              net_reg_merge_search_vernbs (pTess, Reg, newver, lratio1,
-                                           testtess != 0, i, bufs + 1,
-                                           TessBufs + 1, seq, &seqqty);
+          minmaxff = net_reg_merge_search_vernbs (pTess, Reg, newver, lratio1,
+                                                  bufs[1], TessBufs + 1, &edge2);
 
           if (minmaxff < Reg.fmax)
           {
-            ThisDelQty = 1 + seqqty;
+            ThisDelQty = 2;
 
-            for (i = 0; i < seqqty; i++)
-            {
-              net_reg_merge_del (pTess, seq[i], &newver, &fmax, Reg.fmax,
-                                 DBL_MAX, Reg.FaceStraightVers, Reg.delcell,
-                                 NULL, NULL, verbosity);
-              (*pTess).EdgeDel[seq[i]] = 1;
-            }
+            net_reg_merge_del (pTess, edge2, &newver, &fmax, Reg.fmax,
+                               DBL_MAX, Reg.FaceStraightVers, Reg.delcell,
+                               NULL, NULL, verbosity);
+            (*pTess).EdgeDel[edge2] = 1;
           }
           else
             net_reg_merge_undel (pTess, bufs[0], TessBufs[0]);
@@ -110,7 +102,7 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
 
       if (verbosity >= 1)
         net_reg_merge_print (loop, lratio1, ThisDelQty, edge,
-                             seqqty ? seq[0] : 0, fmax, minmaxff);
+                             edge2, fmax, minmaxff);
 
       /* Searching next edge to delete */
       edge = net_reg_merge_nextedge (*pTess, Reg, &lratio1);
@@ -134,38 +126,28 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
   }
   free (bufs);
   free (TessBufs);
-  ut_free_1d_int (&seq);
   ut_free_1d_char (&string);
   ut_free_1d_char (&prevstring);
 
   return DelQty;
 }
 
-// Searching the deletion of an edge of a vertex, possibly followed by the
-// deletion of edges of the new vertex (depth edges at most), that leads to
-// a valid tessellation of lowest maximum face flatness fault.  The
-// tessellation is left unchanged.  lratio is the length ratio of the edge
-// whose deletion led to the vertex, and an edge of the vertex is
-// considered if the sum of their length ratios is lower than 2, or, if
-// invalid == 1 (the tessellation is invalid), whatever its length.
-// Returns the maximum face flatness fault (DBL_MAX if none) and the edges
-// to delete, in seq (seqqty of them).
+// Searching the deletion of an edge of a vertex that leads to a valid
+// tessellation of lowest maximum face flatness fault.  The tessellation
+// is left unchanged.  lratio is the length ratio of the edge whose
+// deletion led to the vertex, and an edge of the vertex is considered if
+// the sum of their length ratios is lower than 2.  Returns the maximum
+// face flatness fault (DBL_MAX if none) and the edge to delete, in
+// *pedge.
 double
 net_reg_merge_search_vernbs (struct TESS *pTess, struct REG Reg, int ver,
-                             double lratio, int invalid, int depth,
-                             int ***bufs, struct TESS *TessBufs, int *seq,
-                             int *pseqqty)
+                             double lratio, int **buf, struct TESS *pTessBuf,
+                             int *pedge)
 {
-  int i, edge, newver, test, seqqty2, edgeqty, *edges = NULL;
+  int i, edge, newver, test, edgeqty, *edges = NULL;
   double ff, minff = DBL_MAX, lratio2;
-  int *seq2 = NULL;
 
-  (*pseqqty) = 0;
-
-  if (depth <= 0)
-    return minff;
-
-  seq2 = ut_alloc_1d_int (depth);
+  (*pedge) = 0;
 
   // (the edges of the vertex change with the deletions)
   edgeqty = (*pTess).VerEdgeQty[ver];
@@ -180,41 +162,27 @@ net_reg_merge_search_vernbs (struct TESS *pTess, struct REG Reg, int ver,
       continue;
 
     lratio2 = (*pTess).EdgeLength[edge] / Reg.EdgeSel[edge];
-    if (!invalid && lratio + lratio2 >= 2)
+    if (lratio + lratio2 >= 2)
       continue;
 
-    // (at the last level, the tessellation needs to be tested only for
-    // an acceptable flatness fault)
+    // (the tessellation needs to be tested only for an acceptable
+    // flatness fault)
     test =
-      net_reg_merge_del (pTess, edge, &newver, &ff, Reg.fmax,
-                         (depth == 1) ? Reg.fmax : DBL_MAX,
-                         Reg.FaceStraightVers, Reg.delcell, bufs[0],
-                         TessBufs, 0);
+      net_reg_merge_del (pTess, edge, &newver, &ff, Reg.fmax, Reg.fmax,
+                         Reg.FaceStraightVers, Reg.delcell, buf,
+                         pTessBuf, 0);
 
-    seqqty2 = 0;
-    if (test == 0 && ff < Reg.fmax)
-      ;
-    else if (test != -2)
-      ff = net_reg_merge_search_vernbs (pTess, Reg, newver, lratio, test != 0,
-                                        depth - 1, bufs + 1, TessBufs + 1,
-                                        seq2, &seqqty2);
-    else
-      ff = DBL_MAX;
+    net_reg_merge_undel (pTess, buf, *pTessBuf);
+    net_reg_merge_undel_free (buf, pTessBuf);
 
-    net_reg_merge_undel (pTess, bufs[0], TessBufs[0]);
-    net_reg_merge_undel_free (bufs[0], TessBufs);
-
-    if (ff < minff)
+    if (test == 0 && ff < minff)
     {
       minff = ff;
-      seq[0] = edge;
-      ut_array_1d_int_memcpy (seq2, seqqty2, seq + 1);
-      (*pseqqty) = 1 + seqqty2;
+      (*pedge) = edge;
     }
   }
 
   ut_free_1d_int (&edges);
-  ut_free_1d_int (&seq2);
 
   return minff;
 }

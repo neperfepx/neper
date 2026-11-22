@@ -35,10 +35,6 @@ extern int net_reg_merge_del_testbuf (struct TESS Tess, int **buf);
 extern void net_reg_merge_del_domfacefaceqty (struct TESS Tess, int **pqty);
 extern int net_reg_merge_del_constraints_compatible (double **constraint,
                                                      int M);
-extern void net_reg_merge_del_optimcoo (struct TESS *pTess, int ver,
-                                        int *vers, int **offsets, int verqty,
-                                        int periodic, double target,
-                                        int **facestraightvers, double *pff);
 extern void net_reg_merge_del_buffer (struct TESS Tess, int *edges, int edgeqty, int *vers, int verqty, int **buf, struct TESS *pTessBuf);
 extern void net_reg_merge_del_buffer_add (int **buffer, int *vals, int valqty);
 
