@@ -283,12 +283,10 @@ Tessellation Module (-T)
 - :data:`-transform renamedomface`, which renames a domain face.
 - :option:`-regdelcell`, which allows regularization to delete cells.
 - Improved 3D regularization. :when:`new<7.0.1`
-- Regularization fixed. :since:`7.0.1` :when:`old>=7.0.0`
 - Expressions in all :data:`-stat` options.
 - :data:`curpdf0` value of :option:`-morphooptilogdis`, for the current, not smoothed PDF.
 - Faster morphology optimization: about 25% faster computation of the cells, and faster neighbor search.
 - Deterministic morphology optimization, and results of regularization that do not depend on the build.
-- Default value of :option:`-morphooptideltamax` set to the average domain size (:data:`domsize`), which avoids failures of the morphology optimization for large numbers of cells and wide size distributions, and expressions of :data:`avdiameq` and :data:`domsize` as its value. :since:`7.0.1`
 
 Meshing Module (-M)
 ~~~~~~~~~~~~~~~~~~~
@@ -301,7 +299,6 @@ Meshing Module (-M)
 - Improved meshing of the curved faces: conformal projection for the sphere, and conformal unrolling for the hourglass and torus cuts.
 - Any number of partitions, not necessarily a power of 2 (:option:`-part`). :when:`new<7.0.1`
 - Any number of partitions, not necessarily a power of 2, also as partitions and subpartitions (:data:`\<part_number\>:\<subpart_number\>`, e.g., for computer nodes and their cores) (:option:`-part`). :when:`new>=7.0.1`
-- Partitions and subpartitions restored (:data:`-part \<part_number\>:\<subpart_number\>`), and no longer limited to powers of 2. :since:`7.0.1` :when:`old>=7.0.0`
 - Node sets kept when a mesh is loaded without its tessellation, and updated by :data:`-order` and :data:`-sortnode`.
 - Expressions in all :data:`-stat` options.
 - Reproducible parallel grid meshing of regularized tessellations (:data:`-elttype hexgrid`).
@@ -316,7 +313,6 @@ Simulation Module (-S)
 - Case-insensitive keywords and values in :file:`simulation.cfg`.
 - Steps without result files skipped during post-processing.
 - Clear error messages for invalid simulation directories, configuration files and results.
-- Correct grain orientation spread of raster tessellations (:data:`-rescell gos`), now computed relative to the average orientation of the cell instead of the identity. :since:`7.0.1`
 
 Visualization Module (-V)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -326,7 +322,6 @@ Visualization Module (-V)
 - Node sets in the expressions of :data:`-shownode` (:data:`nset==\<label\>`).
 - :data:`-crysym` for :data:`-space rodrigues`.
 - Clear errors when POV-Ray or Asymptote is missing or does not generate a file.
-- Thinner default radii of the 1D elements and of the element edges of 2D meshes, which appeared about twice as thick as for 3D meshes. :since:`7.0.1`
 
 General
 ~~~~~~~
@@ -337,7 +332,36 @@ General
 - macOS compatibility fixes, and Bash completion for all options.
 - Searchable list of the papers that use Neper on the website, with filters by field and by journal (:doc:`applications`). :since:`7.0.1`
 - Numerous bug fixes in all modules, including memory errors found with AddressSanitizer.
-- Bug fixes, including failures and hangs of the Gmsh workers on macOS. :since:`7.0.1` :when:`old>=7.0.0`
+
+Bug Fixes
+---------
+
+Tessellation Module (-T)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Regularization (:option:`-reg`). :since:`7.0.1` :when:`old>=7.0.0`
+- Failures of the morphology optimization for large numbers of cells and wide size distributions: :option:`-morphooptideltamax` now defaults to the average domain size (:data:`domsize`) and accepts expressions of :data:`avdiameq` and :data:`domsize`. :since:`7.0.1` :when:`old>=7.0.0`
+
+Meshing Module (-M)
+~~~~~~~~~~~~~~~~~~~
+
+- Partitions and subpartitions restored (:data:`-part \<part_number\>:\<subpart_number\>`), and no longer limited to powers of 2. :since:`7.0.1` :when:`old>=7.0.0`
+- Failures and hangs of the Gmsh workers on macOS. :since:`7.0.1` :when:`old>=7.0.0`
+
+Simulation Module (-S)
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Grain orientation spread of raster tessellations (:data:`-rescell gos`), which was computed relative to the identity instead of the average orientation of the cell. :since:`7.0.1` :when:`old>=7.0.0`
+
+Visualization Module (-V)
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Default radii of the 1D elements and of the element edges of 2D meshes, which appeared about twice as thick as for 3D meshes. :since:`7.0.1` :when:`old>=7.0.0`
+
+General
+~~~~~~~
+
+- Other bug fixes, mostly crashes and missing error messages on invalid input (see `VERSIONS <https://github.com/neperfepx/neper/blob/main/VERSIONS>`_). :since:`7.0.1` :when:`old>=7.0.0`
 
 .. _whatsnew_incompatible:
 
