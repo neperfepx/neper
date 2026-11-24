@@ -283,7 +283,7 @@ Tessellation Module (-T)
 - :data:`-transform renamedomface`, which renames a domain face.
 - :option:`-regdelcell`, which allows regularization to delete cells.
 - Improved 3D regularization. :when:`new<7.0.1`
-- Regularization of Neper 5 restored, as that of Neper 7.0.0 changed the cell shapes much more (face rotations up to 58 degrees and cell volume changes up to 87%, instead of 26 degrees and 40%), although it left fewer small edges. :since:`7.0.1` :when:`old>=7.0.0`
+- Regularization fixed. :since:`7.0.1` :when:`old>=7.0.0`
 - Expressions in all :data:`-stat` options.
 - :data:`curpdf0` value of :option:`-morphooptilogdis`, for the current, not smoothed PDF.
 - Faster morphology optimization: about 25% faster computation of the cells, and faster neighbor search.
