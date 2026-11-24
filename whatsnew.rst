@@ -330,7 +330,6 @@ General
 - :program:`orilib` program, which can run most of the functions of the Orilib library from the command line (installed together with :program:`neper`) and from Python, see :ref:`orilib_program`.
 - Fewer dependencies: NLopt is no longer needed.
 - macOS compatibility fixes, and Bash completion for all options.
-- Searchable list of the papers that use Neper on the website, with filters by field and by journal (:doc:`applications`). :since:`7.0.1`
 - Numerous bug fixes in all modules, including memory errors found with AddressSanitizer.
 
 Bug Fixes
