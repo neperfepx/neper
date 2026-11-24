@@ -7,7 +7,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-project(neper VERSION 7.0.0)
+project(neper VERSION 7.0.1)
 
 # Version: the version above and a suffix, "-dev" until the release (neperfepx-release sets the
 # release's version and an empty suffix, then the next version and "-dev" on devel).  A build

@@ -1,4 +1,4 @@
-New in 7.0.1 (unreleased):
+New in 7.0.1 (2026-11-24):
 - module -T: restored the regularization of Neper 5 (that of 7.0.0
   distorted the cells much more), fixed -morpho failing for large -n
   and wide size distributions (-morphooptideltamax now defaults to

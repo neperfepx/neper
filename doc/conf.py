@@ -15,8 +15,8 @@ import re
 sys.path.insert(0, os.path.abspath('.'))
 
 project = u'Neper'
-version = u'7.0.0'
-release = u'7.0.0'
+version = u'7.0.1'
+release = u'7.0.1'
 author = u'Romain Quey'
 copyright = u'Romain Quey, CNRS'
 language = 'en'
