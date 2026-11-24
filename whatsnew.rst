@@ -333,7 +333,6 @@ General
 - Fewer dependencies: NLopt is no longer needed.
 - macOS compatibility fixes, and Bash completion for all options.
 - Searchable list of the papers that use Neper on the website, with filters by field and by journal (:doc:`applications`). :since:`7.0.1`
-- Chart of the papers that use Neper per year and field, including selection fields (:doc:`applications`). :since:`7.0.1`
 - Numerous bug fixes in all modules, including memory errors found with AddressSanitizer.
 - Bug fixes, including failures and hangs of the Gmsh workers on macOS. :since:`7.0.1` :when:`old>=7.0.0`
 
