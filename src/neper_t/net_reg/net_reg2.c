@@ -79,8 +79,6 @@ net_reg_init (struct IN_T In, struct TESS *pTess, struct REG *pReg)
       net_reg_init_peredgesel (*pTess, (*pReg).EdgeSel);
   }
 
-  net_reg_init_facestraightvers (*pTess, pReg);
-
   ut_free_1d_char (&entity);
 
   return;

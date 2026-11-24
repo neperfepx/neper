@@ -5,21 +5,16 @@
 #include"net_reg_merge_del_.h"
 
 // Delete an edge.  Returns 0 for success, -1 if the Tess test fails
-// and -2 if the edge deletion aborted.  In 3D, if the maximum face
-// flatness fault is higher than fftarget (but lower than twice
-// fftarget), the position of the new vertex is optimized to decrease it,
-// and the Tess test is not carried out (-1 is returned) if it is higher
-// than fflimit.  If a face gets a reflex angle (see
-// net_reg_merge_del_testangles; facestraightvers are the vertices of the
-// straight corners of the faces of the initial tessellation), the
-// flatness fault is set to 888.8, so that the deletion is not accepted.
+// and -2 if the edge deletion aborted.  In 3D, the Tess test is not
+// carried out (-1 is returned) if the maximum face flatness fault is
+// higher than fflimit.
 // If delcell == 1, the deletion can delete a cell (a triangular cell in
 // 2D or a tetrahedral cell in 3D).
 // In a periodic tessellation, all copies of the edge are deleted, and
 // all copies of the resulting vertex are set accordingly.
 int
 net_reg_merge_del (struct TESS *pTess, int edge, int *pver, double *pmaxff,
-                   double fftarget, double fflimit, int **facestraightvers,
+                   double fflimit,
                    int delcell, int **buf,
                    struct TESS *pTessBuf, int verbosity)
 {
@@ -207,12 +202,6 @@ net_reg_merge_del (struct TESS *pTess, int edge, int *pver, double *pmaxff,
       (*pmaxff) = ut_num_max (*pmaxff, maxff);
     }
 
-    // (only for a flatness fault close enough to the target)
-    if (*pmaxff > fftarget && *pmaxff < 2 * fftarget)
-      net_reg_merge_del_optimcoo (pTess, *pver, vers, veroffsets, verqty,
-                                  periodic, fftarget, facestraightvers,
-                                  pmaxff);
-
     for (i = 0; i < verqty; i++)
       net_tess_reg_ver_facedom (pTess, vers[i]);
   }
@@ -246,13 +235,6 @@ net_reg_merge_del (struct TESS *pTess, int edge, int *pver, double *pmaxff,
         (*pmaxff) = 888.8;
       }
     }
-
-    // a face must not get a reflex angle (it is then not accepted, as for
-    // a too high flatness fault)
-    if (test == 0 && *pmaxff < fftarget
-        && net_reg_merge_del_testangles (*pTess, vers, verqty,
-                                         facestraightvers) != 0)
-      (*pmaxff) = 888.8;
   }
 
   if (verbosity >= 2)
@@ -687,135 +669,4 @@ net_reg_merge_del_testbuf (struct TESS Tess, int **buf)
   }
 
   return 0;
-}
-
-// Maximum face flatness fault of the faces of vertices
-static double
-net_reg_merge_del_optimcoo_ff (struct TESS *pTess, int *vers, int verqty)
-{
-  int i;
-  double ff = 0;
-
-  for (i = 0; i < verqty; i++)
-    ff = ut_num_max (ff, net_reg_merge_del_ff (pTess, vers[i]));
-
-  return ff;
-}
-
-// Optimizing the position of a (new) vertex to decrease the maximum face
-// flatness fault of its faces (and of the faces of its copies, vers, in a
-// periodic tessellation), from its current position and value (*pff),
-// down to target.  A compass search is used, in the space allowed by the
-// domain (the vertex can be on a planar domain face or a straight domain
-// edge, and is fixed if it is a domain vertex).  A position that gives a
-// face a reflex angle is not accepted (see net_reg_merge_del_testangles).
-void
-net_reg_merge_del_optimcoo (struct TESS *pTess, int ver, int *vers,
-                            int **offsets, int verqty, int periodic,
-                            double target, int **facestraightvers,
-                            double *pff)
-{
-  int i, j, dirqty, iter, improved, id;
-  double h, h0, ff, *x0 = ut_alloc_1d (3);
-  double **dirs = ut_alloc_2d (3, 3);
-  double *n = ut_alloc_1d (3);
-
-  // directions
-  dirqty = 0;
-  if ((*pTess).VerDom[ver][0] == -1)
-  {
-    dirqty = 3;
-    for (i = 0; i < 3; i++)
-      dirs[i][i] = 1;
-  }
-  else if ((*pTess).VerDom[ver][0] == 2)
-  {
-    id = (*pTess).VerDom[ver][1];
-    if (!strncmp ((*pTess).DomFaceType[id], "plane", 5))
-    {
-      dirqty = 2;
-      ut_array_1d_memcpy ((*pTess).DomFaceEq[id] + 1, 3, n);
-      ut_array_1d_normalize (n, 3);
-      // the axis least aligned with n, projected onto the plane, and its
-      // cross product with n
-      i = ut_array_1d_absmin_index (n, 3);
-      for (j = 0; j < 3; j++)
-        dirs[0][j] = ((j == i) ? 1 : 0) - n[i] * n[j];
-      ut_array_1d_normalize (dirs[0], 3);
-      ut_vector_vectprod (n, dirs[0], dirs[1]);
-    }
-  }
-  else if ((*pTess).VerDom[ver][0] == 1)
-  {
-    id = (*pTess).VerDom[ver][1];
-    // a straight edge is between two planar faces (the edge between a
-    // planar face and a curved face is curved, and has no domain vertex if
-    // it is closed)
-    if (!strcmp ((*pTess).DomEdgeType[id], "line")
-        && (*pTess).DomEdgeVerQty[id] == 2
-        && !strncmp ((*pTess).DomFaceType[(*pTess).DomEdgeFaceNb[id][0]], "plane", 5)
-        && !strncmp ((*pTess).DomFaceType[(*pTess).DomEdgeFaceNb[id][1]], "plane", 5))
-    {
-      dirqty = 1;
-      ut_space_points_uvect ((*pTess).DomVerCoo[(*pTess).DomEdgeVerNb[id][0]],
-                             (*pTess).DomVerCoo[(*pTess).DomEdgeVerNb[id][1]],
-                             dirs[0]);
-    }
-  }
-
-  if (dirqty > 0)
-  {
-    h0 = DBL_MAX;
-    for (i = 0; i < (*pTess).VerEdgeQty[ver]; i++)
-      h0 = ut_num_min (h0, (*pTess).EdgeLength[(*pTess).VerEdgeNb[ver][i]]);
-    h0 *= 0.25;
-    h = h0;
-
-    iter = 0;
-    while (*pff > target && h > 1e-3 * h0 && iter < 50)
-    {
-      improved = 0;
-      for (i = 0; i < dirqty && !improved; i++)
-        for (j = -1; j <= 1 && !improved; j += 2)
-        {
-          iter++;
-          ut_array_1d_memcpy ((*pTess).VerCoo[ver], 3, x0);
-          for (id = 0; id < 3; id++)
-            (*pTess).VerCoo[ver][id] += j * h * dirs[i][id];
-          if (periodic)
-            net_reg_merge_del_per_setvers (pTess, ver, vers, offsets, verqty);
-
-          ff = net_reg_merge_del_optimcoo_ff (pTess, vers, verqty);
-
-          if (ff < *pff
-              && net_reg_merge_del_testangles (*pTess, vers, verqty,
-                                               facestraightvers) == 0)
-          {
-            (*pff) = ff;
-            improved = 1;
-          }
-          else
-          {
-            ut_array_1d_memcpy (x0, 3, (*pTess).VerCoo[ver]);
-            if (periodic)
-              net_reg_merge_del_per_setvers (pTess, ver, vers, offsets,
-                                             verqty);
-          }
-        }
-
-      if (!improved)
-        h *= 0.5;
-    }
-
-    // (resetting the face interpolations and the edge lengths)
-    (*pff) = net_reg_merge_del_optimcoo_ff (pTess, vers, verqty);
-    for (i = 0; i < verqty; i++)
-      UpdateEdgeLength (pTess, vers[i]);
-  }
-
-  ut_free_1d (&x0);
-  ut_free_2d (&dirs, 3);
-  ut_free_1d (&n);
-
-  return;
 }

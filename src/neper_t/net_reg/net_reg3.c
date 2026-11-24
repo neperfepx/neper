@@ -27,42 +27,6 @@ net_reg_init_peredgesel (struct TESS Tess, double *edgesel)
   return;
 }
 
-// Recording the vertices of the straight corners of the faces (of an
-// angle of 180 degrees, up to round-off errors), Reg.FaceStraightVers
-void
-net_reg_init_facestraightvers (struct TESS Tess, struct REG *pReg)
-{
-  int i, j;
-  double *angles = NULL;
-
-  (*pReg).FaceQty = Tess.FaceQty;
-  (*pReg).FaceStraightVers = ut_alloc_1d_pint (Tess.FaceQty + 1);
-
-  for (i = 1; i <= Tess.FaceQty; i++)
-  {
-    (*pReg).FaceStraightVers[i] = ut_alloc_1d_int (1);
-
-    if (Tess.FaceState[i] == -1 || Tess.FaceVerQty[i] < 3)
-      continue;
-
-    neut_tess_face_angles (Tess, i, &angles);
-
-    for (j = 0; j < Tess.FaceVerQty[i]; j++)
-      if (fabs (angles[j] - 180) < NET_REG_STRAIGHTANGLE_TOL)
-      {
-        (*pReg).FaceStraightVers[i] =
-          ut_realloc_1d_int ((*pReg).FaceStraightVers[i],
-                             ++(*pReg).FaceStraightVers[i][0] + 1);
-        (*pReg).FaceStraightVers[i][(*pReg).FaceStraightVers[i][0]] =
-          Tess.FaceVerNb[i][j + 1];
-      }
-  }
-
-  ut_free_1d (&angles);
-
-  return;
-}
-
 // Recording the slave vertices
 void
 net_reg_periodic_ver (struct TESS *pTess)
