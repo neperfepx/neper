@@ -18,11 +18,6 @@ Several of them change existing behavior or remove options, see :ref:`whatsnew_i
 Highlights
 ----------
 
-Search for Papers
-~~~~~~~~~~~~~~~~~
-
-The website now lists the papers that use Neper, with a chart of the papers per year and field, and they can be searched for, by keywords, fields and journals: see :doc:`applications`. :since:`7.0.1`
-
 Python Interface
 ~~~~~~~~~~~~~~~~
 
