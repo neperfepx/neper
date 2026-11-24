@@ -288,6 +288,7 @@ Tessellation Module (-T)
 - :data:`curpdf0` value of :option:`-morphooptilogdis`, for the current, not smoothed PDF.
 - Faster morphology optimization: about 25% faster computation of the cells, and faster neighbor search.
 - Deterministic morphology optimization, and results of regularization that do not depend on the build.
+- Default value of :option:`-morphooptideltamax` set to the average domain size (:data:`domsize`), which avoids failures of the morphology optimization for large numbers of cells and wide size distributions, and expressions of :data:`avdiameq` and :data:`domsize` as its value. :since:`7.0.1`
 
 Meshing Module (-M)
 ~~~~~~~~~~~~~~~~~~~
@@ -315,6 +316,7 @@ Simulation Module (-S)
 - Case-insensitive keywords and values in :file:`simulation.cfg`.
 - Steps without result files skipped during post-processing.
 - Clear error messages for invalid simulation directories, configuration files and results.
+- Correct grain orientation spread of raster tessellations (:data:`-rescell gos`), now computed relative to the average orientation of the cell instead of the identity. :since:`7.0.1`
 
 Visualization Module (-V)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -324,6 +326,7 @@ Visualization Module (-V)
 - Node sets in the expressions of :data:`-shownode` (:data:`nset==\<label\>`).
 - :data:`-crysym` for :data:`-space rodrigues`.
 - Clear errors when POV-Ray or Asymptote is missing or does not generate a file.
+- Thinner default radii of the 1D elements and of the element edges of 2D meshes, which appeared about twice as thick as for 3D meshes. :since:`7.0.1`
 
 General
 ~~~~~~~
