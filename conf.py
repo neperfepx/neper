@@ -24,7 +24,7 @@ ogp_image = 'https://neper.info/imgs/home-neper.png'
 ogp_social_cards = {'enable': False}
 
 project = u'Neper'
-version = u'7.0.0'
+version = u'7.0.1'
 release = version
 author = u'Romain Quey'
 copyright = u'Romain Quey, CNRS'
