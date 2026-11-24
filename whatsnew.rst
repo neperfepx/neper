@@ -3,10 +3,25 @@
 What's New
 ==========
 
-This page lists the main new capabilities of Neper version 7.0.0 since version 5.0.0, starting with some highlights.  Several of them change existing behavior or remove options, see :ref:`whatsnew_incompatible`.
+.. raw:: html
+
+   <p class="neper-whatsnew-versions" data-versions="5.0.0 7.0.0 7.0.1">
+     This page lists the main new capabilities of Neper version
+     <select name="to" aria-label="New version"><option>7.0.1</option></select>
+     since version
+     <select name="from" aria-label="Old version"><option>5.0.0</option></select>.
+   </p>
+   <script src="_static/whatsnew.js"></script>
+
+Several of them change existing behavior or remove options, see :ref:`whatsnew_incompatible`. :when:`old<7.0.0`
 
 Highlights
 ----------
+
+Search for Papers
+~~~~~~~~~~~~~~~~~
+
+The website now lists the papers that use Neper, with a chart of the papers per year and field, and they can be searched for, by keywords, fields and journals: see :doc:`applications`. :since:`7.0.1`
 
 Python Interface
 ~~~~~~~~~~~~~~~~
@@ -56,7 +71,7 @@ Improved 3D Regularization
 
    .. grid-item::
 
-      The 3D regularization (:option:`-reg`) has been improved: for a 1000-cell grain-growth tessellation, it leaves about 9 times fewer edges below the length threshold (53 instead of 475, out of about 1500 before regularization, shown in red).
+      The 3D regularization (:option:`-reg`) has been improved: for a 1000-cell grain-growth tessellation, it leaves about 9 times fewer edges below the length threshold (53 instead of 475, out of about 1500 before regularization, shown in red). :when:`new<7.0.1`
 
       .. code-block:: console
 
@@ -272,7 +287,8 @@ Tessellation Module (-T)
 - :data:`-transform rmseed`, which removes seeds matching expressions and recomputes the tessellation, and the seed keys :data:`cell_\<key\>`, which give access to the keys of the cell of a seed.
 - :data:`-transform renamedomface`, which renames a domain face.
 - :option:`-regdelcell`, which allows regularization to delete cells.
-- Improved 3D regularization.
+- Improved 3D regularization. :when:`new<7.0.1`
+- Regularization of Neper 5 restored, as that of Neper 7.0.0 changed the cell shapes much more (face rotations up to 58 degrees and cell volume changes up to 87%, instead of 26 degrees and 40%), although it left fewer small edges. :since:`7.0.1` :when:`old>=7.0.0`
 - Expressions in all :data:`-stat` options.
 - :data:`curpdf0` value of :option:`-morphooptilogdis`, for the current, not smoothed PDF.
 - Faster morphology optimization: about 25% faster computation of the cells, and faster neighbor search.
@@ -287,7 +303,9 @@ Meshing Module (-M)
 - :data:`discontinuous` and :data:`cohesive` interfaces for periodic tessellations (:option:`-interface`).
 - Second-order nodes projected onto the curved faces and edges.
 - Improved meshing of the curved faces: conformal projection for the sphere, and conformal unrolling for the hourglass and torus cuts.
-- Any number of partitions, not necessarily a power of 2 (:option:`-part`).
+- Any number of partitions, not necessarily a power of 2 (:option:`-part`). :when:`new<7.0.1`
+- Any number of partitions, not necessarily a power of 2, also as partitions and subpartitions (:data:`\<part_number\>:\<subpart_number\>`, e.g., for computer nodes and their cores) (:option:`-part`). :when:`new>=7.0.1`
+- Partitions and subpartitions restored (:data:`-part \<part_number\>:\<subpart_number\>`), and no longer limited to powers of 2. :since:`7.0.1` :when:`old>=7.0.0`
 - Node sets kept when a mesh is loaded without its tessellation, and updated by :data:`-order` and :data:`-sortnode`.
 - Expressions in all :data:`-stat` options.
 - Reproducible parallel grid meshing of regularized tessellations (:data:`-elttype hexgrid`).
@@ -319,7 +337,10 @@ General
 - :program:`orilib` program, which can run most of the functions of the Orilib library from the command line (installed together with :program:`neper`) and from Python, see :ref:`orilib_program`.
 - Fewer dependencies: NLopt is no longer needed.
 - macOS compatibility fixes, and Bash completion for all options.
+- Searchable list of the papers that use Neper on the website, with filters by field and by journal (:doc:`applications`). :since:`7.0.1`
+- Chart of the papers that use Neper per year and field, including selection fields (:doc:`applications`). :since:`7.0.1`
 - Numerous bug fixes in all modules, including memory errors found with AddressSanitizer.
+- Bug fixes, including failures and hangs of the Gmsh workers on macOS. :since:`7.0.1` :when:`old>=7.0.0`
 
 .. _whatsnew_incompatible:
 
@@ -349,7 +370,8 @@ Meshing Module (-M)
 - The element sizes change as a result of the mesh size map.
 - The node order of the :data:`$Fasets` elements is now the Gmsh order (it was reversed), and the :file:`msh` format version is now 2.4 (version 2.3 can still be read).
 - Nodes and elements are no longer renumbered by partition after partitioning (left to FEPX).
-- :option:`-part` now takes only a number of partitions, and :data:`-partmethod` is removed (libscotch is always used).
+- :option:`-part` now takes only a number of partitions, and :data:`-partmethod` is removed (libscotch is always used). :when:`new<7.0.1`
+- :data:`-partmethod` is removed (libscotch is always used). :when:`new>=7.0.1`
 - The transformations of the tesr input are removed (use :data:`neper -T -transform`).
 - :data:`-elttype hex`, :data:`quad` and :data:`quad9`, which provided non-conforming meshes into regular elements, are renamed :data:`hexgrid`, :data:`quadgrid` and :data:`quad9grid` (:data:`quad9` is deprecated), and :data:`-elttype hex` and :data:`quad` now provide conformal meshes.
 - The :data:`msh4` format (Gmsh version 4 mesh file) is removed from :option:`-format`, and unknown values of :option:`-format` are now errors.

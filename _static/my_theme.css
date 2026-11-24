@@ -338,6 +338,42 @@ a:has(> code.xref):hover {
   }
 }
 
+/* What's new: version selection (see whatsnew.js) */
+.neper-hidden {
+  display: none !important;
+}
+
+.neper-whatsnew-versions select {
+  padding: 0.1rem 0.3rem;
+  border: 1px solid var(--pst-color-border);
+  border-radius: 0.25rem;
+  background: var(--pst-color-surface);
+  color: var(--pst-color-text-base);
+  font: inherit;
+}
+
+.neper-when {
+  display: none;
+}
+
+/* Version that introduced an item, shown when several releases are compared */
+.neper-since {
+  display: none;
+  margin-left: 0.4rem;
+  padding: 0 0.4rem;
+  border-radius: 0.6rem;
+  background: var(--pst-color-primary-bg);
+  color: var(--pst-color-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  vertical-align: 0.1rem;
+}
+
+.neper-whatsnew-multi .neper-since {
+  display: inline-block;
+}
+
 /* Application papers: chart of the papers per year and field */
 .neper-app-chart {
   margin: 0.5rem 0 1rem;

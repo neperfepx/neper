@@ -4,6 +4,8 @@ import sys
 import os
 import re
 
+from docutils import nodes
+
 extensions = ['sphinx_design', 'sphinx_copybutton', 'sphinxext.opengraph']
 
 # Archives of the tutorials' simulation directories, written by the extension of the copied
@@ -55,6 +57,11 @@ html_context = {'default_mode': 'light'}
 html_sidebars = {page: [] for page in ('index', 'gallery', 'papers', 'applications',
                                        'downloads', 'whatsnew', 'community')}
 
+# What's New tags (see _static/whatsnew.js): :since:`<version>` (version that introduced an
+# item, shown as a badge) and :when:`<conditions>` (additional conditions, not shown)
+def whatsnew_role(name, rawtext, text, lineno, inliner, options=None, content=None):
+    return [nodes.inline(rawtext, text, classes=['neper-' + name])], []
+
 # Field tags of the application papers (applications.rst), written as :tag:`key`
 APPLICATION_TAGS = {
     'cp': 'crystal plasticity',
@@ -84,6 +91,8 @@ def setup(app):
     app.add_js_file('applications.js')
     app.add_js_file('applications-chart.js')
     app.add_css_file('my_theme.css')
+    app.add_role('since', whatsnew_role)
+    app.add_role('when', whatsnew_role)
     # Light mode only, whatever a previous visit saved in the browser
     app.add_js_file(None, body="""
       try {
