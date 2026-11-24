@@ -6,7 +6,7 @@ What's New
 .. raw:: html
 
    <p class="neper-whatsnew-versions" data-versions="5.0.0 7.0.0 7.0.1">
-     This page lists the main new capabilities of Neper version
+     This page lists the main changes of Neper version
      <select name="to" aria-label="New version"><option>7.0.1</option></select>
      since version
      <select name="from" aria-label="Old version"><option>5.0.0</option></select>.
